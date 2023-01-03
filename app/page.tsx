@@ -13,14 +13,14 @@ type itemType = {
 const topItemsData: itemType[] = [
   {
     picture:
-      "https://prdpedidoonline.blob.core.windows.net/organizations/32363/36102a78-3056-44e2-b7cb-059cd256f546.jpg",
+      "https://i.ibb.co/PwDK3Xn/208c90f0-5596-48a4-a1ce-aebb38cf789d.jpg",
     name: "Combo X-Bacon + Fritas",
     description: "Molho da casa, hambúrguer 150g, bacon queijo prato.",
     price: 28,
   },
   {
     picture:
-      "https://prdpedidoonline.blob.core.windows.net/organizations/32363/d3a83eba-4052-48e5-963a-56f0ef52bf85.jpg",
+      "https://i.ibb.co/zFY95cV/d3a83eba-4052-48e5-963a-56f0ef52bf85.jpg",
     name: "Combo X-Salada + Fritas",
     description:
       "Molho da casa, hambúrguer 150g, cebola roxa, picles, tomate, alface e queijo prato.",
@@ -28,7 +28,7 @@ const topItemsData: itemType[] = [
   },
   {
     picture:
-      "https://prdpedidoonline.blob.core.windows.net/organizations/32363/ac748309-cf8d-47df-829c-0c31512de298.jpg",
+      "https://i.ibb.co/XZ8pbQq/ac748309-cf8d-47df-829c-0c31512de298.jpg",
     name: "Combo X-Duplo Cheddar + Fritas",
     description: "2 Hambúrguer 150g, cebola caramelizada e cheddar",
     price: 35,
@@ -79,6 +79,12 @@ function TopItems() {
       {topItemsData.map((item, index) => {
         return (
           <div key={index} className="flex flex-col mb-5">
+            <Image
+              src={item.picture}
+              alt="208c90f0-5596-48a4-a1ce-aebb38cf789d"
+              width={200}
+              height={200}
+            />
             <span>{item.name}</span>
             <span>{item.description}</span>
             <span>{item.price}</span>

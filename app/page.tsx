@@ -3,6 +3,18 @@ import { MdLocationOn, MdExpandMore } from "react-icons/md";
 
 import Image from "next/image";
 
+type categoryType = {
+  name: string;
+  imageUrl: string;
+};
+
+const categoriesData: categoryType[] = [
+  {
+    name: "Bebidas",
+    imageUrl: "https://i.ibb.co/k8b1xLG/Inserir-um-subt-tulo-500-121-px.jpg",
+  },
+];
+
 type itemType = {
   picture: string;
   name: string;
@@ -68,7 +80,33 @@ export default function HomePage() {
         <div className="mt-9">
           <TopItems />
         </div>
+        <div className="mt-9">
+          <Categories />
+        </div>
       </div>
+    </div>
+  );
+}
+
+function Categories() {
+  return (
+    <div>
+      {categoriesData.map((item, index) => {
+        return (
+          <div
+            key={index}
+            className="flex flex-row mb-5 rounded-sm cursor-pointer transition-all ease-in-out duration-300 hover:bg-gray-200"
+          >
+            <Image
+              src={item.imageUrl}
+              className="rounded-xl"
+              alt="208c90f0-5596-48a4-a1ce-aebb38cf789d"
+              width={500}
+              height={121}
+            />
+          </div>
+        );
+      })}
     </div>
   );
 }

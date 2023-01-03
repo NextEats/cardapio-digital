@@ -78,16 +78,25 @@ function TopItems() {
     <div>
       {topItemsData.map((item, index) => {
         return (
-          <div key={index} className="flex flex-col mb-5">
+          <div
+            key={index}
+            className="flex flex-row mb-5 bg-gray-100 p-2 rounded-sm cursor-pointer transition-all ease-in-out duration-300 hover:bg-gray-200"
+          >
             <Image
               src={item.picture}
+              className="rounded-xl"
               alt="208c90f0-5596-48a4-a1ce-aebb38cf789d"
-              width={200}
-              height={200}
+              width={120}
+              height={120}
             />
-            <span>{item.name}</span>
-            <span>{item.description}</span>
-            <span>{item.price}</span>
+            <div className="flex flex-col ml-3 justify-center">
+              <span className="text-lg font-medium">{item.name}</span>
+              <span className="text-sm">{item.description}</span>
+              <span className="text-normal font-semibold mt-2 before:content-['R$']">
+                {" "}
+                {item.price}
+              </span>
+            </div>
           </div>
         );
       })}
@@ -113,15 +122,15 @@ function RestaurantInfo() {
   return (
     <div className="mt-20">
       <div className="flex flex-col">
-        <div className="font-bold text-xl">Quintal do Hambúrguer</div>
+        <div className="flex flex-row mt-2">
+          <div className="font-bold text-xl mr-3">Quintal do Hambúrguer</div>
+          <FaStar className="text-yellow-300 w-6 h-6" />
+          <FaStar className="text-yellow-300 w-6 h-6" />
+          <FaStar className="text-yellow-300 w-6 h-6" />
+          <FaStar className="text-yellow-300 w-6 h-6" />
+          <FaStarHalf className="text-yellow-300 w-6 h-6 mr-2" />
+        </div>
         <p className="text-gray-700 text-base">Hamburgueria</p>
-      </div>
-      <div className="flex flex-row mt-4">
-        <FaStar className="text-yellow-300 w-6 h-6" />
-        <FaStar className="text-yellow-300 w-6 h-6" />
-        <FaStar className="text-yellow-300 w-6 h-6" />
-        <FaStar className="text-yellow-300 w-6 h-6" />
-        <FaStarHalf className="text-yellow-300 w-6 h-6 mr-2" />
       </div>
     </div>
   );

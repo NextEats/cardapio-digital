@@ -51,16 +51,16 @@ export default function HomePage() {
         </div>
         <div className="flex flex-row">
           <div className="mt-9 mr-1">
-            <div className="inline bg-gray-800 px-5 py-3 rounded-full cursor-pointer">
+            <div className="inline bg-gray-800 px-5 py-2 rounded-full cursor-pointer">
               <MdLocationOn className="inline text-white w-6 h-6 mr-2" />
-              <span className="text-white">Rua das Flores, 4321</span>
+              <span className="text-white text-xs">Rua das Flores, 4321</span>
               <MdExpandMore className="inline text-white w-6 h-6 ml-2" />
             </div>
           </div>
           <div className="mt-9">
-            <div className="inline bg-gray-800 px-5 py-3 rounded-full cursor-pointer">
+            <div className="inline bg-gray-800 px-5 py-2 rounded-full cursor-pointer">
               <FaClock className="inline text-white w-5 h-5 mr-2" />
-              <span className="text-white">Aberto até 23h</span>
+              <span className="text-white text-xs">Aberto até 23h</span>
               <MdExpandMore className="inline text-white w-6 h-6 ml-2" />
             </div>
           </div>

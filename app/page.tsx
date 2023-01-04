@@ -50,24 +50,18 @@ const topItemsData: itemType[] = [
 export default function HomePage() {
   return (
     <div className="bg-gray-100">
-      <Image
-        src="https://i.ibb.co/cXbc9NV/Inserir-um-subt-tulo.jpg"
-        alt="banner"
-        width={640}
-        height={200}
-      />
       <div className="p-4">
         <div className="flex flex-row items-center">
           <RestaurantAvatar />
           <RestaurantInfo />
         </div>
-        <div className="flex flex-row">
-          <div className="mt-9 mr-1 inline bg-gray-800 px-5 py-1 rounded-full cursor-pointer transition-all ease-in-out duration-300 hover:bg-gray-600">
+        <div className="mt-5">
+          <div className="mr-1 inline bg-gray-800 px-5 py-1 rounded-full cursor-pointer transition-all ease-in-out duration-300 hover:bg-gray-600">
             <MdLocationOn className="inline text-white w-6 h-6 mr-2" />
             <span className="text-white text-xs">Rua das Flores, 4321</span>
             <MdExpandMore className="inline text-white w-6 h-6 ml-2" />
           </div>
-          <div className="mt-9 inline bg-gray-800 px-5 py-1 rounded-full cursor-pointer transition-all ease-in-out duration-300 hover:bg-gray-600">
+          <div className="inline bg-gray-800 px-5 py-1 rounded-full cursor-pointer transition-all ease-in-out duration-300 hover:bg-gray-600">
             <FaClock className="inline text-white w-5 h-5 mr-2" />
             <span className="text-white text-xs">Aberto até 23h</span>
             <MdExpandMore className="inline text-white w-6 h-6 ml-2" />
@@ -86,32 +80,6 @@ export default function HomePage() {
     </div>
   );
 }
-
-// function Categories() {
-//   return (
-//     <div>
-//       <h3 className="text-2xl font-bold mb-3 text-gray-800">Categorias</h3>
-//       <div>
-//         {categoriesData.map((item, index) => {
-//           return (
-//             <div
-//               key={index}
-//               className="flex flex-row mb-5 rounded-sm cursor-pointer transition-all ease-in-out duration-300 hover:bg-gray-200"
-//             >
-//               <Image
-//                 src={item.imageUrl}
-//                 className="rounded-xl cursor-pointer transition-all ease-in-out duration-300 hover:brightness-75"
-//                 alt="208c90f0-5596-48a4-a1ce-aebb38cf789d"
-//                 width={500}
-//                 height={121}
-//               />
-//             </div>
-//           );
-//         })}
-//       </div>
-//     </div>
-//   );
-// }
 
 function TopItems() {
   return (
@@ -174,3 +142,29 @@ function RestaurantInfo() {
     </div>
   );
 }
+
+// function Categories() {
+//   return (
+//     <div>
+//       <h3 className="text-2xl font-bold mb-3 text-gray-800">Categorias</h3>
+//       <div>
+//         {categoriesData.map((item, index) => {
+//           return (
+//             <div
+//               key={index}
+//               className="flex flex-row mb-5 rounded-sm cursor-pointer transition-all ease-in-out duration-300 hover:bg-gray-200"
+//             >
+//               <Image
+//                 src={item.imageUrl}
+//                 className="rounded-xl cursor-pointer transition-all ease-in-out duration-300 hover:brightness-75"
+//                 alt="208c90f0-5596-48a4-a1ce-aebb38cf789d"
+//                 width={500}
+//                 height={121}
+//               />
+//             </div>
+//           );
+//         })}
+//       </div>
+//     </div>
+//   );
+// }

@@ -11,9 +11,7 @@ export default function RootLayout({
   return (
     <html className={inter.className}>
       <body>
-        <div className="bg-slate-800 min-h-screen min-w-screen flex justify-center">
-          <div className="bg-white max-w-lg w-100 w-full">{children}</div>
-        </div>
+        <div className="bg-white max-w-7xl w-100 w-full">{children}</div>
       </body>
     </html>
   );

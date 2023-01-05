@@ -1,6 +1,9 @@
-import { FaStar, FaStarHalf, FaClock } from "react-icons/fa";
-import { MdLocationOn, MdExpandMore } from "react-icons/md";
+
 import Image from "next/image";
+import Header from "../components/pages/home/Header";
+import { BiSearch } from "react-icons/bi";
+import TopItems from "../components/pages/home/TopItems";
+import Product from "../components/pages/product";
 
 type categoryType = {
   name: string;
@@ -14,60 +17,40 @@ const categoriesData: categoryType[] = [
   },
 ];
 
-type itemType = {
-  picture: string;
-  name: string;
-  description: string;
-  price: number;
-};
-
-const topItemsData: itemType[] = [
-  {
-    picture:
-      "https://i.ibb.co/PwDK3Xn/208c90f0-5596-48a4-a1ce-aebb38cf789d.jpg",
-    name: "Combo X-Bacon + Fritas",
-    description: "Molho da casa, hambúrguer 150g, bacon queijo prato.",
-    price: 28,
-  },
-  {
-    picture:
-      "https://i.ibb.co/zFY95cV/d3a83eba-4052-48e5-963a-56f0ef52bf85.jpg",
-    name: "Combo X-Salada + Fritas",
-    description:
-      "Molho da casa, hambúrguer 150g, cebola roxa, picles, tomate, alface e queijo prato.",
-    price: 28,
-  },
-  {
-    picture:
-      "https://i.ibb.co/XZ8pbQq/ac748309-cf8d-47df-829c-0c31512de298.jpg",
-    name: "Combo X-Duplo Cheddar + Fritas",
-    description: "2 Hambúrguer 150g, cebola caramelizada e cheddar",
-    price: 35,
-  },
-];
 
 export default function HomePage() {
-  return (
+  return (  
     <div className="bg-gray-100">
-      <div className="p-4">
-        <div className="flex flex-row items-center">
-          <RestaurantAvatar />
-          <RestaurantInfo />
-        </div>
-        <div className="mt-5">
-          <div className="mr-1 inline bg-gray-800 px-5 py-1 rounded-full cursor-pointer transition-all ease-in-out duration-300 hover:bg-gray-600">
-            <MdLocationOn className="inline text-white w-6 h-6 mr-2" />
-            <span className="text-white text-xs">Rua das Flores, 4321</span>
-            <MdExpandMore className="inline text-white w-6 h-6 ml-2" />
-          </div>
-          <div className="inline bg-gray-800 px-5 py-1 rounded-full cursor-pointer transition-all ease-in-out duration-300 hover:bg-gray-600">
-            <FaClock className="inline text-white w-5 h-5 mr-2" />
-            <span className="text-white text-xs">Aberto até 23h</span>
-            <MdExpandMore className="inline text-white w-6 h-6 ml-2" />
-          </div>
-        </div>
+      <Product />
+      <div className="w-full  ">
+        <Image
+          className="w-full max-h-60"
+          src="https://i.ibb.co/1sZhKFg/backgfroundheader.png"
+          alt="backgfroundheader"
+          width={200}
+          height={200}
+        />
+      </div>
+      <div className="">
+        <Header />
 
         <hr className="border border-solid mt-6" />
+
+        <div className="flex items-center gap-2 ml-4 mt-4 p-2 border rounded-md ">
+          <BiSearch size={20}  />
+          <input type="text" placeholder="Pesquisar" className="flex flex-1 bg-transparent outline-0 font-medium" />
+        </div>
+
+        <div className="p-4">
+          <h2 className="text-xl font-bold mb-3 text-gray-800">Super promoção</h2>
+        <Image
+          className="w-full max-h-60"
+          src="https://i.ibb.co/bNC5FbQ/promocao-desconto.jpg"
+          alt="backgfroundheader"
+          width={200}
+          height={200}
+        />
+        </div>
 
         <div className="mt-5">
           <TopItems />
@@ -80,67 +63,15 @@ export default function HomePage() {
   );
 }
 
-function TopItems() {
-  return (
-    <div>
-      <h3 className="text-2xl font-bold mb-3 text-gray-800">Destaques</h3>
-      {topItemsData.map((item, index) => {
-        return (
-          <div
-            key={index}
-            className="flex flex-row mb-5 border shadow-lg bg-white p-2 rounded-lg cursor-pointer transition-all ease-in-out duration-300 hover:brightness-90"
-          >
-            <Image
-              src={item.picture}
-              className="rounded-xl"
-              alt="208c90f0-5596-48a4-a1ce-aebb38cf789d"
-              width={120}
-              height={120}
-            />
-            <div className="flex flex-col ml-3 justify-center">
-              <span className="text-lg font-medium">{item.name}</span>
-              <span className="text-sm">{item.description}</span>
-              <span className="text-normal font-semibold mt-2 before:content-['R$']">
-                {" "}
-                {item.price}
-              </span>
-            </div>
-          </div>
-        );
-      })}
-    </div>
-  );
-}
+// function TopItems() {
+//   return (
+//     <div className="">
+//       <h3 >Destaques</h3>
+      
+//     </div>
+//   );
+// }
 
-function RestaurantAvatar() {
-  return (
-    <div className="flex items-center justify-center w-32 h-32 rounded-md">
-            <Image
-        src="https://i.ibb.co/d0MYCmv/Design-sem-nome.jpg"
-        alt="208c90f0-5596-48a4-a1ce-aebb38cf789d"
-        className="rounded-md"
-        width={200}
-        height={200}
-            />
-    </div>
-  );
-}
-
-function RestaurantInfo() {
-  return (
-    <div className="ml-3">
-      <div className="font-bold text-xl">Quintal do Hambúrguer</div>
-      <p className="text-gray-700 text-base">Hamburgueria</p>
-      <div className="flex flex-row mt-3">
-        <FaStar className="text-yellow-300 w-6 h-6" />
-        <FaStar className="text-yellow-300 w-6 h-6" />
-        <FaStar className="text-yellow-300 w-6 h-6" />
-        <FaStar className="text-yellow-300 w-6 h-6" />
-        <FaStarHalf className="text-yellow-300 w-6 h-6 mr-2" />
-      </div>
-    </div>
-  );
-}
 
 // function Categories() {
 //   return (

@@ -1,7 +1,11 @@
 import Image from "next/image";
 import Link from "next/link";
+import { Dispatch, SetStateAction } from "react"
+interface ITopItems {
+    setShowProduct: Dispatch<SetStateAction<boolean>>
+}
 
-export default function TopItems() {
+export default function TopItems({ setShowProduct }: ITopItems) {
 
 
     type itemType = {
@@ -44,6 +48,7 @@ export default function TopItems() {
                     <div
                         key={index}
                         className="flex flex-row mb-5 border shadow-lg bg-white p-2 rounded-lg cursor-pointer transition-all ease-in-out duration-300 hover:brightness-90"
+                        onClick={() => setShowProduct(true)}
                     >
                         <Link href={`/product/${item.price}`}>
                             

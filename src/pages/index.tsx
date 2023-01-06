@@ -2,8 +2,9 @@
 import Image from "next/image";
 import Header from "../components/pages/home/Header";
 import { BiSearch } from "react-icons/bi";
+import { useState } from "react"
 import TopItems from "../components/pages/home/TopItems";
-import Product from "../components/pages/product";
+import Product from "../components/pages/home/product";
 
 type categoryType = {
   name: string;
@@ -19,9 +20,12 @@ const categoriesData: categoryType[] = [
 
 
 export default function HomePage() {
+
+  const [showProduct, setShowProduct] = useState(false)
+  
   return (  
     <div className="bg-gray-100">
-      <Product />
+      <Product setShowProduct={setShowProduct} showProduct={showProduct} />
       <div className="w-full  ">
         <Image
           className="w-full max-h-60"
@@ -53,7 +57,7 @@ export default function HomePage() {
         </div>
 
         <div className="mt-5">
-          <TopItems />
+          <TopItems setShowProduct={setShowProduct} />
         </div>
         {/* <div className="mt-9">
           <Categories />

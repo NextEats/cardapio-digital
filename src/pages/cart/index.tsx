@@ -29,7 +29,7 @@ export default function Posduct() {
         getChosenItems()
     }, [])
 
-    const [showModal, setShowModal] = useState<"cep" | "number" | "paiment" | "checkOut" | "">("")
+    const [showModal, setShowModal] = useState<"cep" | "number" | "paiement" | "checkOut" | "">("")
 
     return (
         <div className="px-4 pb-8">

@@ -7,6 +7,7 @@ import { api } from "../../server/api";
 import { BsArrowLeftCircle } from "react-icons/bs"
 import { AiOutlinePlus, AiOutlinePlusCircle } from "react-icons/ai"
 import { MdAttachMoney } from "react-icons/md"
+import Modal from "../../components/pages/cart/modal";
 
 interface IChosenItems {
     picture: string;
@@ -14,6 +15,7 @@ interface IChosenItems {
     description: string;
     price: number;
 };
+
 
 export default function Posduct() {
 
@@ -26,6 +28,8 @@ export default function Posduct() {
     useEffect(() => {
         getChosenItems()
     }, [])
+
+    const [showModal, setShowModal] = useState<"cep" | "number" | "payment" | "checkOut" | "">("")
 
     return (
         <div className="px-4 pb-8">
@@ -71,13 +75,18 @@ export default function Posduct() {
                 })}
             </div>
 
-            <div className="w-[calc(100%-32px)] mt-10 absolute bottom-8 left-4">
+            {showModal !== "" && <Modal setShowModal={setShowModal} showModal={showModal} />}
+
+            <div className="w-full absolute bottom-0 left-0 px-4 pb-8 pt-4 bg-white ">
                 <p className="text-base font-medium text-black mb-6">Total: R$ 35,00</p>
 
                 <button className="w-full h-10 flex items-center justify-center gap-2 border-2 mb-3 border-black rounded-md text-sm uppercase text-gray-600 font-medium">
                     <AiOutlinePlusCircle size={20} color="#3A3A3A" /> Adicionar
                 </button>
-                <button className="w-full h-10 flex items-center justify-center gap-2 bg-gray-700 rounded-md text-sm uppercase text-white-300 font-medium">
+                <button 
+                className="w-full h-10 flex items-center justify-center gap-2 bg-gray-700 rounded-md text-sm uppercase text-white-300 font-medium"
+                onClick={() => setShowModal('cep')}
+                >
                     <MdAttachMoney size={20} color="#F7F7F7" /> Fechar pedido
                 </button>
             </div>

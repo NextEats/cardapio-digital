@@ -12,6 +12,10 @@ module.exports = {
 
         "white-300": "#F7F7F7", 
 
+        "purple-500": "#8047F8", 
+        
+        "yellow-500": "#C47F17",
+
         "gray-300": "#E2E2E2",
         "gray-400": "#838383",
         "gray-500": "#727272",

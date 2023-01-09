@@ -1,9 +1,9 @@
 import Image from "next/image";
-import Header from "../components/pages/home/Header";
+import Header from "../components/home/Header";
 import { BiSearch } from "react-icons/bi";
 import { useState } from "react";
-import TopItems from "../components/pages/home/TopItems";
-import Product from "../components/pages/home/product";
+import TopItems from "../components/home/TopItems";
+import Product from "../components/home/product";
 
 export default function HomePage() {
   const [showProduct, setShowProduct] = useState(false);

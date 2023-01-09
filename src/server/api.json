@@ -116,6 +116,51 @@
       },
       "selectedPaymentValue": "Pix",
       "id": "Sf-jAHI"
+    },
+    {
+      "address": {
+        "cep": "04945285",
+        "number": "33",
+        "complement": ""
+      },
+      "selectedPaymentValue": "Pix",
+      "id": "N7ocY2k"
+    },
+    {
+      "address": {
+        "cep": "04945285",
+        "number": "33",
+        "complement": ""
+      },
+      "selectedPaymentValue": "Pix",
+      "id": "2xlSPsJ"
+    },
+    {
+      "address": {
+        "cep": "04945285",
+        "number": "33",
+        "complement": ""
+      },
+      "selectedPaymentValue": "Pix",
+      "id": "-lHbLuj"
+    },
+    {
+      "address": {
+        "cep": "04945285",
+        "number": "33",
+        "complement": ""
+      },
+      "selectedPaymentValue": "Pix",
+      "id": "NycBvGX"
+    },
+    {
+      "address": {
+        "cep": "04945285",
+        "number": "33",
+        "complement": ""
+      },
+      "selectedPaymentValue": "Pix",
+      "id": "5bwnLlO"
     }
   ]
 }

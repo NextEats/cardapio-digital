@@ -3,7 +3,7 @@ import { AiOutlineMinus, AiOutlinePlus } from "react-icons/ai";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 
 import Image from "next/image";
-import { api } from "../../../../server/api";
+import { api } from "../../../server/api";
 
 interface IAdditionalData {
   id: string;

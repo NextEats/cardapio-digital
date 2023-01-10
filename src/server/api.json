@@ -1,9 +1,9 @@
 {
-  "ingredientOptions": [
+  "ingredients": [
     {
       "id": "1",
       "name": "Carne",
-      "categorys": [
+      "options": [
         {
           "id": "1",
           "name": "Malpassado",
@@ -21,7 +21,7 @@
     {
       "id": "2",
       "name": "Pão",
-      "categorys": [
+      "options": [
         {
           "id": "1",
           "name": "Francês",
@@ -49,7 +49,7 @@
       ]
     }
   ],
-  "additional": [
+  "additionals": [
     {
       "id": "1",
       "name": "alface",

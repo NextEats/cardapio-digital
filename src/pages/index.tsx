@@ -11,17 +11,31 @@ import Product from "../components/home/Product";
 
 import { api } from "../server/api";
 
-import { productType } from "../types/product";
+import {
+  productType,
+  IIngredientOptionsData,
+  IAdditionalData,
+} from "../types/product";
 
 import ProductHorizontalScrollList from "../components/ProductHorizontalScrollList";
 
 interface DataProps {
   topProducts: productType[];
+  additionals: IAdditionalData[];
+  ingredients: IIngredientOptionsData[];
 }
 
-export default function HomePage({ topProducts }: DataProps) {
+export default function HomePage({
+  topProducts,
+  additionals,
+  ingredients,
+}: DataProps) {
   const [showProduct, setShowProduct] = useState(true);
   const [currentProduct, setCurrentProduct] = useState<productType>();
+
+  console.log("topProducts", topProducts);
+  console.log("additionals", additionals);
+  console.log("ingredients", ingredients);
 
   return (
     <div>
@@ -29,6 +43,8 @@ export default function HomePage({ topProducts }: DataProps) {
         setShowProduct={setShowProduct}
         showProduct={showProduct}
         currentProduct={currentProduct}
+        ingredients={ingredients}
+        additionals={additionals}
       />
       <div className="bg-[#222] flex justify-center min-h-screen min-w-screen">
         <div className="bg-gray-100 max-w-7xl w-full">
@@ -74,10 +90,14 @@ export default function HomePage({ topProducts }: DataProps) {
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const topProducts = await api.get("topProducts");
+  const additionals = await api.get("additionals");
+  const ingredients = await api.get("ingredients");
 
   return {
     props: {
       topProducts: topProducts.data,
+      additionals: additionals.data,
+      ingredients: ingredients.data,
     },
   };
 };

@@ -3,7 +3,7 @@ import { GetServerSideProps } from "next";
 import Image from "next/image";
 import Link from "next/link";
 
-import { BiSearch } from "react-icons/bi";
+import { BiRestaurant, BiSearch } from "react-icons/bi";
 import { useState } from "react";
 
 import Header from "../components/home/Header";
@@ -18,24 +18,28 @@ import {
 } from "../types/product";
 
 import ProductHorizontalScrollList from "../components/ProductHorizontalScrollList";
+import { IRestaurant } from "../types/home";
+import axios from "axios";
 
 interface DataProps {
   topProducts: productType[];
   additionals: IAdditionalData[];
   ingredients: IIngredientOptionsData[];
+  restaurant: IRestaurant;
 }
 
 export default function HomePage({
   topProducts,
   additionals,
   ingredients,
+  restaurant
 }: DataProps) {
   const [showProduct, setShowProduct] = useState(true);
   const [currentProduct, setCurrentProduct] = useState<productType>();
 
-  console.log("topProducts", topProducts);
-  console.log("additionals", additionals);
-  console.log("ingredients", ingredients);
+  // console.log("topProducts", topProducts);
+  // console.log("additionals", additionals);
+  // console.log("ingredients", ingredients);
 
   return (
     <div>
@@ -53,12 +57,12 @@ export default function HomePage({
               className="w-full max-h-60"
               src="https://i.ibb.co/1sZhKFg/backgfroundheader.png"
               alt="backgfroundheader"
-              width={600}
+              width={600} 
               height={600}
             />
           </div>
           <div>
-            <Header />
+            <Header restaurant={restaurant} />
 
             <hr className="border border-solid mt-6" />
 
@@ -92,12 +96,14 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const topProducts = await api.get("topProducts");
   const additionals = await api.get("additionals");
   const ingredients = await api.get("ingredients");
+  const restaurant = await api.get("restaurants/2");
 
   return {
     props: {
       topProducts: topProducts.data,
       additionals: additionals.data,
       ingredients: ingredients.data,
+      restaurant: restaurant.data
     },
   };
 };

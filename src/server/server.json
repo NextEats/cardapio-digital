@@ -1,4 +1,20 @@
 {
+  "restaurants": [
+    {
+      "id": "1",
+      "name": "Quintal do Hambúrguer", 
+      "type": "Hamburgueria",
+      "latitude": -7.985758,
+      "longitude": -38.308631
+    },
+    {
+      "id": "2",
+      "name": "Hambúrguer", 
+      "type": "Hamburgueria",
+      "latitude": -7.985971,
+      "longitude": -38.308708
+    }
+  ],
   "ingredients": [
     {
       "id": "1",

@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "server": "json-server -p 3333 src/server/api.json -w -d 500",
+    "server": "json-server -p 3333 src/server/server.json -w -d 500",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
@@ -20,6 +20,7 @@
     "clsx": "^1.2.1",
     "eslint": "8.31.0",
     "eslint-config-next": "13.1.1",
+    "geolib": "^3.3.3",
     "keen-slider": "^6.8.5",
     "next": "13.1.1",
     "react": "18.2.0",

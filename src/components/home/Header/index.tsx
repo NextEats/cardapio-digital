@@ -1,13 +1,17 @@
 import Image from "next/image";
 import { FaStar, FaStarHalf } from "react-icons/fa";
-import { MdLocationOn, MdExpandMore } from "react-icons/md";
+import { getDistance } from 'geolib';
+import { useEffect, useState } from "react";
+import { api } from "../../../server/api";
+import { IRestaurant } from "../../../types/home";
+import { GetServerSideProps } from "next";
 
-export default function Header() {
+export default function Header( { restaurant }: { restaurant: IRestaurant } ) {
   return (
     <div className="">
       <div className="flex flex-row items-center px-4 pt-4">
         <RestaurantAvatar />
-        <RestaurantInfo />
+        <RestaurantInfo restaurant={restaurant} />
       </div>
       <div className="w-full flex items-center my-5 border-t border-b border-gray-300">
         <div className="flex flex-row  mx-4">
@@ -37,7 +41,7 @@ export default function Header() {
   );
 }
 
-function RestaurantAvatar() {
+function RestaurantAvatar( ) {
   return (
     <div className="flex items-center justify-center w-32 h-32 rounded-md">
       <Image
@@ -51,11 +55,27 @@ function RestaurantAvatar() {
   );
 }
 
-function RestaurantInfo() {
+function RestaurantInfo({ restaurant }: { restaurant: IRestaurant }) {
+
+  const [userPosition, setUserPosition] = useState<{ latitude: number; longitude: number }>({ latitude: 0, longitude: 0 });
+
+  
+  useEffect(() => {
+    navigator.geolocation.getCurrentPosition(
+        (position) => { setUserPosition({ latitude: position.coords.latitude, longitude: position.coords.longitude }); },
+        (error) => console.error(error),
+        { enableHighAccuracy: true }
+    );
+}, []);
+
+console.log(restaurant)
+const restaurantPosition = { latitude: restaurant.latitude , longitude: restaurant.longitude };
+const distance = getDistance(userPosition, restaurantPosition) / 1000; // Distance in km
+
   return (
     <div className="ml-3">
-      <div className="font-bold text-xl">Quintal do Hambúrguer</div>
-      <p className="text-gray-700 text-base">Hamburgueria</p>
+      <div className="font-bold text-xl">{ restaurant.name }</div>
+      <p className="text-gray-700 text-base"> {restaurant.type} - {distance} km</p>
     </div>
   );
 }

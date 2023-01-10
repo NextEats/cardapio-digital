@@ -1,5 +1,7 @@
 import { BsArrowLeftCircle, BsFillPlusCircleFill } from "react-icons/bs";
 import { AiOutlineMinus, AiOutlinePlus } from "react-icons/ai";
+import { FaMinus, FaPlus } from "react-icons/fa";
+
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 
 import Image from "next/image";
@@ -115,7 +117,6 @@ function Ingredients({ data }: { data: IIngredientOptionsData[] }) {
                   name={toNormalForm(ingredientData.name)}
                   id={toNormalForm(ingredientData.name) + option.id}
                   value={toNormalForm(ingredientData.name) + option.id}
-                  onChange={() => console.log(option.id)}
                   defaultChecked={option.isSelected}
                 />
               </div>
@@ -160,35 +161,98 @@ function SubmitButtons() {
 }
 
 function Additionals({ data }: { data: IAdditionalData[] }) {
+  const [selectedAdditionals, setSelectedAdditionals] = useState<any[]>([]);
+
   if (data) {
     return (
       <div className="mb-24">
         <h2 className="mb-5 font-semibold text-sm">Adicionais</h2>
-        {data.map((item: IAdditionalData) => {
+        {data.map((additional: IAdditionalData) => {
           return (
-            <div key={item.id} className="flex flex-col mb-3">
+            <div key={additional.id} className="flex flex-col mb-3">
               <div className="flex flex-1 items-center justify-between pr-4 shadow-md rounded-md bg-white-300">
                 <div className="flex items-center gap-3">
                   <Image
-                    src={item.picture}
+                    src={additional.picture}
                     alt="backgfroundheader"
                     width={91}
                     height={200}
                   />
                   <div className="">
                     <p className="font-extrabold text-black text-sm ">
-                      {item.name}
+                      {additional.name}
                     </p>
                     <p className="font-semibold text-xs text-black">
-                      R$ {item.price}
+                      R$ {additional.price}
                     </p>
                   </div>
                 </div>
-                <BsFillPlusCircleFill
-                  className="cursor-pointer"
-                  color="3A3A3A"
-                  size={25}
-                />
+
+                {selectedAdditionals.find((add) => add.id == additional.id) ? (
+                  <div className="bg-slate-900 text-white w-24 flex flex-row justify-between p-1">
+                    <button
+                      className="w-6 text-md flex items-center justify-center"
+                      onClick={(e) => {
+                        e.preventDefault();
+
+                        let varSelectedAdditionals = selectedAdditionals;
+
+                        let x = varSelectedAdditionals.findIndex(
+                          (add) => add.id == additional.id
+                        );
+
+                        if (varSelectedAdditionals[x].quantity - 1 === 0) {
+                          setSelectedAdditionals([
+                            ...varSelectedAdditionals.filter(
+                              (elem, index) => index !== x
+                            ),
+                          ]);
+                        } else {
+                          varSelectedAdditionals[x].quantity -= 1;
+                          setSelectedAdditionals([...varSelectedAdditionals]);
+                        }
+                      }}
+                    >
+                      <FaMinus />
+                    </button>
+                    <span className="">
+                      {
+                        selectedAdditionals.find(
+                          (add) => add.id == additional.id
+                        ).quantity
+                      }
+                    </span>
+                    <button
+                      className="w-6 text-md flex items-center justify-center"
+                      onClick={(e) => {
+                        e.preventDefault();
+
+                        let varSelectedAdditionals = selectedAdditionals;
+
+                        let x = varSelectedAdditionals.findIndex(
+                          (add) => add.id == additional.id
+                        );
+
+                        varSelectedAdditionals[x].quantity += 1;
+
+                        setSelectedAdditionals([...varSelectedAdditionals]);
+                      }}
+                    >
+                      <FaPlus />
+                    </button>
+                  </div>
+                ) : (
+                  <BsFillPlusCircleFill
+                    className="cursor-pointer"
+                    color="3A3A3A"
+                    size={25}
+                    onClick={() =>
+                      setSelectedAdditionals((prev: any) => {
+                        return [...prev, { id: additional.id, quantity: 1 }];
+                      })
+                    }
+                  />
+                )}
               </div>
             </div>
           );

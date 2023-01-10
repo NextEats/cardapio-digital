@@ -52,13 +52,13 @@
   "additionals": [
     {
       "id": "1",
-      "name": "alface",
+      "name": "Alface",
       "price": 3,
       "picture": "https://i.ibb.co/ZKDbV8f/alface.png"
     },
     {
       "id": "2",
-      "name": "tomate",
+      "name": "Tomate",
       "price": 4,
       "picture": "https://i.ibb.co/JrpMwRN/tomate.png"
     },
@@ -187,6 +187,24 @@
       },
       "selectedPaymentValue": "Pix",
       "id": "5bwnLlO"
+    },
+    {
+      "address": {
+        "cep": "04945285",
+        "number": "33",
+        "complement": ""
+      },
+      "selectedPaymentValue": "Pix",
+      "id": "x6LwN_H"
+    },
+    {
+      "address": {
+        "cep": "04945285",
+        "number": "33",
+        "complement": ""
+      },
+      "selectedPaymentValue": "Pix",
+      "id": "ZiZHxpW"
     }
   ]
 }

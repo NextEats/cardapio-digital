@@ -9,8 +9,7 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-
-        "white-300": "#F7F7F7", 
+        "white-300": "#F7F7F7",
 
         "purple-500": "#8047F8", 
         
@@ -21,9 +20,10 @@ module.exports = {
         "gray-500": "#727272",
         "gray-700": "#3A3A3A",
         "gray-600": "#454545",
+        "gray-800": "#282828",
 
         "green-100": "#1FA262",
-      }
+      },
     },
   },
   plugins: [],

@@ -15,6 +15,8 @@ import { productType } from "../types/product";
 
 import ProductHorizontalScrollList from "../components/ProductHorizontalScrollList";
 
+import { supabase } from "../server/api";
+
 interface DataProps {
   topProducts: productType[];
 }
@@ -75,9 +77,13 @@ export default function HomePage({ topProducts }: DataProps) {
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const topProducts = await api.get("topProducts");
 
+  const products = await supabase.from("products").select();
+
+  console.log(products.data);
+
   return {
     props: {
-      topProducts: topProducts.data,
+      topProducts: products.data,
     },
   };
 };

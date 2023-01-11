@@ -13,7 +13,7 @@ interface DataProps {
 }
 
 type itemType = {
-  picture: string;
+  picture_url: string;
   name: string;
   description: string;
   price: number;
@@ -42,7 +42,7 @@ export default function TopItems({ data }: DataProps) {
             >
               <Link href={`#`}>
                 <Image
-                  src={item.picture}
+                  src={item.picture_url}
                   className="w-full h-full rounded-xl"
                   alt="208c90f0-5596-48a4-a1ce-aebb38cf789d"
                   width={120}

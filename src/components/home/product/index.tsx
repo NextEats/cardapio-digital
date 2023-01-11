@@ -10,13 +10,13 @@ interface IAdditionalData {
   id: string;
   name: string;
   price: number;
-  picture: string;
+  picture_url: string;
 }
 
 interface ICategory {
   id: string;
   name: string;
-  picture: string;
+  picture_url: string;
   isSelected: boolean;
 }
 
@@ -75,7 +75,7 @@ export default function Product({
               />
               <div className="w-full flex items-center justify-center mb-9">
                 <Image
-                  src={currentProduct.picture}
+                  src={currentProduct.picture_url}
                   alt="backgfroundheader"
                   width={500}
                   height={500}
@@ -109,7 +109,7 @@ export default function Product({
                                 {category.name}
                               </span>
                               <Image
-                                src={category.picture}
+                                src={category.picture_url}
                                 alt="carne malpassada"
                                 className={`wi-full h-full relative rounded-lg object-cover ${
                                   !category.isSelected && "contrast-50"
@@ -134,7 +134,7 @@ export default function Product({
                       <div className="flex flex-1 items-center justify-between pr-4 shadow-md rounded-md bg-white-300">
                         <div className="flex items-center gap-3">
                           <Image
-                            src={item.picture}
+                            src={item.picture_url}
                             alt="backgfroundheader"
                             width={91}
                             height={200}

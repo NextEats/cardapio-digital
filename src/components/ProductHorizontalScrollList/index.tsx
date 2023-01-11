@@ -43,7 +43,7 @@ export default function ProductHorizontalScrollList({
         <div className="h-full flex products-center">
           <div className="w-full lg:w-32">
             <Image
-              src={productData.picture}
+              src={productData.picture_url}
               className="rounded-md"
               alt="208c90f0-5596-48a4-a1ce-aebb38cf789d"
               width={350}

@@ -22,6 +22,13 @@ export default function ProductHorizontalScrollList({
         perView: 2.5,
       },
       breakpoints: {
+        "(min-width: 350px)": {
+          slides: {
+            number: products.length,
+            spacing: 10,
+            perView: 1.5,
+          },
+        },
         "(min-width: 768px)": {
           slides: {
             number: products.length,
@@ -38,9 +45,9 @@ export default function ProductHorizontalScrollList({
     return (
       <div
         onClick={() => openProductModal(productData)}
-        className="border rounded-md border-gray-300 bg-white hover:bg-gray-200 cursor-pointer transition-all duration-200 ease-in-out lg:h-[180px] h-[330px] p-5 flex flex-col lg:flex-row items-center"
+        className="flex flex-col lg:flex-row items-center border rounded-md border-gray-300 bg-white hover:bg-gray-200 cursor-pointer transition-all duration-200 ease-in-out  p-5 "
       >
-        <div className="h-full flex products-center">
+        <div className="lg:h-full flex products-center">
           <div className="w-full lg:w-32">
             <Image
               src={productData.picture}
@@ -51,7 +58,7 @@ export default function ProductHorizontalScrollList({
             />
           </div>
         </div>
-        <div className="ml-2 flex items-center flex-col">
+        <div className="ml-2 flex items-center flex-col mt-5 xs:min-h-[100px] sm:min-h-[80px]">
           <span className="font-bold lg:text-xl">{productData.name}</span>
           <p className="w-full mt-2 font-semibold text-green-500 before:content-['R$']">
             &nbsp;{productData.price}

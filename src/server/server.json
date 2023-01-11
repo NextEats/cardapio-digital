@@ -2,15 +2,77 @@
   "restaurants": [
     {
       "id": "1",
-      "name": "Quintal do Hambúrguer", 
+      "name": "Quintal do Hambúrguer",
       "type": "Hamburgueria",
+      "addressLink": "https://www.google.com/maps/place/Estreito,+Petrol%C3%A2ndia+-+State+of+Pernambuco,+56460-000/@-8.749198,-38.260343,15z/data=!3m1!4b1!4m5!3m4!1s0x709bc190fcc0b2b:0x5bb93f4caa4bf8ed!8m2!3d-8.7491958!4d-38.250044",
+      "schedules": {
+        "monday": {
+          "opensAt": "17:00",
+          "closesAt": "23:00"
+        },
+        "tuesday": {
+          "opensAt": "17:00",
+          "closesAt": "23:00"
+        },
+        "wednesday": {
+          "opensAt": "16:00",
+          "closesAt": "23:00"
+        },
+        "thursday": {
+          "opensAt": "17:00",
+          "closesAt": "23:00"
+        },
+        "friday": {
+          "opensAt": "17:00",
+          "closesAt": "23:00"
+        },
+        "saturday": {
+          "opensAt": "17:00",
+          "closesAt": "23:00"
+        },
+        "sunday": {
+          "opensAt": "17:00",
+          "closesAt": "23:00"
+        }
+      },
       "latitude": -7.985758,
       "longitude": -38.308631
     },
     {
       "id": "2",
-      "name": "Hambúrguer", 
+      "name": "Hambúrguer",
       "type": "Hamburgueria",
+      "addressLink": "https://www.google.com/maps/place/Estreito,+Petrol%C3%A2ndia+-+State+of+Pernambuco,+56460-000/@-8.749198,-38.260343,15z/data=!3m1!4b1!4m5!3m4!1s0x709bc190fcc0b2b:0x5bb93f4caa4bf8ed!8m2!3d-8.7491958!4d-38.250044",
+      "schedules": {
+        "monday": {
+          "opensAt": "17:00",
+          "closesAt": "23:00"
+        },
+        "tuesday": {
+          "opensAt": "17:00",
+          "closesAt": "23:00"
+        },
+        "wednesday": {
+          "opensAt": "16:30",
+          "closesAt": "23:00"
+        },
+        "thursday": {
+          "opensAt": "17:00",
+          "closesAt": "23:00"
+        },
+        "friday": {
+          "opensAt": "17:00",
+          "closesAt": "23:00"
+        },
+        "saturday": {
+          "opensAt": "17:00",
+          "closesAt": "23:00"
+        },
+        "sunday": {
+          "opensAt": "17:00",
+          "closesAt": "23:00"
+        }
+      },
       "latitude": -7.985971,
       "longitude": -38.308708
     }

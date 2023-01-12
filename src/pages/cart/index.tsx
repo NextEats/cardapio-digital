@@ -10,7 +10,7 @@ import { MdAttachMoney } from "react-icons/md";
 import Modal from "../../components/cart/modal";
 
 interface IChosenItems {
-  picture: string;
+  picture_url: string;
   name: string;
   description: string;
   price: number;
@@ -51,7 +51,7 @@ export default function Posduct() {
             >
               <Link href={`/product/${item.price}`}>
                 <Image
-                  src={item.picture}
+                  src={item.picture_url}
                   className="rounded-xl"
                   alt="208c90f0-5596-48a4-a1ce-aebb38cf789d"
                   width={120}

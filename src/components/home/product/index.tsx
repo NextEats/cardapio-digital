@@ -52,7 +52,7 @@ export default function Product({
             <div className="w-full flex items-center justify-center mb-9">
               <Image
                 className="rounded-3xl"
-                src={currentProduct.picture}
+                src={currentProduct.picture_url}
                 alt="backgfroundheader"
                 width={500}
                 height={500}

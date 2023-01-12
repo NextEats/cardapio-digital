@@ -21,6 +21,8 @@ import ProductHorizontalScrollList from "../components/ProductHorizontalScrollLi
 import { IRestaurant } from "../types/home";
 import axios from "axios";
 
+import { supabase } from "../server/api";
+
 interface DataProps {
   topProducts: productType[];
   additionals: IAdditionalData[];
@@ -32,7 +34,7 @@ export default function HomePage({
   topProducts,
   additionals,
   ingredients,
-  restaurant
+  restaurant,
 }: DataProps) {
   const [showProduct, setShowProduct] = useState(true);
   const [currentProduct, setCurrentProduct] = useState<productType>();
@@ -57,7 +59,7 @@ export default function HomePage({
               className="w-full max-h-60"
               src="https://i.ibb.co/1sZhKFg/backgfroundheader.png"
               alt="backgfroundheader"
-              width={600} 
+              width={600}
               height={600}
             />
           </div>
@@ -98,12 +100,16 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const ingredients = await api.get("ingredients");
   const restaurant = await api.get("restaurants/2");
 
+  const products = await supabase.from("products").select();
+
+  console.log(products.data);
+
   return {
     props: {
       topProducts: topProducts.data,
       additionals: additionals.data,
       ingredients: ingredients.data,
-      restaurant: restaurant.data
+      restaurant: restaurant.data,
     },
   };
 };

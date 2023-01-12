@@ -85,13 +85,13 @@
         {
           "id": "1",
           "name": "Malpassado",
-          "picture": "https://i.ibb.co/BqpWd05/carne.png",
+          "picture_url": "https://i.ibb.co/BqpWd05/carne.png",
           "isSelected": false
         },
         {
           "id": "2",
           "name": "Ao ponto",
-          "picture": "https://i.ibb.co/BqpWd05/carne.png",
+          "picture_url": "https://i.ibb.co/BqpWd05/carne.png",
           "isSelected": true
         }
       ]
@@ -103,25 +103,25 @@
         {
           "id": "1",
           "name": "Francês",
-          "picture": "https://i.ibb.co/8KnTRXt/pao.png",
+          "picture_url": "https://i.ibb.co/8KnTRXt/pao.png",
           "isSelected": true
         },
         {
           "id": "2",
           "name": "Brioche",
-          "picture": "https://i.ibb.co/8KnTRXt/pao.png",
+          "picture_url": "https://i.ibb.co/8KnTRXt/pao.png",
           "isSelected": false
         },
         {
           "id": "3",
           "name": "Australiano",
-          "picture": "https://i.ibb.co/8KnTRXt/pao.png",
+          "picture_url": "https://i.ibb.co/8KnTRXt/pao.png",
           "isSelected": false
         },
         {
           "id": "4",
           "name": "Italiano",
-          "picture": "https://i.ibb.co/8KnTRXt/pao.png",
+          "picture_url": "https://i.ibb.co/8KnTRXt/pao.png",
           "isSelected": false
         }
       ]
@@ -132,36 +132,36 @@
       "id": "1",
       "name": "Alface",
       "price": 3,
-      "picture": "https://i.ibb.co/ZKDbV8f/alface.png"
+      "picture_url": "https://i.ibb.co/ZKDbV8f/alface.png"
     },
     {
       "id": "2",
       "name": "Tomate",
       "price": 4,
-      "picture": "https://i.ibb.co/JrpMwRN/tomate.png"
+      "picture_url": "https://i.ibb.co/JrpMwRN/tomate.png"
     },
     {
       "id": "3",
       "name": "Queijo Mussarela",
       "price": 5,
-      "picture": "https://i.ibb.co/jGWnZf7/Queijo.png"
+      "picture_url": "https://i.ibb.co/jGWnZf7/Queijo.png"
     }
   ],
   "cart": [
     {
-      "picture": "https://i.ibb.co/PwDK3Xn/208c90f0-5596-48a4-a1ce-aebb38cf789d.jpg",
+      "picture_url": "https://i.ibb.co/PwDK3Xn/208c90f0-5596-48a4-a1ce-aebb38cf789d.jpg",
       "name": "Combo X-Bacon + Fritas",
       "description": "Molho da casa, hambúrguer 150g, bacon queijo prato.",
       "price": 28
     },
     {
-      "picture": "https://i.ibb.co/zFY95cV/d3a83eba-4052-48e5-963a-56f0ef52bf85.jpg",
+      "picture_url": "https://i.ibb.co/zFY95cV/d3a83eba-4052-48e5-963a-56f0ef52bf85.jpg",
       "name": "Combo X-Salada + Fritas",
       "description": "Molho da casa, hambúrguer 150g, cebola roxa, picles, tomate, alface e queijo prato.",
       "price": 28
     },
     {
-      "picture": "https://i.ibb.co/XZ8pbQq/ac748309-cf8d-47df-829c-0c31512de298.jpg",
+      "picture_url": "https://i.ibb.co/XZ8pbQq/ac748309-cf8d-47df-829c-0c31512de298.jpg",
       "name": "Combo X-Duplo Cheddar + Fritas",
       "description": "2 Hambúrguer 150g, cebola caramelizada e cheddar",
       "price": 35
@@ -169,25 +169,25 @@
   ],
   "topProducts": [
     {
-      "picture": "https://i.ibb.co/PwDK3Xn/208c90f0-5596-48a4-a1ce-aebb38cf789d.jpg",
+      "picture_url": "https://i.ibb.co/PwDK3Xn/208c90f0-5596-48a4-a1ce-aebb38cf789d.jpg",
       "name": "Combo X-Bacon + Fritas",
       "description": "Molho da casa, hambúrguer 150g, bacon queijo prato.",
       "price": 28
     },
     {
-      "picture": "https://i.ibb.co/zFY95cV/d3a83eba-4052-48e5-963a-56f0ef52bf85.jpg",
+      "picture_url": "https://i.ibb.co/zFY95cV/d3a83eba-4052-48e5-963a-56f0ef52bf85.jpg",
       "name": "Combo X-Salada + Fritas",
       "description": "Molho da casa, hambúrguer 150g, cebola roxa, picles, tomate, alface e queijo prato.",
       "price": 28
     },
     {
-      "picture": "https://i.ibb.co/XZ8pbQq/ac748309-cf8d-47df-829c-0c31512de298.jpg",
+      "picture_url": "https://i.ibb.co/XZ8pbQq/ac748309-cf8d-47df-829c-0c31512de298.jpg",
       "name": "Combo X-Duplo Cheddar + Fritas",
       "description": "2 Hambúrguer 150g, cebola caramelizada e cheddar",
       "price": 35
     },
     {
-      "picture": "https://i.ibb.co/XZ8pbQq/ac748309-cf8d-47df-829c-0c31512de298.jpg",
+      "picture_url": "https://i.ibb.co/XZ8pbQq/ac748309-cf8d-47df-829c-0c31512de298.jpg",
       "name": "Combo X-Duplo Cheddar + Fritas",
       "description": "2 Hambúrguer 150g, cebola caramelizada e cheddar",
       "price": 35

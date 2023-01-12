@@ -3,7 +3,7 @@ import { GetServerSideProps } from "next";
 import Image from "next/image";
 import Link from "next/link";
 
-import { BiSearch } from "react-icons/bi";
+import { BiRestaurant, BiSearch } from "react-icons/bi";
 import { useState } from "react";
 
 import Header from "../components/home/Header";
@@ -11,19 +11,37 @@ import Product from "../components/home/Product";
 
 import { api } from "../server/api";
 
-import { productType } from "../types/product";
+import {
+  productType,
+  IIngredientOptionsData,
+  IAdditionalData,
+} from "../types/product";
 
 import ProductHorizontalScrollList from "../components/ProductHorizontalScrollList";
+import { IRestaurant } from "../types/home";
+import axios from "axios";
 
 import { supabase } from "../server/api";
 
 interface DataProps {
   topProducts: productType[];
+  additionals: IAdditionalData[];
+  ingredients: IIngredientOptionsData[];
+  restaurant: IRestaurant;
 }
 
-export default function HomePage({ topProducts }: DataProps) {
+export default function HomePage({
+  topProducts,
+  additionals,
+  ingredients,
+  restaurant,
+}: DataProps) {
   const [showProduct, setShowProduct] = useState(true);
   const [currentProduct, setCurrentProduct] = useState<productType>();
+
+  // console.log("topProducts", topProducts);
+  // console.log("additionals", additionals);
+  // console.log("ingredients", ingredients);
 
   return (
     <div>
@@ -31,6 +49,8 @@ export default function HomePage({ topProducts }: DataProps) {
         setShowProduct={setShowProduct}
         showProduct={showProduct}
         currentProduct={currentProduct}
+        ingredients={ingredients}
+        additionals={additionals}
       />
       <div className="bg-[#222] flex justify-center min-h-screen min-w-screen">
         <div className="bg-gray-100 max-w-7xl w-full">
@@ -44,7 +64,7 @@ export default function HomePage({ topProducts }: DataProps) {
             />
           </div>
           <div>
-            <Header />
+            <Header restaurant={restaurant} />
 
             <hr className="border border-solid mt-6" />
 
@@ -76,6 +96,9 @@ export default function HomePage({ topProducts }: DataProps) {
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const topProducts = await api.get("topProducts");
+  const additionals = await api.get("additionals");
+  const ingredients = await api.get("ingredients");
+  const restaurant = await api.get("restaurants/2");
 
   const products = await supabase.from("products").select();
 
@@ -83,7 +106,10 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   return {
     props: {
-      topProducts: products.data,
+      topProducts: topProducts.data,
+      additionals: additionals.data,
+      ingredients: ingredients.data,
+      restaurant: restaurant.data,
     },
   };
 };

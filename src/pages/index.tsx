@@ -64,7 +64,7 @@ export default function HomePage({
             />
           </div>
           <div>
-            <Header restaurant={restaurant} />
+            <Header restaurant={restaurant} withStars />
 
             <hr className="border border-solid mt-6" />
 

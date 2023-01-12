@@ -9,14 +9,16 @@ import Link from "next/link";
 import { format, getHours, isWithinInterval } from "date-fns";
 
 
-export default function Header({ restaurant }: { restaurant: IRestaurant }) {
+export default function Header({ restaurant, withStars }: { restaurant: IRestaurant, withStars: boolean}) {
   return (
     <div className="">
       <div className="flex flex-row items-center px-4 pt-4">
         <RestaurantAvatar />
         <RestaurantInfo restaurant={restaurant} />
       </div>
-      <div className="w-full flex items-center my-5 border-t border-b border-gray-300">
+      {
+        withStars ?
+        <div className="w-full flex items-center my-5 border-t border-b border-gray-300">
         <div className="flex flex-row  mx-4">
           <FaStar className="text-yellow-300 w-6 h-6" />
           <FaStar className="text-yellow-300 w-6 h-6" />
@@ -39,7 +41,8 @@ export default function Header({ restaurant }: { restaurant: IRestaurant }) {
                     <span className="text-white text-xs">Aberto até 23h</span>
                     <MdExpandMore className="inline text-white w-6 h-6 ml-2" />
                 </div> */}
-      </div>
+      </div> : null
+      }
     </div>
   );
 }

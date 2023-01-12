@@ -7,7 +7,7 @@ import { BiRestaurant, BiSearch } from "react-icons/bi";
 import { useState } from "react";
 
 import Header from "../components/home/Header";
-import Product from "../components/home/Product";
+import Product from "../../src/components/home/product";
 
 import { api } from "../server/api";
 
@@ -20,6 +20,8 @@ import {
 import ProductHorizontalScrollList from "../components/ProductHorizontalScrollList";
 import { IRestaurant } from "../types/home";
 import axios from "axios";
+
+import { supabase } from "../server/api";
 
 interface DataProps {
   topProducts: productType[];
@@ -97,6 +99,10 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const additionals = await api.get("additionals");
   const ingredients = await api.get("ingredients");
   const restaurant = await api.get("restaurants/2");
+
+  const products = await supabase.from("products").select();
+
+  console.log(products.data);
 
   return {
     props: {

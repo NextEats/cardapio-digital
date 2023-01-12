@@ -11,13 +11,13 @@ export interface IAdditionalData {
   id: string;
   name: string;
   price: number;
-  picture: string;
+  picture_url: string;
 }
 
 export interface option {
   id: string;
   name: string;
-  picture: string;
+  picture_url: string;
   isSelected: boolean;
 }
 

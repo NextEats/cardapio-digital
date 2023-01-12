@@ -7,7 +7,7 @@ import { BiRestaurant, BiSearch } from "react-icons/bi";
 import { useState } from "react";
 
 import Header from "../components/home/Header";
-import Product from "../components/home/Product";
+import Product from "../../src/components/home/product";
 
 import { api } from "../server/api";
 

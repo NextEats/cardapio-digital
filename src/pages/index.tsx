@@ -1,5 +1,7 @@
 import { GetServerSideProps } from "next";
 
+import { supabase } from "../server/api";
+
 import Image from "next/image";
 import Link from "next/link";
 
@@ -8,8 +10,6 @@ import { useState } from "react";
 
 import Header from "../components/home/Header";
 import Product from "../../src/components/home/Product";
-
-import { supabase } from "../server/api";
 
 import {
   productType,

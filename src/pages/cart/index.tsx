@@ -26,7 +26,7 @@ export default function Posduct() {
   }, []);
 
   const [showModal, setShowModal] = useState<
-    "cep" | "number" | "payment" | "checkOut" | ""
+  "name" | "cep" | "number" | "payment" | "checkOut" | ""
   >("");
 
   return (
@@ -84,7 +84,7 @@ export default function Posduct() {
         </button>
         <button
           className="w-full h-10 flex items-center justify-center gap-2 bg-gray-700 rounded-md text-sm uppercase text-white-300 font-medium"
-          onClick={() => setShowModal("cep")}
+          onClick={() => setShowModal("name")}
         >
           <MdAttachMoney size={20} color="#F7F7F7" /> Fechar pedido
         </button>

@@ -15,11 +15,15 @@ import { FiMapPin } from "react-icons/fi";
 import { HiOutlineTicket } from "react-icons/hi";
 import { BsCurrencyDollar } from "react-icons/bs";
 
+import { api } from "../../../server/api";
+import axios from "axios";
+import { MdOutlineDeliveryDining } from "react-icons/md";
+
 interface IModalProps {
   setShowModal: Dispatch<
-    SetStateAction<"cep" | "number" | "payment" | "checkOut" | "">
+    SetStateAction<"name" | "cep" | "number" | "payment" | "checkOut" | "">
   >;
-  showModal: "cep" | "number" | "payment" | "checkOut" | "";
+  showModal: "name" | "cep" | "number" | "payment" | "checkOut" | "";
 }
 
 type IPaymentOtions =
@@ -31,6 +35,8 @@ type IPaymentOtions =
   | "VR Refeição"
   | "Sedexo refeição"
   | "ALELO REFEIÇÃO*";
+
+type IWithdrawalOptions =   "Mesa" | "Retirada no balcão" | "Entrega";
 
 interface IAddress {
   bairro: string;
@@ -55,21 +61,37 @@ const paymentOptions: IPaymentOtions[] = [
   "Sedexo refeição",
   "ALELO REFEIÇÃO*",
 ];
+const withdrawalOptions: IWithdrawalOptions[] = [
+  "Mesa",
+  "Retirada no balcão",
+  "Entrega",
+];
 
 export default function Modal({ setShowModal, showModal }: IModalProps) {
   const [number, setNumber] = useState("");
   const [complement, setComplement] = useState("");
-
   const [selectedPaymentValue, setSelectedPaymentValue] = useState("");
+  const [cep, setCep] = useState("");
+  const [cepError, setCepError] = useState(false);
+  const [address, setAddress] = useState<IAddress>();
+  const [name, setName] = useState<string>("");
+  const [withdrawalOption, setWithdrawalOption] = useState<string>("");
+
   function handlePaymentOption(value: string) {
     setSelectedPaymentValue(() => {
       return value;
     });
   }
 
-  const [cep, setCep] = useState("");
-  const [cepError, setCepError] = useState(false);
-  const [address, setAddress] = useState<IAddress>();
+  async function getAddressByCEP(cep: string) {
+    setCep(cep);
+    if (cep.length === 8) {
+      const getCep = await axios.get(`https://viacep.com.br/ws/${cep}/json/`);
+      setAddress(getCep.data);
+      if (getCep.data.erro) setCepError(true);
+      else setCepError(false);
+    }
+  }
 
   async function finalizeOrder() {
     await api.post("order", {
@@ -101,6 +123,46 @@ export default function Modal({ setShowModal, showModal }: IModalProps) {
           />
         </div>
         <div className="h-[calc(100%-66px)] flex flex-col justify-between">
+
+          {showModal === "name" && (
+            <fieldset className="flex flex-col ">
+              <label className="text-gray-700 font-bold text-base mb-1" htmlFor="name" >
+                Name
+              </label>
+              <input type="text"
+                className="w-full outline-none border mb-6 border-gray-500 h-10 px-2 rounded-md text-base font-medium"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                id="name"
+              />
+                   <div className="flex flex-col  gap-2">
+              <label className="text-gray-700 font-bold text-sm mb-1" htmlFor="name" >
+                Como Gostaria de retirar o pedido 
+              </label>
+                   {
+                      withdrawalOptions.map(item => {
+                       return <label key={item} className={`w-full h-8 flex items-center pl-5 gap-2 border-2 border-gray-700 rounded-md ${
+                          item === withdrawalOption && "bg-gray-700"
+                        } `} >
+                        <input 
+                          type="radio" value={item} hidden 
+                          checked={selectedPaymentValue === item}
+                          onChange={(e) => setWithdrawalOption(e.target.value)}
+                        />
+                        <div className="flex items-center justify-center gap-4 text-sm text-black font-medium">
+                          <span className={`${ item === withdrawalOption ? "text-white" : "text-gray-700"} font-normal`} >
+                             {item} 
+                          </span>
+                        </div>
+                      </label>
+                      } )
+                    }
+                   </div>
+
+              
+            </fieldset>
+          )}
+
           {showModal === "cep" && (
             <fieldset className="flex flex-col ">
               <label
@@ -304,7 +366,7 @@ export default function Modal({ setShowModal, showModal }: IModalProps) {
                     </span>
                   </div>
                 </div>
-                <div className="flex gap-3">
+                <div className="flex gap-3 mb-5">
                   <div className="w-7 h-7 rounded-full bg-yellow-500 flex items-center justify-center ">
                     <BsCurrencyDollar className="w-4 h-4" color="#FFFFFF" />
                   </div>
@@ -315,13 +377,32 @@ export default function Modal({ setShowModal, showModal }: IModalProps) {
                     <span> {selectedPaymentValue} </span>
                   </div>
                 </div>
+                <div className="flex gap-3">
+                  <div className="w-7 h-7 rounded-full bg-blue-500 flex items-center justify-center ">
+                    <MdOutlineDeliveryDining className="w-4 h-4" color="#FFFFFF" />
+                  </div>
+                  <div className="flex flex-col flex-1">
+                    <h2 className="text-xl font-bold text-gray-700">
+                      Forma de retirada
+                    </h2>
+                    <span> {withdrawalOption} </span>
+                  </div>
+                </div>
               </div>
             </div>
           )}
 
+          {showModal === "name" && (
+            <Button
+              data={{ cep, cepError, number, selectedPaymentValue, name, withdrawalOption }}
+              name="Próximo"
+              route="cep"
+              setShowModal={setShowModal}
+            />
+          )}
           {showModal === "cep" && (
             <Button
-              data={{ cep, cepError, number, selectedPaymentValue }}
+              data={{ cep, cepError, number, selectedPaymentValue, name, withdrawalOption }}
               name="Próximo"
               route="number"
               setShowModal={setShowModal}
@@ -329,7 +410,7 @@ export default function Modal({ setShowModal, showModal }: IModalProps) {
           )}
           {showModal === "number" && (
             <Button
-              data={{ cep, cepError, number, selectedPaymentValue }}
+              data={{ cep, cepError, number, selectedPaymentValue, name, withdrawalOption }}
               name="Próximo"
               route="payment"
               setShowModal={setShowModal}
@@ -337,7 +418,7 @@ export default function Modal({ setShowModal, showModal }: IModalProps) {
           )}
           {showModal === "payment" && (
             <Button
-              data={{ cep, cepError, number, selectedPaymentValue }}
+              data={{ cep, cepError, number, selectedPaymentValue, name, withdrawalOption }}
               name="Próximo"
               route="checkOut"
               setShowModal={setShowModal}
@@ -359,15 +440,17 @@ export default function Modal({ setShowModal, showModal }: IModalProps) {
 
 interface IButtonProps {
   setShowModal: Dispatch<
-    SetStateAction<"cep" | "number" | "payment" | "checkOut" | "">
+    SetStateAction< "name" | "cep" | "number" | "payment" | "checkOut" | "">
   >;
-  route: "cep" | "number" | "payment" | "checkOut" | "";
+  route: "name" | "cep" | "number" | "payment" | "checkOut" | "";
   name: string;
   data: {
     selectedPaymentValue: string;
     cep: string;
     number: string;
     cepError: boolean;
+    name: string;
+    withdrawalOption: string;
   };
 }
 
@@ -377,13 +460,15 @@ function Button({ name, route, data, setShowModal }: IButtonProps) {
       className="w-full h-10 flex items-center justify-center gap-2 border-2 disabled:cursor-not-allowed border-black rounded-md text-sm uppercase text-gray-600 font-medium"
       onClick={() => setShowModal(route)}
       disabled={
-        route == "number"
-          ? data.cep.length < 8 || data.cepError
-          : route == "payment"
-          ? data.number.length == 0
-          : route == "checkOut"
-          ? data.selectedPaymentValue.length == 0
-          : false
+        route === "cep" 
+        ? data.name.length == 0 || data.withdrawalOption == "" 
+        : route == "number"
+        ? data.cep.length < 8 || data.cepError
+        : route == "payment"
+        ? data.number.length == 0
+        : route == "checkOut"
+        ? data.selectedPaymentValue.length == 0
+        : false
       }
     >
       {name}

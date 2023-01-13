@@ -3,6 +3,7 @@ import { createContext, ReactNode, useState } from "react"
 import { supabase } from "../../server/api";
 import { IRestaurant } from "../../types/home";
 
+
 interface IRestaurantContext {
     // restaurant: IRestaurant[]
   }

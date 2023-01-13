@@ -22,7 +22,7 @@ export default function AdminWrapper({ children }: { children: JSX.Element }) {
   }, [windowSize]);
 
   return (
-    <div className="fixed ">
+    <div className="fixed bg-white-200">
       <Navbar toogleSidebar={() => changeSidebarState(!isSidebarOpenState)} />
       <Sidebar isSidebarOpen={isSidebarOpenState} />
       <div

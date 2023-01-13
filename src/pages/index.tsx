@@ -7,7 +7,7 @@ import { BiRestaurant, BiSearch } from "react-icons/bi";
 import { useState } from "react";
 
 import Header from "../components/home/Header";
-import Product from "../components/home/Product";
+import Product from "../../src/components/home/Product";
 
 import { supabase } from "../server/api";
 
@@ -20,14 +20,14 @@ import {
 import ProductHorizontalScrollList from "../components/ProductHorizontalScrollList";
 import { IRestaurant } from "../types/home";
 interface DataProps {
-  topProducts: productType[];
+  products: productType[];
   additionals: IAdditionalData[];
   ingredients: IIngredientOptionsData[];
   restaurant: IRestaurant;
 }
 
 export default function HomePage({
-  topProducts,
+  products,
   additionals,
   ingredients,
   restaurant,
@@ -71,14 +71,14 @@ export default function HomePage({
 
             <h5 className="pl-4 text-xl mt-7 font-bold text-gray-700">
               Destaques
+              <ProductHorizontalScrollList
+                products={products}
+                openProductModal={(productData: productType) => {
+                  setCurrentProduct(productData);
+                  setShowProduct(true);
+                }}
+              />
             </h5>
-            {/* <ProductHorizontalScrollList
-              products={topProducts}
-              openProductModal={(productData: productType) => {
-                setShowProduct(true);
-                setCurrentProduct(productData);
-              }}
-            /> */}
           </div>
         </div>
       </div>
@@ -91,8 +91,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const additionals = await supabase.from("additionals").select();
   const ingredients = await supabase.from("ingredients").select();
   const restaurant = await supabase.from("restaurants").select().eq("id", 0);
-
-  console.log("restaurant");
 
   return {
     props: {

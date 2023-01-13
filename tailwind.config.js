@@ -21,7 +21,10 @@ module.exports = {
         sm: "0px 0px 2px rgba(0, 0, 0, 0.25);"
       },
       colors: {
+
+        white: "#FFFFFF",
         "white-300": "#F7F7F7",
+        "white-200": "##F7F8FC",
 
         "purple-500": "#8047F8",
 
@@ -29,6 +32,9 @@ module.exports = {
         
         "yellow-400": "#F7C443",
         "yellow-500": "#C47F17",
+        
+        "red-400": "#FF371C",
+        
         
         "gray-300": "#E2E2E2",
         "gray-400": "#838383",

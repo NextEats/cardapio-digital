@@ -22,7 +22,7 @@ export default function AdminWrapper({ children }: { children: JSX.Element }) {
   }, [windowSize]);
 
   return (
-    <div className="fixed ">
+    <div className="fixed bg-white-200">
       <Navbar toogleSidebar={() => changeSidebarState(!isSidebarOpenState)} />
       <Sidebar isSidebarOpen={isSidebarOpenState} />
       <div
@@ -67,7 +67,7 @@ function Sidebar({ isSidebarOpen }: { isSidebarOpen: boolean }) {
 
   return (
     <div
-      className={`select-none bg-gray-800 w-64 h-screen absolute transition-[left] duration-500 ease-in-out ${
+      className={`select-none bg-gray-800 w-60 h-screen absolute transition-[left] duration-500 ease-in-out ${
         isSidebarOpen ? "left-0" : "-left-64"
       }`}
     >

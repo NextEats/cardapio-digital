@@ -1,13 +1,18 @@
 import { GetServerSideProps } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useState } from "react";                   
+import { useForm } from "react-hook-form";
+import * as zod from 'zod'
+import { zodResolver } from '@hookform/resolvers/zod'
+
+import { api } from "../../server/api";
+import Header from "../../components/home/Header";
+
 import { AiOutlineClose, AiOutlineEye, AiOutlineEyeInvisible, AiOutlineUser } from "react-icons/ai";
 import { TbLock  } from "react-icons/tb";
 import { FcGoogle } from "react-icons/fc";
 import { BsFacebook } from "react-icons/bs";
-import Header from "../../components/home/Header";
-import { api } from "../../server/api";
 import { IRestaurant } from "../../types/home";
 import { FaRegEnvelope } from "react-icons/fa";
 
@@ -15,11 +20,38 @@ interface IFinishedProps {
     restaurant: IRestaurant
 }
 
+const newUserFormValidationSchema = zod.object({
+    name: zod.string().min(1, 'Informe a tarefa').optional(),
+    email: zod.string(),
+    password: zod.string().min(8, 'Sua senha deve ter no minimo 8 caracteres')
+  })
+
+  type NewUserFormData = zod.infer<typeof newUserFormValidationSchema>
+
 export default function Finished({ restaurant }: IFinishedProps) {
 
     const [account, setAccount] = useState<"login" | "register" | "">("")
     const [showPassword, setShowPassword] = useState(false)
 
+    const { register, handleSubmit, reset } = useForm<NewUserFormData>({
+        resolver: zodResolver(newUserFormValidationSchema),
+        defaultValues: {
+            name: '',
+            email: '',
+            password: '',
+        }
+    })
+
+    function handleCreateNewUser(data: NewUserFormData) {
+        console.log(data)
+        reset()
+    }
+    
+    function handleLogin(data: NewUserFormData) {
+        console.log(data)
+        reset()
+    }
+    
     return (
         <>
             {/* //   Modal    */}
@@ -35,6 +67,7 @@ export default function Finished({ restaurant }: IFinishedProps) {
                             />
                         </div>
 
+                        {/*  Logo  */}
                         <Image
                             className="mt-6 mb-2"
                             src={"https://i.ibb.co/FgPk06Q/Next-Eats-1000-500-px-1-1.png"}
@@ -42,26 +75,32 @@ export default function Finished({ restaurant }: IFinishedProps) {
                             width={236}
                             height={55}
                         />
+
                         <div className="flex items-center justify-center gap-2 mb-8">
                             <div className="w-11 h-[1.2px] bg-gray-500"></div>
-                            <span className="font-extrabold text-base text-gray-600">Criar uma conta</span>
+                            <span className="font-extrabold text-base text-gray-600">
+                                { account === "register" ?  "Criar uma conta" : "Acesse sua conta" }
+                            </span>
                             <div className="w-11 h-[1.2px] bg-gray-500"></div>
                         </div>
 
-                        <form action="">
+                        <form onSubmit={account === "register" ? handleSubmit(handleCreateNewUser) : handleSubmit(handleLogin)}
+                        >
 
-                            <div className="flex products-center gap-2 mb-4 p-2 border rounded-md bg-white items-center">
+                            { account === "register" ? <div className="flex products-center gap-2 mb-4 p-2 border rounded-md bg-white items-center">
                                 <AiOutlineUser className="w-6 h-6 text-gray-500" />
                                 <input type="text"
                                     className="w-full outline-none px-2 rounded placeholder:italic text-base font-normal"
                                     placeholder="Seu nome"
+                                    { ...register('name') }
                                 />
-                            </div>
+                            </div> : null}
                             <div className="flex products-center gap-2 mb-4 p-2 border rounded-md bg-white items-center">
                                 <FaRegEnvelope className="w-6 h-6 text-gray-500" />
                                 <input type="email"
                                     className="w-full outline-none px-2 rounded placeholder:italic text-base font-normal"
                                     placeholder="E-mail..."
+                                    { ...register('email') }
                                 />
                             </div>
                             <div className="flex products-center gap-2 my-4 p-2 border rounded-md bg-white items-center">
@@ -69,9 +108,9 @@ export default function Finished({ restaurant }: IFinishedProps) {
                                 <input type={showPassword ? "text" : "password"}
                                     className="w-full outline-none px-2 rounded placeholder:italic text-base font-normal"
                                     placeholder="Senha..."
+                                    { ...register('password') }
                                 />
-                                { showPassword ? <AiOutlineEye 
-                                className="w-6 h-6 text-gray-500 cursor-pointer"
+                                { showPassword ? <AiOutlineEye className="w-6 h-6 text-gray-500 cursor-pointer"
                                 onClick={() => setShowPassword(false)}
                                 /> :
                                 <AiOutlineEyeInvisible
@@ -92,17 +131,18 @@ export default function Finished({ restaurant }: IFinishedProps) {
                             <button
                                 type="submit"
                                 className="w-full h-10 flex items-center justify-center gap-2 mb-6 border bg-red-500 rounded text-sm uppercase text-white font-medium"
-                            > cadastrar </button>
+                            > { account === "register" ?  "cadastrar" : "Entrar" }</button>
                         </form>
 
+                        {/* // Social medias */}
                         <div className="flex items-center justify-center gap-2 mb-2">
                             <div className="w-8 h-[1.2px] bg-gray-500"></div>
                             <span className="font-light w-[170px] text-[11px] italic text-gray-600">Ou faça login com suas redes sociais</span>
                             <div className="w-8 h-[1.2px] bg-gray-500"></div>
                         </div>
                         <div className="flex item-center justify-center gap-3">
-                            <BsFacebook className="text-blue-600 w-8 h-8" />
-                            <FcGoogle className=" w-8 h-8" />
+                            <BsFacebook className="text-blue-600 w-8 h-8 cursor-pointer" />
+                            <FcGoogle className=" w-8 h-8 cursor-pointer" />
                         </div>
                     </div>
                 </div>

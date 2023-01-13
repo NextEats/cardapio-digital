@@ -2,8 +2,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
-import { api } from "../../server/api";
-
 import { BsArrowLeftCircle } from "react-icons/bs";
 import { AiOutlinePlus, AiOutlinePlusCircle } from "react-icons/ai";
 import { MdAttachMoney } from "react-icons/md";

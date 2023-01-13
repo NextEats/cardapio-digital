@@ -14,8 +14,6 @@ import { FaRegMoneyBillAlt } from "react-icons/fa";
 import { FiMapPin } from "react-icons/fi";
 import { HiOutlineTicket } from "react-icons/hi";
 import { BsCurrencyDollar } from "react-icons/bs";
-import { api } from "../../../server/api";
-import axios from "axios";
 
 interface IModalProps {
   setShowModal: Dispatch<
@@ -72,15 +70,6 @@ export default function Modal({ setShowModal, showModal }: IModalProps) {
   const [cep, setCep] = useState("");
   const [cepError, setCepError] = useState(false);
   const [address, setAddress] = useState<IAddress>();
-  async function getAddressByCEP(cep: string) {
-    setCep(cep);
-    if (cep.length === 8) {
-      const getCep = await axios.get(`https://viacep.com.br/ws/${cep}/json/`);
-      setAddress(getCep.data);
-      if (getCep.data.erro) setCepError(true);
-      else setCepError(false);
-    }
-  }
 
   async function finalizeOrder() {
     await api.post("order", {

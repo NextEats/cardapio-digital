@@ -14,6 +14,7 @@ import { FaRegMoneyBillAlt } from "react-icons/fa";
 import { FiMapPin } from "react-icons/fi";
 import { HiOutlineTicket } from "react-icons/hi";
 import { BsCurrencyDollar } from "react-icons/bs";
+
 import { api } from "../../../server/api";
 import axios from "axios";
 import { MdOutlineDeliveryDining } from "react-icons/md";

@@ -1,5 +1,7 @@
 import { GetServerSideProps } from "next";
 
+import { supabase } from "../server/api";
+
 import Image from "next/image";
 import Link from "next/link";
 
@@ -7,9 +9,7 @@ import { BiRestaurant, BiSearch } from "react-icons/bi";
 import { useState } from "react";
 
 import Header from "../components/home/Header";
-import Product from "../../src/components/home/product";
-
-import { api } from "../server/api";
+import Product from "../../src/components/home/Product";
 
 import {
   productType,
@@ -19,29 +19,21 @@ import {
 
 import ProductHorizontalScrollList from "../components/ProductHorizontalScrollList";
 import { IRestaurant } from "../types/home";
-import axios from "axios";
-
-import { supabase } from "../server/api";
-
 interface DataProps {
-  topProducts: productType[];
+  products: productType[];
   additionals: IAdditionalData[];
   ingredients: IIngredientOptionsData[];
   restaurant: IRestaurant;
 }
 
 export default function HomePage({
-  topProducts,
+  products,
   additionals,
   ingredients,
   restaurant,
 }: DataProps) {
   const [showProduct, setShowProduct] = useState(true);
   const [currentProduct, setCurrentProduct] = useState<productType>();
-
-  // console.log("topProducts", topProducts);
-  // console.log("additionals", additionals);
-  // console.log("ingredients", ingredients);
 
   return (
     <div>
@@ -79,14 +71,14 @@ export default function HomePage({
 
             <h5 className="pl-4 text-xl mt-7 font-bold text-gray-700">
               Destaques
+              <ProductHorizontalScrollList
+                products={products}
+                openProductModal={(productData: productType) => {
+                  setCurrentProduct(productData);
+                  setShowProduct(true);
+                }}
+              />
             </h5>
-            <ProductHorizontalScrollList
-              products={topProducts}
-              openProductModal={(productData: productType) => {
-                setShowProduct(true);
-                setCurrentProduct(productData);
-              }}
-            />
           </div>
         </div>
       </div>
@@ -95,21 +87,17 @@ export default function HomePage({
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const topProducts = await api.get("topProducts");
-  const additionals = await api.get("additionals");
-  const ingredients = await api.get("ingredients");
-  const restaurant = await api.get("restaurants/2");
-
   const products = await supabase.from("products").select();
-
-  console.log(products.data);
+  const additionals = await supabase.from("additionals").select();
+  const ingredients = await supabase.from("ingredients").select();
+  const restaurant = await supabase.from("restaurants").select().eq("id", 0);
 
   return {
     props: {
-      topProducts: topProducts.data,
+      products: products.data,
       additionals: additionals.data,
       ingredients: ingredients.data,
-      restaurant: restaurant.data,
+      restaurant: restaurant,
     },
   };
 };

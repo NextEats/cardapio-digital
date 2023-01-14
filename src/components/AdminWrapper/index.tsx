@@ -26,7 +26,7 @@ export default function AdminWrapper({ children }: { children: JSX.Element }) {
       <Navbar toogleSidebar={() => changeSidebarState(!isSidebarOpenState)} />
       <Sidebar isSidebarOpen={isSidebarOpenState} />
       <div
-        className={`absolute transition-[left] duration-500 ease-in-out p-5 ${
+        className={`absolute transition-[left] h-screen overflow-auto duration-500 ease-in-out p-5 ${
           isSidebarOpenState ? "left-64" : "left-0"
         }`}
       >

@@ -6,7 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { BiRestaurant, BiSearch } from "react-icons/bi";
-import { useState } from "react";
+import { useContext, useState } from "react";
 
 import Header from "../components/home/Header";
 import Product from "../../src/components/home/Product";
@@ -19,24 +19,29 @@ import {
 
 import ProductHorizontalScrollList from "../components/ProductHorizontalScrollList";
 import { IRestaurant } from "../types/home";
+import Head from "next/head";
+import RestaurantContext from "../contexts/RestaurantContext";
 interface DataProps {
   products: productType[];
   additionals: IAdditionalData[];
   ingredients: IIngredientOptionsData[];
-  restaurant: IRestaurant;
 }
 
 export default function HomePage({
   products,
   additionals,
   ingredients,
-  restaurant,
 }: DataProps) {
+  const restaurant: IRestaurant = useContext(RestaurantContext);
+
   const [showProduct, setShowProduct] = useState(true);
   const [currentProduct, setCurrentProduct] = useState<productType>();
 
   return (
     <div>
+      <Head>
+        <title>{restaurant.name}</title>
+      </Head>
       <Product
         setShowProduct={setShowProduct}
         showProduct={showProduct}
@@ -46,17 +51,18 @@ export default function HomePage({
       />
       <div className="bg-[#222] flex justify-center min-h-screen min-w-screen">
         <div className="bg-gray-100 max-w-7xl w-full">
-          <div className="w-full  ">
+          <div className="w-full">
             <Image
-              className="w-full max-h-60"
+              className="w-full max-h-60 lg:hidden"
               src="https://i.ibb.co/1sZhKFg/backgfroundheader.png"
               alt="backgfroundheader"
-              width={600}
+              width={1200}
               height={600}
             />
           </div>
           <div>
             <Header restaurant={restaurant} withStars />
+            {JSON.stringify(restaurant)}
 
             <hr className="border border-solid mt-6" />
 
@@ -85,19 +91,3 @@ export default function HomePage({
     </div>
   );
 }
-
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  const products = await supabase.from("products").select();
-  const additionals = await supabase.from("additionals").select();
-  const ingredients = await supabase.from("ingredients").select();
-  const restaurant = await supabase.from("restaurants").select().eq("id", 0);
-
-  return {
-    props: {
-      products: products.data,
-      additionals: additionals.data,
-      ingredients: ingredients.data,
-      restaurant: restaurant,
-    },
-  };
-};

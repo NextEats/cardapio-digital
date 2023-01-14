@@ -6,6 +6,7 @@ import { BsArrowLeftCircle } from "react-icons/bs";
 import { AiOutlinePlus, AiOutlinePlusCircle } from "react-icons/ai";
 import { MdAttachMoney } from "react-icons/md";
 import Modal from "../../components/cart/modal";
+import ModalChatGPT from "../../components/cart/ModalChatGPT";
 
 interface IChosenItems {
   picture_url: string;
@@ -14,20 +15,14 @@ interface IChosenItems {
   price: number;
 }
 
-export default function Posduct() {
+export default function Product() {
+  const [isModalOpen, setIsModalOpen] = useState(true);
+
   const [chosenItems, setChosenItems] = useState<IChosenItems[]>([]);
-  async function getChosenItems() {
-    const chosenItemsData = await api.get("cart");
-    setChosenItems(chosenItemsData.data);
-  }
-
-  useEffect(() => {
-    getChosenItems();
-  }, []);
-
-  const [showModal, setShowModal] = useState<
-  "name" | "cep" | "number" | "payment" | "checkOut" | ""
-  >("");
+  //   async function getChosenItems() {
+  //     const chosenItemsData = await api.get("cart");
+  //     setChosenItems(chosenItemsData.data);
+  //   }
 
   return (
     <div className="px-4 pb-8">
@@ -36,8 +31,7 @@ export default function Posduct() {
           <BsArrowLeftCircle className="my-8 cursor-pointer" size={30} />
         </Link>
         <h1 className=" w-full text-center font-extrabold text-xl text-gray-800">
-          {" "}
-          Carrinho{" "}
+          &nbsp; Carrinho&nbsp;
         </h1>
       </div>
       <div>
@@ -63,7 +57,7 @@ export default function Posduct() {
                 </div>
                 <span className="text-sm">{item.description}</span>
                 <span className="text-normal font-semibold mt-2 before:content-['R$']">
-                  {" "}
+                  &nbsp;
                   {item.price}
                 </span>
               </div>
@@ -72,8 +66,11 @@ export default function Posduct() {
         })}
       </div>
 
-      {showModal !== "" && (
-        <Modal setShowModal={setShowModal} showModal={showModal} />
+      {isModalOpen && (
+        <ModalChatGPT
+          isModalOpen={isModalOpen}
+          setIsModalOpen={setIsModalOpen}
+        />
       )}
 
       <div className="w-full absolute bottom-0 left-0 px-4 pb-8 pt-4 bg-white ">
@@ -84,7 +81,7 @@ export default function Posduct() {
         </button>
         <button
           className="w-full h-10 flex items-center justify-center gap-2 bg-gray-700 rounded-md text-sm uppercase text-white-300 font-medium"
-          onClick={() => setShowModal("name")}
+          onClick={() => setIsModalOpen(true)}
         >
           <MdAttachMoney size={20} color="#F7F7F7" /> Fechar pedido
         </button>

@@ -7,7 +7,7 @@ import { Dispatch, SetStateAction } from "react";
 export const RestaurantContext = createContext({} as IRestaurantContext);
 
 interface IRestaurantContext {
-  restaurant: IRestaurant | null;
+  // restaurant: IRestaurant | null;
 }
 
 interface RestaurantContextProviderProps {
@@ -19,7 +19,7 @@ interface IRestaurantDataReq {
 }
 
 async function getRestaurants() {
-  const { data } = await supabase.from("restaurants").select().eq("id", 3);
+  const { data } = await supabase.from("restaurants").select().eq("id", 3, );
 
   if (!data) {
     return;
@@ -45,7 +45,7 @@ export default function RestaurantContextProvider({
   return (
     <RestaurantContext.Provider
       value={{
-        restaurant,
+        // restaurant,
       }}
     >
       {children}

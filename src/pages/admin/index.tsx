@@ -1,7 +1,7 @@
 import { Card } from "../../components/admin/Card";
 import NewRequests from "../../components/admin/NewRequests";
 import OrderStatusCard from "../../components/admin/OrderStatusCard";
-import AdminWrapper from "../../components/AdminWrapper";
+import AdminWrapper from "../../components/admin/AdminWrapper";
 
 export default function AdminHomepage() {
   return (

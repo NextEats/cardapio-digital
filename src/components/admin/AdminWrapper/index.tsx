@@ -5,7 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/router";
 
-import useWindowSize, { Size } from "../../hooks/WindowResize";
+import useWindowSize, { Size } from "../../../hooks/WindowResize";
 
 export default function AdminWrapper({ children }: { children: JSX.Element }) {
   const [isSidebarOpenState, changeSidebarState] = useState<true | false>(true);

@@ -1,4 +1,3 @@
-import { GetServerSideProps } from "next";
 import { createContext, ReactNode, useMemo, useState } from "react";
 import { supabase } from "../server/api";
 import { IRestaurant } from "../types/home";
@@ -12,10 +11,6 @@ interface IRestaurantContext {
 
 interface RestaurantContextProviderProps {
   children: ReactNode;
-}
-
-interface IRestaurantDataReq {
-  data: IRestaurant[];
 }
 
 async function getRestaurants() {
@@ -32,6 +27,7 @@ export default function RestaurantContextProvider({
   children,
 }: RestaurantContextProviderProps) {
   const [restaurant, setRestaurant] = useState<IRestaurant>();
+
 
   useMemo(() => {
     getRestaurants().then((res) => {

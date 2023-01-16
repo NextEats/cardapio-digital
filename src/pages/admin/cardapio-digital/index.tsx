@@ -4,6 +4,7 @@ import Categories from "../../../components/admin/Categories";
 import MenuProduct from "../../../components/admin/MenuProduct";
 import Image from "next/image";
 import { AiOutlinePlus } from "react-icons/ai";
+import EditableMenuProductCard from "../../../components/admin/EditableMenuProductCard";
 
 type IngredientData = {
   id: number;
@@ -84,15 +85,7 @@ export default function AdminHomepage() {
           <MenuProduct />
 
         </div>
-        <div className="w-[360px] fixed right-0 top-16 bg-white shadow-md rounded-md h-[calc(100vh-64px)] p-4 2md:sticky 2md:h-auto">
-          <Image
-            className="rounded-tl-md rounded-bl-md w-full"
-            src="https://i.ibb.co/8KnTRXt/pao.png"
-            alt=""
-            width={40}
-            height={40}
-          />
-        </div>
+        <EditableMenuProductCard />
       </div>
     </AdminWrapper>
   );

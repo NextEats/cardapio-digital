@@ -5,11 +5,14 @@ import { useKeenSlider } from "keen-slider/react";
 
 import Image from "next/image";
 
+import { Database }  from "./../../types/supabase"
+
+
 export default function ProductHorizontalScrollList({
   products,
   openProductModal,
 }: {
-  products: productType[];
+  products: Array<Database['public']['Tables']['additionals']['Row']>;
   openProductModal: Function;
 }) {
   const [sliderRef] = useKeenSlider<HTMLDivElement>(
@@ -41,7 +44,7 @@ export default function ProductHorizontalScrollList({
     autoPlaySlider()
   );
 
-  function ProductItem({ productData }: { productData: productType }) {
+  function ProductItem({ productData }: { productData: Database['public']['Tables']['additionals']['Row'] }) {
     return (
       <div
         onClick={() => openProductModal(productData)}
@@ -71,7 +74,7 @@ export default function ProductHorizontalScrollList({
   return (
     <div className="p-4">
       <div ref={sliderRef} className="keen-slider">
-        {products.map((product: productType, index) => {
+        {products.map((product, index) => {
           return (
             <div className="keen-slider__slide" key={index}>
               <ProductItem productData={product} />

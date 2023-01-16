@@ -1,29 +1,36 @@
 
 export interface IEditableProductReducerData {
 
-    name: string,
-    description: string,
-    price: string,
-    isEditingName: boolean,
-    isEditingPrice: boolean,
+    productInformation: {
+        name: string,
+        description: string,
+        price: string,
+    }
+    isEditingInfo: boolean,
+    picture_url: string,
+    isEditingPicture: boolean,
 }
 
 export function editableProductReducer(state: IEditableProductReducerData, action: any) {
     switch (action.type) {
-        case "ADD_PRODUCT_NAME":
-            return { ...state, name: action.payload.name }
-            break
-        case "ADD_PRODUCT_DESCRIPTION":
-            return { ...state, description: action.payload.description }
-            break
-        case "ADD_PRODUCT_PRICE":
-            return { ...state, price: action.payload.price } 
-            break
         case "IS_EDITING_INFORMATION":
-            return { ...state, isEditingName: action.payload.isEditingName }
+            return { ...state, isEditingInfo: action.payload.isEditingInfo }
             break
-        case "IS_EDITING_PRICE":
-            return { ...state, isEditingPrice: action.payload.isEditingPrice }
+        case "ADD_PRODUCT_INFORMATION":
+            return { 
+                ...state,
+                productInformation: {
+                    name: action.payload.name,
+                    description: action.payload.description,
+                    price: action.payload.price,
+                } }
+            break
+        case "IS_EDITING_PICTURE":
+            return { ...state, isEditingPicture: action.payload.isEditingPicture }
+            break
+        case "SET_PICTURE_URL":
+            console.log("ddd" + action.payload.picture_url)
+            return { ...state, picture_url: action.payload.picture_url }
             break
         default:
             return state

@@ -9,11 +9,14 @@ import { format } from "date-fns";
 import RestaurantLocation from "./RestaurantLocation";
 import { RestaurantContext } from "../../../contexts/RestaurantContext";
 
-export default function Header({ withStars }: { withStars: boolean }) {
-  const restaurant = useContext(RestaurantContext);
+import { iRestaurant } from "../../../types/types";
 
-  console.log("restaurant header:", restaurant);
+interface iHeader {
+  withStars: boolean;
+  restaurant: iRestaurant['data'];
+}
 
+export default function Header({ withStars, restaurant }: iHeader) {
   return (
     <div className="">
       <div className="flex flex-row items-center px-4 pt-4">

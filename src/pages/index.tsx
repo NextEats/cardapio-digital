@@ -1,51 +1,77 @@
-import { GetServerSideProps } from "next";
-
-import { supabase } from "../server/api";
-
-import Image from "next/image";
-import Link from "next/link";
-
-import { BiRestaurant, BiSearch } from "react-icons/bi";
 import { useContext, useState } from "react";
 
-import Header from "../components/home/Header";
-import Product from "../../src/components/home/Product";
-
-import {
-  productType,
-  IIngredientOptionsData,
-  IAdditionalData,
-} from "../types/product";
-
-import ProductHorizontalScrollList from "../components/ProductHorizontalScrollList";
-import { IRestaurant } from "../types/home";
+// NEXT JS IMPORTS
+import { GetServerSideProps } from "next";
+import Image from "next/image";
+import Link from "next/link";
 import Head from "next/head";
-import RestaurantContext from "../contexts/RestaurantContext";
-interface DataProps {
-  products: productType[];
-  additionals: IAdditionalData[];
-  ingredients: IIngredientOptionsData[];
+
+// REACT ICONS
+import { BiRestaurant, BiSearch } from "react-icons/bi";
+
+// COMPONENTS
+import Header from "../components/home/Header";
+import ProductModal from "../components/home/ProductModal";
+import ProductHorizontalScrollList from "../components/ProductHorizontalScrollList";
+
+// DATABASE
+import { supabase } from "../server/api";
+
+// TYPES
+import { iProduct, iProducts, iIngredients, iRestaurants, iRestaurant, iAdditionals }  from "./../types/types"
+
+// HOMEPAGE TYPESCRIPT INTERFACE
+interface iDataHomepage {
+  data: {
+    restaurants: iRestaurants;
+    ingredients: iIngredients;
+    additionals: iAdditionals;
+    products: iProducts;
+  }
 }
 
-export default function HomePage({
-  products,
-  additionals,
-  ingredients,
-}: DataProps) {
-  const restaurant: IRestaurant = useContext(RestaurantContext);
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  // FETCH DATA FROM DATABASE
+  const restaurants = await supabase.from("restaurants").select().eq("id", 3);
+  const ingredients = await supabase.from("ingredients").select();
+  const additionals = await supabase.from("additionals").select();
+  const products = await supabase.from("products").select();
 
+  // PASS DATA TO PAGE
+  return {
+    props: {
+      data: {
+        restaurants: restaurants,
+        ingredients: ingredients,
+        additionals: additionals,
+        products: products,
+      },
+    },
+  };
+};
+
+export default function HomePage({data}:iDataHomepage) {
+  // GETS DATA FROM SERVER SIDE PROPS
+  const {restaurants, ingredients, additionals, products} = data;
+  const restaurant = restaurants.data[0] as unknown as iRestaurant['data'];
+
+  // STATES
   const [showProduct, setShowProduct] = useState(true);
-  const [currentProduct, setCurrentProduct] = useState<productType>();
+  const [currentProduct, setCurrentProduct] = useState<iProduct>();
+
 
   return (
     <div>
       <Head>
         <title>{restaurant.name}</title>
+        <link href={restaurant.picture_url}           
+        rel="icon"
+          sizes="any"/>
       </Head>
-      <Product
+      <ProductModal
         setShowProduct={setShowProduct}
         showProduct={showProduct}
-        currentProduct={currentProduct}
+        currentProduct={undefined}
         ingredients={ingredients}
         additionals={additionals}
       />
@@ -62,7 +88,6 @@ export default function HomePage({
           </div>
           <div>
             <Header restaurant={restaurant} withStars />
-            {JSON.stringify(restaurant)}
 
             <hr className="border border-solid mt-6" />
 
@@ -74,7 +99,7 @@ export default function HomePage({
                 className="flex flex-1 bg-transparent outline-0"
               />
             </div>
-
+{/* 
             <h5 className="pl-4 text-xl mt-7 font-bold text-gray-700">
               Destaques
               <ProductHorizontalScrollList
@@ -84,7 +109,7 @@ export default function HomePage({
                   setShowProduct(true);
                 }}
               />
-            </h5>
+            </h5> */}
           </div>
         </div>
       </div>

@@ -18,7 +18,7 @@ export interface option {
   id: string;
   name: string;
   picture_url: string;
-  isSelected: boolean;
+  isSelected?: boolean;
 }
 
 export interface IIngredientOptionsData {

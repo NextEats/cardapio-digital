@@ -25,7 +25,7 @@ function CategoriesNavbar() {
     "mr-3 px-12 py-3 rounded-lg border-2 text-md font-semibold bg-gray-100 hover:bg-gray-200";
 
   return (
-    <div className="sticky pl-3 py-2 left-0 top-0 mt-3 whitespace-nowrap overflow-auto bg-gray-700 z-20">
+    <div className="sticky pl-3 py-2 left-0 top-0 mt-3 whitespace-nowrap overflow-auto bg-gray-700 z-20 touch-auto">
       <button className={buttonClasses} onClick={() => scrollTo("Promoção")}>
         Promoção
       </button>

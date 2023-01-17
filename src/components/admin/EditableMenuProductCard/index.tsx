@@ -1,19 +1,36 @@
 import { useReducer } from "react";
 import { editableProductReducer } from "../../../reducers/aditableProduct/reducer";
 import HeadersCard from "./HeadersCard";
+import { Igredient } from "./Ingredient/inedx";
 
 
 export default function EditableMenuProductCard() {
 
     const [state, dispatch] = useReducer(editableProductReducer, {
+        isEditingInfo: true,
+        isEditingPicture: true,
+        picture_url: '',
         productInformation: {
             name: '',
             description: '',
             price: '',
         },
-        isEditingInfo: true,
-        picture_url: '',
-        isEditingPicture: true,
+        //INGREDIENT
+        ingredients: [
+            {   
+                id: '',
+                name: '',
+                options: [
+                    {
+                        id: '',
+                        name: '',
+                        picture_url: '',
+                    }
+                ],
+            }
+        ],
+        isEditingIngradientName: true,
+        isAddingIngradientOption: false,
     });
 
     return (
@@ -24,6 +41,7 @@ export default function EditableMenuProductCard() {
           ></div> */}
 
             <HeadersCard state={state} dispatch={dispatch} />
+            <Igredient state={state} dispatch={dispatch} />
         </div>
     )
 }

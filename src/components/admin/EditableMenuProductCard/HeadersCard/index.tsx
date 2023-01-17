@@ -1,12 +1,13 @@
 import Image from "next/image";
+import { useForm } from "react-hook-form";
 import { Dispatch } from "react";
 import * as zod from "zod"
 
+import { EditableProductActions } from "../../../../reducers/aditableProduct/actions";
+import { IEditableProductReducerData } from "../../../../reducers/aditableProduct/reducer";
+
 import { BiPencil } from "react-icons/bi";
 import { BsCheck2 } from "react-icons/bs";
-import { EditableProductAction } from "../../../../reducers/aditableProduct/actions";
-import { IEditableProductReducerData } from "../../../../reducers/aditableProduct/reducer";
-import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { HiPlus } from "react-icons/hi";
 
@@ -37,17 +38,17 @@ export default function HeadersCard({ state, dispatch }: IHeadersCardProps) {
 
     function setProductIsEditing(isEditingInfo: boolean) {
         dispatch({
-            type: EditableProductAction.IS_EDITING_INFORMATION,
+            type: EditableProductActions.IS_EDITING_INFORMATION,
             payload: { isEditingInfo }
         })
     }
 
     function handleEditInfrmation(data: NewInformationFormData) {
-        if(  watch("name") === '' || watch("price") === '' ) {
+        if (watch("name") === '' || watch("price") === '') {
             return
         }
         dispatch({
-            type: EditableProductAction.ADD_PRODUCT_INFORMATION,
+            type: EditableProductActions.SET_PRODUCT_INFORMATION,
             payload: {
                 description: data.description,
                 price: data.price,
@@ -59,58 +60,56 @@ export default function HeadersCard({ state, dispatch }: IHeadersCardProps) {
 
     return (
         <>
-            <div className={``} >
-                <div className="sticky">
-                    <ProductImage state={state} dispatch={dispatch} />
-                    <form onSubmit={handleSubmit(handleEditInfrmation)}>
-                        <div className="flex items-center justify-between gap-6">
-                            <h1
-                                hidden={state.isEditingInfo}
-                                className="font-extrabold text-xl text-gray-800 leading-4"> {state.productInformation.name} </h1>
-                            <input type="text" placeholder="Pesquisar"
-                                hidden={!state.isEditingInfo} {...register("name", {
-                                    required: true
-                                })}
-                                className="h-7 bg-red-50 pb-1 felx flex-1 px-2 text-gray-600 text-sm font-semibold
+            <div className={`mb-10`} >
+                <ProductImage state={state} dispatch={dispatch} />
+                <form onSubmit={handleSubmit(handleEditInfrmation)}>
+                    <div className="flex items-center justify-between gap-6">
+                        <h1
+                            hidden={state.isEditingInfo}
+                            className="font-extrabold text-xl text-gray-800 leading-4"> {state.productInformation.name} </h1>
+                        <input type="text" placeholder="Pesquisar"
+                            hidden={!state.isEditingInfo} {...register("name", {
+                                required: true
+                            })}
+                            className="h-7 bg-red-50 pb-1 felx flex-1 px-2 text-gray-600 text-sm font-semibold
                                  placeholder:text-gray-400 rounded outline-none"
-                            />
-                            <BiPencil
-                                onClick={() => setProductIsEditing(true)}
-                                className={`text-lg text-blue-500  cursor-pointer hover:scale-125 hover:transition-all ease-in-out
+                        />
+                        <BiPencil
+                            onClick={() => setProductIsEditing(true)}
+                            className={`text-lg text-blue-500  cursor-pointer hover:scale-125 hover:transition-all ease-in-out
                             ${state.isEditingInfo ? "hidden" : ""}
                             `} />
-                            <button type="submit" className={`${state.isEditingInfo ? "" : "hidden"} `} >
-                                <BsCheck2
-                                    // onClick={() => setProductIsEditing(false)}
-                                    className={`text-lg text-blue-500  cursor-p ointer hover:scale-125 hover:transition-all ease-in-out
+                        <button type="submit" className={`${state.isEditingInfo ? "" : "hidden"} `} >
+                            <BsCheck2
+                                // onClick={() => setProductIsEditing(false)}
+                                className={`text-lg text-blue-500  cursor-p ointer hover:scale-125 hover:transition-all ease-in-out
                                 ${state.isEditingInfo ? "" : "hidden"}
                                 `} />
-                            </button>
-                        </div>
-                        <p hidden={state.isEditingInfo} className="font-medium text-base leading-5 text-gray-800 mt-1">
-                            {state.productInformation.description}
-                        </p>
+                        </button>
+                    </div>
+                    <p hidden={state.isEditingInfo} className="font-medium text-base leading-5 text-gray-800 mt-1">
+                        {state.productInformation.description}
+                    </p>
 
-                        <input type="text" placeholder="Descrição"
-                            hidden={!state.isEditingInfo} {...register("description")}
-                            className="w-full h-10 bg-red-50 pb-1 px-2 text-gray-600 text-sm font-semibold
+                    <input type="text" placeholder="Descrição"
+                        hidden={!state.isEditingInfo} {...register("description")}
+                        className="w-full h-10 bg-red-50 pb-1 px-2 text-gray-600 text-sm font-semibold
                                 placeholder:text-gray-400 rounded outline-none mt-1 whitespace-pre-line"
-                        />
-                        <div className="flex items-center justify-between mt-1">
-                            <span
-                                hidden={state.isEditingInfo}
-                                className="font-medium text-sm text-green-300 leading-4"
-                            > R$ {state.productInformation.price} </span>
-                            <input type="text" placeholder="Preço"
-                                hidden={!state.isEditingInfo}
-                                {...register("price")}
-                                className="h-7 bg-red-50 pb-1 felx flex-1 px-2 text-gray-600 text-sm font-semibold
+                    />
+                    <div className="flex items-center justify-between mt-1">
+                        <span
+                            hidden={state.isEditingInfo}
+                            className="font-medium text-sm text-green-300 leading-4"
+                        > R$ {state.productInformation.price} </span>
+                        <input type="text" placeholder="Preço"
+                            hidden={!state.isEditingInfo}
+                            {...register("price")}
+                            className="h-7 bg-red-50 pb-1 felx flex-1 px-2 text-gray-600 text-sm font-semibold
                                  placeholder:text-gray-400 rounded outline-none"
-                            />
+                        />
 
-                        </div>
-                    </form>
-                </div>
+                    </div>
+                </form>
             </div>
         </>
     );
@@ -138,7 +137,7 @@ function ProductImage({ state, dispatch }: iProductImagePros) {
 
     function setProductPictureIsEditing(isEditingPicture: boolean) {
         dispatch({
-            type: EditableProductAction.IS_EDITING_PICTURE,
+            type: EditableProductActions.IS_EDITING_PICTURE,
             payload: { isEditingPicture }
         })
     }
@@ -148,7 +147,7 @@ function ProductImage({ state, dispatch }: iProductImagePros) {
             return
         }
         dispatch({
-            type: EditableProductAction.SET_PICTURE_URL,
+            type: EditableProductActions.SET_PICTURE_URL,
             payload: { picture_url: data.picture_url }
         })
         setProductPictureIsEditing(false)

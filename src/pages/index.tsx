@@ -10,9 +10,8 @@ import Head from "next/head";
 import { BiRestaurant, BiSearch } from "react-icons/bi";
 
 // COMPONENTS
-import Header from "../components/home/Header";
-import ProductModal from "../components/home/ProductModal";
-import ProductHorizontalScrollList from "../components/ProductHorizontalScrollList";
+import ProductsList from "./../components/home/ProductsList";
+import RestaurantHeader from "./../components/home/RestaurantHeader";
 
 // DATABASE
 import { supabase } from "../server/api";
@@ -59,8 +58,17 @@ export default function HomePage({data}:iDataHomepage) {
   const [showProduct, setShowProduct] = useState(true);
   const [currentProduct, setCurrentProduct] = useState<iProduct>();
 
-
   return (
+  <div className="bg-[#222] flex justify-center min-h-screen min-w-screen">
+      <div className="bg-gray-100 max-w-7xl w-full">
+        <RestaurantHeader />
+        {/* <ProductModal/> */}
+        <ProductsList />
+      </div>
+    </div>
+    );
+
+  /* return (
     <div>
       <Head>
         <title>{restaurant.name}</title>
@@ -114,5 +122,5 @@ export default function HomePage({data}:iDataHomepage) {
         </div>
       </div>
     </div>
-  );
+  ); */
 }

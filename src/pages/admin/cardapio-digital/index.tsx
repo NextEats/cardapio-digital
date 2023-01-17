@@ -1,6 +1,10 @@
-import AdminWrapper from "../../../components/AdminWrapper";
-
+import AdminWrapper from "../../../components/admin/AdminWrapper";
+import ProductHorizontalScrollList from "../../../components/ProductHorizontalScrollList";
+import Categories from "../../../components/admin/Categories";
+import MenuProduct from "../../../components/admin/MenuProduct";
 import Image from "next/image";
+import { AiOutlinePlus } from "react-icons/ai";
+import EditableMenuProductCard from "../../../components/admin/EditableMenuProductCard";
 
 type IngredientData = {
   id: number;
@@ -47,53 +51,41 @@ export default function AdminHomepage() {
 
   return (
     <AdminWrapper>
-      <div>
-        <div>Cardapio Digital</div>
+      <div className="flex gap-10">
+        <div className="flex flex-col flex-1 ">
+          <h2 className="text-xl font-bold text-gray-700"> Destaques </h2>
 
-        <div className="mt-12 ">
-          <span className="font-bold text-2xl m-3">Lanches</span>
-          <table className="m-3">
-            <thead>
-              <tr>
-                <td className={tdClasses}>ID</td>
-                <td className={tdClasses}>Imagem</td>
-                <td className={tdClasses}>Nome do Produto</td>
-                <td className={tdClasses}>Descrição</td>
-                <td className={tdClasses}>Preço</td>
-                <td className={tdClasses}>Margem de Lucro</td>
-                <td className={tdClasses}>Ingredientes</td>
-              </tr>
-            </thead>
-            <tbody>
-              {products.map((product: ProductData) => {
-                const tdClasses = "p-4";
+          <div className="flex items-center justify-between mb-5 mt-7">
+            <h2 className="text-xl font-bold text-gray-700 "> Categorias </h2>
+            <input type="text" placeholder="Pesquisar" 
+              className="mx-8 h-6 pb-1 max-w-64 px-2 text-gray-600 font-semibold placeholder:text-gray-500 rounded outline-none border border-solid border-gray-400" />
+            <button className="text-base font-semibold text-white flex items-center justify-center gap-1 h-6 w-20 rounded-md bg-green-300 ">
+              Novo
+              <AiOutlinePlus />
+            </button>
+          </div>
+          <Categories />
 
-                return (
-                  <tr
-                    key={product.id}
-                    className=" hover:bg-gray-300 transition-all duration-200 ease-in-out product.imageUrl cursor-pointer"
-                  >
-                    <td className={tdClasses}>{product.id}</td>
-                    <td>
-                      <Image
-                        className="rounded-lg"
-                        src={product.imageUrl}
-                        width={78}
-                        height={78}
-                        alt={product.name}
-                      />
-                    </td>
-                    <td className={tdClasses}>{product.name}</td>
-                    <td className={tdClasses}>{product.description}</td>
-                    <td className={tdClasses}>{product.price}</td>
-                    <td className={tdClasses}>{product.profitMargin}</td>
-                    <td className={tdClasses}>{product.ingredients}</td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+          <div className="flex items-center justify-between mb-5 mt-7 mr-20">
+            <h2 className="text-xl font-bold text-gray-700 "> itens em falta </h2>
+            <input type="text" placeholder="Pesquisar" 
+              className="mx-8 h-6 pb-1 max-w-64 px-2 text-gray-600 text-sm font-semibold placeholder:text-gray-500 rounded outline-none border border-solid border-gray-400" />
+          </div>
+          <MenuProduct />
+
+          <div className="flex items-center justify-between mb-5 mt-7">
+            <h2 className="text-xl font-bold text-gray-700 "> Itens do cardápio </h2>
+            <input type="text" placeholder="Pesquisar" 
+              className="mx-8 h-6 pb-1 max-w-64 px-2 text-gray-600 text-sm font-semibold placeholder:text-gray-500 rounded outline-none border border-solid border-gray-400" />
+            <button className="text-base font-semibold text-white flex items-center justify-center gap-1 h-6 w-20 rounded bg-green-300 ">
+              Novo
+              <AiOutlinePlus />
+            </button>
+          </div>
+          <MenuProduct />
+
         </div>
+        <EditableMenuProductCard />
       </div>
     </AdminWrapper>
   );

@@ -5,7 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/router";
 
-import useWindowSize, { Size } from "../../hooks/WindowResize";
+import useWindowSize, { Size } from "../../../hooks/WindowResize";
 
 export default function AdminWrapper({ children }: { children: JSX.Element }) {
   const [isSidebarOpenState, changeSidebarState] = useState<true | false>(true);
@@ -26,8 +26,8 @@ export default function AdminWrapper({ children }: { children: JSX.Element }) {
       <Navbar toogleSidebar={() => changeSidebarState(!isSidebarOpenState)} />
       <Sidebar isSidebarOpen={isSidebarOpenState} />
       <div
-        className={`absolute transition-[left] h-screen overflow-auto duration-500 ease-in-out p-5 ${
-          isSidebarOpenState ? "left-64" : "left-0"
+        className={`absolute transition-[left] h-[calc(100vh-64px)] overflow-auto duration-500 ease-in-out p-5 ${
+          isSidebarOpenState ? "left-64 w-[calc(100vw-260px)]" : "left-0 w-full"
         }`}
       >
         {children}

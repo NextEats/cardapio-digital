@@ -1,19 +1,7 @@
-import { randomUUID } from "crypto";
-import { startTransition, useId } from "react";
-import { IIngredientOptionsData, option } from "../../types/product"
+
+import { Additional } from "../../components/admin/EditableMenuProductCard/Additional";
+import { IAdditionalData, IIngredientOptionsData } from "../../types/product"
 import { EditableProductActions } from "./actions";
-
-// interface iIngredientOptionsReducer {
-//     id: string;
-//     name: string;
-//     picture_url: string;
-// }
-
-// interface iIngredientsReducer {
-//     id: string;
-//     name: string;
-//     options: option[];
-// }
 
 export interface IEditableProductReducerData {
 
@@ -21,18 +9,24 @@ export interface IEditableProductReducerData {
     isEditingInfo: boolean,
     picture_url: string,
     isEditingPicture: boolean,
-    // INGREDIENT
     productInformation: {
         name: string,
         description: string,
         price: string,
     },
+
+    // INGREDIENT
     ingredients: IIngredientOptionsData[],
     isEditingIngradientNameId: string,
     isAddingNewIngradient: boolean,
-
+    
     // OPTIONS
     ingredientIdToShowModalAddNewOption: string,
+    
+    // ADDITIONAL
+    additional: IAdditionalData[],
+    showModalToUpdateAdditional: boolean,
+    isOpenAdditionalModal: boolean,
 }
 
 export function editableProductReducer(state: IEditableProductReducerData, action: any) {
@@ -102,6 +96,32 @@ export function editableProductReducer(state: IEditableProductReducerData, actio
             const optionIndex = state.ingredients[ingredientIndexToRemoveOption].options.findIndex( option => option.id === action.payload.optionId)
             state.ingredients[ingredientIndexToRemoveOption].options.splice(optionIndex, 1)
             return { ...state }
+            break
+        case EditableProductActions.SHOW_MODAL_TO_ADD_NEW_ADDITIONAL:
+            return { ...state, isOpenAdditionalModal: action.payload.isOpenAdditionalModal }
+            break
+        case EditableProductActions.ADD_NEW_ADDITIONAL:
+            return { ...state, additional: [ ...state.additional, { 
+                id: action.payload.id,
+                name: action.payload.additionalName,
+                price: action.payload.additionalPrice,
+                picture_url:action.payload.additionalPicture_url,
+            }] }
+            break
+        case EditableProductActions.SHOW_MODAL_TO_UPDADE_THE_ADDITIONAL:
+            return { ...state, showModalToUpdateAdditional: action.payload.showModalToUpdateAdditional}
+            break
+        case EditableProductActions.UPDATE_ADDITIONAL:
+            const additionalIndex = state.additional.findIndex( additional => additional.id === action.payload.id)
+            state.additional[additionalIndex].id = action.payload.id;
+            state.additional[additionalIndex].name = action.payload.additionalName;
+            state.additional[additionalIndex].price = action.payload.additionalPrice;
+            state.additional[additionalIndex].picture_url = action.payload.additionalPicture_url;
+            return { ...state }
+            break
+        case EditableProductActions.REMOVE_ADDITIONAL:
+            const additionalWithoutTheRemovedOne = state.additional.filter( additional =>  additional.id !== action.payload.additionalId )
+            return { ...state, additional:  additionalWithoutTheRemovedOne}
             break
         default:
             return state

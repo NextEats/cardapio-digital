@@ -1,7 +1,8 @@
 import { useReducer } from "react";
 import { editableProductReducer } from "../../../reducers/aditableProduct/reducer";
+import { Additional } from "./Additional";
 import HeadersCard from "./HeadersCard";
-import { Igredient } from "./Ingredient";
+import { Igredient } from "./Ingredients";
 
 
 export default function EditableMenuProductCard() {
@@ -34,6 +35,19 @@ export default function EditableMenuProductCard() {
 
         //  OPTIONS
         ingredientIdToShowModalAddNewOption: '',
+
+
+        // ADDITIONAL
+        additional: [
+            {
+            id: '',
+            name: '',
+            price: 0,
+            picture_url: '',
+          }
+        ],
+        showModalToUpdateAdditional: false,
+        isOpenAdditionalModal: false,
     });
 
     return (
@@ -45,7 +59,7 @@ export default function EditableMenuProductCard() {
 
             <HeadersCard state={state} dispatch={dispatch} />
             <Igredient state={state} dispatch={dispatch} />
-
+            <Additional state={state} dispatch={dispatch} />
         </div>
     )
 }

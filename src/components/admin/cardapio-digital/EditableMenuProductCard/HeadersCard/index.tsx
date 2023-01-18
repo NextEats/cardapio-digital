@@ -3,17 +3,19 @@ import { useForm } from "react-hook-form";
 import { Dispatch } from "react";
 import * as zod from "zod"
 
-import { EditableProductActions } from "../../../../reducers/aditableProduct/actions";
-import { IEditableProductReducerData } from "../../../../reducers/aditableProduct/reducer";
-
 import { BiPencil } from "react-icons/bi";
 import { BsCheck2 } from "react-icons/bs";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { HiPlus } from "react-icons/hi";
+import { EditableProductActions } from "../../../../../reducers/aditableProduct/actions";
+import { IEditableProductReducerData, iPayloadProduct } from "../../../../../reducers/aditableProduct/reducer";
 
 interface IHeadersCardProps {
     state: IEditableProductReducerData,
-    dispatch: Dispatch<any>,
+    dispatch: Dispatch<{
+        type: string,
+        payload: iPayloadProduct,
+    }>,
 }
 
 const newInformationFormValidationSchema = zod.object({
@@ -50,9 +52,11 @@ export default function HeadersCard({ state, dispatch }: IHeadersCardProps) {
         dispatch({
             type: EditableProductActions.SET_PRODUCT_INFORMATION,
             payload: {
-                description: data.description,
-                price: data.price,
-                name: data.name
+                productInformation: {
+                    description: data.description,
+                    price: data.price,
+                    name: data.name
+                },
             }
         })
         setProductIsEditing(false)
@@ -68,21 +72,18 @@ export default function HeadersCard({ state, dispatch }: IHeadersCardProps) {
                             hidden={state.isEditingInfo}
                             className="font-extrabold text-xl text-gray-800 leading-4"> {state.productInformation.name} </h1>
                         <input type="text" placeholder="Pesquisar"
-                            hidden={!state.isEditingInfo} {...register("name", {
-                                required: true
-                            })}
+                            hidden={!state.isEditingInfo} {...register("name", { required: true  })}
                             className="h-7 bg-red-50 pb-1 felx flex-1 px-2 text-gray-600 text-sm font-semibold
                                  placeholder:text-gray-400 rounded outline-none"
                         />
                         <BiPencil
                             onClick={() => setProductIsEditing(true)}
-                            className={`text-lg text-blue-500  cursor-pointer hover:scale-125 hover:transition-all ease-in-out
+                            className={`text-2xl text-blue-500  cursor-pointer hover:scale-125 hover:transition-all ease-in-out
                             ${state.isEditingInfo ? "hidden" : ""}
                             `} />
                         <button type="submit" className={`${state.isEditingInfo ? "" : "hidden"} `} >
                             <BsCheck2
-                                // onClick={() => setProductIsEditing(false)}
-                                className={`text-lg text-blue-500  cursor-p ointer hover:scale-125 hover:transition-all ease-in-out
+                                className={`text-2xl text-blue-500  cursor-p ointer hover:scale-125 hover:transition-all ease-in-out
                                 ${state.isEditingInfo ? "" : "hidden"}
                                 `} />
                         </button>
@@ -156,6 +157,11 @@ function ProductImage({ state, dispatch }: iProductImagePros) {
     return (
         <form onSubmit={handleSubmit(handleProductPicture_url)} className="w-full h-[350px] relative mb-4">
 
+            {state.picture_url === '' && <div
+                className="rounded-2xl w-full h-full flex items-center justify-center border border-solid border-gray-400">
+                <HiPlus className=" text-gray-400 text-9xl font-light" />
+            </div>}
+
             {state.isEditingPicture && <div
                 className={` flex flex-1 w-[305px] items-center justify-center bg-white h-9 px-2 rounded-md  absolute top-3 right-3 z-10`}>
                 <input
@@ -171,11 +177,6 @@ function ProductImage({ state, dispatch }: iProductImagePros) {
                     className="w-7 h-6 flex items-center justify-center rounded-tr-md rounded-br-md hover:scale-110 transition-all ease-in-out bg-green-300 ">
                     <BsCheck2 className="text-base text-white" />
                 </button>
-            </div>}
-
-            {state.picture_url === '' && <div
-                className="rounded-2xl w-full h-full flex items-center justify-center border border-solid border-gray-400">
-                <HiPlus className=" text-gray-400 text-9xl font-light" />
             </div>}
 
             <BiPencil

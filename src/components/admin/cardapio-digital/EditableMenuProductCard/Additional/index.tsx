@@ -2,18 +2,21 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import Image from "next/image";
 import { Dispatch } from "react";
 import { useForm } from "react-hook-form";
-import { IEditableProductReducerData } from "../../../../reducers/aditableProduct/reducer";
 import * as zod from "zod"
-import { EditableProductActions } from "../../../../reducers/aditableProduct/actions";
+
 import { BiPencil } from "react-icons/bi";
 import { FiTrash2 } from "react-icons/fi";
-import { IAdditionalData } from "../../../../types/product";
+import { EditableProductActions } from "../../../../../reducers/aditableProduct/actions";
+import { IEditableProductReducerData, iPayloadProduct } from "../../../../../reducers/aditableProduct/reducer";
+import { iAdditional } from "../../../../../types/types";
 
 interface IAdditionalProps {
     state: IEditableProductReducerData,
-    dispatch: Dispatch<any>,
+    dispatch: Dispatch<{
+        type: string,
+        payload: iPayloadProduct
+    }>,
 }
-
 
 const newAdditionalFormValidationSchema = zod.object({
     id: zod.string(),
@@ -47,7 +50,7 @@ export function Additional({ state, dispatch }: IAdditionalProps) {
             }
         })
     }
-    function hideModalToNewAdditional(isOpenAdditionalModal: boolean) {
+    function hadleModalToNewAdditional(isOpenAdditionalModal: boolean) {
         reset()
         showModalToNewAdditional(isOpenAdditionalModal)
         dispatch({
@@ -58,23 +61,21 @@ export function Additional({ state, dispatch }: IAdditionalProps) {
         })
     }
     function handleNewAdditionl() {
-        console.log(state.additional)
-        const additionalName = getValues("additionalName")
-        const additionalPrice = getValues("additionalPrice")
+        const additionalName: string = getValues("additionalName")
+        const additionalPrice = Number(getValues("additionalPrice"))
         const additionalPicture_url = getValues("additionalPicture_url")
         const id = Math.random().toString(15)
         dispatch({
             type: EditableProductActions.ADD_NEW_ADDITIONAL,
             payload: {
-                id,
                 additionalName,
                 additionalPrice,
                 additionalPicture_url,
             }
         })
-        hideModalToNewAdditional(false)
+        hadleModalToNewAdditional(false)
     }
-    
+
     function removeAdditional(additionalId: string) {
         dispatch({
             type: EditableProductActions.REMOVE_ADDITIONAL,
@@ -83,12 +84,11 @@ export function Additional({ state, dispatch }: IAdditionalProps) {
             }
         })
     }
-    function showModalToUpdateAdditional(additional: IAdditionalData) {
-        setValue('id', additional.id)
-        setValue('additionalName', additional.name)
-        setValue('additionalPrice', additional.price.toString())
-        setValue('additionalPicture_url', additional.picture_url)
-        console.log(getValues("id"))
+    function showModalToUpdateAdditional(additional: iAdditional) {
+        setValue('id', additional.data.id.toString())
+        setValue('additionalName', additional.data.name)
+        setValue('additionalPrice', additional.data.price.toString())
+        setValue('additionalPicture_url', additional.data.picture_url)
         dispatch({
             type: EditableProductActions.SHOW_MODAL_TO_UPDADE_THE_ADDITIONAL,
             payload: {
@@ -97,15 +97,15 @@ export function Additional({ state, dispatch }: IAdditionalProps) {
         })
     }
 
-function updateAdditional() {
+    function updateAdditional() {
         const additionalName = getValues("additionalName")
-        const additionalPrice = getValues("additionalPrice")
+        const additionalPrice = Number(getValues("additionalPrice"))
         const additionalPicture_url = getValues("additionalPicture_url")
-        const id = getValues("id")
+        const additionalId = getValues("id")
         dispatch({
             type: EditableProductActions.UPDATE_ADDITIONAL,
             payload: {
-                id,
+                additionalId,
                 additionalName,
                 additionalPrice,
                 additionalPicture_url,
@@ -119,33 +119,34 @@ function updateAdditional() {
         })
         reset()
     }
-    
+
+console.log(state.additional)
     return (
         <div className="mb-24">
             <h2 className="mb-5 font-semibold text-sm">Adicionais</h2>
 
             <div className="flex flex-col mb-3 relative">
                 <div className="flex flex-col gap-2">
-                    {state.additional.map(additional => {
-                        if (additional.name === '' && additional.picture_url === '') {
+                    {/* {state.additional.data?.map(additional => {
+                        if (additional.data.name === '' && additional.data.picture_url === '') {
                             return
                         }
                         return (
-                            <div key={additional.id} className="flex flex-1 items-center pr-4 shadow-md rounded-md relative bg-white-300">
+                            <div key={additional.data.id} className="flex flex-1 items-center pr-4 shadow-md rounded-md relative bg-white-300">
                                 <div className="flex items-center gap-3 h-[60px]">
                                     <Image
-                                        src={additional.picture_url}
+                                        src={additional.data.picture_url}
                                         className="rounded-tl-md rounded-bl-md h-full"
-                                        alt={additional.name}
+                                        alt={additional.data.name}
                                         width={91}
                                         height={50}
                                     />
                                     <div className="">
                                         <p className="font-bold text-black text-sm ">
-                                            {additional.name}
+                                            {additional.data.name}
                                         </p>
                                         <p className="font-medium text-xs text-black ">
-                                            R$ {additional.price}
+                                            R$ {additional.data.price}
                                         </p>
                                     </div>
                                 </div>
@@ -154,12 +155,12 @@ function updateAdditional() {
                                         onClick={() => showModalToUpdateAdditional(additional)}
                                         className="text-xl text-blue-500 cursor-pointer hover:scale-125 hover:transition-all ease-in-out" />
                                     <FiTrash2
-                                        onClick={() => removeAdditional(additional.id)}
+                                        onClick={() => removeAdditional(additional.data.id.toString())}
                                         className="text-xl text-red-500 cursor-pointer hover:scale-125 hover:transition-all ease-in-out" />
                                 </div>
                             </div>
                         )
-                    })}
+                    })} */}
                 </div>
                 {/*        =========   DIALOG TO ADD NEW OPTION   ==============        */}
                 {
@@ -176,16 +177,16 @@ function updateAdditional() {
                                 outline-none border border-solid border-gray-300 rounded px-3 mb-3" />
                         <div className="w-full flex items-center gap-2 mt-6">
                             <button
-                                onClick={() => hideModalToNewAdditional(false)}
+                                onClick={() => hadleModalToNewAdditional(false)}
                                 className={`h-7 flex flex-1 items-center justify-center text-white font-semibold rounded hover:bg-yellow-500 bg-yellow-400  transition-all ease-in-out`}>
                                 Cancelar
                             </button>
                             <button
                                 onClick={() => state.showModalToUpdateAdditional ? updateAdditional() : handleNewAdditionl()}
                                 className={`h-7 flex flex-1 items-center justify-center text-white font-semibold rounded transition-all ease-in-out
-                                ${state.showModalToUpdateAdditional ? 'hover:bg-blue-700 bg-blue-500' : 'hover:bg-green-600 bg-green-300 ' }
+                                ${state.showModalToUpdateAdditional ? 'hover:bg-blue-700 bg-blue-500' : 'hover:bg-green-600 bg-green-300 '}
                                 `}>
-                                { state.showModalToUpdateAdditional ? 'Update' : 'Adicionar'}
+                                {state.showModalToUpdateAdditional ? 'Update' : 'Adicionar'}
                             </button>
                         </div>
                     </div> : null
@@ -194,12 +195,11 @@ function updateAdditional() {
 
                 {/*                       Add new additional button                             */}
             </div>
-            < div className="w-full flex items-center justify-end mt-6" >
+            <div className="w-full flex items-center justify-end mt-6" >
                 <button
                     onClick={() => showModalToNewAdditional(true)}
-                    className={`w-28 h-8 flex items-center justify-center text-white font-semibold rounded  transition-all ease-in-out 
-                        ${!state.isAddingNewIngradient ? 'hover:bg-green-600 bg-green-300' : 'hover:bg-yellow-500 bg-yellow-400'}  `}>
-                    {!state.isAddingNewIngradient ? 'Adicionar' : 'Cancelar'}
+                    className={`w-28 h-8 flex items-center justify-center text-white font-semibold rounded  transition-all ease-in-out hover:bg-green-600 bg-green-300  `}>
+                    Adicionar
                 </button>
             </div>
         </div >

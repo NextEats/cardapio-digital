@@ -4,7 +4,7 @@ import Categories from "../../../components/admin/Categories";
 import MenuProduct from "../../../components/admin/MenuProduct";
 import Image from "next/image";
 import { AiOutlinePlus } from "react-icons/ai";
-import EditableMenuProductCard from "../../../components/admin/EditableMenuProductCard";
+import EditableMenuProductCard from "../../../components/admin/cardapio-digital/EditableMenuProductCard";
 
 type IngredientData = {
   id: number;
@@ -90,3 +90,5 @@ export default function AdminHomepage() {
     </AdminWrapper>
   );
 }
+
+

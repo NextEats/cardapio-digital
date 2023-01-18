@@ -3,19 +3,22 @@ import { useForm } from "react-hook-form";
 import * as zod from "zod"
 
 import { BsCheck2 } from "react-icons/bs";
-import { IEditableProductReducerData } from "../../../../reducers/aditableProduct/reducer";
-import { Dispatch, useId } from "react";
-import { EditableProductActions } from "../../../../reducers/aditableProduct/actions";
+import { Dispatch } from "react";
+
 import { FiTrash2 } from "react-icons/fi";
 import { BiPencil } from "react-icons/bi";
-import { iIngredient, iIngredients } from "../../../../types/types";
-import { IIngredientOptionsData } from "../../../../types/product";
+
 import { HiPlus } from "react-icons/hi";
 import Image from "next/image";
+import { EditableProductActions } from "../../../../../reducers/aditableProduct/actions";
+import { IEditableProductReducerData, iPayloadProduct } from "../../../../../reducers/aditableProduct/reducer";
 
 interface iIgradientsCardProps {
     state: IEditableProductReducerData,
-    dispatch: Dispatch<any>,
+    dispatch: Dispatch<{
+        type: string,
+        payload: iPayloadProduct,
+    }>,
 }
 
 const newIngredientFormValidationSchema = zod.object({
@@ -38,28 +41,9 @@ export function Igredient({ state, dispatch }: iIgradientsCardProps) {
             optionPicture_url: '',
         },
     });
+    
 
-
-    function removeIngredient(ingredientId: string) {
-        dispatch({
-            type: EditableProductActions.REMOVE_INGREDIENT,
-            payload: { ingredientId }
-        })
-    }
-    function setIsEditingIngradientName(isEditingIngradientNameId: string) {
-        dispatch({
-            type: EditableProductActions.IS_EDITING_INGREDIENT_NAME,
-            payload: { isEditingIngradientNameId }
-        })
-    }
-    function setIsEddingNewIngradient(isAddingNewIngradient: boolean) {
-        reset()
-        dispatch({
-            type: EditableProductActions.IS_ADDING_NEW_INGREDIENT,
-            payload: { isAddingNewIngradient }
-        })
-    }
-
+    // INGREDIENT 
     function handleAddNewIngredient(data: NewIngredientFormData) {
         const id = Math.random().toString(36)
         dispatch({
@@ -71,6 +55,27 @@ export function Igredient({ state, dispatch }: iIgradientsCardProps) {
         })
         setIsEddingNewIngradient(false)
     }
+    
+    function removeIngredient(ingredientId: string) {
+        dispatch({
+            type: EditableProductActions.REMOVE_INGREDIENT,
+            payload: { ingredientId }
+        })
+    }
+    function setIsUpdatingIngradientName(isEditingIngradientNameId: string) {
+        dispatch({
+            type: EditableProductActions.IS_UPDATING_INGREDIENT_NAME,
+            payload: { isEditingIngradientNameId }
+        })
+    }
+    function setIsEddingNewIngradient(isAddingNewIngradient: boolean) {
+        reset()
+        dispatch({
+            type: EditableProductActions.IS_ADDING_NEW_INGREDIENT,
+            payload: { isAddingNewIngradient }
+        })
+    }
+
 
     function handleEditIngredientName(ingredientId: string) {
 
@@ -82,7 +87,7 @@ export function Igredient({ state, dispatch }: iIgradientsCardProps) {
                 ingredientName,
             }
         })
-        setIsEditingIngradientName('')
+        setIsUpdatingIngradientName('')
     }
     
     function setIngredientIdToAddNewOption(ingredientIdToShowModalAddNewOption: string) {
@@ -152,7 +157,7 @@ export function Igredient({ state, dispatch }: iIgradientsCardProps) {
                                         <h3> {ingredient.name}  </h3>
                                         <div className="flex items-center gap-2">
                                             <BiPencil
-                                                onClick={() => setIsEditingIngradientName(ingredient.id)}
+                                                onClick={() => setIsUpdatingIngradientName(ingredient.id)}
                                                 className="text-xl text-blue-500 cursor-pointer hover:scale-125 hover:transition-all ease-in-out" />
                                             <FiTrash2
                                                 onClick={() => removeIngredient(ingredient.id)}

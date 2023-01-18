@@ -1,5 +1,5 @@
 import { useReducer } from "react";
-import { editableProductReducer } from "../../../reducers/aditableProduct/reducer";
+import { editableProductReducer } from "../../../../reducers/aditableProduct/reducer";
 import { Additional } from "./Additional";
 import HeadersCard from "./HeadersCard";
 import { Igredient } from "./Ingredients";

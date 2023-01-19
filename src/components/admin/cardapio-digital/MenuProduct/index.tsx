@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { AiFillEye } from "react-icons/ai";
 import { RiPencilFill } from "react-icons/ri";
-import { iProduct  } from "../../../types/types";
+import { iProduct  } from "../../../../types/types";
 
 interface iMenuProduct {
     prosuctIsOutOfStock?: boolean;

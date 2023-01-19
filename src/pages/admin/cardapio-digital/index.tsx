@@ -1,6 +1,6 @@
 import AdminWrapper from "../../../components/admin/AdminWrapper";
 import Categories from "../../../components/admin/cardapio-digital/Categories";
-import MenuProduct from "../../../components/admin/MenuProduct";
+import MenuProduct from "../../../components/admin/cardapio-digital/MenuProduct";
 import { AiOutlinePlus } from "react-icons/ai";
 import EditableMenuProductCard from "../../../components/admin/cardapio-digital/EditableMenuProductCard";
 import { useState } from "react";
@@ -79,8 +79,8 @@ export default function CardapioDigital({ productCategories, products }: iCardap
             <input type="text" placeholder="Pesquisar"
               className="mx-8 h-6 pb-1 max-w-64 px-2 text-gray-600 text-sm font-semibold placeholder:text-gray-500 rounded outline-none border border-solid border-gray-400" />
           </div>
+          
           {/* <MenuProduct  /> */}
-
           <div className="flex items-center justify-between mb-5 mt-7">
             <h2 className="text-xl font-bold text-gray-700 "> Itens do cardápio </h2>
             <input type="text" placeholder="Pesquisar"

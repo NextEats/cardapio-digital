@@ -68,59 +68,58 @@ export default function HomePage({data}:iDataHomepage) {
     </div>
     );
 
-  /* return (
-    <div>
-      <Head>
-        <title>{restaurant.name}</title>
-        <link href={restaurant.picture_url}           
-        rel="icon"
-          sizes="any"/>
-      </Head>
-      <ProductModal
-        setShowProduct={setShowProduct}
-        showProduct={showProduct}
-        currentProduct={undefined}
-        ingredients={ingredients}
-        additionals={additionals}
-      />
-      <div className="bg-[#222] flex justify-center min-h-screen min-w-screen">
-        <div className="bg-gray-100 max-w-7xl w-full">
-          <div className="w-full">
-            <Image
-              className="w-full max-h-60 lg:hidden"
-              src="https://i.ibb.co/1sZhKFg/backgfroundheader.png"
-              alt="backgfroundheader"
-              width={1200}
-              height={600}
-            />
-          </div>
-          <div>
-            <Header restaurant={restaurant} withStars />
+  // return (
+  //   <div>
+  //     <Head>
+  //       <title>{restaurant.name}</title>
+  //       <link href={restaurant.picture_url}           
+  //       rel="icon"
+  //         sizes="any"/>
+  //     </Head>
+  //     <ProductModal
+  //       setShowProduct={setShowProduct}
+  //       showProduct={showProduct}
+  //       currentProduct={undefined}
+  //       ingredients={ingredients}
+  //       additionals={additionals}
+  //     />
+  //     <div className="bg-[#222] flex justify-center min-h-screen min-w-screen">
+  //       <div className="bg-gray-100 max-w-7xl w-full">
+  //         <div className="w-full">
+  //           <Image
+  //             className="w-full max-h-60 lg:hidden"
+  //             src="https://i.ibb.co/1sZhKFg/backgfroundheader.png"
+  //             alt="backgfroundheader"
+  //             width={1200}
+  //             height={600}
+  //           />
+  //         </div>
+  //         <div>
+  //           <Header restaurant={restaurant} withStars />
 
-            <hr className="border border-solid mt-6" />
+  //           <hr className="border border-solid mt-6" />
 
-            <div className="flex products-center gap-2 m-4 p-2 border rounded-md bg-white items-center">
-              <BiSearch size={20} />
-              <input
-                type="text"
-                placeholder="Pesquisar"
-                className="flex flex-1 bg-transparent outline-0"
-              />
-            </div>
-{/* 
-            <h5 className="pl-4 text-xl mt-7 font-bold text-gray-700">
-              Destaques
-              <ProductHorizontalScrollList
-                products={products}
-                openProductModal={(productData: productType) => {
-                  setCurrentProduct(productData);
-                  setShowProduct(true);
-                }}
-              />
-            </h5> */}
-          </div>
-        </div>
-      </div>
-    </div>
-  ); */
+  //           <div className="flex products-center gap-2 m-4 p-2 border rounded-md bg-white items-center">
+  //             <BiSearch size={20} />
+  //             <input
+  //               type="text"
+  //               placeholder="Pesquisar"
+  //               className="flex flex-1 bg-transparent outline-0"
+  //             />
+  //           </div>
+  //           <h5 className="pl-4 text-xl mt-7 font-bold text-gray-700">
+  //             Destaques
+  //             <ProductHorizontalScrollList
+  //               products={products}
+  //               openProductModal={(productData: productType) => {
+  //                 setCurrentProduct(productData);
+  //                 setShowProduct(true);
+  //               }}
+  //             />
+  //           </h5>
+  //         </div>
+  //       </div>
+  //     </div>
+  //   </div>
+  // ); 
 }

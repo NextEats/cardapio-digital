@@ -5,73 +5,61 @@ import MenuProduct from "../../../components/admin/MenuProduct";
 import Image from "next/image";
 import { AiOutlinePlus } from "react-icons/ai";
 import EditableMenuProductCard from "../../../components/admin/cardapio-digital/EditableMenuProductCard";
+import { useState } from "react";
+import { NewCategoryModal } from "../../../components/admin/cardapio-digital/EditableMenuProductCard/NewCategoryModal";
+import { GetServerSideProps, InferGetServerSidePropsType } from "next";
+import { supabase } from "../../../server/api";
+import { iProductCategories, iProducts } from "../../../types/types";
 
-type IngredientData = {
-  id: number;
-  name: string;
-};
 
-const Ingredients: IngredientData[] = [
-  {
-    id: 1,
-    name: "Queijo Muçarela",
-  },
-  {
-    id: 2,
-    name: "Pão",
-  },
-];
+interface iCardapioDigitalProps {
+     productCategories: iProductCategories
+     products: iProducts
+}
 
-type ProductData = {
-  id: number;
-  imageUrl: string;
-  name: string;
-  description: string;
-  price: number;
-  profitMargin: number;
-  ingredients: number[];
-};
+export const getServerSideProps: GetServerSideProps = async () => {
+  
+  const productCategories = await supabase.from("product_categories").select()
+  const products = await supabase.from("products").select()
 
-const products: ProductData[] = [
-  {
-    id: 0,
-    imageUrl:
-      "https://i.ibb.co/PwDK3Xn/208c90f0-5596-48a4-a1ce-aebb38cf789d.jpg",
-    name: "Combo X-Bacon + Fritas",
-    description:
-      "Molho da casa, hambúrguer 150g, cebola roxa, picles, tomate, alface e queijo prato.",
-    price: 22,
-    profitMargin: 2,
-    ingredients: [1, 2, 3],
-  },
-];
+  return {
+    props: {
+      products,
+      productCategories
+  }
+}
+}
 
-export default function AdminHomepage() {
-  const tdClasses = "[&:not(:last-child)]:p-4";
-
+export default function CardapioDigital( { productCategories, products }: iCardapioDigitalProps ) {
+  // const tdClasses = "[&:not(:last-child)]:p-4";
+  console.log(products)
+  const [ modalIsOpen, setModalIsOpen]  = useState(false)
   return (
     <AdminWrapper>
       <div className="flex gap-10">
         <div className="flex flex-col flex-1 ">
-          <h2 className="text-xl font-bold text-gray-700"> Destaques </h2>
+          <h2 className="text-xl font-bold text-gray-700"> 5 itens mais vendidos  </h2>
 
           <div className="flex items-center justify-between mb-5 mt-7">
             <h2 className="text-xl font-bold text-gray-700 "> Categorias </h2>
             <input type="text" placeholder="Pesquisar" 
               className="mx-8 h-6 pb-1 max-w-64 px-2 text-gray-600 font-semibold placeholder:text-gray-500 rounded outline-none border border-solid border-gray-400" />
-            <button className="text-base font-semibold text-white flex items-center justify-center gap-1 h-6 w-20 rounded-md bg-green-300 ">
+            <button 
+            onClick={() => setModalIsOpen(true)}
+            className="text-base font-semibold text-white flex items-center justify-center gap-1 h-6 w-20 rounded-md bg-green-300 ">
               Novo
               <AiOutlinePlus />
             </button>
           </div>
-          <Categories />
+          <NewCategoryModal modalIsOpen={modalIsOpen} setModalIsOpen={setModalIsOpen} />
+          <Categories productCategories={productCategories.data} />
 
           <div className="flex items-center justify-between mb-5 mt-7 mr-20">
             <h2 className="text-xl font-bold text-gray-700 "> itens em falta </h2>
             <input type="text" placeholder="Pesquisar" 
               className="mx-8 h-6 pb-1 max-w-64 px-2 text-gray-600 text-sm font-semibold placeholder:text-gray-500 rounded outline-none border border-solid border-gray-400" />
           </div>
-          <MenuProduct />
+          {/* <MenuProduct  /> */}
 
           <div className="flex items-center justify-between mb-5 mt-7">
             <h2 className="text-xl font-bold text-gray-700 "> Itens do cardápio </h2>
@@ -82,10 +70,12 @@ export default function AdminHomepage() {
               <AiOutlinePlus />
             </button>
           </div>
-          <MenuProduct />
+          { products.data.map(product => {
+            return <MenuProduct key={product.id} product={product} />
+          })}
 
         </div>
-        <EditableMenuProductCard />
+        <EditableMenuProductCard  />
       </div>
     </AdminWrapper>
   );

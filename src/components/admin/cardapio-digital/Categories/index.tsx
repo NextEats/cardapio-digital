@@ -1,14 +1,17 @@
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { AiFillEye } from "react-icons/ai";
 import { RiPencilFill } from "react-icons/ri";
-import { iProductCategories } from "../../../types/types";
+import { iInsertProductCategory, iProductCategories } from "../../../../types/types";
 
 interface iCategoriesProps {
     productCategories: iProductCategories["data"]
+    setEditCategory:    Dispatch<SetStateAction<{
+        isEditing: boolean,
+        categoryData: iInsertProductCategory["data"]
+      }>>
 }
 
-export default function Categories({ productCategories }: iCategoriesProps) {
-    console.log(productCategories)
+export default function Categories({ productCategories, setEditCategory }: iCategoriesProps) {
     return (
         <div className=" w-full ">
             <table className="w-full border-collapse">
@@ -23,14 +26,22 @@ export default function Categories({ productCategories }: iCategoriesProps) {
                                         <button className="w-7 h-6 flex items-center justify-center rounded-bl-md rounded-tl-md hover:scale-110 transition-all ease-in-out bg-gray-400">
                                             <AiFillEye className="text-base text-white" />
                                         </button>
-                                        <button className="w-7 h-6 flex items-center justify-center rounded-tr-md rounded-br-md hover:scale-110 transition-all ease-in-out bg-blue-500 ">
+                                        <button 
+                                        onClick={() => setEditCategory({
+                                            isEditing: true,
+                                            categoryData: {
+                                                name: category.name,
+                                                restaurant_id: category.restaurant_id,
+                                                id: category.id
+                                            }
+                                        })}
+                                        className="w-7 h-6 flex items-center justify-center rounded-tr-md rounded-br-md hover:scale-110 transition-all ease-in-out bg-blue-500 ">
                                             <RiPencilFill className="text-base text-white" />
                                         </button>
                                     </div>
                                 </td>
                             </tr>
                         )
-
                     })}
                 </tbody>
             </table>

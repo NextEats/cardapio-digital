@@ -18,20 +18,16 @@ export default function EditableMenuProductCard() {
         },
         //INGREDIENT
         ingredients: [
-            {   
-                id: '',
+            {
                 name: '',
-                options: [
-                    {
-                        id: '',
-                        name: '',
-                        picture_url: '',
-                    }
-                ],
+                // options: [
+                //     {
+                //         name: '',
+                //         picture_url: '',
+                //     }
+                // ],
             }
         ],
-        isEditingIngradientNameId: '',
-        isAddingNewIngradient: false,
 
         //  OPTIONS
         ingredientIdToShowModalAddNewOption: '',
@@ -39,14 +35,12 @@ export default function EditableMenuProductCard() {
         // ADDITIONAL
         additional: [
             {
-            id: '',
-            name: '',
-            price: 0,
-            picture_url: '',
-          }
+                name: '',
+                price: 0,
+                picture_url: '',
+            }
         ],
         showModalToUpdateAdditional: false,
-        isOpenAdditionalModal: false,
     });
 
     return (
@@ -59,6 +53,12 @@ export default function EditableMenuProductCard() {
             <HeadersCard state={state} dispatch={dispatch} />
             <Igredient state={state} dispatch={dispatch} />
             <Additional state={state} dispatch={dispatch} />
+            <button
+                disabled={!state.productInformation.name}
+                className={`h-10 w-full flex items-center justify-center text-lg text-white font-semibold rounded-md transition-all ease-in-out
+                duration-300 disabled:bg-gray-500 disabled:cursor-not-allowed hover:bg-green-600 bg-green-300 cursor-pointer `}>
+                Adicionar novo item
+            </button>
         </div>
     )
 }

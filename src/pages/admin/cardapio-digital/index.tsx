@@ -4,7 +4,7 @@ import MenuProduct from "../../../components/admin/MenuProduct";
 import { AiOutlinePlus } from "react-icons/ai";
 import EditableMenuProductCard from "../../../components/admin/cardapio-digital/EditableMenuProductCard";
 import { useState } from "react";
-import { NewCategoryModal } from "../../../components/admin/cardapio-digital/EditableMenuProductCard/NewCategoryModal";
+import { NewCategoryModal } from "../../../components/admin/cardapio-digital/NewCategoryModal";
 import { GetServerSideProps } from "next";
 import { supabase } from "../../../server/api";
 import { iInsertProductCategory, iProductCategories, iProducts } from "../../../types/types";

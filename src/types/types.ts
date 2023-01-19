@@ -16,27 +16,12 @@ export interface iRestaurants {
   data: Array<Database["public"]["Tables"]["restaurants"]["Row"]>;
 }
 
-export interface iIngredient {
-  data: Database["public"]["Tables"]["ingredients"]["Row"];
-}
-
-export interface iIngredients {
-  data: Array<Database["public"]["Tables"]["ingredients"]["Row"]>;
-}
-
 export interface iAdditional {
   data: Database["public"]["Tables"]["additionals"]["Row"];
 }
 
 export interface iAdditionals {
   data: Array<Database["public"]["Tables"]["additionals"]["Row"]>;
-}
-export interface iInsertAdditional {
-  data: Database["public"]["Tables"]["additionals"]["Insert"];
-}
-
-export interface iInsertAdditionals {
-  data: Array<Database["public"]["Tables"]["additionals"]["Insert"]>;
 }
 
 export interface iRestaurantType {
@@ -54,9 +39,36 @@ export interface iProductCategory {
 export interface iProductCategories {
   data: Array<Database["public"]["Tables"]["product_categories"]["Row"]>;
 }
+
+
+//  INSERTS
+
+export interface iInsertIngredient {
+  data: Database["public"]["Tables"]["ingredients"]["Insert"];
+}
+export interface iInsertIngredients {
+  data: Array<Database["public"]["Tables"]["ingredients"]["Insert"]>;
+}
+// ====
+export interface iInsertAdditional {
+  data: Database["public"]["Tables"]["additionals"]["Insert"];
+}
+export interface iInsertAdditionals {
+  data: Array<Database["public"]["Tables"]["additionals"]["Insert"]>;
+}
+// ====
 export interface iInsertProductCategory {
   data: Database["public"]["Tables"]["product_categories"]["Insert"];
 }
 export interface iInsertProductCategories {
   data: Array<Database["public"]["Tables"]["product_categories"]["Insert"]>;
 }
+
+// ====
+export interface iInsertIngredinetOption {
+  data: Database["public"]["Tables"]["ingredient_options"]["Insert"];
+}
+export interface iInsertIngredinetOptions {
+  data: Array<Database["public"]["Tables"]["ingredient_options"]["Insert"]>;
+}
+

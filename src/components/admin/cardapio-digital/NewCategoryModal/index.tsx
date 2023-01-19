@@ -2,9 +2,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Dispatch, FormEvent, SetStateAction, useCallback, useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import * as zod from "zod";
-import { supabase } from "../../../../../server/api";
-import { iInsertProductCategory } from "../../../../../types/types";
-import { CardapioDigitalButton } from "../../CardapioDigitalButton";
+import { supabase } from "../../../../server/api";
+import { iInsertProductCategory } from "../../../../types/types";
+import { CardapioDigitalButton } from "../CardapioDigitalButton";
 
 
 const newCategoryFormValidationSchema = zod.object({
@@ -96,7 +96,7 @@ export function NewCategoryModal({ modalIsOpen, setModalIsOpen, editCategory, se
                         </button>
                         <button
                             onClick={() => editCategory.isEditing ? updateCategory() : handleNewCategory()}
-                            className={`h-9 flex flex-1 items-center justify-center hover:bg-green-600 bg-green-300 
+                            className={`h-9 flex flex-1 items-center justify-center
                             text-white font-semibold cursor-pointer duration-300 rounded transition-all ease-in-out
                             ${editCategory.isEditing ? 'hover:bg-blue-700 bg-blue-500' : ' hover:bg-green-600 bg-green-300' }
                             `} >

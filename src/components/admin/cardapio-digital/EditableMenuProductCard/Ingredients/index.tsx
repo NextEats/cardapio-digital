@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import * as zod from "zod"
 
 import { BsCheck2 } from "react-icons/bs";
-import { Dispatch } from "react";
+import { Dispatch, useState } from "react";
 
 import { FiTrash2 } from "react-icons/fi";
 import { BiPencil } from "react-icons/bi";
@@ -12,6 +12,7 @@ import { HiPlus } from "react-icons/hi";
 import Image from "next/image";
 import { EditableProductActions } from "../../../../../reducers/aditableProduct/actions";
 import { IEditableProductReducerData, iPayloadProduct } from "../../../../../reducers/aditableProduct/reducer";
+
 
 interface iIgradientsCardProps {
     state: IEditableProductReducerData,
@@ -32,6 +33,9 @@ type NewIngredientFormData = zod.infer<typeof newIngredientFormValidationSchema>
 
 export function Igredient({ state, dispatch }: iIgradientsCardProps) {
 
+    const [ isAddingNewIngradientState, setIsAddingNewIngradientState] = useState(false)
+    const [ isUpdatingIngradientNameState, setIsUpdatingIngradientNameState] = useState('')
+
     const { register, handleSubmit, reset, getValues } = useForm<NewIngredientFormData>({
         resolver: zodResolver(newIngredientFormValidationSchema),
         defaultValues: {
@@ -41,9 +45,13 @@ export function Igredient({ state, dispatch }: iIgradientsCardProps) {
             optionPicture_url: '',
         },
     });
-    
 
     // INGREDIENT 
+    function setIsAddingNewIngradient(isAddingNewIngradient: boolean) {
+        reset()
+        setIsAddingNewIngradientState(isAddingNewIngradient)
+    }
+
     function handleAddNewIngredient(data: NewIngredientFormData) {
         const id = Math.random().toString(36)
         dispatch({
@@ -53,73 +61,59 @@ export function Igredient({ state, dispatch }: iIgradientsCardProps) {
                 ingredientName: data.ingredientName,
             }
         })
-        setIsEddingNewIngradient(false)
+        setIsAddingNewIngradientState(false)
     }
     
-    function removeIngredient(ingredientId: string) {
+    function removeIngredient(ingredientName: string) {
         dispatch({
             type: EditableProductActions.REMOVE_INGREDIENT,
-            payload: { ingredientId }
-        })
-    }
-    function setIsUpdatingIngradientName(isEditingIngradientNameId: string) {
-        dispatch({
-            type: EditableProductActions.IS_UPDATING_INGREDIENT_NAME,
-            payload: { isEditingIngradientNameId }
-        })
-    }
-    function setIsEddingNewIngradient(isAddingNewIngradient: boolean) {
-        reset()
-        dispatch({
-            type: EditableProductActions.IS_ADDING_NEW_INGREDIENT,
-            payload: { isAddingNewIngradient }
+            payload: { ingredientName }
         })
     }
 
+    //   //////////////   /////////////    //////////      /////////
 
-    function handleEditIngredientName(ingredientId: string) {
 
-        const ingredientName = getValues('editIngredientName')
+    function handleUpdateIngredientName(data: NewIngredientFormData) {
+        // const ingredientName = getValues('editIngredientName')
+        const nameAlreadyExists = state.ingredients.some(ingredient => ingredient.name === data.editIngredientName)
+        if( nameAlreadyExists ) {
+            return
+        }
         dispatch({
-            type: EditableProductActions.EDIT_INGREDIENT_NAME,
-            payload: {
-                ingredientId,
-                ingredientName,
-            }
+            type: EditableProductActions.UPDATE_INGREDIENT_NAME,
+            payload: { ingredientName:  data.editIngredientName }
         })
-        setIsUpdatingIngradientName('')
+        setIsUpdatingIngradientNameState('')
     }
     
-    function setIngredientIdToAddNewOption(ingredientIdToShowModalAddNewOption: string) {
-        dispatch({
-            type: EditableProductActions.IS_ADDING_NEW_OPTION_TO_INGREDIENT,
-            payload: { ingredientIdToShowModalAddNewOption }
-        })
+    // function setIngredientIdToAddNewOption(ingredientIdToShowModalAddNewOption: string) {
+    //     dispatch({
+    //         type: EditableProductActions.IS_ADDING_NEW_OPTION_TO_INGREDIENT,
+    //         payload: { ingredientIdToShowModalAddNewOption }
+    //     })
 
-    }
-    function handleAddNewOptionToIngredient(ingredientIdToAddNewOption: string) {
-        const optionName = getValues('optionName')
-        const optionPicture_url = getValues('optionPicture_url')
-        const id = Math.random().toString(26)
-        dispatch({
-            type: EditableProductActions.ADD_NEW_OPTION_TO_INGREDIENT,
-            payload: { 
-                ingredientIdToAddNewOption,
-                optionName,
-                optionPicture_url,
-                id,
-            }
-        })
-        setIngredientIdToAddNewOption('')
-    }
-    
+    // }
+    // function handleAddNewOptionToIngredient(ingredientIdToAddNewOption: string) {
+    //     const optionName = getValues('optionName')
+    //     const optionPicture_url = getValues('optionPicture_url')
+    //     const id = Math.random().toString(26)
+    //     dispatch({
+    //         type: EditableProductActions.ADD_NEW_OPTION_TO_INGREDIENT,
+    //         payload: { 
+    //             ingredientIdToAddNewOption,
+    //             optionName,
+    //             optionPicture_url,
+    //         }
+    //     })
+    //     setIngredientIdToAddNewOption('')
+    // }
     
     function removeOptionFromIngredient(ingredientId: string, optionId: string) {
         dispatch({
             type: EditableProductActions.REMOVE_OPTION_FROM_INGREDIENT,
             payload: { 
                 ingredientId,
-                optionId,
             }
         })
         
@@ -136,8 +130,8 @@ export function Igredient({ state, dispatch }: iIgradientsCardProps) {
                         <div key={ingredient.id} className="mb-6 relative">
                             <div className="mb-4">
     
-                                {state.isEditingIngradientNameId === ingredient.id ?
-                                    <form className="w-full flex items-center">
+                                {isUpdatingIngradientNameState === ingredient.name ?
+                                    <form onSubmit={handleSubmit(handleUpdateIngredientName)} className="w-full flex items-center">
                                         <input
                                             type="text"
                                             placeholder="Pesquisar"
@@ -148,7 +142,6 @@ export function Igredient({ state, dispatch }: iIgradientsCardProps) {
                                         />
                                         <button
                                             type="submit"
-                                            onClick={() => handleEditIngredientName(ingredient.id)}
                                             className="w-11 h-7 flex items-center justify-center rounded hover:scale-110 transition-all ease-in-out bg-blue-500 ">
                                             <BsCheck2 className="text-xl text-white" />
                                         </button>
@@ -157,20 +150,20 @@ export function Igredient({ state, dispatch }: iIgradientsCardProps) {
                                         <h3> {ingredient.name}  </h3>
                                         <div className="flex items-center gap-2">
                                             <BiPencil
-                                                onClick={() => setIsUpdatingIngradientName(ingredient.id)}
+                                                onClick={() => setIsUpdatingIngradientNameState(ingredient.name!)}
                                                 className="text-xl text-blue-500 cursor-pointer hover:scale-125 hover:transition-all ease-in-out" />
                                             <FiTrash2
-                                                onClick={() => removeIngredient(ingredient.id)}
+                                                onClick={() => removeIngredient(ingredient.name!)}
                                                 className="text-xl text-red-500 cursor-pointer hover:scale-125 hover:transition-all ease-in-out" />
                                         </div>
                                     </div>
-                                }
+                             }
     
                             </div>
     
                             <div className="flex flex-wrap gap-3">
                                 {/*        =========   DIALOG TO ADD NEW OPTION   ==============        */}
-                                { state.ingredientIdToShowModalAddNewOption === ingredient.id && <div className="w-56 h-60 p-4 absolute z-50 top-0 right-1/2 translate-x-1/2 rounded-md bg-white shadow-md">
+                                {/* { state.ingredientIdToShowModalAddNewOption === ingredient.id && <div className="w-56 h-60 p-4 absolute z-50 top-0 right-1/2 translate-x-1/2 rounded-md bg-white shadow-md">
                                     <input type="text" placeholder="Nome" { ...register("optionName")} 
                                     className="flex flex-1 h-7  w-full px-2text-gray-700 text-sm font-semibold placeholder:text-gray-500 
                                         outline-none border border-solid border-gray-300 rounded px-2 mb-5" />
@@ -184,14 +177,14 @@ export function Igredient({ state, dispatch }: iIgradientsCardProps) {
                                             Cancelar
                                         </button>
                                         <button
-                                            onClick={() => handleAddNewOptionToIngredient(ingredient.id)}
+                                            onClick={() => handleAddNewOptionToIngredient(ingredient.id!)}
                                             className={`h-7 flex flex-1 items-center justify-center text-white font-semibold rounded  hover:bg-green-600 bg-green-300 transition-all ease-in-out`}>
                                             Adicionar
                                         </button>
                                     </div>
-                                </div>}
+                                </div>} */}
                                 {/* ========================================================================= */}
-                                {  ingredient.options.map((option) => {
+                                {/* {  ingredient.options.map((option) => {
                                     return ( 
                                         <div key={option.id} className="rounded-lg w-[100px] h-24 flex items-center relative justify-center" >
                                             <FiTrash2
@@ -210,9 +203,9 @@ export function Igredient({ state, dispatch }: iIgradientsCardProps) {
                                         </div>
                                     )
                                 })
-                                }
+                                } */}
                                     <button
-                                    onClick={() => {setIngredientIdToAddNewOption(ingredient.id)}}
+                                    // onClick={() => {setIngredientIdToAddNewOption(ingredient.id)}}
                                     className="rounded-lg w-[100px] h-24 flex items-center justify-center border border-solid border-gray-400 cursor-pointer" >
                                     <HiPlus className=" text-gray-400 text-4xl" />
                                     </button>
@@ -224,7 +217,7 @@ export function Igredient({ state, dispatch }: iIgradientsCardProps) {
             }
 
             {
-                state.isAddingNewIngradient ?
+                isAddingNewIngradientState ?
                     <form onSubmit={handleSubmit(handleAddNewIngredient)} className="w-full flex items-center">
                         <input
                             type="text"
@@ -242,72 +235,16 @@ export function Igredient({ state, dispatch }: iIgradientsCardProps) {
                     </form> : null
             }
 
+
             {/*                       Add new ingredient button                             */}
             <div className="w-full flex items-center justify-end mt-6">
                 <button
-                    onClick={() => setIsEddingNewIngradient(state.isAddingNewIngradient ? false : true)}
+                    onClick={() => setIsAddingNewIngradient(isAddingNewIngradientState ? false : true)}
                     className={`w-28 h-8 flex items-center justify-center text-white font-semibold rounded  transition-all ease-in-out 
-                    ${!state.isAddingNewIngradient ? 'hover:bg-green-600 bg-green-300' : 'hover:bg-yellow-500 bg-yellow-400'}  `}>
-                    {!state.isAddingNewIngradient ? 'Adicionar' : 'Cancelar'}
+                    ${!isAddingNewIngradientState ? 'hover:bg-green-600 bg-green-300' : 'hover:bg-yellow-500 bg-yellow-400'}  `}>
+                    {!isAddingNewIngradientState ? 'Adicionar' : 'Cancelar'}
                 </button>
             </div>
         </div>
     )
 }
-
-
-// const editInputFormValidationSchema = zod.object({
-//     ingredientName: zod.string(),
-//     ingredientId: zod.string(),
-// });
-
-// type EditInputFormData = zod.infer<typeof editInputFormValidationSchema>;
-
-// interface iEditInput {
-//     ingredient: IIngredientOptionsData,
-//     state: IEditableProductReducerData,
-//     dispatch: Dispatch<any>,
-// }
-
-// function EditInput({ state, dispatch, ingredient }: iEditInput) {
-
-//     const { register, handleSubmit, watch } = useForm<EditInputFormData>({
-//         resolver: zodResolver(editInputFormValidationSchema),
-//         defaultValues: {
-//             ingredientName: '',
-//             ingredientId: '',
-//         },
-//     });
-
-//     function handleEditIngredientName(data: EditInputFormData) {
-//         data)
-//         // dispatch({
-//         //     type: EditableProductActions.EDIT_INGREDIENT_NAME,
-//         //     payload: {
-//         //         ingredientId: data.ingredientId,
-//         //         ingredientName: data.ingredientName,
-//         //      }
-//         // })
-
-//     }
-
-//     return (
-//         <form onSubmit={handleSubmit(handleEditIngredientName)} className="w-full flex items-center" >
-//             <input
-//                 type="text"
-//                 placeholder="Pesquisar"
-//                 {...register("ingredientName", {
-//                     value: ingredient.id
-//                 })}
-//                 className=" flex flex-1 h-7 pb-1 max-w-64 px-2
-//             text-gray-700 text-sm font-semibold placeholder:text-gray-500
-//             outline-none border border-solid border-gray-300 rounded mr-3 pt-1"
-//             />
-//             <button
-//                 type="submit"
-//                 className="w-11 h-7 flex items-center justify-center rounded hover:scale-110 transition-all ease-in-out bg-blue-500 ">
-//                 <BsCheck2 className="text-xl text-white" />
-//             </button>
-//         </form>
-//     )
-// }

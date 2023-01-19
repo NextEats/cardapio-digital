@@ -1,7 +1,8 @@
 import Image from "next/image";
 import { useForm } from "react-hook-form";
-import { Dispatch } from "react";
+import { Dispatch, useState } from "react";
 import * as zod from "zod"
+
 
 import { BiPencil } from "react-icons/bi";
 import { BsCheck2 } from "react-icons/bs";
@@ -23,13 +24,11 @@ const newInformationFormValidationSchema = zod.object({
     description: zod.string(),
     price: zod.string()
 });
-
 type NewInformationFormData = zod.infer<typeof newInformationFormValidationSchema>;
-
 
 export default function HeadersCard({ state, dispatch }: IHeadersCardProps) {
 
-    const { register, handleSubmit, formState: { errors }, watch } = useForm<NewInformationFormData>({
+    const { register, handleSubmit } = useForm<NewInformationFormData>({
         resolver: zodResolver(newInformationFormValidationSchema),
         defaultValues: {
             name: "",
@@ -37,6 +36,7 @@ export default function HeadersCard({ state, dispatch }: IHeadersCardProps) {
             price: "",
         },
     });
+    const [ incompliteFieldes, setIncompliteFieldes ] = useState(false)
 
     function setProductIsEditing(isEditingInfo: boolean) {
         dispatch({
@@ -46,7 +46,7 @@ export default function HeadersCard({ state, dispatch }: IHeadersCardProps) {
     }
 
     function handleEditInfrmation(data: NewInformationFormData) {
-        if (watch("name") === '' || watch("price") === '') {
+        if (data.name === '' || data.description === '' || data.price === '') {
             return
         }
         dispatch({
@@ -72,7 +72,7 @@ export default function HeadersCard({ state, dispatch }: IHeadersCardProps) {
                             hidden={state.isEditingInfo}
                             className="font-extrabold text-xl text-gray-800 leading-4"> {state.productInformation.name} </h1>
                         <input type="text" placeholder="Pesquisar"
-                            hidden={!state.isEditingInfo} {...register("name", { required: true  })}
+                            hidden={!state.isEditingInfo} {...register("name", { required: true })}
                             className="h-7 bg-red-50 pb-1 felx flex-1 px-2 text-gray-600 text-sm font-semibold
                                  placeholder:text-gray-400 rounded outline-none"
                         />
@@ -109,6 +109,7 @@ export default function HeadersCard({ state, dispatch }: IHeadersCardProps) {
                                  placeholder:text-gray-400 rounded outline-none"
                         />
 
+                        
                     </div>
                 </form>
             </div>

@@ -9,6 +9,7 @@ import { FiTrash2 } from "react-icons/fi";
 import { EditableProductActions } from "../../../../../reducers/aditableProduct/actions";
 import { IEditableProductReducerData, iPayloadProduct } from "../../../../../reducers/aditableProduct/reducer";
 import { iInsertAdditional } from "../../../../../types/types";
+import { CardapioDigitalButton } from "../../CardapioDigitalButton";
 
 interface IAdditionalProps {
     state: IEditableProductReducerData,
@@ -176,11 +177,12 @@ export function Additional({ state, dispatch }: IAdditionalProps) {
                 {/*                       Add new additional button                             */}
             </div>
             <div className="w-full flex items-center justify-end mt-6" >
-                <button
+                {/* <button
                     onClick={() => setShowAdditionalModal('ADD')}
                     className={`w-28 h-8 flex items-center justify-center text-white font-semibold rounded  transition-all ease-in-out hover:bg-green-600 bg-green-300  `}>
                     Adicionar
-                </button>
+                </button>  */}
+                <CardapioDigitalButton w="w-28" h="h-8" name="Adicionar" onClick={() => setShowAdditionalModal('ADD')} />
             </div>
         </div >
     )

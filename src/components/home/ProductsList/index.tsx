@@ -1,16 +1,25 @@
 import { FaSearch } from "react-icons/fa";
+import { iProductCategories, iProducts } from "../../../types/types";
 
 function scrollTo(id: string) {
   const element = document.getElementById(id) as HTMLElement;
   element.scrollIntoView({ behavior: "smooth" });
 }
 
-export default function ProductList() {
+interface iProductsList {
+  products: iProducts;
+  productCategoriesForThisRestaurant: iProductCategories;
+}
+
+export default function ProductList({
+  products,
+  productCategoriesForThisRestaurant,
+}: iProductsList) {
   return (
     <div>
       <CategoriesNavbar />
       <SearchInput />
-      <div className="mx-3">
+      <div className="mx-3 ">
         <ProductsHorizontalList name="Promoção" />
         <ProductsHorizontalList name="Bebidas" />
         <ProductsHorizontalList name="Drinks" />
@@ -25,7 +34,7 @@ function CategoriesNavbar() {
     "mr-3 px-12 py-3 rounded-lg border-2 text-md font-semibold bg-gray-100 hover:bg-gray-200";
 
   return (
-    <div className="sticky pl-3 py-2 left-0 top-0 mt-3 whitespace-nowrap overflow-auto bg-gray-700 z-20 touch-auto">
+    <div className="scrollbar-custom sticky pl-3 py-2 left-0 top-0 mt-3 whitespace-nowrap overflow-auto bg-gray-100 shadow border z-20 touch-auto">
       <button className={buttonClasses} onClick={() => scrollTo("Promoção")}>
         Promoção
       </button>
@@ -62,9 +71,9 @@ function ProductsHorizontalList({ name }: { name: string }) {
   const productsOnSaleData = [1, 2, 3, 4, 5, 6, 7];
 
   return (
-    <div id={name} className="pt-16 first:pt-0">
+    <div id={name} className="mb-12 scroll-mt-24">
       <h2 className="text-2xl mb-3 mt-5 text-gray-500">{name}</h2>
-      <div className="whitespace-nowrap overflow-auto">
+      <div className="whitespace-nowrap overflow-auto scrollbar-custom">
         {productsOnSaleData.map((id) => {
           return (
             <div

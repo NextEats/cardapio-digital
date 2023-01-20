@@ -1,4 +1,4 @@
-import { useContext, useMemo, useState, useEffect } from "react";
+import { useContext, useMemo, useState, useEffect, useCallback } from "react";
 
 // NEXT JS IMPORTS
 import { GetServerSideProps } from "next";
@@ -21,6 +21,8 @@ import {
   iRestaurant,
   iAdditionals,
   iRestaurantType,
+  iProductCategories,
+  iProductCategory,
 } from "./../types/types";
 
 // HOMEPAGE TYPESCRIPT INTERFACE
@@ -30,11 +32,12 @@ interface iDataHomepage {
     ingredients: iIngredients;
     additionals: iAdditionals;
     products: iProducts;
+    productCategoriesForThisRestaurant: iProductCategories;
   };
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  // FETCH DATA FROM DATABASE
+  // FETCH DATA FROM DATABASE;
   const restaurants = await supabase.from("restaurants").select().eq("id", 3);
   const ingredients = await supabase.from("ingredients").select();
   const additionals = await supabase.from("additionals").select();
@@ -62,6 +65,15 @@ async function returnRestaurantType(id: number) {
   return data as unknown as Array<iRestaurantType["data"]>;
 }
 
+async function returnAllCategoriesForThisRestaurant(restaurantId: number) {
+  const { data } = await supabase
+    .from("product_categories")
+    .select("*")
+    .eq("restaurant_id", restaurantId);
+
+  return data as unknown as iProductCategories;
+}
+
 export default function HomePage({ data }: iDataHomepage) {
   // GETS DATA FROM SERVER SIDE PROPS
   const { restaurants, ingredients, additionals, products } = data;
@@ -72,11 +84,25 @@ export default function HomePage({ data }: iDataHomepage) {
   const [restaurantType, setRestaurantType] = useState<
     iRestaurantType["data"] | null | undefined
   >();
+  const [
+    productCategoriesForThisRestaurant,
+    setProductCategoriesForThisRestaurant,
+  ] = useState<iProductCategories | null | undefined>();
 
-  returnRestaurantType(restaurant?.restaurant_type_id).then((res) => {
-    var data = res[0] as any;
-    setRestaurantType(data);
-  });
+  useCallback(() => {
+    returnRestaurantType(restaurant?.restaurant_type_id).then((res) => {
+      var data = res[0] as any;
+      setRestaurantType(data);
+    });
+
+    returnAllCategoriesForThisRestaurant(restaurant?.id).then((res) => {
+      setProductCategoriesForThisRestaurant(res);
+    });
+  }, [restaurant]);
+
+  if (!productCategoriesForThisRestaurant) {
+    return <>Loading</>;
+  }
 
   return (
     <>
@@ -91,7 +117,12 @@ export default function HomePage({ data }: iDataHomepage) {
             restaurantType={restaurantType}
           />
           {/* <ProductModal/> */}
-          <ProductsList />
+          <ProductsList
+            products={products}
+            productCategoriesForThisRestaurant={
+              productCategoriesForThisRestaurant
+            }
+          />
         </div>
       </div>
     </>

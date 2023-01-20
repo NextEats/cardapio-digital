@@ -35,3 +35,10 @@ export interface iAdditionals {
 export interface iRestaurantType {
   data: Database["public"]["Tables"]["restaurant_types"]["Row"];
 }
+export interface iProductCategory {
+  data: Database["public"]["Tables"]["product_categories"]["Row"];
+}
+
+export interface iProductCategories {
+  data: Array<iProductCategory>;
+}

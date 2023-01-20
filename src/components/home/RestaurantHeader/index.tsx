@@ -13,7 +13,10 @@ export default function RestaurantHeader({
 }: iRestaurantHeader) {
   return (
     <div>
-      <div className="h-[230px] w-full bg-gradient-to-r from-sky-500 to-indigo-500"></div>
+      <div
+        style={{ background: "url(" + restaurant.banner_url + "" }}
+        className="h-[230px] w-full"
+      ></div>
       <div className="m-3 flex flex-row">
         <Image
           src={restaurant.picture_url}

@@ -8,10 +8,10 @@ export default function AdminHomepage() {
     <AdminWrapper>
       <div className="flex flex-col gap-8">
         <div className="grid 2xs:grid-cols-2 xl:grid-cols-4 gap-3">
-          <Card color="red-500" name="Faturamento" value={"R$ 115,00"} />
-          <Card color="green-500" name="Pedidos" value={"16"} />
-          <Card color="yellow-500" name="Produtos no Cardápio" value={"54"} />
-          <Card color="blue-500" name="Ingredientes em Falta" value={"2"} />
+          <Card color="red" name="Faturamento" value={"R$ 115,00"} />
+          <Card color="green" name="Pedidos" value={"16"} />
+          <Card color="yellow" name="Produtos no Cardápio" value={"54"} />
+          <Card color="blue" name="Ingredientes em Falta" value={"2"} />
         </div>
 
         <NewRequests />

@@ -39,6 +39,20 @@ export interface iProductCategory {
 export interface iProductCategories {
   data: Array<Database["public"]["Tables"]["product_categories"]["Row"]>;
 }
+export interface iOrder {
+  data: Database["public"]["Tables"]["orders"]["Row"];
+}
+
+export interface iOrders {
+  data: Array<Database["public"]["Tables"]["orders"]["Row"]>;
+}
+export interface iOrderProducts {
+  data: Database["public"]["Tables"]["orders_products"]["Row"];
+}
+
+export interface iOrdersProducts {
+  data: Array<Database["public"]["Tables"]["orders_products"]["Row"]>;
+}
 
 
 //  INSERTS

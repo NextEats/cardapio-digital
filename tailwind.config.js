@@ -24,6 +24,9 @@ module.exports = {
         sm: "0px 0px 2px rgba(0, 0, 0, 0.25);",
         md: "0px 0px 8px rgba(0, 0, 0, 0.3);",
       },
+      gridTemplateColumns: {
+        'xlcharts': 'repeat(2, auto)'
+      },
       colors: {
         white: "#FFFFFF",
         "white-300": "#F7F7F7",

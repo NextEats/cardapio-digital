@@ -1,5 +1,9 @@
 import { FaSearch } from "react-icons/fa";
-import { iProductCategories, iProducts } from "../../../types/types";
+import {
+  iProductCategories,
+  iProductCategory,
+  iGroupedProducts,
+} from "../../../types/types";
 
 function scrollTo(id: string) {
   const element = document.getElementById(id) as HTMLElement;
@@ -7,22 +11,25 @@ function scrollTo(id: string) {
 }
 
 interface iProductsList {
-  products: iProducts;
-  productCategoriesForThisRestaurant: iProductCategories;
+  groupedProducts: iGroupedProducts;
 }
 
-export default function ProductList({
-  products,
-  productCategoriesForThisRestaurant,
-}: iProductsList) {
+export default function ProductList({ groupedProducts }: iProductsList) {
   return (
     <div>
       <CategoriesNavbar />
       <SearchInput />
       <div className="mx-3 ">
-        <ProductsHorizontalList name="Promoção" />
+        {groupedProducts.map((data, index) => {
+          return (
+            <div key={index}>
+              <ProductsHorizontalList name={data.name} />
+            </div>
+          );
+        })}
+        {/* <ProductsHorizontalList name="Promoção" />
         <ProductsHorizontalList name="Bebidas" />
-        <ProductsHorizontalList name="Drinks" />
+        <ProductsHorizontalList name="Drinks" /> */}
       </div>
       <div className="h-[1000px]"></div>
     </div>

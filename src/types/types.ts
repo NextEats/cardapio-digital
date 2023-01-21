@@ -42,3 +42,14 @@ export interface iProductCategory {
 export interface iProductCategories {
   data: Array<iProductCategory>;
 }
+
+export interface iGroupedProducts {
+  [key: number]: {
+    category_name: string | "";
+    products: ProductWithCategory[];
+  };
+}
+
+export type ProductWithCategory = iProduct["data"] & {
+  category_name: string;
+};

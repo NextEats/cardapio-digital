@@ -23,6 +23,8 @@ import {
   iRestaurantType,
   iProductCategories,
   iProductCategory,
+  iGroupedProducts,
+  ProductWithCategory,
 } from "./../types/types";
 
 // HOMEPAGE TYPESCRIPT INTERFACE
@@ -32,7 +34,7 @@ interface iDataHomepage {
     ingredients: iIngredients;
     additionals: iAdditionals;
     products: iProducts;
-    productCategoriesForThisRestaurant: iProductCategories;
+    groupedProducts: iGroupedProducts;
   };
 }
 
@@ -43,6 +45,54 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const additionals = await supabase.from("additionals").select();
   const products = await supabase.from("products").select();
 
+  const getGroupedProducts = async () => {
+    // Cria um mapa para armazenar os nomes das categorias correspondentes a cada ID de categoria
+    const categoryMap = new Map<number, string>();
+    let groupedProducts;
+    try {
+      // Faz uma requisição para a tabela de categorias de produtos
+      const res = await supabase.from("product_categories").select("id, name");
+      if (!res.data) {
+        return;
+      }
+      // Percorre os dados da resposta e adiciona os nomes das categorias ao mapa, usando o ID da categoria como chave
+      for (const category of res.data) {
+        categoryMap.set(category.id, category.name);
+      }
+      // Faz uma requisição para a tabela de produtos
+      const resProduct = await supabase.from("products").select("*");
+      if (!resProduct.data) {
+        return;
+      }
+      // Armazena os dados da resposta em uma variável
+      const products = resProduct.data;
+      // Utiliza a função reduce para agrupar os produtos por categoria e adicionar o nome da categoria a cada produto agrupado
+      groupedProducts = products.reduce((acc: iGroupedProducts, product) => {
+        // Verifica se ja existe uma entrada para essa categoria no objeto agrupado
+        if (!acc[product.category_id]) {
+          acc[product.category_id] = {
+            // Se não existir, adiciona uma nova entrada para essa categoria e coloca o nome da categoria recuperado do mapa
+            category_name: categoryMap.get(product.category_id) || "",
+            products: [],
+          };
+        }
+        // Cria um objeto "productWithCategory" com as propriedades do produto e a categoria_name
+        const productWithCategory: ProductWithCategory = {
+          ...product,
+          category_name: acc[product.category_id].category_name,
+        };
+        // Adiciona o objeto "productWithCategory" ao array de produtos da categoria
+        acc[product.category_id].products.push(productWithCategory);
+        return acc;
+      }, {});
+    } catch (error) {
+      console.error(error);
+    } finally {
+      // retorna a variavel groupedProducts
+      return groupedProducts;
+    }
+  };
+
   // PASS DATA TO PAGE
   return {
     props: {
@@ -51,6 +101,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         ingredients: ingredients,
         additionals: additionals,
         products: products,
+        groupedProducts: getGroupedProducts().then((res) => console.log(res)),
       },
     },
   };
@@ -71,12 +122,13 @@ async function returnAllCategoriesForThisRestaurant(restaurantId: number) {
     .select("*")
     .eq("restaurant_id", restaurantId);
 
-  return data as unknown as iProductCategories;
+  return data as unknown as Array<iProductCategory["data"]>;
 }
 
 export default function HomePage({ data }: iDataHomepage) {
   // GETS DATA FROM SERVER SIDE PROPS
-  const { restaurants, ingredients, additionals, products } = data;
+  const { restaurants, ingredients, additionals, products, groupedProducts } =
+    data;
   var restaurant = restaurants.data[0] as unknown as iRestaurant["data"];
 
   // STATES
@@ -87,20 +139,23 @@ export default function HomePage({ data }: iDataHomepage) {
   const [
     productCategoriesForThisRestaurant,
     setProductCategoriesForThisRestaurant,
-  ] = useState<iProductCategories | null | undefined>();
+  ] = useState<Array<iProductCategory["data"]> | null | undefined>();
 
   useCallback(() => {
     returnRestaurantType(restaurant?.restaurant_type_id).then((res) => {
       var data = res[0] as any;
       setRestaurantType(data);
     });
+  }, [restaurant]);
 
+  useMemo(() => {
     returnAllCategoriesForThisRestaurant(restaurant?.id).then((res) => {
       setProductCategoriesForThisRestaurant(res);
     });
   }, [restaurant]);
 
   if (!productCategoriesForThisRestaurant) {
+    console.error(productCategoriesForThisRestaurant);
     return <>Loading</>;
   }
 
@@ -117,12 +172,7 @@ export default function HomePage({ data }: iDataHomepage) {
             restaurantType={restaurantType}
           />
           {/* <ProductModal/> */}
-          <ProductsList
-            products={products}
-            productCategoriesForThisRestaurant={
-              productCategoriesForThisRestaurant
-            }
-          />
+          <ProductsList groupedProducts={groupedProducts} />
         </div>
       </div>
     </>

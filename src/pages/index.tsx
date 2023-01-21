@@ -93,6 +93,9 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     }
   };
 
+  var groupedProducts: iGroupedProducts | undefined =
+    await getGroupedProducts();
+
   // PASS DATA TO PAGE
   return {
     props: {
@@ -101,7 +104,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         ingredients: ingredients,
         additionals: additionals,
         products: products,
-        groupedProducts: getGroupedProducts().then((res) => console.log(res)),
+        groupedProducts: groupedProducts,
       },
     },
   };

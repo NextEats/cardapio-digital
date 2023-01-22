@@ -26,6 +26,7 @@ import {
   iGroupedProducts,
   ProductWithCategory,
 } from "./../types/types";
+import ProductModal from "../components/home/ProductModal";
 
 // HOMEPAGE TYPESCRIPT INTERFACE
 interface iDataHomepage {
@@ -168,14 +169,22 @@ export default function HomePage({ data }: iDataHomepage) {
         <title>{restaurant.name}</title>
         <link href={restaurant.picture_url} rel="icon" sizes="any" />
       </Head>
+      {productModal && (
+        <ProductModal
+          productModal={productModal}
+          setProductModal={setProductModal}
+        />
+      )}
       <div className="bg-[#222] flex justify-center min-h-screen min-w-screen">
         <div className="bg-gray-100 max-w-7xl w-full">
           <RestaurantHeader
             restaurant={restaurant}
             restaurantType={restaurantType}
           />
-          {/* <ProductModal/> */}
-          <ProductsList groupedProducts={groupedProducts} />
+          <ProductsList
+            groupedProducts={groupedProducts}
+            setProductModal={setProductModal}
+          />
         </div>
       </div>
     </>

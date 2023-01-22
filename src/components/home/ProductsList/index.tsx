@@ -14,9 +14,13 @@ function scrollTo(id: string) {
 
 interface iProductsList {
   groupedProducts: iGroupedProducts;
+  setProductModal: Function;
 }
 
-export default function ProductList({ groupedProducts }: iProductsList) {
+export default function ProductList({
+  groupedProducts,
+  setProductModal,
+}: iProductsList) {
   const groupedProductsData = Object.values(groupedProducts);
 
   console.log(groupedProductsData);
@@ -28,7 +32,11 @@ export default function ProductList({ groupedProducts }: iProductsList) {
       <div className="mx-3 ">
         {groupedProductsData.map((category, index) => {
           return (
-            <ProductsHorizontalList key={index} category={category} />
+            <ProductsHorizontalList
+              key={index}
+              category={category}
+              setProductModal={setProductModal}
+            />
             // <div key={index}>
             //   {category.category_name}
             //   <div>
@@ -82,9 +90,12 @@ function SearchInput() {
   );
 }
 
-function ProductsHorizontalList({ category }) {
-  const productsOnSaleData = [1, 2, 3, 4, 5, 6, 7];
-
+function ProductsHorizontalList({
+  category,
+  setProductModal,
+}: {
+  setProductModal: Function;
+}) {
   return (
     <div id={category.category_name} className="mb-12 scroll-mt-24">
       <h2 className="text-2xl mb-3 mt-5 text-gray-500">
@@ -95,6 +106,9 @@ function ProductsHorizontalList({ category }) {
           return (
             <div
               key={index}
+              onClick={() => {
+                setProductModal(product);
+              }}
               className="border bg-gray-100 hover:bg-gray-300 w-44 h-72 p-3 mr-3 inline-block rounded-md cursor-pointer"
             >
               <div className="h-36 w-full mt-1 rounded-md">

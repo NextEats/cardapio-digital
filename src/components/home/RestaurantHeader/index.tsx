@@ -1,5 +1,6 @@
 import Image from "next/image";
-import { FaStar, FaStarHalf } from "react-icons/fa";
+import { FaClock, FaStar, FaStarHalf } from "react-icons/fa";
+import { MdExpandMore, MdLocationOn } from "react-icons/md";
 
 import { iRestaurant, iRestaurantType } from "./../../../types/types";
 
@@ -12,6 +13,8 @@ export default function RestaurantHeader({
   restaurant,
   restaurantType,
 }: iRestaurantHeader) {
+  console.log(restaurantType);
+
   return (
     <div>
       <div
@@ -21,6 +24,7 @@ export default function RestaurantHeader({
             restaurant.banner_url +
             ") no-repeat",
           backgroundSize: "cover",
+          backgroundOrigin: "padding-box, content-box",
         }}
         className="h-[230px] w-full"
       ></div>
@@ -34,10 +38,25 @@ export default function RestaurantHeader({
         />
         <div className="ml-5 mt-3">
           <h1 className="text-2xl font-semibold text-[#3e3e3e]">
-            Quintal do Hambúrguer
+            {restaurant.name}
           </h1>
           <span className="text-md text-[#676767]">{restaurantType?.name}</span>
           <RestaurantRate averageRating={4.5} />
+          <span className="font-normal text-md">
+            Avalidado por 356 clientes
+          </span>
+        </div>
+      </div>
+      <div className="flex flex-row gap-2 mt-2 ml-3 pb-3">
+        <div className="flex items-center justify-center bg-gray-800 px-5 py-2 rounded-md cursor-pointer transition-all ease-in-out duration-300 hover:bg-gray-600">
+          <MdLocationOn className="inline text-white text-xl mr-2" />
+          <span className="text-white text-sm">Rua das Flores, 4321</span>
+          <MdExpandMore className="inline text-white text-xl ml-2" />
+        </div>
+        <div className="flex items-center justify-center bg-green-800 px-5 py-1 rounded-md cursor-pointer transition-all ease-in-out duration-300 hover:bg-gray-600">
+          <FaClock className="inline text-white text-xl mr-2" />
+          <span className="text-white text-sm">Aberto até 23h</span>
+          <MdExpandMore className="inline text-white text-xl ml-2" />
         </div>
       </div>
     </div>

@@ -2,235 +2,252 @@ import { BsArrowLeftCircle, BsFillPlusCircleFill } from "react-icons/bs";
 import { AiOutlineMinus, AiOutlinePlus } from "react-icons/ai";
 import { FaMinus, FaPlus } from "react-icons/fa";
 
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
 
 import Image from "next/image";
-import { iProduct, iIngredients, iAdditionals } from "../../../types/types";
+import {
+  iProduct,
+  iIngredients,
+  iAdditionals,
+  iAdditional,
+} from "../../../types/types";
 
-import stringToNormalForm from "./../../../helpers/stringToNormalForm"
+import { supabase } from "./../../../server/api";
+
+import stringToNormalForm from "./../../../helpers/stringToNormalForm";
 
 export default function ProductModal({
-  showProduct,
-  setShowProduct,
-  currentProduct,
-  ingredients,
-  additionals,
+  productModal,
+  setProductModal,
 }: {
-  showProduct: boolean;
-  setShowProduct: Dispatch<SetStateAction<boolean>>;
-  currentProduct: iProduct | undefined;
-  ingredients: iIngredients;
-  additionals: iAdditionals;
+  productModal: iProduct["data"];
+  setProductModal: Function;
 }) {
-  if (showProduct && currentProduct) {
-    return (
-      <>
-        <div
-          className="absolute bg-black w-screen h-screen opacity-60 z-[100] cursor-pointer"
-          onClick={() => setShowProduct(false)}
-        ></div>
-        <div
-          className={`w-[545px] pb-9 px-4 bg-white top-0 right-0 z-[200] absolute overflow-auto shadow-2xl h-screen`}
-        >
-          <div className="sticky">
-            <BsArrowLeftCircle
-              className="my-8 cursor-pointer"
-              size={30}
-              onClick={() => setShowProduct(false)}
+  var body = document.getElementById("body");
+  body?.classList.add("overflow-hidden");
+
+  useMemo(async () => {
+    console.log(productModal.id);
+    await supabase
+      .from("product_ingredients")
+      .select()
+      .eq("product_id", productModal.id)
+      .then((res) => {
+        console.log(res.data);
+      });
+  }, [productModal]);
+
+  return (
+    <>
+      <div
+        className="fixed bg-black w-screen h-screen opacity-60 z-[100] cursor-pointer"
+        onClick={() => {
+          setProductModal(null);
+          body?.classList.remove("overflow-hidden");
+        }}
+      ></div>
+      <div
+        className={`max-w-[645px] pb-9 px-4 bg-white top-0 right-0 z-[200] fixed overflow-auto shadow-2xl h-screen`}
+      >
+        <div className="sticky">
+          <BsArrowLeftCircle
+            className="my-8 cursor-pointer"
+            size={30}
+            onClick={() => {
+              setProductModal(null);
+              body?.classList.remove("overflow-hidden");
+            }}
+          />
+          <div className="w-full flex items-center justify-center mb-9">
+            <Image
+              className="rounded-3xl"
+              src={productModal.picture_url}
+              alt="backgfroundheader"
+              width={500}
+              height={500}
             />
-            <div className="w-full flex items-center justify-center mb-9">
-              { currentProduct.data.picture_url ?
-
-              <Image
-                className="rounded-3xl"
-                src={currentProduct.data.picture_url}
-                alt="backgfroundheader"
-                width={500}
-                height={500}
-              /> : ""
-              }
-            </div>
-            <div className="mb-9">
-              <h1 className="font-extrabold text-xl text-gray-800 ">
-                {currentProduct.data.name}
-              </h1>
-              <p className="font-normal text-md text-gray-800 mt-3">
-                {currentProduct.data.description}
-              </p>
-            </div>
-
-            {/* <Ingredients data={ingredients} />
-            <Additionals data={additionals} /> */}
-            <SubmitButtons />
           </div>
+          <div className="mb-9">
+            <h1 className="font-extrabold text-xl text-gray-800 ">
+              {productModal.name}
+            </h1>
+            <p className="font-normal text-md text-gray-800 mt-3">
+              {productModal.description}
+            </p>
+          </div>
+          {/* <Ingredients data={ingredients} />
+          <Additionals data={additionals} /> */}
+          <SubmitButtons />
         </div>
-      </>
-    );
-  } else {
-    return <></>;
-  }
+      </div>
+    </>
+  );
 }
 
-// function Ingredients({ data }: { data: Database['public']['Tables']['ingredients']['Row'] }) {
-//   function Ingredient({
-//     ingredientData,
-//   }: {
-//     ingredientData: Array<Database['public']['Tables']['ingredients']['Row']>;
-//   }) {
-//     return (
-//       <fieldset className="mb-5" key={ingredientData.id}>
-//         <h2 className="mb-4 font-semibold text-sm">{ingredientData.name}</h2>
-//         <div className="flex flex-wrap gap-2">
-//           {ingredientData.options.map((option) => {
-//             return (
-//               <div key={option.id}>
-//                 <label
-//                   className=""
-//                   htmlFor={stringToNormalForm(ingredientData.name) + option.id}
-//                 >
-//                   <div className="w-[99px] h-[94px] rounded-lg relative cursor-pointer ">
-//                     <div className="w-full h-full absolute rounded-lg z-10 bg-gradient-to-t from-[#000000ff] via-[#00000063] to-[#00000000]"></div>
-//                     <span className="absolute bottom-1 left-1 z-20 text-white-300 text-sm font-medium ">
-//                       {option.name}
-//                     </span>
-//                     <Image
-//                       src={option.picture_url}
-//                       alt="carne malpassada"
-//                       className={
-//                         "wi-full h-full relative rounded-lg object-cover"
-//                       }
-//                       width={326}
-//                       height={358}
-//                     />
-//                   </div>
-//                 </label>
-//                 <input
-//                   type="radio"
-//                   name={stringToNormalForm(ingredientData.name)}
-//                   id={stringToNormalForm(ingredientData.name) + option.id}
-//                   value={stringToNormalForm(ingredientData.name) + option.id}
-//                   defaultChecked={option.isSelected}
-//                 />
-//               </div>
-//             );
-//           })}
-//         </div>
-//       </fieldset>
-//     );
-//   }
+function Ingredients({
+  data,
+}: {
+  data: Database["public"]["Tables"]["ingredients"]["Row"];
+}) {
+  function Ingredient({
+    ingredientData,
+  }: {
+    ingredientData: Array<Database["public"]["Tables"]["ingredients"]["Row"]>;
+  }) {
+    return (
+      <fieldset className="mb-5" key={ingredientData.id}>
+        <h2 className="mb-4 font-semibold text-sm">{ingredientData.name}</h2>
+        <div className="flex flex-wrap gap-2">
+          {ingredientData.options.map((option) => {
+            return (
+              <div key={option.id}>
+                <label
+                  className=""
+                  htmlFor={stringToNormalForm(ingredientData.name) + option.id}
+                >
+                  <div className="w-[99px] h-[94px] rounded-lg relative cursor-pointer ">
+                    <div className="w-full h-full absolute rounded-lg z-10 bg-gradient-to-t from-[#000000ff] via-[#00000063] to-[#00000000]"></div>
+                    <span className="absolute bottom-1 left-1 z-20 text-white-300 text-sm font-medium ">
+                      {option.name}
+                    </span>
+                    <Image
+                      src={option.picture_url}
+                      alt="carne malpassada"
+                      className={
+                        "wi-full h-full relative rounded-lg object-cover"
+                      }
+                      width={326}
+                      height={358}
+                    />
+                  </div>
+                </label>
+                <input
+                  type="radio"
+                  name={stringToNormalForm(ingredientData.name)}
+                  id={stringToNormalForm(ingredientData.name) + option.id}
+                  value={stringToNormalForm(ingredientData.name) + option.id}
+                  defaultChecked={option.isSelected}
+                />
+              </div>
+            );
+          })}
+        </div>
+      </fieldset>
+    );
+  }
 
-//   return (
-//     <div>
-//       {data.map((ingredientData, index) => {
-//         return <Ingredient key={index} ingredientData={ingredientData} />;
-//       })}
-//     </div>
-//   );
-// }
+  return (
+    <div>
+      {data.map((ingredientData, index) => {
+        return <Ingredient key={index} ingredientData={ingredientData} />;
+      })}
+    </div>
+  );
+}
 
-// function Additionals({ data }: { data: IAdditionalData[] }) {
-//   const [selectedAdditionals, setSelectedAdditionals] = useState<any[]>([]);
+function Additionals({ data }: { data: iAdditional["data"][] }) {
+  const [selectedAdditionals, setSelectedAdditionals] = useState<any[]>([]);
 
-//   if (data) {
-//     return (
-//       <div className="mb-24">
-//         <h2 className="mb-5 font-semibold text-sm">Adicionais</h2>
-//         {data.map((additional: IAdditionalData) => {
-//           return (
-//             <div key={additional.id} className="flex flex-col mb-3">
-//               <div className="flex flex-1 items-center justify-between pr-4 shadow-md rounded-md bg-white-300">
-//                 <div className="flex items-center gap-3">
-//                   <Image
-//                     src={additional.picture_url}
-//                     alt="backgfroundheader"
-//                     width={91}
-//                     height={200}
-//                   />
-//                   <div className="">
-//                     <p className="font-extrabold text-black text-sm ">
-//                       {additional.name}
-//                     </p>
-//                     <p className="font-semibold text-xs text-black">
-//                       R$ {additional.price}
-//                     </p>
-//                   </div>
-//                 </div>
+  if (data) {
+    return (
+      <div className="mb-24">
+        <h2 className="mb-5 font-semibold text-sm">Adicionais</h2>
+        {data.map((additional: iAdditional["data"]) => {
+          return (
+            <div key={additional.id} className="flex flex-col mb-3">
+              <div className="flex flex-1 items-center justify-between pr-4 shadow-md rounded-md bg-white-300">
+                <div className="flex items-center gap-3">
+                  <Image
+                    src={additional.picture_url}
+                    alt="backgfroundheader"
+                    width={91}
+                    height={200}
+                  />
+                  <div className="">
+                    <p className="font-extrabold text-black text-sm ">
+                      {additional.name}
+                    </p>
+                    <p className="font-semibold text-xs text-black">
+                      R$ {additional.price}
+                    </p>
+                  </div>
+                </div>
 
-//                 {selectedAdditionals.find((add) => add.id == additional.id) ? (
-//                   <div className="bg-slate-900 text-white w-24 flex flex-row justify-between p-1">
-//                     <button
-//                       className="w-6 text-md flex items-center justify-center"
-//                       onClick={(e) => {
-//                         e.preventDefault();
+                {selectedAdditionals.find((add) => add.id == additional.id) ? (
+                  <div className="bg-slate-900 text-white w-24 flex flex-row justify-between p-1">
+                    <button
+                      className="w-6 text-md flex items-center justify-center"
+                      onClick={(e) => {
+                        e.preventDefault();
 
-//                         let varSelectedAdditionals = selectedAdditionals;
+                        let varSelectedAdditionals = selectedAdditionals;
 
-//                         let x = varSelectedAdditionals.findIndex(
-//                           (add) => add.id == additional.id
-//                         );
+                        let x = varSelectedAdditionals.findIndex(
+                          (add) => add.id == additional.id
+                        );
 
-//                         if (varSelectedAdditionals[x].quantity - 1 === 0) {
-//                           setSelectedAdditionals([
-//                             ...varSelectedAdditionals.filter(
-//                               (elem, index) => index !== x
-//                             ),
-//                           ]);
-//                         } else {
-//                           varSelectedAdditionals[x].quantity -= 1;
-//                           setSelectedAdditionals([...varSelectedAdditionals]);
-//                         }
-//                       }}
-//                     >
-//                       <FaMinus />
-//                     </button>
-//                     <span className="">
-//                       {
-//                         selectedAdditionals.find(
-//                           (add) => add.id == additional.id
-//                         ).quantity
-//                       }
-//                     </span>
-//                     <button
-//                       className="w-6 text-md flex items-center justify-center"
-//                       onClick={(e) => {
-//                         e.preventDefault();
+                        if (varSelectedAdditionals[x].quantity - 1 === 0) {
+                          setSelectedAdditionals([
+                            ...varSelectedAdditionals.filter(
+                              (elem, index) => index !== x
+                            ),
+                          ]);
+                        } else {
+                          varSelectedAdditionals[x].quantity -= 1;
+                          setSelectedAdditionals([...varSelectedAdditionals]);
+                        }
+                      }}
+                    >
+                      <FaMinus />
+                    </button>
+                    <span className="">
+                      {
+                        selectedAdditionals.find(
+                          (add) => add.id == additional.id
+                        ).quantity
+                      }
+                    </span>
+                    <button
+                      className="w-6 text-md flex items-center justify-center"
+                      onClick={(e) => {
+                        e.preventDefault();
 
-//                         let varSelectedAdditionals = selectedAdditionals;
+                        let varSelectedAdditionals = selectedAdditionals;
 
-//                         let x = varSelectedAdditionals.findIndex(
-//                           (add) => add.id == additional.id
-//                         );
+                        let x = varSelectedAdditionals.findIndex(
+                          (add) => add.id == additional.id
+                        );
 
-//                         varSelectedAdditionals[x].quantity += 1;
+                        varSelectedAdditionals[x].quantity += 1;
 
-//                         setSelectedAdditionals([...varSelectedAdditionals]);
-//                       }}
-//                     >
-//                       <FaPlus />
-//                     </button>
-//                   </div>
-//                 ) : (
-//                   <BsFillPlusCircleFill
-//                     className="cursor-pointer"
-//                     color="3A3A3A"
-//                     size={25}
-//                     onClick={() =>
-//                       setSelectedAdditionals((prev: any) => {
-//                         return [...prev, { id: additional.id, quantity: 1 }];
-//                       })
-//                     }
-//                   />
-//                 )}
-//               </div>
-//             </div>
-//           );
-//         })}
-//       </div>
-//     );
-//   } else {
-//     return <>Carregando...</>;
-//   }
-// }
+                        setSelectedAdditionals([...varSelectedAdditionals]);
+                      }}
+                    >
+                      <FaPlus />
+                    </button>
+                  </div>
+                ) : (
+                  <BsFillPlusCircleFill
+                    className="cursor-pointer"
+                    color="3A3A3A"
+                    size={25}
+                    onClick={() =>
+                      setSelectedAdditionals((prev: any) => {
+                        return [...prev, { id: additional.id, quantity: 1 }];
+                      })
+                    }
+                  />
+                )}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    );
+  } else {
+    return <>Carregando...</>;
+  }
+}
 
 function SubmitButtons() {
   return (

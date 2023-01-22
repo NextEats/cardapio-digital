@@ -42,8 +42,9 @@ export default function Reports({ orders, productCategories, products, ordersPro
       <div>
         <GlobalValuesCard globalValuesData={globalValuesData} />
 
-        <div className="xl:grid  xl:grid-cols-xlcharts xl:max-w-full gap-10">
-          <LineChart />
+        <div className="xl:grid  xl:grid-cols-xlcharts xl:max-w-full gap-5">
+          <LineChart globalValuesData={globalValuesData} />
+          {/* <LineChart  /> */}
           <BarChart />
         </div>
       </div>

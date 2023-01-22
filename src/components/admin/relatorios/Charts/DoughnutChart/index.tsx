@@ -9,6 +9,7 @@ import {
     Legend,
   } from 'chart.js';
   import { Doughnut } from 'react-chartjs-2';
+import { iOrders, iProducts, iProductCategories, iOrdersProducts } from '../../../../../types/types';
   
   ChartJS.register(
     CategoryScale,
@@ -59,7 +60,20 @@ import {
     ],
   };
   
-  export function BarChart() {
+
+  interface iDoughnuCgart {
+    globalValuesData: {
+      orders: iOrders["data"],
+      products: iProducts["data"],
+      productCategories: iProductCategories["data"],
+      ordersProducts: iOrdersProducts["data"],
+  }
+  }
+
+  export function DoughnutChart({ globalValuesData }: iDoughnuCgart ) {
+
+    const { orders, products, ordersProducts, productCategories } = globalValuesData
+
     return ( 
         <div className="flex flex-1 h-[350px] xl:h-auto">
           <Doughnut className='w-full' options={options} data={data} />
@@ -70,4 +84,3 @@ import {
 
 
 
-  

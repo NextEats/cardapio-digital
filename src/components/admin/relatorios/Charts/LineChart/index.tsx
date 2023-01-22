@@ -13,22 +13,6 @@
 //   Legend
 // );
 
-// export const options = {
-//   responsive: true,
-//   plugins: {
-//     legend: {
-//       position: 'top' as const,
-//     },
-//     title: {
-//       display: true,
-//       text: 'Chart.js Bar Chart',
-//     },
-//     style: {
-//       width: '100%',
-//     }
-//   },
-// };
-
 
 // const orders = [
 //   { date: '2022-04-01', price: 100 },
@@ -50,7 +34,7 @@
 
 // export function LineChart({ globalValuesData }: iLineChartsProps) {
 //   const { orders, products, ordersProducts } = globalValuesData
-  
+
 //   const startDate = new Date('2022-12-22')
 //   const endDate = new Date('2022-12-27')
 
@@ -61,12 +45,12 @@
 //       return eachDayOfInterval({start, end});
 //     }
 //     console.log(generateDatesArray())
-  
+
 //   const ordersFilteredByPeriod = orders.filter(order => {
 //     const dateFormated = `${order.created_at?.slice(0, 19)}`
 //     return new Date(dateFormated) > startDate && new Date(dateFormated) < new Date()
 //   })
-  
+
 //   const orderProductsFilterdByOrderId = ordersProducts.filter((orderProduct) => {
 //     return ordersFilteredByPeriod.map(orderByPeriod => {
 //       return orderByPeriod.id === orderProduct.order_id
@@ -100,7 +84,7 @@
 //   })
 
 //   const chartsData = productsFilterdByOrderId.map(product => product.price)
-  
+
 //   const data = {
 //     labels: generateDatesArray().map(date => String(date).slice(0, 15) ),
 //     datasets: [
@@ -146,8 +130,8 @@ ChartJS.register(
 );
 
 interface DailyRevenue {
-    date: Date;
-    revenue: number;
+  date: Date;
+  revenue: number;
 }
 
 interface iLineChartsProps {
@@ -159,9 +143,24 @@ interface iLineChartsProps {
   }
 }
 
+export const options = {
+  responsive: true,
+  plugins: {
+    legend: {
+      position: 'top' as const,
+    },
+    title: {
+      display: true,
+      text: 'Faturamento',
+    },
+    style: {
+      width: '100%',
+    }
+  },
+};
+
 export function LineChart({ globalValuesData }: iLineChartsProps) {
   const { orders, products, ordersProducts } = globalValuesData
-  console.log(globalValuesData)
 
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
@@ -185,30 +184,30 @@ export function LineChart({ globalValuesData }: iLineChartsProps) {
     });
 
     // Filter order details by order id
-    const filteredOrdersProducts = ordersProducts.filter(detail => 
-        filteredOrders.some(order => order.id === detail.order_id)
+    const filteredOrdersProducts = ordersProducts.filter(detail =>
+      filteredOrders.some(order => order.id === detail.order_id)
     );
 
     // Filter products by product id
     const filteredProducts = products.filter(product =>
-        filteredOrdersProducts.some(detail => detail.product_id === product.id)
+      filteredOrdersProducts.some(detail => detail.product_id === product.id)
     );
 
     const dailyRevenue = filteredOrdersProducts.reduce((acc: { [date: string]: number }, detail) => {
       const date = new Date(detail.created_at!).toDateString();
       if (acc[date]) {
-          acc[date] += filteredProducts.find(product => product.id === detail.product_id)?.price || 0;
+        acc[date] += filteredProducts.find(product => product.id === detail.product_id)?.price || 0;
       } else {
-          acc[date] = filteredProducts.find(product => product.id === detail.product_id)?.price || 0;
+        acc[date] = filteredProducts.find(product => product.id === detail.product_id)?.price || 0;
       }
       return acc;
-  }, {})
-  
-  setDailyRevenue(Object.entries(dailyRevenue).map(([date, revenue]) => ({ date: new Date(date), revenue })));
-  
+    }, {})
+
+    setDailyRevenue(Object.entries(dailyRevenue).map(([date, revenue]) => ({ date: new Date(date), revenue })));
+
   }
 
-  
+
   return (
     <div>
       <label>
@@ -221,17 +220,18 @@ export function LineChart({ globalValuesData }: iLineChartsProps) {
       </label>
       <button onClick={handleFilterClick}>Filter</button>
       <Line
-        data={{
-          labels: dailyRevenue.map(r => r.date.toDateString()),
-          datasets: [
-            {
-              label: 'Revenue',
-              data: dailyRevenue.map(r => r.revenue),
-              backgroundColor: 'rgba(75,192,192,0.4)',
-              borderColor: 'rgba(75,192,192,1)',
-            },
-          ],
-        }}
+      options={options}
+      data={{
+        labels: dailyRevenue.map(r => r.date.toDateString()),
+        datasets: [
+          {
+            label: 'Revenue',
+            data: dailyRevenue.map(r => r.revenue),
+            backgroundColor: 'rgba(75,192,192,0.4)',
+            borderColor: 'rgba(75,192,192,1)',
+          },
+        ],
+      }}
       />
     </div>
   );

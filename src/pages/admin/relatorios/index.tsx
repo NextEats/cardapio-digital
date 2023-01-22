@@ -2,10 +2,11 @@ import AdminWrapper from "../../../components/admin/AdminWrapper";
 import { GlobalValuesCard } from "../../../components/admin/relatorios/GlobalValuesCard";
 
 import { LineChart } from "../../../components/admin/relatorios/Charts/LineChart";
-import { BarChart } from "../../../components/admin/relatorios/Charts/BarChart";
 import { GetServerSideProps } from "next";
 import { supabase } from "../../../server/api";
 import { iOrders, iOrdersProducts, iProductCategories, iProducts } from "../../../types/types";
+import { DoughnutChart } from "../../../components/admin/relatorios/Charts/DoughnutChart";
+import { HorizontalGraphics } from "../../../components/admin/relatorios/Charts/HorizontalGraphics";
 
 
 export const getServerSideProps: GetServerSideProps = async () => {
@@ -20,7 +21,8 @@ export const getServerSideProps: GetServerSideProps = async () => {
     props: {
       orders,
       products,
-      ordersProducts
+      ordersProducts,
+      productCategories,
     }
   }
 }
@@ -28,25 +30,24 @@ export const getServerSideProps: GetServerSideProps = async () => {
 interface iReportsProps {
     orders: iOrders,
     products: iProducts,
-    productCategories: iProductCategories["data"],
+    productCategories: iProductCategories,
     ordersProducts: iOrdersProducts,
 }
 
 export default function Reports({ orders, productCategories, products, ordersProducts }: iReportsProps ) {
-  // console.log(orders, productCategories, products);
 
-  const globalValuesData = { orders: orders.data, productCategories, products: products.data, ordersProducts: ordersProducts.data }
+  const globalValuesData = { orders: orders.data, productCategories: productCategories.data, products: products.data, ordersProducts: ordersProducts.data }
 
   return (
     <AdminWrapper>
       <div>
         <GlobalValuesCard globalValuesData={globalValuesData} />
 
-        <div className="xl:grid  xl:grid-cols-xlcharts xl:max-w-full gap-5">
+        <div className="xl:grid  xl:grid-cols-xlcharts xl:max-w-full gap-5 xl: mb-8">
           <LineChart globalValuesData={globalValuesData} />
-          {/* <LineChart  /> */}
-          <BarChart />
+          <DoughnutChart globalValuesData={globalValuesData} />
         </div>
+          <HorizontalGraphics globalValuesData={globalValuesData}/>
       </div>
     </AdminWrapper>
   );

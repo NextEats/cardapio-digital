@@ -13,8 +13,6 @@ export default function RestaurantHeader({
   restaurant,
   restaurantType,
 }: iRestaurantHeader) {
-  console.log(restaurantType);
-
   return (
     <div>
       <div

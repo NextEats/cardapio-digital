@@ -23,8 +23,6 @@ export default function ProductList({
 }: iProductsList) {
   const groupedProductsData = Object.values(groupedProducts);
 
-  console.log(groupedProductsData);
-
   return (
     <div>
       <CategoriesNavbar groupedProductsData={groupedProductsData} />

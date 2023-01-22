@@ -47,12 +47,10 @@ export default function Finished({ restaurant }: IFinishedProps) {
   });
 
   function handleCreateNewUser(data: NewUserFormData) {
-    console.log(data);
     reset();
   }
 
   function handleLogin(data: NewUserFormData) {
-    console.log(data);
     reset();
   }
 

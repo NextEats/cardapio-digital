@@ -10,32 +10,53 @@ import {
   iIngredients,
   iAdditionals,
   iAdditional,
+  iIngredient,
 } from "../../../types/types";
 
 import { supabase } from "./../../../server/api";
 
 import stringToNormalForm from "./../../../helpers/stringToNormalForm";
+import { Database } from "../../../types/supabase";
+import {
+  getProductAdditionals,
+  iProductAdditional,
+} from "./getProductAdditionals";
+import { number } from "zod";
 
 export default function ProductModal({
   productModal,
   setProductModal,
 }: {
-  productModal: iProduct["data"];
+  productModal: iProduct["data"] | undefined | null;
   setProductModal: Function;
 }) {
+  const [additionals, setAdditionals] = useState<iProductAdditional[]>();
+  const [price, setPrice] = useState<number>(0);
+
   var body = document.getElementById("body");
   body?.classList.add("overflow-hidden");
 
-  useMemo(async () => {
-    console.log(productModal.id);
-    await supabase
-      .from("product_ingredients")
-      .select()
-      .eq("product_id", productModal.id)
-      .then((res) => {
-        console.log(res.data);
-      });
+  useMemo(() => {
+    if (!productModal) {
+      return;
+    }
+
+    setPrice(productModal.price);
   }, [productModal]);
+
+  useMemo(() => {
+    if (!productModal) {
+      return;
+    }
+
+    getProductAdditionals(productModal?.id).then((response) => {
+      setAdditionals(response as iProductAdditional[]);
+    });
+  }, [productModal]);
+
+  if (!productModal) {
+    return <div>Carregando</div>;
+  }
 
   return (
     <>
@@ -75,25 +96,17 @@ export default function ProductModal({
               {productModal.description}
             </p>
           </div>
-          {/* <Ingredients data={ingredients} />
-          <Additionals data={additionals} /> */}
-          <SubmitButtons />
+          {/* <Ingredients data={ingredientsForThisProduct} /> */}
+          <Additionals data={additionals} setPrice={setPrice} />
+          <SubmitButtons price={price} />
         </div>
       </div>
     </>
   );
 }
 
-function Ingredients({
-  data,
-}: {
-  data: Database["public"]["Tables"]["ingredients"]["Row"];
-}) {
-  function Ingredient({
-    ingredientData,
-  }: {
-    ingredientData: Array<Database["public"]["Tables"]["ingredients"]["Row"]>;
-  }) {
+function Ingredients({ data }: { data: any }) {
+  function Ingredient({ ingredientData }: { ingredientData: any }) {
     return (
       <fieldset className="mb-5" key={ingredientData.id}>
         <h2 className="mb-4 font-semibold text-sm">{ingredientData.name}</h2>
@@ -136,6 +149,10 @@ function Ingredients({
     );
   }
 
+  if (!data) {
+    return <>Carregando</>;
+  }
+
   return (
     <div>
       {data.map((ingredientData, index) => {
@@ -145,45 +162,53 @@ function Ingredients({
   );
 }
 
-function Additionals({ data }: { data: iAdditional["data"][] }) {
+function Additionals({
+  data,
+  setPrice,
+}: {
+  data: iProductAdditional[];
+  setPrice: Function;
+}) {
   const [selectedAdditionals, setSelectedAdditionals] = useState<any[]>([]);
 
   if (data) {
     return (
       <div className="mb-24">
         <h2 className="mb-5 font-semibold text-sm">Adicionais</h2>
-        {data.map((additional: iAdditional["data"]) => {
+        {data.map(({ additionals }) => {
           return (
-            <div key={additional.id} className="flex flex-col mb-3">
+            <div key={additionals.id} className="flex flex-col mb-3">
               <div className="flex flex-1 items-center justify-between pr-4 shadow-md rounded-md bg-white-300">
                 <div className="flex items-center gap-3">
                   <Image
-                    src={additional.picture_url}
+                    src={additionals.picture_url}
                     alt="backgfroundheader"
                     width={91}
                     height={200}
                   />
                   <div className="">
                     <p className="font-extrabold text-black text-sm ">
-                      {additional.name}
+                      {additionals.name}
                     </p>
                     <p className="font-semibold text-xs text-black">
-                      R$ {additional.price}
+                      R$ {additionals.price}
                     </p>
                   </div>
                 </div>
 
-                {selectedAdditionals.find((add) => add.id == additional.id) ? (
+                {selectedAdditionals.find((add) => add.id == additionals.id) ? (
                   <div className="bg-slate-900 text-white w-24 flex flex-row justify-between p-1">
                     <button
                       className="w-6 text-md flex items-center justify-center"
                       onClick={(e) => {
                         e.preventDefault();
 
+                        setPrice((prev: any) => (prev -= additionals.price));
+
                         let varSelectedAdditionals = selectedAdditionals;
 
                         let x = varSelectedAdditionals.findIndex(
-                          (add) => add.id == additional.id
+                          (add) => add.id == additionals.id
                         );
 
                         if (varSelectedAdditionals[x].quantity - 1 === 0) {
@@ -203,7 +228,7 @@ function Additionals({ data }: { data: iAdditional["data"][] }) {
                     <span className="">
                       {
                         selectedAdditionals.find(
-                          (add) => add.id == additional.id
+                          (add) => add.id == additionals.id
                         ).quantity
                       }
                     </span>
@@ -212,10 +237,12 @@ function Additionals({ data }: { data: iAdditional["data"][] }) {
                       onClick={(e) => {
                         e.preventDefault();
 
+                        setPrice((prev: any) => (prev += additionals.price));
+
                         let varSelectedAdditionals = selectedAdditionals;
 
                         let x = varSelectedAdditionals.findIndex(
-                          (add) => add.id == additional.id
+                          (add) => add.id == additionals.id
                         );
 
                         varSelectedAdditionals[x].quantity += 1;
@@ -231,11 +258,12 @@ function Additionals({ data }: { data: iAdditional["data"][] }) {
                     className="cursor-pointer"
                     color="3A3A3A"
                     size={25}
-                    onClick={() =>
+                    onClick={() => {
+                      setPrice((prev: any) => (prev += additionals.price));
                       setSelectedAdditionals((prev: any) => {
-                        return [...prev, { id: additional.id, quantity: 1 }];
-                      })
-                    }
+                        return [...prev, { id: additionals.id, quantity: 1 }];
+                      });
+                    }}
                   />
                 )}
               </div>
@@ -249,7 +277,7 @@ function Additionals({ data }: { data: iAdditional["data"][] }) {
   }
 }
 
-function SubmitButtons() {
+function SubmitButtons({ price }: { price: number }) {
   return (
     <div className="flex flex-1 items-center">
       <div className="w-[98px] h-10 flex items-center justify-between mr-2 px-3 bg-white-300 shadow-md rounded-md ">
@@ -257,15 +285,14 @@ function SubmitButtons() {
         <span className="text-xl text-gray-700 font-normal">1</span>
         <AiOutlineMinus size={12} className="cursor-pointer" />
       </div>
-      <div className=" h-10 flex flex-1 items-center gap-2 bg-gray-700 shadow-md rounded-md ">
-        <BsFillPlusCircleFill className="ml-5" color="#F7F7F7" size={20} />
-        <div className=" cursor-pointer">
-          <p className="uppercase text-white text-xs font-bold leading-4">
-            Adicionar ao pedido&nbsp;
-          </p>
-          <span className="text-white text-xs font-normal leading-3">
-            &nbsp; R$ 27,00&nbsp;
+
+      <div className="h-10 flex flex-1 items-center justify-center bg-gray-700 shadow-md rounded-md">
+        <div className="flex cursor-pointer">
+          <span className="uppercase text-white text-md font-normal opacity-80">
+            Adicionar ao Pedido
           </span>
+          <span className="text-white mx-3 font-extrabold ">·</span>
+          <span className="text-white font-semibold">R$ {price}&nbsp;</span>
         </div>
       </div>
     </div>

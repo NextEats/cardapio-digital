@@ -314,6 +314,7 @@ export interface Database {
       }
       products: {
         Row: {
+          category_id: number
           created_at: string | null
           description: string
           id: number
@@ -322,6 +323,7 @@ export interface Database {
           price: number
         }
         Insert: {
+          category_id: number
           created_at?: string | null
           description: string
           id?: number
@@ -330,6 +332,7 @@ export interface Database {
           price: number
         }
         Update: {
+          category_id?: number
           created_at?: string | null
           description?: string
           id?: number

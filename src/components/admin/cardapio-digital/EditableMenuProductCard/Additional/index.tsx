@@ -53,6 +53,7 @@ export function Additional({ state, dispatch }: IAdditionalProps) {
     //         }
     //     })
     // }
+
     function handleNewAdditionl() {
         const additionalName = getValues("additionalName")
         const additionalPrice = Number(getValues("additionalPrice"))

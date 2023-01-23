@@ -154,22 +154,39 @@ export interface Database {
           created_at: string | null
           has_options: boolean
           id: number
-          name: string | null
-          picture_url: string | null
+          name: string
+          picture_url: string
         }
         Insert: {
           created_at?: string | null
           has_options?: boolean
           id?: number
-          name?: string | null
-          picture_url?: string | null
+          name: string
+          picture_url: string
         }
         Update: {
           created_at?: string | null
           has_options?: boolean
           id?: number
-          name?: string | null
-          picture_url?: string | null
+          name?: string
+          picture_url?: string
+        }
+      }
+      order_status: {
+        Row: {
+          created_at: string | null
+          id: number
+          status_name: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: number
+          status_name?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: number
+          status_name?: string | null
         }
       }
       order_types: {
@@ -211,18 +228,21 @@ export interface Database {
           created_at: string | null
           id: number
           order_id: number
+          order_status_id: number | null
           product_id: number
         }
         Insert: {
           created_at?: string | null
           id?: number
           order_id: number
+          order_status_id?: number | null
           product_id: number
         }
         Update: {
           created_at?: string | null
           id?: number
           order_id?: number
+          order_status_id?: number | null
           product_id?: number
         }
       }
@@ -241,6 +261,26 @@ export interface Database {
           created_at?: string | null
           id?: number
           name?: string
+        }
+      }
+      product_additionals: {
+        Row: {
+          additional_id: number
+          created_at: string | null
+          id: number
+          product_id: number
+        }
+        Insert: {
+          additional_id: number
+          created_at?: string | null
+          id?: number
+          product_id: number
+        }
+        Update: {
+          additional_id?: number
+          created_at?: string | null
+          id?: number
+          product_id?: number
         }
       }
       product_categories: {
@@ -283,6 +323,32 @@ export interface Database {
           product_id?: number | null
         }
       }
+      product_options: {
+        Row: {
+          created_at: string | null
+          id: number
+          is_default_value: boolean
+          name: string
+          picture_url: string | null
+          product_select_id: number
+        }
+        Insert: {
+          created_at?: string | null
+          id?: number
+          is_default_value?: boolean
+          name: string
+          picture_url?: string | null
+          product_select_id: number
+        }
+        Update: {
+          created_at?: string | null
+          id?: number
+          is_default_value?: boolean
+          name?: string
+          picture_url?: string | null
+          product_select_id?: number
+        }
+      }
       product_sales: {
         Row: {
           created_at: string | null
@@ -310,6 +376,26 @@ export interface Database {
           product_id?: number
           sale_price?: number
           start_date?: string | null
+        }
+      }
+      product_selects: {
+        Row: {
+          created_at: string | null
+          id: number
+          name: string
+          product_id: number
+        }
+        Insert: {
+          created_at?: string | null
+          id?: number
+          name: string
+          product_id: number
+        }
+        Update: {
+          created_at?: string | null
+          id?: number
+          name?: string
+          product_id?: number
         }
       }
       products: {

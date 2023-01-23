@@ -46,12 +46,19 @@ export interface iOrder {
 export interface iOrders {
   data: Array<Database["public"]["Tables"]["orders"]["Row"]>;
 }
-export interface iOrderProducts {
+export interface iOrderProduct {
   data: Database["public"]["Tables"]["orders_products"]["Row"];
 }
 
 export interface iOrdersProducts {
   data: Array<Database["public"]["Tables"]["orders_products"]["Row"]>;
+}
+export interface iOrderStatus {
+  data: Database["public"]["Tables"]["order_status"]["Row"];
+}
+
+export interface iOrdersStatus {
+  data: Array<Database["public"]["Tables"]["order_status"]["Row"]>;
 }
 
 

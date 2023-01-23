@@ -56,7 +56,7 @@ export function HorizontalGraphics({ globalValuesData }: iHorizontalGraphicsProp
     ];
     return (
         <div className="flex flex-col flex-1 shadow-sm bg-white rounded-md px-4 pt-3 pb-4" >
-            <h2 className="text-xl font-bold text-blue-500 mb-3"> Produtos comprados em relação às categorias  </h2>
+            <h2 className="text-xl font-bold text-blue-500 mb-3"> Produtos vendidos em relação às categorias  </h2>
             <div className=" flex flex-col xl:grid xl:grid-cols-2 gap-4" >
                 {
                     productCategories.map((category, index) => {
@@ -69,7 +69,7 @@ export function HorizontalGraphics({ globalValuesData }: iHorizontalGraphicsProp
                             <div key={category.name} className="w-full ml-2">
                                 <div className="w-full flex items-center justify-between gap-3 mb-1">
                                     <span className="text-sm font-semibold text-gray-600"> {category.name} </span>
-                                    <span className="text-xs font-medium text-gray-500">% {percentage.toFixed(2)} </span>
+                                    <span className="text-xs font-medium text-gray-500"> {percentage.toFixed(2)} % </span>
                                 </div>
                                 <div className="w-full h-3 rounded-full bg-white shadow-sm">
                                     <div

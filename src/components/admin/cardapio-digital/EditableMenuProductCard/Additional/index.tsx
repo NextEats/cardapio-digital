@@ -80,7 +80,6 @@ export function Additional({ state, dispatch }: IAdditionalProps) {
     }
 
     function showModalToUpdateAdditional(additional: iInsertAdditional["data"]) {
-        console.log(additional)
         setValue('additionalName', additional.name)
         setValue('additionalPrice', additional.price.toString())
         setValue('additionalPicture_url', additional.picture_url)

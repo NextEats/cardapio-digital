@@ -14,19 +14,19 @@ interface iBarCgart {
 }
 
 const colors = [
-    "red-500",
-    "green-300",
-    "blue-500",
-    "yellow-500",
-    "purple-500",
-    "gray-400",
+    "bg-red-500",
+    "bg-green-300",
+    "bg-blue-500",
+    "bg-yellow-500",
+    "bg-purple-500",
+    "bg-gray-400",
 
-    "red-500",
-    "green-300",
-    "blue-500",
-    "yellow-500",
-    "purple-500",
-    "gray-400",
+    "bg-red-500",
+    "bg-green-300",
+    "bg-blue-500",
+    "bg-yellow-500",
+    "bg-purple-500",
+    "bg-gray-400",
 ];
 
 export function BarChart({ globalValuesData }: iBarCgart) {
@@ -36,8 +36,6 @@ export function BarChart({ globalValuesData }: iBarCgart) {
     const statusEnTregue = ordersStatus.find(status => status.status_name === "entregue")
     const ordersProductWithStatusEntrega = ordersProducts.filter(orderProduct => orderProduct.order_status_id === statusEnTregue?.id)
 
-    console.log(ordersProductWithStatusEntrega)
-    // const productThatHaveBeenDelivered = ordersProductWithStatusEntrega.map
     let productsThatHaveBeenDelivered: { [key: string]: { product: iProduct["data"], numberOfProductsPurchased: number } } = {}
     for (let i = 0; i < ordersProductWithStatusEntrega.length; i++) {
         const product = products.find(p => p.id === ordersProductWithStatusEntrega[i].product_id)
@@ -63,7 +61,7 @@ export function BarChart({ globalValuesData }: iBarCgart) {
                         const barColor = colors[Math.floor(Math.random() * colors.length) + 0]
                         return (
                             <div key={product.product.id} className="flex flex-col items-center gap-3 ">
-                                <div style={{ height: `${barHeight}px` }} className={`w-6 transition-all ease-out duration-500 bg-${barColor}`}>
+                                <div style={{ height: `${barHeight}px` }} className={`w-6 transition-all ease-out duration-500 ${barColor}`}>
                                 </div>
                                 <div className="h-16 flex flex-col items-center justify-between">
                                     <span className="font-medium text-gray-500"> {Math.round(percentageOfProducts)}% </span>

@@ -58,7 +58,6 @@ export function CategoryModal({ modalIsOpen, setModalIsOpen, editCategory, setEd
     }
 
     async function updateCategory() {
-        console.log("Updating category", editCategory.categoryData)
         const productCategory = getValues("productCategory")
         await supabase.from("product_categories").update({
             name: productCategory,

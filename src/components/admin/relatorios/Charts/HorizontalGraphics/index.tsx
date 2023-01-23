@@ -37,22 +37,21 @@ export function HorizontalGraphics({ globalValuesData }: iHorizontalGraphicsProp
             }
         }
     }
-    //   const numberOfProductsSoldInEachCategoryArray: {name: string, count: number}[] = Object.values(numberOfProductsSoldInEachCategory);
-    //   console.log(numberOfProductsSoldInEachCategoryArray)
-    const categoryColors = [
-        "red-500",
-        "green-300",
-        "blue-500",
-        "yellow-500",
-        "purple-500",
-        "gray-400",
-
-        "red-500",
-        "green-300",
-        "blue-500",
-        "yellow-500",
-        "purple-500",
-        "gray-400",
+    
+    const colors = [
+        "bg-red-500",
+        "bg-green-300",
+        "bg-blue-500",
+        "bg-yellow-500",
+        "bg-purple-500",
+        "bg-gray-400",
+    
+        "bg-red-500",
+        "bg-green-300",
+        "bg-blue-500",
+        "bg-yellow-500",
+        "bg-purple-500",
+        "bg-gray-400",
     ];
     return (
         <div className="flex flex-col flex-1 shadow-sm bg-white rounded-md px-4 pt-3 pb-4" >
@@ -63,7 +62,7 @@ export function HorizontalGraphics({ globalValuesData }: iHorizontalGraphicsProp
                         const percentage = numberOfProductsSoldInEachCategory[category.name] !== undefined ?
                             numberOfProductsSoldInEachCategory[category.name].count * 100 / productsPurchased.length : 0
 
-                        const selectColorIndex = Math.floor(Math.random() * categoryColors.length) + 0
+                        const selectColorIndex = Math.floor(Math.random() * colors.length) + 0
 
                         return (
                             <div key={category.name} className="w-full ml-2">
@@ -74,7 +73,7 @@ export function HorizontalGraphics({ globalValuesData }: iHorizontalGraphicsProp
                                 <div className="w-full h-3 rounded-full bg-white shadow-sm">
                                     <div
                                         style={{ width: `${Math.round(percentage)}%` }}
-                                        className={`h-full transition-all ease-out duration-500 rounded-full bg-${categoryColors[selectColorIndex]}`} ></div>
+                                        className={`h-full transition-all ease-out duration-500 rounded-full ${colors[selectColorIndex]}`} ></div>
                                 </div>
                             </div>)
                     })

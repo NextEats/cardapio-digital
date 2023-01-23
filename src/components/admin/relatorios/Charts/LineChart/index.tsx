@@ -97,7 +97,6 @@
 //   };
 
 
-//   console.log(chartsData)
 
 
 //   return (

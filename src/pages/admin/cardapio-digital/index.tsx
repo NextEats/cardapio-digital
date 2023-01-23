@@ -52,7 +52,6 @@ export default function CardapioDigital({ productCategories, products }: iCardap
       id: 0,
     }
   })
-  console.log(editCategory)
 
   return (
     <AdminWrapper>

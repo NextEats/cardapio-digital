@@ -4,6 +4,8 @@ import { EditableProductActions } from "./actions";
 
 export interface IEditableProductReducerData {
 
+    isViewingUpdatingOrAdding: '' | 'viewing' | 'updationg' | 'adding';
+
     // PRODUCT INFORMATION
     isEditingInfo: boolean,
     picture_url: string,
@@ -14,13 +16,13 @@ export interface IEditableProductReducerData {
         price: string,
     },
 
-    // INGREDIENT
+    // // INGREDIENT
     ingredients: iInsertIngredients["data"], 
 
-    // OPTIONS
-    ingredientIdToShowModalAddNewOption: string,
+    // // OPTIONS
+    // ingredientIdToShowModalAddNewOption: string,
 
-    // ADDITIONAL
+    // // ADDITIONAL
     // additional: iAdditionals,
     additional: iInsertAdditionals["data"],  
     showModalToUpdateAdditional: boolean,
@@ -77,22 +79,24 @@ export function editableProductReducer(state: IEditableProductReducerData, actio
             return { ...state, picture_url: action.payload.picture_url }
             break
         // INGREDIENT  
-        case EditableProductActions.ADD_NEW_INGREDIENT:
-            state.ingredients.push({
-                name: action.payload.ingredientName,
-            })
-            return { ...state }
-            break
-        case EditableProductActions.UPDATE_INGREDIENT_NAME:
-            const ingredientIndexToUpdate = state.ingredients.findIndex((ingredient) => ingredient.name === action.payload.ingredientName )
-            state.ingredients[ingredientIndexToUpdate].name! = action.payload.ingredientName
-            return { ...state }
-            break
-        // Remove ingredient
-        case EditableProductActions.REMOVE_INGREDIENT:
-            const ingredientsWithoutIngredientRemoved = state.ingredients.filter(ingredient => ingredient.name !== action.payload.ingredientName)
-            return { ...state, ingredients: ingredientsWithoutIngredientRemoved }
-            break
+        // case EditableProductActions.ADD_NEW_INGREDIENT:
+        //     state.ingredients.push({
+        //         name: action.payload.ingredientName,
+        //     })
+            // return { ...state }
+            // break
+        // case EditableProductActions.UPDATE_INGREDIENT_NAME:
+        //     const ingredientIndexToUpdate = state.ingredients.findIndex((ingredient) => ingredient.name === action.payload.ingredientName )
+        //     state.ingredients[ingredientIndexToUpdate].name! = action.payload.ingredientName
+        //     return { ...state }
+        //     break
+        // // Remove ingredient
+        // case EditableProductActions.REMOVE_INGREDIENT:
+        //     const ingredientsWithoutIngredientRemoved = state.ingredients.filter(ingredient => ingredient.name !== action.payload.ingredientName)
+        //     return { ...state, ingredients: ingredientsWithoutIngredientRemoved }
+        //     break
+
+
         // //  ADD OPTION TO INGREDIENT OPRIONS 
         // case EditableProductActions.IS_ADDING_NEW_OPTION_TO_INGREDIENT:
         //     return { ...state, ingredientIdToShowModalAddNewOption: action.payload.ingredientIdToShowModalAddNewOption }
@@ -111,26 +115,27 @@ export function editableProductReducer(state: IEditableProductReducerData, actio
         //     const optionIndex = state.ingredients[ingredientIndexToRemoveOption].options.findIndex( option => option.id === action.payload.optionId)
         //     state.ingredients[ingredientIndexToRemoveOption].options.splice(optionIndex, 1)
         //     return { ...state }
+
         //     break
         // ADDITIONAL
-        case EditableProductActions.ADD_NEW_ADDITIONAL:
-            return { ...state, additional: [ ...state.additional, {
-                    name: action.payload.additionalName,
-                    picture_url: action.payload.additionalPicture_url,
-                    price: action.payload.additionalPrice,
-            }] }
-            break
-        case EditableProductActions.UPDATE_ADDITIONAL:
-            const additionalIndex = state.additional.findIndex( additional => additional.name === action.payload.additionalName)
-            state.additional[additionalIndex].name = action.payload.additionalName;
-            state.additional[additionalIndex].price = action.payload.additionalPrice;
-            state.additional[additionalIndex].picture_url = action.payload.additionalPicture_url;
-            return { ...state }
-            break
-        case EditableProductActions.REMOVE_ADDITIONAL:
-            const additionalWithoutTheRemovedOne = state.additional.filter( additional =>  additional.name !== action.payload.additionalName )
-            return { ...state, additional:  additionalWithoutTheRemovedOne}
-            break
+        // case EditableProductActions.ADD_NEW_ADDITIONAL:
+        //     return { ...state, additional: [ ...state.additional, {
+        //             name: action.payload.additionalName,
+        //             picture_url: action.payload.additionalPicture_url,
+        //             price: action.payload.additionalPrice,
+        //     }] }
+        //     break
+        // case EditableProductActions.UPDATE_ADDITIONAL:
+        //     const additionalIndex = state.additional.findIndex( additional => additional.name === action.payload.additionalName)
+        //     state.additional[additionalIndex].name = action.payload.additionalName;
+        //     state.additional[additionalIndex].price = action.payload.additionalPrice;
+        //     state.additional[additionalIndex].picture_url = action.payload.additionalPicture_url;
+        //     return { ...state }
+        //     break
+        // case EditableProductActions.REMOVE_ADDITIONAL:
+        //     const additionalWithoutTheRemovedOne = state.additional.filter( additional =>  additional.name !== action.payload.additionalName )
+        //     return { ...state, additional:  additionalWithoutTheRemovedOne}
+        //     break
         default:
             return state
     }

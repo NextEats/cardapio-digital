@@ -17,7 +17,7 @@ import RestaurantHeader from "./../components/home/RestaurantHeader";
 import { supabase } from "../server/api";
 
 // TYPES
-import { iProduct, iProducts, iIngredients, iRestaurants, iRestaurant, iAdditionals }  from "./../types/types"
+import { iProduct, iProducts , iRestaurants, iRestaurant, iAdditionals }  from "./../types/types"
 
 // HOMEPAGE TYPESCRIPT INTERFACE
 interface iDataHomepage {

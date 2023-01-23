@@ -1,14 +1,15 @@
+import { GetServerSideProps } from "next";
+import { useReducer, useState } from "react";
+import { AiOutlinePlus } from "react-icons/ai";
+
+import { supabase } from "../../../server/api";
 import AdminWrapper from "../../../components/admin/AdminWrapper";
 import Categories from "../../../components/admin/cardapio-digital/Categories";
 import MenuProduct from "../../../components/admin/cardapio-digital/MenuProduct";
-import { AiOutlinePlus } from "react-icons/ai";
-import EditableMenuProductCard from "../../../components/admin/cardapio-digital/EditableMenuProductCard";
-import { useState } from "react";
-import { GetServerSideProps } from "next";
-import { supabase } from "../../../server/api";
+import { editableProductReducer } from "../../../reducers/aditableProduct/reducer";
 import { iInsertProductCategory, iProductCategories, iProducts } from "../../../types/types";
 import { CategoryModal } from "../../../components/admin/cardapio-digital/CategoryModal";
-
+import EditableMenuProductCard from "../../../components/admin/cardapio-digital/EditableMenuProductCard";
 
 interface iCardapioDigitalProps {
   productCategories: iProductCategories
@@ -16,7 +17,7 @@ interface iCardapioDigitalProps {
 }
 
 export const getServerSideProps: GetServerSideProps = async () => {
-
+  
   const productCategories = await supabase.from("product_categories").select()
   const products = await supabase.from("products").select()
   // const loacal =  window.localStorage.setItem("product_categories", JSON.stringify(productCategories.data))
@@ -30,6 +31,45 @@ export const getServerSideProps: GetServerSideProps = async () => {
 }
 
 export default function CardapioDigital({ productCategories, products }: iCardapioDigitalProps) {
+  
+  const [state, dispatch] = useReducer(editableProductReducer, {
+    isViewingUpdatingOrAdding: '',
+    isEditingInfo: true,
+    picture_url: '',
+    isEditingPicture: true,
+    productInformation: {
+        name: '',
+        description: '',
+        price: '',
+    },
+    //INGREDIENT
+    ingredients: [
+        {
+            name: '',
+            picture_url: '',
+            // options: [
+            //     {
+            //         name: '',
+            //         picture_url: '',
+            //     }
+            // ],
+        }
+    ],
+  
+    // //  OPTIONS
+    // ingredientIdToShowModalAddNewOption: '',
+  
+    // // ADDITIONAL
+    additional: [
+        {
+            name: '',
+            price: 0,
+            picture_url: '',
+        }
+    ],
+    showModalToUpdateAdditional: false,
+  });
+
   // const tdClasses = "[&:not(:last-child)]:p-4";
   const [modalIsOpen, setModalIsOpen] = useState(false)
   const [viewCategory, setViewCategory] = useState<{
@@ -37,7 +77,7 @@ export default function CardapioDigital({ productCategories, products }: iCardap
     categoryId: number;
     categoryName: string;
 }>({
-    isViewing: false,
+  isViewing: false,
     categoryId: 0,
     categoryName: '',
   })
@@ -82,11 +122,11 @@ export default function CardapioDigital({ productCategories, products }: iCardap
           <CategoryModal modalIsOpen={modalIsOpen} products={products.data} setViewCategory={setViewCategory} viewCategory={viewCategory} editCategory={editCategory} setEditCategory={setEditCategory} setModalIsOpen={setModalIsOpen} />
           <Categories productCategories={productCategories.data} products={products.data} setViewCategory={setViewCategory} setEditCategory={setEditCategory} />
 
-          <div className="flex items-center justify-between mb-5 mt-7 mr-20">
+          {/* <div className="flex items-center justify-between mb-5 mt-7 mr-20">
             <h2 className="text-xl font-bold text-gray-700 "> itens em falta </h2>
             <input type="text" placeholder="Pesquisar"
               className="mx-8 h-6 pb-1 max-w-64 px-2 text-gray-600 text-sm font-semibold placeholder:text-gray-500 rounded outline-none border border-solid border-gray-400" />
-          </div>
+          </div> */}
 
           {/* <MenuProduct  /> */}
           <div className="flex items-center justify-between mb-5 mt-7">
@@ -105,7 +145,7 @@ export default function CardapioDigital({ productCategories, products }: iCardap
           </div>
 
         </div>
-        <EditableMenuProductCard />
+        <EditableMenuProductCard state={state} dispatch={dispatch} />
       </div>
     </AdminWrapper>
   );

@@ -146,11 +146,12 @@ function CategoryView({ products, setViewCategory, viewCategory }: iCategoryView
 
     return (
         <>
-            <div className={`w-screen h-screen flex items-center justify-center bg-black fixed inset-0 z-10
-                ${true ? 'opacity-40 transition-all duration-300 ease-in-out' : ' opacity-0 pointer-events-none duration-[0s]'}
+            <div  onClick={() => setViewCategory({ isViewing: false, categoryId: 0, categoryName: '' })}
+             className={`w-screen h-screen flex items-center justify-center bg-black fixed inset-0 z-10
+                ${viewCategory.isViewing ? 'opacity-40 transition-all duration-300 ease-in-out' : ' opacity-0 pointer-events-none duration-[0s]'}
                 `}></div>
-            <div className={`fixed top-1/5 right-1/2 z-20 translate-x-1/2 rounded-lg w-[400px] sm:w-[700px] max-h-[500px] 
-            overflow-auto bg-white shadow-md p-6
+            <div className={`fixed top-1/5 right-1/2 z-20 translate-x-1/2 rounded-lg w-[350px] 2xs:w-[400px] sm:w-[600px] lg:w-[900px] max-h-[500px] 
+            overflow-auto bg-white shadow-md p-3 2xs:p-6
                 ${viewCategory.isViewing ? 'opacity-100 transition-all duration-00 ease-in-out' : ' opacity-0 pointer-events-none duration-[0s]'}
                 `} >
                 <div className="w-full flex items-center justify-between mb-4">
@@ -161,12 +162,12 @@ function CategoryView({ products, setViewCategory, viewCategory }: iCategoryView
                 </div>
                 <h2 className="w-full text-xl font-bold text-center mb-8"> { viewCategory.categoryName } </h2>
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                     {
                         productFilteredByCategory.map(product => {
-                            return <div key={product.id} className="bg-white shadow-sm h-24 w-full flex items-center gap-3 p-2 rounded-md  hover:shadow-md hover:transition-all ease-in-out">
+                            return <div key={product.id} className="bg-white shadow-sm h-[120px] sm:h-24 w-full flex items-center gap-3 p-2 rounded-md  hover:shadow-md hover:transition-all ease-in-out">
                             <Image
-                                className="rounded-md h-full w-20"
+                                className="rounded-md h-[90px] sm:h-full w-20"
                                 src={"https://i.ibb.co/8KnTRXt/pao.png"}
                                 alt=""
                                 width={40}
@@ -174,7 +175,7 @@ function CategoryView({ products, setViewCategory, viewCategory }: iCategoryView
                             />
     
                             <div className="flex flex-col items-start justify-start gap-1 overflow-hidden">
-                                <span className="text-lg font-semibold text-gray-700 leading-5" > { product.name } </span>
+                                <span className="text-base font-semibold text-gray-700 leading-5" > { product.name } </span>
                                 <span className="text-sm max-h-14 font-normal text-gray-500 leading-4" > { product.description } </span>
                                 <span className="text-base font-medium text-green-300 leading-5" > R$ { product.price } </span>
                             </div>

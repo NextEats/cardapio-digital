@@ -53,3 +53,11 @@ export interface iGroupedProducts {
 export type ProductWithCategory = iProduct["data"] & {
   category_name: string;
 };
+
+export interface iProductOption {
+  data: Database["public"]["Tables"]["product_options"]["Row"];
+}
+
+export interface iProductOptions {
+  data: Array<iProduct>;
+}

@@ -98,7 +98,7 @@ export default function CardapioDigital({ productCategories, products }: iCardap
               <AiOutlinePlus />
             </button>
           </div>
-          <div className="flex flex-col gap-2">
+          <div className="grid grid-cols-1 xl:grid-cols-2 gap-2">
             {products.data.map(product => {
               return <MenuProduct key={product.id} product={product} />
             })}

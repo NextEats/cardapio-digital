@@ -12,6 +12,7 @@ import { CategoryModal } from "../../../components/admin/cardapio-digital/Catego
 import EditableMenuProductCard from "../../../components/admin/cardapio-digital/EditableMenuProductCard";
 import { setIsUpdatingInformationAction, setProductInformationAction, setProductPictureUrlAction, setViewpProductAction } from "../../../reducers/aditableProduct/actions";
 import { FiX } from "react-icons/fi";
+import { CardapioDigitalButton } from "../../../components/admin/cardapio-digital/CardapioDigitalButton";
 
 interface iCardapioDigitalProps {
   productCategories: iProductCategories,
@@ -130,12 +131,9 @@ export default function CardapioDigital({ productCategories, products, productSe
               })
               }
             </select> */}
-              <button
-                onClick={() => setModalIsOpen(true)}
-                className="text-base font-semibold text-white flex items-center justify-center gap-1 h-6 w-20 rounded-md bg-green-300 ">
-                Novo
-                <AiOutlinePlus />
-              </button>
+            <CardapioDigitalButton onClick={() => setModalIsOpen(true)} name='Novo' h="h-7" w="w-24" Icon={<AiOutlinePlus />} />
+
+
             </div>
             <CategoryModal modalIsOpen={modalIsOpen} products={products.data} setViewCategory={setViewCategory} viewCategory={viewCategory} editCategory={editCategory} setEditCategory={setEditCategory} setModalIsOpen={setModalIsOpen} />
             <Categories productCategories={productCategories.data} products={products.data} setViewCategory={setViewCategory} setEditCategory={setEditCategory} />
@@ -148,13 +146,12 @@ export default function CardapioDigital({ productCategories, products, productSe
 
             {/* <MenuProduct  /> */}
             <div className="flex items-center justify-between mb-5 mt-7">
+             
               <h2 className="text-xl font-bold text-gray-700 "> Itens do cardápio </h2>
               <input type="text" placeholder="Pesquisar"
                 className="mx-8 h-6 pb-1 max-w-64 px-2 text-gray-600 text-sm font-semibold placeholder:text-gray-500 rounded outline-none border border-solid border-gray-400" />
-              <button className="text-base font-semibold text-white flex items-center justify-center gap-1 h-6 w-20 rounded bg-green-300 ">
-                Novo
-                <AiOutlinePlus />
-              </button>
+              <CardapioDigitalButton onClick={() => setModalIsOpen(true)} name='Novo' h="h-7" w="w-24" Icon={<AiOutlinePlus />} />
+           
             </div>
             <div className="grid grid-cols-1 xl:grid-cols-2 gap-2">
               {products.data.map(product => {

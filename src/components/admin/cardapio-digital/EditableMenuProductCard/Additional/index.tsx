@@ -157,18 +157,13 @@ export function Additional({ state, dispatch }: IAdditionalProps) {
                             className="flex flex-1 h-10 w-full text-gray-700 text-sm font-semibold placeholder:text-gray-500 
                                 outline-none border border-solid border-gray-300 rounded px-3 mb-3" />
                         <div className="w-full flex items-center gap-2 mt-6">
-                            <button
-                                onClick={() => setShowAdditionalModal('')}
-                                className={`h-7 flex flex-1 items-center justify-center text-white font-semibold rounded hover:bg-yellow-500 bg-yellow-400  transition-all ease-in-out`}>
-                                Cancelar
-                            </button>
-                            <button
-                                onClick={() => showAdditionalModal === "UPDATE"  ? updateAdditional() : handleNewAdditionl()}
-                                className={`h-7 flex flex-1 items-center justify-center text-white font-semibold rounded transition-all ease-in-out
-                                ${showAdditionalModal === "UPDATE"  ? 'hover:bg-blue-700 bg-blue-500' : 'hover:bg-green-600 bg-green-300 '}
-                                `}>
-                                {showAdditionalModal === "UPDATE"  ? 'Update' : 'Adicionar'}
-                            </button>
+
+                            <CardapioDigitalButton onClick={() => setShowAdditionalModal('')} name='Cancelar' h="h-7" w="flex-1" />
+                            <CardapioDigitalButton 
+                                onClick={() => showAdditionalModal === "UPDATE"  ? updateAdditional() : handleNewAdditionl()} 
+                                name={showAdditionalModal === "UPDATE" ? 'Editar' : 'Adicionar'} h="h-7" w="flex-1" 
+                            />
+
                         </div>
                     </div> : null
                 }
@@ -177,11 +172,6 @@ export function Additional({ state, dispatch }: IAdditionalProps) {
                 {/*                       Add new additional button                             */}
             </div>
             <div className="w-full flex items-center justify-end mt-6" >
-                {/* <button
-                    onClick={() => setShowAdditionalModal('ADD')}
-                    className={`w-28 h-8 flex items-center justify-center text-white font-semibold rounded  transition-all ease-in-out hover:bg-green-600 bg-green-300  `}>
-                    Adicionar
-                </button>  */}
                 <CardapioDigitalButton w="w-28" h="h-8" name="Adicionar" onClick={() => setShowAdditionalModal('ADD')} />
             </div>
         </div >

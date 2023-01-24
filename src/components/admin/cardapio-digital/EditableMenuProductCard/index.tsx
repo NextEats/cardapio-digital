@@ -1,6 +1,7 @@
 import { Dispatch, SetStateAction, useReducer } from "react";
 import { FiX } from "react-icons/fi";
 import { editableProductReducer, IEditableProductReducerData, iPayloadProduct } from "../../../../reducers/aditableProduct/reducer";
+import { CardapioDigitalButton } from "../CardapioDigitalButton";
 import { Additional } from "./Additional";
 import HeadersCard from "./HeadersCard";
 import { Igredient } from "./Ingredients";
@@ -32,12 +33,8 @@ export default function EditableMenuProductCard({ state, dispatch, setProductMod
                 <HeadersCard state={state} dispatch={dispatch} />
                 <Igredient state={state} dispatch={dispatch} />
                 <Additional state={state} dispatch={dispatch} />
-                <button
-                    disabled={!state.productInformation.name}
-                    className={`h-10 w-full flex items-center justify-center text-lg text-white font-semibold rounded-md transition-all ease-in-out
-                        duration-300 disabled:bg-gray-500 disabled:cursor-not-allowed hover:bg-green-600 bg-green-300 cursor-pointer `}>
-                    Adicionar novo item
-                </button>
+
+                <CardapioDigitalButton disabled={!state.productInformation.name} name='Adicionar novo item' h="h-10" w="w-full"  />
             </div>
         </>
     )

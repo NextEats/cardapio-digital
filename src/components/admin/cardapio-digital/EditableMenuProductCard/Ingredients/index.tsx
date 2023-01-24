@@ -12,6 +12,7 @@ import { HiPlus } from "react-icons/hi";
 import Image from "next/image";
 import { EditableProductActions } from "../../../../../reducers/aditableProduct/actions";
 import { IEditableProductReducerData, iPayloadProduct } from "../../../../../reducers/aditableProduct/reducer";
+import { CardapioDigitalButton } from "../../CardapioDigitalButton";
 
 
 interface iIgradientsCardProps {
@@ -239,12 +240,7 @@ export function Igredient({ state, dispatch }: iIgradientsCardProps) {
 
             {/*                       Add new ingredient button                             */}
             <div className="w-full flex items-center justify-end mt-6">
-                <button
-                    onClick={() => setIsAddingNewIngradient(isAddingNewIngradientState ? false : true)}
-                    className={`w-28 h-8 flex items-center justify-center text-white font-semibold rounded  transition-all ease-in-out 
-                    ${!isAddingNewIngradientState ? 'hover:bg-green-600 bg-green-300' : 'hover:bg-yellow-500 bg-yellow-400'}  `}>
-                    {!isAddingNewIngradientState ? 'Adicionar' : 'Cancelar'}
-                </button>
+                <CardapioDigitalButton onClick={() => setIsAddingNewIngradient(isAddingNewIngradientState ? false : true)} name={!isAddingNewIngradientState ? 'Adicionar' : 'Cancelar'} h="h-8" w="w-28" />
             </div>
         </div>
     )

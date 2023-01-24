@@ -1,7 +1,7 @@
 import { createContext, ReactNode, useMemo, useState } from "react";
 import { supabase } from "../server/api";
 import { IRestaurant } from "../types/home";
-import { Dispatch, SetStateAction } from "react";
+
 
 export const RestaurantContext = createContext({} as IRestaurantContext);
 

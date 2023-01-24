@@ -33,8 +33,8 @@ type NewIngredientFormData = zod.infer<typeof newIngredientFormValidationSchema>
 
 export function Igredient({ state, dispatch }: iIgradientsCardProps) {
 
-    const [ isAddingNewIngradientState, setIsAddingNewIngradientState] = useState(false)
-    const [ isUpdatingIngradientNameState, setIsUpdatingIngradientNameState] = useState('')
+    const [isAddingNewIngradientState, setIsAddingNewIngradientState] = useState(false)
+    const [isUpdatingIngradientNameState, setIsUpdatingIngradientNameState] = useState('')
 
     const { register, handleSubmit, reset, getValues } = useForm<NewIngredientFormData>({
         resolver: zodResolver(newIngredientFormValidationSchema),
@@ -63,7 +63,7 @@ export function Igredient({ state, dispatch }: iIgradientsCardProps) {
         })
         setIsAddingNewIngradientState(false)
     }
-    
+
     function removeIngredient(ingredientName: string) {
         dispatch({
             type: EditableProductActions.REMOVE_INGREDIENT,
@@ -77,16 +77,16 @@ export function Igredient({ state, dispatch }: iIgradientsCardProps) {
     function handleUpdateIngredientName(data: NewIngredientFormData) {
         // const ingredientName = getValues('editIngredientName')
         const nameAlreadyExists = state.ingredients.some(ingredient => ingredient.name === data.editIngredientName)
-        if( nameAlreadyExists ) {
+        if (nameAlreadyExists) {
             return
         }
         dispatch({
             type: EditableProductActions.UPDATE_INGREDIENT_NAME,
-            payload: { ingredientName:  data.editIngredientName }
+            payload: { ingredientName: data.editIngredientName }
         })
         setIsUpdatingIngradientNameState('')
     }
-    
+
     // function setIngredientIdToAddNewOption(ingredientIdToShowModalAddNewOption: string) {
     //     dispatch({
     //         type: EditableProductActions.IS_ADDING_NEW_OPTION_TO_INGREDIENT,
@@ -108,62 +108,62 @@ export function Igredient({ state, dispatch }: iIgradientsCardProps) {
     //     })
     //     setIngredientIdToAddNewOption('')
     // }
-    
+
     function removeOptionFromIngredient(ingredientId: string, optionId: string) {
         dispatch({
             type: EditableProductActions.REMOVE_OPTION_FROM_INGREDIENT,
-            payload: { 
+            payload: {
                 ingredientId,
             }
         })
-        
+
     }
 
 
     return (
         <div>
             {state.ingredients.map(ingredient => {
-                if( ingredient.name === '') {
+                if (ingredient.name === '') {
                     return
                 }
-                    return (
-                        <div key={ingredient.id} className="mb-6 relative">
-                            <div className="mb-4">
-    
-                                {isUpdatingIngradientNameState === ingredient.name ?
-                                    <form onSubmit={handleSubmit(handleUpdateIngredientName)} className="w-full flex items-center">
-                                        <input
-                                            type="text"
-                                            placeholder="Pesquisar"
-                                            {...register("editIngredientName")}
-                                            className=" flex flex-1 h-7 pb-1 max-w-64 px-2 
+                return (
+                    <div key={ingredient.id} className="mb-6 relative">
+                        <div className="mb-4">
+
+                            {isUpdatingIngradientNameState === ingredient.name ?
+                                <form onSubmit={handleSubmit(handleUpdateIngredientName)} className="w-full flex items-center">
+                                    <input
+                                        type="text"
+                                        placeholder="Pesquisar"
+                                        {...register("editIngredientName")}
+                                        className=" flex flex-1 h-7 pb-1 max-w-64 px-2 
                                         text-gray-700 text-sm font-semibold placeholder:text-gray-500 
                                         outline-none border border-solid border-gray-300 rounded mr-3"
-                                        />
-                                        <button
-                                            type="submit"
-                                            className="w-11 h-7 flex items-center justify-center rounded hover:scale-110 transition-all ease-in-out bg-blue-500 ">
-                                            <BsCheck2 className="text-xl text-white" />
-                                        </button>
-                                    </form> :
-                                    <div className="w-full flex items-center justify-between" >
-                                        <h3> {ingredient.name}  </h3>
-                                        <div className="flex items-center gap-2">
-                                            <BiPencil
-                                                onClick={() => setIsUpdatingIngradientNameState(ingredient.name!)}
-                                                className="text-xl text-blue-500 cursor-pointer hover:scale-125 hover:transition-all ease-in-out" />
-                                            <FiTrash2
-                                                onClick={() => removeIngredient(ingredient.name!)}
-                                                className="text-xl text-red-500 cursor-pointer hover:scale-125 hover:transition-all ease-in-out" />
-                                        </div>
+                                    />
+                                    <button
+                                        type="submit"
+                                        className="w-11 h-7 flex items-center justify-center rounded hover:scale-110 transition-all ease-in-out bg-blue-500 ">
+                                        <BsCheck2 className="text-xl text-white" />
+                                    </button>
+                                </form> :
+                                <div className="w-full flex items-center justify-between" >
+                                    <h3> {ingredient.name}  </h3>
+                                    <div className="flex items-center gap-2">
+                                        <BiPencil
+                                            onClick={() => setIsUpdatingIngradientNameState(ingredient.name!)}
+                                            className="text-xl text-blue-500 cursor-pointer hover:scale-125 hover:transition-all ease-in-out" />
+                                        <FiTrash2
+                                            onClick={() => removeIngredient(ingredient.name!)}
+                                            className="text-xl text-red-500 cursor-pointer hover:scale-125 hover:transition-all ease-in-out" />
                                     </div>
-                             }
-    
-                            </div>
-    
-                            <div className="flex flex-wrap gap-3">
-                                {/*        =========   DIALOG TO ADD NEW OPTION   ==============        */}
-                                {/* { state.ingredientIdToShowModalAddNewOption === ingredient.id && <div className="w-56 h-60 p-4 absolute z-50 top-0 right-1/2 translate-x-1/2 rounded-md bg-white shadow-md">
+                                </div>
+                            }
+
+                        </div>
+
+                        <div className="flex flex-wrap gap-3">
+                            {/*        =========   DIALOG TO ADD NEW OPTION   ==============        */}
+                            {/* { state.ingredientIdToShowModalAddNewOption === ingredient.id && <div className="w-56 h-60 p-4 absolute z-50 top-0 right-1/2 translate-x-1/2 rounded-md bg-white shadow-md">
                                     <input type="text" placeholder="Nome" { ...register("optionName")} 
                                     className="flex flex-1 h-7  w-full px-2text-gray-700 text-sm font-semibold placeholder:text-gray-500 
                                         outline-none border border-solid border-gray-300 rounded px-2 mb-5" />
@@ -183,36 +183,37 @@ export function Igredient({ state, dispatch }: iIgradientsCardProps) {
                                         </button>
                                     </div>
                                 </div>} */}
-                                {/* ========================================================================= */}
-                                {/* {  ingredient.options.map((option) => {
-                                    return ( 
-                                        <div key={option.id} className="rounded-lg w-[100px] h-24 flex items-center relative justify-center" >
-                                            <FiTrash2
-                                                onClick={() => removeOptionFromIngredient(ingredient.id, option.id)}
-                                                className="text-xl text-red-500 cursor-pointer hover:scale-125 hover:transition-all ease-in-out
+                            {/* ========================================================================= */}
+                            {state.options.map((option) => {
+                                return (
+                                    <div key={option.id} className="rounded-lg w-[100px] h-24 flex items-center relative justify-center" >
+                                        <FiTrash2
+                                            onClick={() => removeOptionFromIngredient(ingredient.id!.toString(), option.id!.toString())}
+                                            className="text-xl text-red-500 cursor-pointer hover:scale-125 hover:transition-all ease-in-out
                                                 absolute top-2 right-2 z-30" />
-                                            <Image 
+                                        {option.picture_url &&
+                                            <Image
                                                 className="w-full h-full rounded-lg"
                                                 src={option.picture_url}
                                                 alt={option.name}
                                                 width={50}
                                                 height={50}
                                             />
-                                               <div className="w-full h-full absolute rounded-lg z-10 bg-gradient-to-t from-[#000000ff] via-[#00000010] to-[#00000000]"></div>
-                                                <span className="absolute bottom-1 left-1 z-20 text-white-300 text-sm font-medium "> { option.name } </span>
-                                        </div>
-                                    )
-                                })
-                                } */}
-                                    <button
-                                    // onClick={() => {setIngredientIdToAddNewOption(ingredient.id)}}
-                                    className="rounded-lg w-[100px] h-24 flex items-center justify-center border border-solid border-gray-400 cursor-pointer" >
-                                    <HiPlus className=" text-gray-400 text-4xl" />
-                                    </button>
-                            </div>
+                                        }
+                                        <div className="w-full h-full absolute rounded-lg z-10 bg-gradient-to-t from-[#000000ff] via-[#00000010] to-[#00000000]"></div>
+                                        <span className="absolute bottom-1 left-1 z-20 text-white-300 text-sm font-medium "> {option.name} </span>
+                                    </div>
+                                )
+                            })
+                            }
+                            <button
+                                // onClick={() => {setIngredientIdToAddNewOption(ingredient.id)}}
+                                className="rounded-lg w-[100px] h-24 flex items-center justify-center border border-solid border-gray-400 cursor-pointer" >
+                                <HiPlus className=" text-gray-400 text-4xl" />
+                            </button>
                         </div>
-                    )
-                
+                    </div>
+                )
             })
             }
 

@@ -60,6 +60,13 @@ export interface iOrderStatus {
 export interface iOrdersStatus {
   data: Array<Database["public"]["Tables"]["order_status"]["Row"]>;
 }
+export interface iProductSelect {
+  data: Database["public"]["Tables"]["product_selects"]["Row"];
+}
+
+export interface iProductSelects {
+  data: Array<Database["public"]["Tables"]["product_selects"]["Row"]>;
+}
 
 
 //  INSERTS
@@ -78,18 +85,31 @@ export interface iInsertAdditionals {
   data: Array<Database["public"]["Tables"]["additionals"]["Insert"]>;
 }
 // ====
+export interface iInsertProductAdditional {
+  data: Database["public"]["Tables"]["product_additionals"]["Insert"];
+}
+export interface iInsertProductAdditionals {
+  data: Array<Database["public"]["Tables"]["product_additionals"]["Insert"]>;
+}
+// ====
 export interface iInsertProductCategory {
   data: Database["public"]["Tables"]["product_categories"]["Insert"];
 }
 export interface iInsertProductCategories {
   data: Array<Database["public"]["Tables"]["product_categories"]["Insert"]>;
 }
+export interface iInsertProductOption {
+  data: Database["public"]["Tables"]["product_options"]["Insert"];
+}
 
+export interface iInsertProductOptions {
+  data: Array<Database["public"]["Tables"]["product_options"]["Insert"]>;
+}
 // ====
-export interface iInsertIngredinetOption {
-  data: Database["public"]["Tables"]["ingredient_options"]["Insert"];
-}
-export interface iInsertIngredinetOptions {
-  data: Array<Database["public"]["Tables"]["ingredient_options"]["Insert"]>;
-}
+// export interface iInsertIngredinetOption {
+//   data: Database["public"]["Tables"]["ingredient_options"]["Insert"];
+// }
+// export interface iInsertIngredinetOptions {
+//   data: Array<Database["public"]["Tables"]["ingredient_options"]["Insert"]>;
+// }
 

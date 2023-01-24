@@ -36,7 +36,7 @@ export default function HeadersCard({ state, dispatch }: IHeadersCardProps) {
             price: "",
         },
     });
-    const [ incompliteFieldes, setIncompliteFieldes ] = useState(false)
+    const [incompliteFieldes, setIncompliteFieldes] = useState(false)
 
     function setProductIsEditing(isEditingInfo: boolean) {
         dispatch({
@@ -109,7 +109,7 @@ export default function HeadersCard({ state, dispatch }: IHeadersCardProps) {
                                  placeholder:text-gray-400 rounded outline-none"
                         />
 
-                        
+
                     </div>
                 </form>
             </div>
@@ -132,9 +132,7 @@ function ProductImage({ state, dispatch }: iProductImagePros) {
 
     const { register, handleSubmit, watch } = useForm<NewPirtureUrlFormData>({
         resolver: zodResolver(newPictureUrlFormValidationSchema),
-        defaultValues: {
-            picture_url: ''
-        },
+        defaultValues: { picture_url: '' },
     });
 
     function setProductPictureIsEditing(isEditingPicture: boolean) {
@@ -158,12 +156,7 @@ function ProductImage({ state, dispatch }: iProductImagePros) {
     return (
         <form onSubmit={handleSubmit(handleProductPicture_url)} className="w-full h-[350px] relative mb-4">
 
-            {state.picture_url === '' && <div
-                className="rounded-2xl w-full h-full flex items-center justify-center border border-solid border-gray-400">
-                <HiPlus className=" text-gray-400 text-9xl font-light" />
-            </div>}
-
-            {state.isEditingPicture && <div
+            {state.isEditingPicture && state.picture_url === '' && <div
                 className={` flex flex-1 w-[305px] items-center justify-center bg-white h-9 px-2 rounded-md  absolute top-3 right-3 z-10`}>
                 <input
                     type="text"
@@ -185,7 +178,11 @@ function ProductImage({ state, dispatch }: iProductImagePros) {
                 className={`text-2xl text-blue-500 cursor-pointer hover:scale-125 hover:transition-all ease-in-out absolute top-3 right-3 z-10
                 ${state.isEditingPicture ? 'hidden' : ''}`}
             />
-            {state.picture_url != '' && <Image
+            {state.picture_url === '' && <div
+                className="rounded-2xl w-full h-full flex items-center justify-center border border-solid border-gray-400">
+                <HiPlus className=" text-gray-400 text-9xl font-light" />
+            </div>}
+            {state.picture_url !== '' && <Image
                 className="rounded-2xl w-full h-full"
                 src={state.picture_url}
                 alt=""

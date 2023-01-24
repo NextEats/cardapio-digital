@@ -329,7 +329,7 @@ export interface Database {
           id: number
           is_default_value: boolean
           name: string
-          picture_url: string | null
+          picture_url: string
           product_select_id: number
         }
         Insert: {
@@ -337,7 +337,7 @@ export interface Database {
           id?: number
           is_default_value?: boolean
           name: string
-          picture_url?: string | null
+          picture_url: string
           product_select_id: number
         }
         Update: {
@@ -345,7 +345,7 @@ export interface Database {
           id?: number
           is_default_value?: boolean
           name?: string
-          picture_url?: string | null
+          picture_url?: string
           product_select_id?: number
         }
       }

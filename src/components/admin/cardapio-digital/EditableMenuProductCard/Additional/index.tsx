@@ -108,7 +108,7 @@ export function Additional({ state, dispatch }: IAdditionalProps) {
 
             <div className="flex flex-col mb-3 relative">
                 <div className="flex flex-col gap-2">
-                    {state.additional.map(additional => {
+                    {state.additionals?.map(additional => {
                         if (additional.name !== '' && additional.picture_url !== '') {
 
                         return (

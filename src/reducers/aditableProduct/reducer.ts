@@ -1,10 +1,10 @@
 import { IAdditionalData, IIngredientOptionsData } from "../../types/product"
-import { iAdditionals, iInsertAdditionals, iInsertIngredients } from "../../types/types";
+import { iAdditionals, iInsertAdditionals, iInsertIngredients, iInsertProductOptions } from "../../types/types";
 import { EditableProductActions } from "./actions";
 
 export interface IEditableProductReducerData {
 
-    isViewingUpdatingOrAdding: '' | 'viewing' | 'updationg' | 'adding';
+    isViewingUpdatingOrAdding: '' | 'VIEWING' | 'UPDATING' | 'ADDING';
 
     // PRODUCT INFORMATION
     isEditingInfo: boolean,
@@ -17,18 +17,21 @@ export interface IEditableProductReducerData {
     },
 
     // // INGREDIENT
-    ingredients: iInsertIngredients["data"], 
+    ingredients: iInsertIngredients["data"],
 
     // // OPTIONS
     // ingredientIdToShowModalAddNewOption: string,
+    options: iInsertProductOptions["data"]
 
     // // ADDITIONAL
     // additional: iAdditionals,
-    additional: iInsertAdditionals["data"],  
+    additionals: iInsertAdditionals["data"],
     showModalToUpdateAdditional: boolean,
 }
 
 export interface iPayloadProduct {
+    isViewingUpdatingOrAdding?: '' | 'VIEWING' | 'UPDATING' | 'ADDING';
+
     isEditingInfo?: boolean,
     picture_url?: string,
     isEditingPicture?: boolean,
@@ -59,6 +62,26 @@ export interface iAction {
 
 export function editableProductReducer(state: IEditableProductReducerData, action: any) {
     switch (action.type) {
+        case EditableProductActions.IS_VIEWING_UPDATING_OR_ADDING:
+            return { ...state, isViewingUpdatingOrAdding: action.payload.isViewingUpdatingOrAdding }
+            break
+        case EditableProductActions.VIEW_PRODUCT:
+            return {
+                ...state,
+                productInformation: {
+                    name: action.payload.product?.name,
+                    description: action.payload.product?.description,
+                    price: action.payload.product?.price,
+                },
+                picture_url: action.payload.product?.picture_url,
+                isEditingPicture: false,
+                isEditingInfo: false,
+                ingredients: action.payload.productSelects,
+                options: action.payload.productOptions,
+                additionals: action.payload.additionals,
+
+            }
+            break
         case EditableProductActions.IS_EDITING_INFORMATION:
             return { ...state, isEditingInfo: action.payload.isEditingInfo }
             break
@@ -83,8 +106,8 @@ export function editableProductReducer(state: IEditableProductReducerData, actio
         //     state.ingredients.push({
         //         name: action.payload.ingredientName,
         //     })
-            // return { ...state }
-            // break
+        // return { ...state }
+        // break
         // case EditableProductActions.UPDATE_INGREDIENT_NAME:
         //     const ingredientIndexToUpdate = state.ingredients.findIndex((ingredient) => ingredient.name === action.payload.ingredientName )
         //     state.ingredients[ingredientIndexToUpdate].name! = action.payload.ingredientName
@@ -139,4 +162,41 @@ export function editableProductReducer(state: IEditableProductReducerData, actio
         default:
             return state
     }
+}
+
+export const defaultValues = {
+    isViewingUpdatingOrAdding: '',
+    isEditingInfo: true,
+    picture_url: '',
+    isEditingPicture: true,
+    productInformation: {
+        name: '',
+        description: '',
+        price: '',
+    },
+    //INGREDIENT
+    ingredients: [
+        {
+            name: '',
+            picture_url: '',
+        }
+    ],
+
+    // //  OPTIONS
+    // ingredientIdToShowModalAddNewOption: '',
+    options: [ {
+        name: '',
+        picture_url: '',
+        product_select_id: 0,
+    }],
+
+    // // ADDITIONAL
+    additionals: [
+        {
+            name: '',
+            price: 0,
+            picture_url: '',
+        }
+    ],
+    showModalToUpdateAdditional: false,
 }

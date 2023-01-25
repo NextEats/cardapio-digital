@@ -7,7 +7,7 @@ import * as zod from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 // import { api } from "../../server/api";
-import Header from "../../components/home/Header";
+// import Header from "../../components/home/Header";
 
 import {
   AiOutlineClose,
@@ -171,7 +171,7 @@ export default function Finished({ restaurant }: IFinishedProps) {
       ) : null}
 
       <div>
-        <Header restaurant={restaurant} withStars={false} />
+        {/* <Header restaurant={restaurant} withStars={false} /> */}
         <div className="flex flex-col gap-3 px-4 mt-7">
           <h2 className="font-extrabold text-2xl text-yellow-500">
             Opaa! Pedido confirmado

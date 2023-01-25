@@ -10,31 +10,29 @@ export interface iProductSelectsWithOptions {
 export async function getProductSelectWithOptions(productId: number) {
   // buscar dados da tabela product_selects
   // filtrar apenas onde o product_id for igual ao produto atual
-  const productSelects = await supabase
-    .from("product_selects")
+  const selects = await supabase
+    .from("selects")
     .select("*")
     .eq("product_id", productId);
 
   // buscar por product_options para cada product_selects
 
-  if (!productSelects.data || productSelects.error) {
+  if (!selects.data || selects.error) {
     return;
   }
 
-  const productSelectPromises = productSelects.data.map(
-    async (productSelect) => {
-      const productOptions = await supabase
-        .from("product_options")
-        .select("*")
-        .eq("product_select_id", productSelect.id);
+  const productSelectPromises = selects.data.map(async (selects) => {
+    const productOptions = await supabase
+      .from("product_options")
+      .select("*")
+      .eq("product_select_id", selects.id);
 
-      return {
-        id: productSelect.id,
-        name: productSelect.name,
-        options: productOptions.data,
-      };
-    }
-  );
+    return {
+      id: selects.id,
+      name: selects.name,
+      options: productOptions.data,
+    };
+  });
 
   const productSelectsWithOptions = await Promise.all(productSelectPromises);
 

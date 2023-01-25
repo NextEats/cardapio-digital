@@ -15,7 +15,7 @@ export default function ModalForm({
   const router = useRouter();
 
   const onSubmit = (data: any) => {
-    data);
+    data;
   };
 
   return (

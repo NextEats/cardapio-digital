@@ -5,6 +5,7 @@ import {
   iProductCategories,
   iProductCategory,
   iGroupedProducts,
+  ProductWithCategory,
 } from "../../../types/types";
 
 function scrollTo(id: string) {
@@ -51,13 +52,13 @@ export default function ProductList({
   );
 }
 
-function CategoriesNavbar({ groupedProductsData }) {
+function CategoriesNavbar({ groupedProductsData }: any) {
   const buttonClasses =
     "mr-3 px-12 py-3 rounded-lg border-2 text-md font-semibold bg-gray-100 hover:bg-gray-200";
 
   return (
     <div className="scrollbar-custom sticky pl-3 py-2 left-0 top-0 mt-3 whitespace-nowrap overflow-auto bg-gray-100 shadow border z-20 touch-auto">
-      {groupedProductsData.map((category, index) => {
+      {groupedProductsData.map((category: any, index: number) => {
         return (
           <button
             className={buttonClasses}
@@ -92,6 +93,7 @@ function ProductsHorizontalList({
   category,
   setProductModal,
 }: {
+  category: { category_name: string | ""; products: ProductWithCategory[] };
   setProductModal: Function;
 }) {
   return (

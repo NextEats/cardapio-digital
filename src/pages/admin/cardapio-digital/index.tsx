@@ -83,9 +83,12 @@ export default function CardapioDigital({ productCategories, products, productSe
     setProductsState(products.data)
     async function setProtoduct() {
       const product = products.data.find(p => p.id === productId)
-      const selectsByProdctId = productSelects.data.filter(select => select.product_id === product?.id)
+      const productSelectsByProdctId = productSelects.data.filter(select => select.product_id === product?.id)
+      const selectsByProductSelect = selects.data.map(select => {
+        return selects.data[productSelectsByProdctId.findIndex(productSelect => productSelect.select_id === select?.id)]
+      })
       const productOptiosBySelectId = productOptions.data.filter(option => {
-        return selectsByProdctId.map(select => select.id === option.select_id && option)
+        return selectsByProductSelect.map(select => select?.id === option.select_id && option)
       })
 
       const productAdditionalsByProductId = productAdditionals.data.filter(productAdditional => productAdditional.product_id === productId)
@@ -93,7 +96,7 @@ export default function CardapioDigital({ productCategories, products, productSe
       const additionalsByProductAdditionalsId = productAdditionalsByProductId?.map(productAdditional => {
         return additionals.data[additionals?.data.findIndex(additional => productAdditional.additional_id === additional.id)]
       })
-      // dispatch(setViewpProductAction(product!, selectsByProdctId, productOptiosBySelectId, productAdditionalsByProductId, additionalsByProductAdditionalsId))
+      dispatch(setViewpProductAction(product!, selectsByProductSelect, productOptiosBySelectId, productAdditionalsByProductId, additionalsByProductAdditionalsId))
     }
 
     if (state.isViewingUpdatingOrAdding === "VIEWING") {
@@ -111,6 +114,7 @@ export default function CardapioDigital({ productCategories, products, productSe
     productOptions,
     productAdditionals,
     additionals,
+    selects,
   ])
 
   const [productModal, setProductModal] = useState(false)

@@ -27,28 +27,27 @@ interface iEditableMenuProductCardProps {
 
 export default function EditableMenuProductCard({ state, dispatch, setProductModal, productModal, selects, productCategories, productOptions, additionals }: iEditableMenuProductCardProps) {
 
-    function setIngredientSelected(selectName: string) {
-        if( selectName === "Selecione"){
+    function setIngredientSelected(selectId: string) {
+        if (selectId === "Selecione") {
             return
         }
-        const selectFinded = selects.find(select => select.name === selectName);
+        const selectFinded = selects.find(select => select.id === Number(selectId));
         const optionsFilteredBySelectId = productOptions.filter(option => option.select_id === selectFinded?.id)
-        dispatch(setAddIngredientAction(selectName, optionsFilteredBySelectId))
-        console.log('eee')
+        dispatch(setAddIngredientAction(selectFinded!, optionsFilteredBySelectId))
     }
 
     function setAdditionalSelected(additionalId: string) {
-        if( additionalId === "Selecione"){
+        if (additionalId === "Selecione") {
             return
         }
-        const additional = additionals.find( additional =>  additional.id === Number(additionalId))
-        if(!additional ){
+        const additional = additionals.find(additional => additional.id === Number(additionalId))
+        if (!additional) {
             return
         }
         dispatch(setAddAdditionalAction(additional!))
     }
 
-    
+
 
     function setCreateProduct(categoryId: string) {
 
@@ -59,15 +58,43 @@ export default function EditableMenuProductCard({ state, dispatch, setProductMod
         dispatch(setCategoryAction(categoryFinded!))
     }
     async function handleCreateProduct() {
-        console.log('data')
-        const { data, error, status } = await supabase.from("products").insert({
+        const { data } = await supabase.from("products").insert({
             category_id: state.category.id!,
             description: state.productInformation.description,
             name: state.productInformation.name,
             picture_url: state.picture_url,
             price: Number(state.productInformation.price),
         }).select("*")
-        console.log(data, error, status)
+
+        if (data === null) {
+            return
+        }
+        let additionalsStatus
+        state.additionals.forEach(async (additional) => {
+            if (additional.name === '') {
+                return
+            }
+            const { status } = await supabase.from("product_additionals").insert({
+                additional_id: additional.id!,
+                product_id: data[0].id
+            })
+        })
+
+        if (additionalsStatus === 404) {
+            return
+        }
+
+        state.ingredients.forEach(async (ingredient) => {
+            if (ingredient?.name === '') {
+                return
+            }
+            await supabase.from("product_selects").insert({
+                select_id: ingredient?.id,
+                product_id: data[0].id,
+            })
+        })
+
+
     }
 
     return (
@@ -85,55 +112,55 @@ export default function EditableMenuProductCard({ state, dispatch, setProductMod
 
                 <HeadersCard state={state} dispatch={dispatch} />
 
-                <select 
-                        onChange={(e) => setCreateProduct(e.target.value)}
-                        className="w-full h-8 pb-1 felx flex-1 px-2 text-gray-600 text-sm font-semibold
+                <select
+                    onChange={(e) => setCreateProduct(e.target.value)}
+                    className="w-full h-8 pb-1 felx flex-1 px-2 text-gray-600 text-sm font-semibold
                                  placeholder:text-gray-400 rounded-sm shadow-sm hover:shadow-md cursor-pointer outline-none">
                     <option value="Selecione"> Selecione</option>
                     {
                         productCategories?.map(category => {
-                            return <option key={category.id}  value={category.id}>{ category.name }</option>
+                            return <option key={category.id} value={category.id}>{category.name}</option>
                         })
                     }
                 </select>
 
-                <h2>{ !state.category ? 'Selecione uma categoria' : `${state.category.name}`}</h2>
+                <h2>{!state.category ? 'Selecione uma categoria' : `${state.category.name}`}</h2>
 
-                <select 
-                        onChange={(e) => setIngredientSelected(e.target.value)}
-                        className="w-full h-8 pb-1 felx flex-1 px-2 text-gray-600 text-sm font-semibold
+                <select
+                    onChange={(e) => setIngredientSelected(e.target.value)}
+                    className="w-full h-8 pb-1 felx flex-1 px-2 text-gray-600 text-sm font-semibold
                                  placeholder:text-gray-400 rounded-sm shadow-sm hover:shadow-md cursor-pointer outline-none">
                     <option value="Selecione"> Selecione</option>
                     {
                         selects?.map(select => {
-                            if(state.ingredients.some((ingredient) => ingredient.name === select.name)) {
+                            if (state.ingredients.some((ingredient) => ingredient?.name === select?.name)) {
                                 return
                             }
-                            return <option key={select.id}  value={select.name}>{ select.name }</option>
+                            return <option key={select.id} value={select.id}>{select.name}</option>
                         })
                     }
                 </select>
                 <Igredient state={state} dispatch={dispatch} />
 
-                <select 
-                        onChange={(e) => setAdditionalSelected(e.target.value)}
-                        className="w-full h-8 pb-1 felx flex-1 px-2 text-gray-600 text-sm font-semibold
+                <select
+                    onChange={(e) => setAdditionalSelected(e.target.value)}
+                    className="w-full h-8 pb-1 felx flex-1 px-2 text-gray-600 text-sm font-semibold
                                  placeholder:text-gray-400 rounded-sm shadow-sm hover:shadow-md cursor-pointer outline-none">
                     <option value="Selecione"> Selecione</option>
                     {
                         additionals?.map((additional) => {
-                            if(state.additionals.some((additionalState) => additionalState.name === additional.name)) {
+                            if (state.additionals.some((additionalState) => additionalState.name === additional.name)) {
                                 return
                             }
-                            return <option key={additional.id}  value={`${additional.id}`}>{ additional.name }</option>
+                            return <option key={additional.id} value={`${additional.id}`}>{additional.name}</option>
                         })
                     }
                 </select>
                 <Additional state={state} dispatch={dispatch} />
 
-                    <button onClick={() => handleCreateProduct()}>
+                <button onClick={() => handleCreateProduct()}>
                     SDFSDFSD
-                {/* <CardapioDigitalButton 
+                    {/* <CardapioDigitalButton 
                 // onClick={() => handleCreateProduct}
                 disabled={!state.productInformation.name} 
                 name='Adicionar novo item' h="h-10" w="w-full" /> */}

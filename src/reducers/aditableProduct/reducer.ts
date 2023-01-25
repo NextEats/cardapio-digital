@@ -101,7 +101,7 @@ export interface iPayloadProduct {
     optionName?: string,
     optionPicture_url?: string,
 
-    selectName?: string,
+    select?: iInsertSelect["data"],
     additional?: iInsertAdditional["data"],
     category?: iInsertProductCategory["data"]
 }
@@ -169,14 +169,14 @@ export function editableProductReducer(state: IEditableProductReducerData, actio
             break
         // CATEG0RY  
         case EditableProductActions.SET_CATEGORY:
-            return { ...state, category: action.payload.category}
+            return { ...state, category: action.payload.category }
             break
 
         // INGREDIENT  
         case EditableProductActions.ADD_NEW_INGREDIENT:
             return {
                 ...state,
-                ingredients: [...state.ingredients, { name: action.payload.selectName!, picture_url: '' }],
+                ingredients: [...state.ingredients, action.payload.select!],
                 options: [...state.options, ...action.payload.productOptions]
             }
             break

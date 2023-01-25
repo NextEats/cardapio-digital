@@ -123,14 +123,14 @@ export function Igredient({ state, dispatch }: iIgradientsCardProps) {
     return (
         <div>
             {state.ingredients.map(ingredient => {
-                if (ingredient.name === '') {
+                if (ingredient?.name === '') {
                     return
                 }
                 return (
-                    <div key={ingredient.id} className="mb-6 relative">
+                    <div key={ingredient?.id} className="mb-6 relative">
                         <div className="mb-4">
 
-                            {isUpdatingIngradientNameState === ingredient.name ?
+                            {isUpdatingIngradientNameState === ingredient?.name ?
                                 <form onSubmit={handleSubmit(handleUpdateIngredientName)} className="w-full flex items-center">
                                     <input
                                         type="text"
@@ -147,13 +147,13 @@ export function Igredient({ state, dispatch }: iIgradientsCardProps) {
                                     </button>
                                 </form> :
                                 <div className="w-full flex items-center justify-between" >
-                                    <h3> {ingredient.name}  </h3>
+                                    <h3> {ingredient?.name}  </h3>
                                     <div className="flex items-center gap-2">
                                         <BiPencil
-                                            onClick={() => setIsUpdatingIngradientNameState(ingredient.name!)}
+                                            onClick={() => setIsUpdatingIngradientNameState(ingredient?.name!)}
                                             className="text-xl text-blue-500 cursor-pointer hover:scale-125 hover:transition-all ease-in-out" />
                                         <FiTrash2
-                                            onClick={() => removeIngredient(ingredient.name!)}
+                                            onClick={() => removeIngredient(ingredient?.name!)}
                                             className="text-xl text-red-500 cursor-pointer hover:scale-125 hover:transition-all ease-in-out" />
                                     </div>
                                 </div>

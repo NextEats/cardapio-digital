@@ -1,8 +1,7 @@
-import { useContext, useMemo, useState, useEffect, useCallback } from "react";
+import { useMemo, useState, useCallback } from "react";
 
 // NEXT JS IMPORTS
 import { GetServerSideProps } from "next";
-import Link from "next/link";
 import Head from "next/head";
 
 // COMPONENTS
@@ -21,7 +20,6 @@ import {
   iRestaurant,
   iAdditionals,
   iRestaurantType,
-  iProductCategories,
   iProductCategory,
   iGroupedProducts,
   ProductWithCategory,
@@ -38,6 +36,8 @@ interface iDataHomepage {
     groupedProducts: iGroupedProducts;
   };
 }
+
+import { FaUtensils } from "react-icons/fa";
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   // FETCH DATA FROM DATABASE;
@@ -87,7 +87,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         return acc;
       }, {});
     } catch (error) {
-      console.error(error);
     } finally {
       // retorna a variavel groupedProducts
       return groupedProducts;
@@ -131,15 +130,15 @@ async function returnAllCategoriesForThisRestaurant(restaurantId: number) {
 
 export default function HomePage({ data }: iDataHomepage) {
   // GETS DATA FROM SERVER SIDE PROPS
-  const { restaurants, ingredients, additionals, products, groupedProducts } =
-    data;
+  const { restaurants, groupedProducts } = data;
   var restaurant = restaurants.data[0] as unknown as iRestaurant["data"];
 
   // STATES
-  const [productModal, setProductModal] = useState<iProduct>();
+  const [productModal, setProductModal] = useState<iProduct["data"]>();
   const [restaurantType, setRestaurantType] = useState<
     iRestaurantType["data"] | null | undefined
   >();
+
   const [
     productCategoriesForThisRestaurant,
     setProductCategoriesForThisRestaurant,
@@ -159,9 +158,10 @@ export default function HomePage({ data }: iDataHomepage) {
   }, [restaurant]);
 
   if (!productCategoriesForThisRestaurant) {
-    console.error(productCategoriesForThisRestaurant);
     return <>Loading</>;
   }
+
+  console.log(productModal);
 
   return (
     <>
@@ -171,7 +171,7 @@ export default function HomePage({ data }: iDataHomepage) {
       </Head>
       {productModal && (
         <ProductModal
-          productModal={productModal.data}
+          productModal={productModal}
           setProductModal={setProductModal}
         />
       )}
@@ -185,6 +185,15 @@ export default function HomePage({ data }: iDataHomepage) {
             groupedProducts={groupedProducts}
             setProductModal={setProductModal}
           />
+          <div className="fixed bottom-1 max-w-7xl p-3 w-full">
+            <div className="h-16 flex flex-row items-center justify-between bg-gray-900 cursor-pointer rounded-md">
+              <FaUtensils className="text-white text-xl ml-10" />
+              <span className="text-white text-lg block p-0 m-0 font-semibold pl-10">
+                MEU PEDIDO
+              </span>
+              <span className="text-white mr-10 text-md">R$ 55,00</span>
+            </div>
+          </div>
         </div>
       </div>
     </>

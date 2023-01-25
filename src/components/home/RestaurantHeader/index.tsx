@@ -13,6 +13,11 @@ export default function RestaurantHeader({
   restaurant,
   restaurantType,
 }: iRestaurantHeader) {
+  function returnRestaurantAddressByCep(cep: string) {
+    // Tratamento do parâmetro CEP
+    // Faz uma consulta no banco de dados BUSCA CEP para retornar endereço
+  }
+
   return (
     <div>
       <div
@@ -71,11 +76,15 @@ function RestaurantRate({ averageRating }: { averageRating: number }) {
   for (let i = 0; i < 5; i++) {
     // if the rating is greater than or equal to 1, it should be a full star
     if (rating >= 1) {
-      stars.push(<FaStar className="text-yellow-400 text-2xl inline" />);
+      stars.push(
+        <FaStar key={i} className="text-yellow-400 text-2xl inline" />
+      );
     }
     // if the rating is greater than or equal to 0.5 and less than 1, it should be a half star
     else if (rating >= 0.5) {
-      stars.push(<FaStarHalf className="text-yellow-400 text-2xl inline" />);
+      stars.push(
+        <FaStarHalf key={i} className="text-yellow-400 text-2xl inline" />
+      );
     }
     // if the rating is less than 0.5, it should be no star
     else {

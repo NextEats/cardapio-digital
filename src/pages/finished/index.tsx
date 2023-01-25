@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form";
 import * as zod from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { api } from "../../server/api";
+// import { api } from "../../server/api";
 import Header from "../../components/home/Header";
 
 import {
@@ -26,7 +26,7 @@ interface IFinishedProps {
 }
 
 const newUserFormValidationSchema = zod.object({
-  name: zod.string().min(1, "Informe a tarefa").optional(),
+  name: zod.string(),
   email: zod.string(),
   password: zod.string().min(8, "Sua senha deve ter no minimo 8 caracteres"),
 });
@@ -47,12 +47,10 @@ export default function Finished({ restaurant }: IFinishedProps) {
   });
 
   function handleCreateNewUser(data: NewUserFormData) {
-    console.log(data);
     reset();
   }
 
   function handleLogin(data: NewUserFormData) {
-    console.log(data);
     reset();
   }
 
@@ -209,10 +207,10 @@ export default function Finished({ restaurant }: IFinishedProps) {
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const restaurant = await api.get("restaurants/2");
+  // const restaurant = await api.get("restaurants/2");
   return {
     props: {
-      restaurant: restaurant.data,
+      // restaurant: restaurant.data,
     },
   };
 };

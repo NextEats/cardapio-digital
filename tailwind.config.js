@@ -13,6 +13,7 @@ module.exports = {
       "3xs": "530px",
       sm: "640px",
       md: "768px",
+      "2md": "900px",
       lg: "1024px",
       xl: "1280px",
       "2xl": "1536px",
@@ -21,6 +22,10 @@ module.exports = {
     extend: {
       boxShadow: {
         sm: "0px 0px 2px rgba(0, 0, 0, 0.25);",
+        md: "0px 0px 8px rgba(0, 0, 0, 0.3);",
+      },
+      gridTemplateColumns: {
+        'xlcharts': 'repeat(2, auto)'
       },
       colors: {
         white: "#FFFFFF",
@@ -34,6 +39,7 @@ module.exports = {
         "yellow-400": "#F7C443",
         "yellow-500": "#C47F17",
 
+        "red-50": "#FEF2F2",
         "red-400": "#FF371C",
 
         "gray-300": "#E2E2E2",

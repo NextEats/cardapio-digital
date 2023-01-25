@@ -1,25 +1,20 @@
-import { GetServerSideProps } from "next";
 import { createContext, ReactNode, useMemo, useState } from "react";
 import { supabase } from "../server/api";
 import { IRestaurant } from "../types/home";
-import { Dispatch, SetStateAction } from "react";
+
 
 export const RestaurantContext = createContext({} as IRestaurantContext);
 
 interface IRestaurantContext {
-  restaurant: IRestaurant | null;
+  // restaurant: IRestaurant | null;
 }
 
 interface RestaurantContextProviderProps {
   children: ReactNode;
 }
 
-interface IRestaurantDataReq {
-  data: IRestaurant[];
-}
-
 async function getRestaurants() {
-  const { data } = await supabase.from("restaurants").select().eq("id", 3);
+  const { data } = await supabase.from("restaurants").select().eq("id", 3, );
 
   if (!data) {
     return;
@@ -33,6 +28,7 @@ export default function RestaurantContextProvider({
 }: RestaurantContextProviderProps) {
   const [restaurant, setRestaurant] = useState<IRestaurant>();
 
+
   useMemo(() => {
     getRestaurants().then((res) => {
       if (!res) {
@@ -45,7 +41,7 @@ export default function RestaurantContextProvider({
   return (
     <RestaurantContext.Provider
       value={{
-        restaurant,
+        // restaurant,
       }}
     >
       {children}

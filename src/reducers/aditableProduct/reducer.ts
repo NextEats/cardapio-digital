@@ -1,5 +1,5 @@
 import { IAdditionalData, IIngredientOptionsData } from "../../types/product"
-import { iAdditionals, iInsertAdditionals, iInsertIngredients, iInsertProductOptions, iInsertSelect } from "../../types/types";
+import { iAdditionals, iInsertAdditional, iInsertAdditionals, iInsertIngredients, iInsertProductCategory, iInsertProductOptions, iInsertSelect } from "../../types/types";
 import { EditableProductActions } from "./actions";
 
 export const defaultValues = {
@@ -20,9 +20,16 @@ export const defaultValues = {
         }
     ],
 
+    //  CATEGORY
+    category: {
+        name: '',
+        restaurant_id: 0,
+    },
+
+
     // //  OPTIONS
     // ingredientIdToShowModalAddNewOption: '',
-    options: [ {
+    options: [{
         name: '',
         picture_url: '',
         select_id: 0,
@@ -55,6 +62,9 @@ export interface IEditableProductReducerData {
 
     // // INGREDIENT
     ingredients: iInsertIngredients["data"],
+
+    // // CATEGORY
+    category: iInsertProductCategory["data"],
 
     // // OPTIONS
     // ingredientIdToShowModalAddNewOption: string,
@@ -92,6 +102,8 @@ export interface iPayloadProduct {
     optionPicture_url?: string,
 
     selectName?: string,
+    additional?: iInsertAdditional["data"],
+    category?: iInsertProductCategory["data"]
 }
 
 export interface iAction {
@@ -121,21 +133,21 @@ export function editableProductReducer(state: IEditableProductReducerData, actio
 
             }
             break
-            case EditableProductActions.SET_ADDING_PRDUCT:
-                state.productInformation = {
-                        name: '',
-                        description: '',
-                        price: '',
-                    };
-                    state.picture_url = '';
-                    state.isEditingPicture = true;
-                    state.isEditingInfo = true;
-                    state.ingredients = [];
-                    state.options = [];
-                    state.additionals = [];
-                
-                return { ...state }
-                break
+        case EditableProductActions.SET_ADDING_PRDUCT:
+            state.productInformation = {
+                name: '',
+                description: '',
+                price: '',
+            };
+            state.picture_url = '';
+            state.isEditingPicture = true;
+            state.isEditingInfo = true;
+            state.ingredients = [];
+            state.options = [];
+            state.additionals = [];
+
+            return { ...state }
+            break
         case EditableProductActions.IS_EDITING_INFORMATION:
             return { ...state, isEditingInfo: action.payload.isEditingInfo }
             break
@@ -155,16 +167,21 @@ export function editableProductReducer(state: IEditableProductReducerData, actio
         case EditableProductActions.SET_PICTURE_URL:
             return { ...state, picture_url: action.payload.picture_url }
             break
+        // CATEG0RY  
+        case EditableProductActions.SET_CATEGORY:
+            return { ...state, category: action.payload.category}
+            break
+
         // INGREDIENT  
         case EditableProductActions.ADD_NEW_INGREDIENT:
-            console.log(state)
-        return { ...state,
-            ingredients: [...state.ingredients, {name: action.payload.selectName!, picture_url: ''} ],
-            options: [...state.options, ...action.payload.productOptions]
-         }
-        break
+            return {
+                ...state,
+                ingredients: [...state.ingredients, { name: action.payload.selectName!, picture_url: '' }],
+                options: [...state.options, ...action.payload.productOptions]
+            }
+            break
         case EditableProductActions.UPDATE_INGREDIENT_NAME:
-            const ingredientIndexToUpdate = state.ingredients.findIndex((ingredient) => ingredient.name === action.payload.ingredientName )
+            const ingredientIndexToUpdate = state.ingredients.findIndex((ingredient) => ingredient.name === action.payload.ingredientName)
             state.ingredients[ingredientIndexToUpdate].name! = action.payload.ingredientName
             return { ...state }
             break
@@ -197,22 +214,18 @@ export function editableProductReducer(state: IEditableProductReducerData, actio
         //     break
         // ADDITIONAL
         case EditableProductActions.ADD_NEW_ADDITIONAL:
-            return { ...state, additionals: [ ...state.additionals, {
-                    name: action.payload.additionalName,
-                    picture_url: action.payload.additionalPicture_url,
-                    price: action.payload.additionalPrice,
-            }] }
+            return { ...state, additionals: [...state.additionals, action.payload.additional] }
             break
         case EditableProductActions.UPDATE_ADDITIONAL:
-            const additionalIndex = state.additionals.findIndex( additional => additional.name === action.payload.additionalName)
+            const additionalIndex = state.additionals.findIndex(additional => additional.name === action.payload.additionalName)
             state.additionals[additionalIndex].name = action.payload.additionalName;
             state.additionals[additionalIndex].price = action.payload.additionalPrice;
             state.additionals[additionalIndex].picture_url = action.payload.additionalPicture_url;
             return { ...state }
             break
         case EditableProductActions.REMOVE_ADDITIONAL:
-            const additionalWithoutTheRemovedOne = state.additionals.filter( additional =>  additional.name !== action.payload.additionalName )
-            return { ...state, additional:  additionalWithoutTheRemovedOne}
+            const additionalWithoutTheRemovedOne = state.additionals.filter(additional => additional.name !== action.payload.additionalName)
+            return { ...state, additional: additionalWithoutTheRemovedOne }
             break
         default:
             return state

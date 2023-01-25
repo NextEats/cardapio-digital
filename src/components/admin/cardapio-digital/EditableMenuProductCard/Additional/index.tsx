@@ -8,7 +8,7 @@ import { BiPencil } from "react-icons/bi";
 import { FiTrash2 } from "react-icons/fi";
 import { EditableProductActions } from "../../../../../reducers/aditableProduct/actions";
 import { IEditableProductReducerData, iPayloadProduct } from "../../../../../reducers/aditableProduct/reducer";
-import { iInsertAdditional } from "../../../../../types/types";
+import { iInsertAdditional, iInsertAdditionals } from "../../../../../types/types";
 import { CardapioDigitalButton } from "../../CardapioDigitalButton";
 
 interface IAdditionalProps {

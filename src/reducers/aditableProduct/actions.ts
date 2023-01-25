@@ -1,4 +1,4 @@
-import { iProduct, iInsertProductOptions, iInsertAdditionals, iInsertProductAdditionals, iInsertProductSelects, iInsertSelects, iInsertSelect } from "../../types/types"
+import { iProduct, iInsertProductOptions, iInsertAdditionals, iInsertProductAdditionals, iInsertProductSelects, iInsertSelects, iInsertSelect, iInsertAdditional, iInsertProductCategory } from "../../types/types"
 
 export enum EditableProductActions {
 
@@ -6,7 +6,8 @@ export enum EditableProductActions {
     VIEW_PRODUCT = "VIEW_PRODUCT",
 
     SET_ADDING_PRDUCT = "SET_ADDING_PRDUCT",
-
+    
+    SET_CATEGORY = "SET_CATEGORY",
     // PRODUCT INFORMATION
     IS_EDITING_INFORMATION = "IS_EDITING_INFORMATION",
     SET_PRODUCT_INFORMATION = "SET_PRODUCT_INFORMATION",
@@ -92,5 +93,17 @@ export function setAddIngredientAction(selectName: string, optionsFilteredBySele
     return {
             type: EditableProductActions.ADD_NEW_INGREDIENT,
             payload: { selectName, productOptions: optionsFilteredBySelectId }
+    }
+}
+export function setAddAdditionalAction(additional: iInsertAdditional["data"]) {
+    return {
+            type: EditableProductActions.ADD_NEW_ADDITIONAL,
+            payload: { additional }
+    }
+}
+export function setCategoryAction(category: iInsertProductCategory["data"]) {
+    return {
+            type: EditableProductActions.SET_CATEGORY,
+            payload: { category }
     }
 }

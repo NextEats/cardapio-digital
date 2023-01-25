@@ -77,6 +77,8 @@ export default function CardapioDigital({ productCategories, products, productSe
 
 
   const [productsState, setProductsState] = useState<iProducts["data"]>([])
+  const [productsFilteredState, setProductsFilteredState] = useState<iProducts["data"]>([])
+
   useEffect(() => {
     setProductsState(products.data)
     async function setProtoduct() {
@@ -114,14 +116,14 @@ export default function CardapioDigital({ productCategories, products, productSe
   const [productModal, setProductModal] = useState(false)
 
   function filterProducts(name: string) {
-    setProductsState(products.data)
 
     let productsFiltered: iProducts["data"] = []
 
     productsFiltered = productsState.filter((product) => {
       return product.name.toLocaleLowerCase().includes(name.toLocaleLowerCase())
     })
-    setProductsState(productsFiltered)
+
+    setProductsFilteredState(productsFiltered)
   }
 
   return (
@@ -164,13 +166,26 @@ export default function CardapioDigital({ productCategories, products, productSe
 
             </div>
             <div className="grid grid-cols-1 xl:grid-cols-2 gap-2">
-              {productsState.map(product => {
+              {productsFilteredState ? <>
+                {productsFilteredState.map(product => {
+                  return <MenuProduct dispatch={dispatch} setProductModal={setProductModal} setProductId={setProductId} key={product.id} product={product} />
+                })}
+              </> : <> {productsState.map(product => {
                 return <MenuProduct dispatch={dispatch} setProductModal={setProductModal} setProductId={setProductId} key={product.id} product={product} />
-              })}
+              })}</>}
             </div>
 
           </div>
-          <EditableMenuProductCard state={state} dispatch={dispatch} productModal={productModal} productOptions={productOptions.data} selects={selects?.data} setProductModal={setProductModal} />
+          <EditableMenuProductCard
+            state={state}
+            dispatch={dispatch}
+            productModal={productModal}
+            productOptions={productOptions.data}
+            selects={selects?.data}
+            setProductModal={setProductModal}
+            additionals={additionals.data}
+            productCategories={productCategories.data}
+          />
         </div>
       </>
     </AdminWrapper>

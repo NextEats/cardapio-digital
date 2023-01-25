@@ -186,6 +186,9 @@ export function Igredient({ state, dispatch }: iIgradientsCardProps) {
                                 </div>} */}
                             {/* ========================================================================= */}
                             {state.options.map((option) => {
+                                if(option.name === '' || option.picture_url === '') {
+                                    return
+                                }
                                 return (
                                     <div key={option.id} className="rounded-lg w-[100px] h-24 flex items-center relative justify-center" >
                                         <FiTrash2

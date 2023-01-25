@@ -330,7 +330,7 @@ export interface Database {
           is_default_value: boolean
           name: string
           picture_url: string
-          product_select_id: number
+          select_id: number
         }
         Insert: {
           created_at?: string | null
@@ -338,7 +338,7 @@ export interface Database {
           is_default_value?: boolean
           name: string
           picture_url: string
-          product_select_id: number
+          select_id: number
         }
         Update: {
           created_at?: string | null
@@ -346,7 +346,7 @@ export interface Database {
           is_default_value?: boolean
           name?: string
           picture_url?: string
-          product_select_id?: number
+          select_id?: number
         }
       }
       product_sales: {
@@ -382,20 +382,20 @@ export interface Database {
         Row: {
           created_at: string | null
           id: number
-          name: string
-          product_id: number
+          product_id: number | null
+          select_id: number | null
         }
         Insert: {
           created_at?: string | null
           id?: number
-          name: string
-          product_id: number
+          product_id?: number | null
+          select_id?: number | null
         }
         Update: {
           created_at?: string | null
           id?: number
-          name?: string
-          product_id?: number
+          product_id?: number | null
+          select_id?: number | null
         }
       }
       products: {
@@ -471,6 +471,23 @@ export interface Database {
           name?: string
           picture_url?: string
           restaurant_type_id?: number
+        }
+      }
+      selects: {
+        Row: {
+          created_at: string | null
+          id: number
+          name: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: number
+          name: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: number
+          name?: string
         }
       }
     }

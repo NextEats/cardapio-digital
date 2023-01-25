@@ -60,17 +60,24 @@ export interface iOrderStatus {
 export interface iOrdersStatus {
   data: Array<Database["public"]["Tables"]["order_status"]["Row"]>;
 }
-export interface iProductSelect {
-  data: Database["public"]["Tables"]["product_selects"]["Row"];
-}
-
-export interface iProductSelects {
-  data: Array<Database["public"]["Tables"]["product_selects"]["Row"]>;
-}
 
 
 //  INSERTS
 
+export interface iInsertSelect {
+  data: Database["public"]["Tables"]["selects"]["Insert"];
+}
+
+export interface iInsertSelects {
+  data: Array<Database["public"]["Tables"]["selects"]["Insert"]>;
+}
+export interface iInsertProductSelect {
+  data: Database["public"]["Tables"]["product_selects"]["Insert"];
+}
+
+export interface iInsertProductSelects {
+  data: Array<Database["public"]["Tables"]["product_selects"]["Insert"]>;
+}
 export interface iInsertIngredient {
   data: Database["public"]["Tables"]["ingredients"]["Insert"];
 }

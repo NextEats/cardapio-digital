@@ -1,9 +1,11 @@
-import { iProduct, iInsertProductOptions, iProductSelects, iInsertAdditionals, iInsertProductAdditionals } from "../../types/types"
+import { iProduct, iInsertProductOptions, iInsertAdditionals, iInsertProductAdditionals, iInsertProductSelects, iInsertSelects, iInsertSelect } from "../../types/types"
 
 export enum EditableProductActions {
 
     IS_VIEWING_UPDATING_OR_ADDING = "IS_VIEWING_UPDATING_OR_ADDING",
     VIEW_PRODUCT = "VIEW_PRODUCT",
+
+    SET_ADDING_PRDUCT = "SET_ADDING_PRDUCT",
 
     // PRODUCT INFORMATION
     IS_EDITING_INFORMATION = "IS_EDITING_INFORMATION",
@@ -40,7 +42,7 @@ export enum EditableProductActions {
 
 export function setViewpProductAction( 
     product: iProduct["data"], 
-    productSelectsByProdctId: iProductSelects["data"], 
+    selectsByProdctId: iInsertSelects["data"], 
     productOptiosBySelectId: iInsertProductOptions["data"],
     productAdditionalsByProductId: iInsertProductAdditionals["data"],
     additionalsByProductAdditionalsId: iInsertAdditionals["data"],
@@ -49,7 +51,7 @@ export function setViewpProductAction(
         type: EditableProductActions.VIEW_PRODUCT,
         payload: { 
             product: product,
-            productSelects: productSelectsByProdctId,
+            selects: selectsByProdctId,
             productOptions: productOptiosBySelectId,
             additionals: additionalsByProductAdditionalsId,
         }
@@ -75,9 +77,20 @@ export function setProductInformationAction(name: string, description: string, p
         }
     }
 }
+export function setAddingProductAction() {
+    return {
+            type: EditableProductActions.SET_ADDING_PRDUCT,
+    }
+}
 export function setIsUpdatingInformationAction(isUpdatig: boolean) {
     return {
-            type: EditableProductActions.IS_EDITING_INFORMATION,
-            payload: { isUpdatig }
+        type: EditableProductActions.IS_EDITING_INFORMATION,
+        payload: { isUpdatig }
+    }
+}
+export function setAddIngredientAction(selectName: string, optionsFilteredBySelectId: iInsertProductOptions["data"]) {
+    return {
+            type: EditableProductActions.ADD_NEW_INGREDIENT,
+            payload: { selectName, productOptions: optionsFilteredBySelectId }
     }
 }

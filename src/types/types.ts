@@ -16,6 +16,14 @@ export interface iRestaurants {
   data: Array<Database["public"]["Tables"]["restaurants"]["Row"]>;
 }
 
+export interface iIngredient {
+  data: Database["public"]["Tables"]["ingredients"]["Row"];
+}
+
+export interface iIngredients {
+  data: Array<iIngredient>;
+}
+
 export interface iAdditional {
   data: Database["public"]["Tables"]["additionals"]["Row"];
 }
@@ -119,4 +127,21 @@ export interface iInsertProductOptions {
 // export interface iInsertIngredinetOptions {
 //   data: Array<Database["public"]["Tables"]["ingredient_options"]["Insert"]>;
 // }
+export interface iGroupedProducts {
+  [key: number]: {
+    category_name: string | "";
+    products: ProductWithCategory[];
+  };
+}
 
+export type ProductWithCategory = iProduct["data"] & {
+  category_name: string;
+};
+
+export interface iProductOption {
+  data: Database["public"]["Tables"]["product_options"]["Row"];
+}
+
+export interface iProductOptions {
+  data: Array<iProduct>;
+}

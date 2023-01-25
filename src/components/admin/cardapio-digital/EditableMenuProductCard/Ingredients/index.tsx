@@ -74,7 +74,6 @@ export function Igredient({ state, dispatch }: iIgradientsCardProps) {
 
     //   //////////////   /////////////    //////////      /////////
 
-
     function handleUpdateIngredientName(data: NewIngredientFormData) {
         // const ingredientName = getValues('editIngredientName')
         const nameAlreadyExists = state.ingredients.some(ingredient => ingredient.name === data.editIngredientName)
@@ -186,7 +185,7 @@ export function Igredient({ state, dispatch }: iIgradientsCardProps) {
                                 </div>} */}
                             {/* ========================================================================= */}
                             {state.options.map((option) => {
-                                if(option.name === '' || option.picture_url === '') {
+                                if (option.name === '' || option.picture_url === '') {
                                     return
                                 }
                                 return (

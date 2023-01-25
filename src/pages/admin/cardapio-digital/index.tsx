@@ -166,7 +166,7 @@ export default function CardapioDigital({ productCategories, products, productSe
 
             </div>
             <div className="grid grid-cols-1 xl:grid-cols-2 gap-2">
-              {productsFilteredState ? <>
+              {productsFilteredState.length > 0 ? <>
                 {productsFilteredState.map(product => {
                   return <MenuProduct dispatch={dispatch} setProductModal={setProductModal} setProductId={setProductId} key={product.id} product={product} />
                 })}

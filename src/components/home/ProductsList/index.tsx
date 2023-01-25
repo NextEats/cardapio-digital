@@ -1,43 +1,73 @@
+import Image from "next/image";
+
 import { FaSearch } from "react-icons/fa";
+import {
+  iProductCategories,
+  iProductCategory,
+  iGroupedProducts,
+} from "../../../types/types";
 
 function scrollTo(id: string) {
   const element = document.getElementById(id) as HTMLElement;
   element.scrollIntoView({ behavior: "smooth" });
 }
 
-export default function ProductList() {
+interface iProductsList {
+  groupedProducts: iGroupedProducts;
+  setProductModal: Function;
+}
+
+export default function ProductList({
+  groupedProducts,
+  setProductModal,
+}: iProductsList) {
+  const groupedProductsData = Object.values(groupedProducts);
+
   return (
     <div>
-      <CategoriesNavbar />
+      <CategoriesNavbar groupedProductsData={groupedProductsData} />
       <SearchInput />
-      <div className="mx-3">
-        <ProductsHorizontalList name="Promoção" />
-        <ProductsHorizontalList name="Bebidas" />
-        <ProductsHorizontalList name="Drinks" />
+      <div className="mx-3 ">
+        {groupedProductsData.map((category, index) => {
+          return (
+            <ProductsHorizontalList
+              key={index}
+              category={category}
+              setProductModal={setProductModal}
+            />
+            // <div key={index}>
+            //   {category.category_name}
+            //   <div>
+            //     {category.products.map((product, index) => {
+            //       return <div key={index}>{product.name}</div>;
+            //     })}
+            //   </div>
+            // </div>
+          );
+        })}
       </div>
       <div className="h-[1000px]"></div>
     </div>
   );
 }
 
-function CategoriesNavbar() {
+function CategoriesNavbar({ groupedProductsData }) {
   const buttonClasses =
     "mr-3 px-12 py-3 rounded-lg border-2 text-md font-semibold bg-gray-100 hover:bg-gray-200";
 
   return (
-    <div className="sticky pl-3 py-2 left-0 top-0 mt-3 whitespace-nowrap overflow-auto bg-gray-700 z-20">
-      <button className={buttonClasses} onClick={() => scrollTo("Promoção")}>
-        Promoção
-      </button>
-      <button className={buttonClasses} onClick={() => scrollTo("Bebidas")}>
-        Bebidas
-      </button>
-      <button className={buttonClasses} onClick={() => scrollTo("Drinks")}>
-        Drinks
-      </button>
-      <button className={buttonClasses}>Porções</button>
-      <button className={buttonClasses}>Cervejas</button>
-      <button className={buttonClasses}>Kids</button>
+    <div className="scrollbar-custom sticky pl-3 py-2 left-0 top-0 mt-3 whitespace-nowrap overflow-auto bg-gray-100 shadow border z-20 touch-auto">
+      {groupedProductsData.map((category, index) => {
+        return (
+          <button
+            className={buttonClasses}
+            onClick={() => scrollTo(category.category_name)}
+            key={index}
+          >
+            {category.category_name}
+          </button>
+        );
+      })}
     </div>
   );
 }
@@ -58,22 +88,38 @@ function SearchInput() {
   );
 }
 
-function ProductsHorizontalList({ name }: { name: string }) {
-  const productsOnSaleData = [1, 2, 3, 4, 5, 6, 7];
-
+function ProductsHorizontalList({
+  category,
+  setProductModal,
+}: {
+  setProductModal: Function;
+}) {
   return (
-    <div id={name} className="pt-16 first:pt-0">
-      <h2 className="text-2xl mb-3 mt-5 text-gray-500">{name}</h2>
-      <div className="whitespace-nowrap overflow-auto">
-        {productsOnSaleData.map((id) => {
+    <div id={category.category_name} className="mb-12 scroll-mt-24">
+      <h2 className="text-2xl mb-3 mt-5 text-gray-500">
+        {category.category_name}
+      </h2>
+      <div className="whitespace-nowrap overflow-auto scrollbar-custom">
+        {category.products.map((product, index) => {
           return (
             <div
-              key={id}
+              key={index}
+              onClick={() => {
+                setProductModal(product);
+              }}
               className="border bg-gray-100 hover:bg-gray-300 w-44 h-72 p-3 mr-3 inline-block rounded-md cursor-pointer"
             >
-              <div className="h-36 w-full bg-red-400 mt-1 rounded-md"></div>
+              <div className="h-36 w-full mt-1 rounded-md">
+                <Image
+                  src={product.picture_url}
+                  width={180}
+                  height={180}
+                  alt={product.name}
+                  className="rounded-md"
+                />
+              </div>
               <div className="mt-3">
-                <p className="text-md truncate">X-Bacon Gourmet Maravilhoso</p>
+                <p className="text-md truncate">{product.name}</p>
               </div>
               <div className="mt-3 flex flex-row items-center">
                 <span className="px-2 py-1 rounded-sm text-white bg-green-500 text-sm">
@@ -85,7 +131,7 @@ function ProductsHorizontalList({ name }: { name: string }) {
               </div>
               <div className="mt-2">
                 <span className="block before:content-['R$'] text-md font-semibold">
-                  &nbsp;45,00
+                  &nbsp;{product.price}
                 </span>
               </div>
             </div>

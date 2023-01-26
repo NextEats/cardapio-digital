@@ -23,6 +23,7 @@ import {
   iProductCategory,
   iGroupedProducts,
   ProductWithCategory,
+  iCheckoutProduct,
 } from "./../types/types";
 import ProductModal from "../components/home/ProductModal";
 
@@ -38,6 +39,8 @@ interface iDataHomepage {
 }
 
 import { FaUtensils } from "react-icons/fa";
+import returnProducts from "./returnProducts";
+import Checkout from "../components/Checkout";
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   // FETCH DATA FROM DATABASE;
@@ -134,6 +137,10 @@ export default function HomePage({ data }: iDataHomepage) {
   var restaurant = restaurants.data[0] as unknown as iRestaurant["data"];
 
   // STATES
+  const [showCheckoutModal, setShowCheckoutModal] = useState<boolean>(true);
+  const [products, setProducts] = useState<
+    Array<iCheckoutProduct> | null | undefined
+  >();
   const [productModal, setProductModal] = useState<iProduct["data"]>();
   const [restaurantType, setRestaurantType] = useState<
     iRestaurantType["data"] | null | undefined
@@ -173,8 +180,16 @@ export default function HomePage({ data }: iDataHomepage) {
         <ProductModal
           productModal={productModal}
           setProductModal={setProductModal}
+          setProducts={setProducts}
         />
       )}
+      {showCheckoutModal && (
+        <Checkout
+          onClose={() => setShowCheckoutModal(false)}
+          products={products}
+        />
+      )}
+
       <div className="bg-[#222] flex justify-center min-h-screen min-w-screen">
         <div className="bg-gray-100 max-w-7xl w-full">
           <RestaurantHeader
@@ -185,15 +200,23 @@ export default function HomePage({ data }: iDataHomepage) {
             groupedProducts={groupedProducts}
             setProductModal={setProductModal}
           />
-          <div className="fixed bottom-1 max-w-7xl p-3 w-full">
-            <div className="h-16 flex flex-row items-center justify-between bg-gray-900 cursor-pointer rounded-md">
-              <FaUtensils className="text-white text-xl ml-10" />
-              <span className="text-white text-lg block p-0 m-0 font-semibold pl-10">
-                MEU PEDIDO
-              </span>
-              <span className="text-white mr-10 text-md">R$ 55,00</span>
+
+          {products && (
+            <div
+              className="fixed bottom-1 max-w-7xl p-3 w-full"
+              onClick={() => {
+                setShowCheckoutModal(true);
+              }}
+            >
+              <div className="h-16 flex flex-row items-center justify-between bg-gray-900 cursor-pointer rounded-md">
+                <FaUtensils className="text-white text-xl ml-10" />
+                <span className="text-white text-lg block p-0 m-0 font-semibold pl-10">
+                  MEU PEDIDO
+                </span>
+                <span className="text-white mr-10 text-md">R$ 55,00</span>
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
     </>

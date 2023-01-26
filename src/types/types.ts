@@ -69,9 +69,7 @@ export interface iOrdersStatus {
   data: Array<Database["public"]["Tables"]["order_status"]["Row"]>;
 }
 
-
 //  INSERTS
-
 export interface iInsertSelect {
   data: Database["public"]["Tables"]["selects"]["Insert"];
 }
@@ -144,4 +142,32 @@ export interface iProductOption {
 
 export interface iProductOptions {
   data: Array<iProduct>;
+}
+
+export interface iCheckoutProduct {
+  category_id: number;
+  description: string;
+  id: number;
+  name: string;
+  picture_url: string;
+  price: number;
+  quantity: number;
+  selects?: Array<{
+    name: string;
+    id: number;
+    options: Array<{
+      id: number;
+      name: string;
+      picture_url: string;
+      is_default_value: boolean;
+      selected: boolean;
+    }>;
+  }>;
+  additionals?: Array<{
+    id: number;
+    name: string;
+    picture_url: string;
+    price: number;
+    quantity: number;
+  }>;
 }

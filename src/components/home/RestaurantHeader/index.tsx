@@ -13,11 +13,6 @@ export default function RestaurantHeader({
   restaurant,
   restaurantType,
 }: iRestaurantHeader) {
-  function returnRestaurantAddressByCep(cep: string) {
-    // Tratamento do parâmetro CEP
-    // Faz uma consulta no banco de dados BUSCA CEP para retornar endereço
-  }
-
   return (
     <div>
       <div

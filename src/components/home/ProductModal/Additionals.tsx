@@ -7,16 +7,18 @@ import { useState } from "react";
 export default function Additionals({
   data,
   setPrice,
+  selectedAdditionals,
+  setSelectedAdditionals,
 }: {
   data: iProductAdditional[];
   setPrice: Function;
+  selectedAdditionals: any[];
+  setSelectedAdditionals: Function;
 }) {
-  const [selectedAdditionals, setSelectedAdditionals] = useState<any[]>([]);
-
   if (data) {
     return (
       <div className="mb-24">
-        <h2 className="mb-5 font-semibold text-sm">Adicionais</h2>
+        <h2 className="mb-5 font-light text-xl text-gray-500">Adicionais</h2>
         {data.map(({ additionals }) => {
           return (
             <div key={additionals.id} className="flex flex-col mb-3">

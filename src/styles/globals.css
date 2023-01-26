@@ -18,3 +18,11 @@
   border-radius: 8px;
   background-color: #6c6c6c;
 }
+
+.selected {
+  opacity: 1;
+}
+
+.unselected {
+  opacity: 0.4;
+}

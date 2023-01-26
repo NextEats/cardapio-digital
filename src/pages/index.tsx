@@ -39,7 +39,6 @@ interface iDataHomepage {
 }
 
 import { FaUtensils } from "react-icons/fa";
-import returnProducts from "./returnProducts";
 import Checkout from "../components/Checkout";
 
 export const getServerSideProps: GetServerSideProps = async (context) => {

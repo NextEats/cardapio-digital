@@ -1,23 +1,42 @@
 import Image from "next/image";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { AiFillEye, AiOutlineCheck } from "react-icons/ai";
-import { iInsertOrders } from "../../../types/types";
+import { switchToProductioAction } from "../../../reducers/statusReducer/action";
+import { iStatusReducer } from "../../../reducers/statusReducer/reducer";
+import { supabase } from "../../../server/api";
+import { iInsertOrders, iInsertOrdersProducts, iInsertOrderStatuss } from "../../../types/types";
 
 interface iNewRequestProps {
-  newRequestOrders: iInsertOrders["data"]
+  state: iStatusReducer,
+  dispatch: Dispatch<any>,
 }
 
-export default function NewRequests({ newRequestOrders }: iNewRequestProps) {
-  const tdStyle =
-    "border-collapse border-l-2 px-2 border-gray-300 text-sm font-medium";
+export default function NewRequests({ state, dispatch }: iNewRequestProps) {
+
+  const tdStyle = "border-collapse border-l-2 px-2 border-gray-300 text-sm font-medium";
+
+
+  async function moveToEmProduçãoCard(orderId: number) {
+
+    const emProduçãoStatus = state.orderStatuss?.find(status => status.status_name === "em produção")
+    const ordersproductFiltered = state.ordersProducts?.filter(op => op.order_id === orderId)
+    ordersproductFiltered.forEach(async op => {
+      const ordersProductData = await supabase.from("orders_products").update({ order_status_id: emProduçãoStatus?.id }).eq("id", op.id).select("*")
+    })
+
+    dispatch(switchToProductioAction(orderId))
+    console.log(state)
+    // window.location.reload()
+  }
 
   return (
     <div className="flex flex-1 flex-col min-h-[230px] bg-white w-auto shadow-sm px-6 pt-2 rounded-md ">
-      <h2 className="text-base font-bold mb-4">Novos pedidos</h2>
+      <h2 className="text-base font-bold mb-4">Novos pedidos </h2>
       <div>
         <table className="w-full ">
           <tbody className="w-full border-collapse ">
             {
-              newRequestOrders?.map(order => {
+              state.emAnaliseOrders?.map(order => {
                 return <tr key={order.id} className="w-full h-4 text-center">
                   <td>
                     <Image
@@ -48,7 +67,9 @@ export default function NewRequests({ newRequestOrders }: iNewRequestProps) {
                       <div className="rounded-full pl-[1px] w-8 h-6 bg-gray-400 cursor-pointer flex items-center justify-center">
                         <AiFillEye className="text-xl text-white" />
                       </div>
-                      <button className=" w-10 h-6 pb-[1px] rounded-full  bg-green-400 text-white text-base font-bold flex items-center justify-center">
+                      <button
+                        onClick={() => moveToEmProduçãoCard(order.id!)}
+                        className=" w-10 h-6 pb-[1px] rounded-full  bg-green-400 text-white text-base font-bold flex items-center justify-center">
                         <AiOutlineCheck className="w-4 h-4 " />
                       </button>
                     </div>

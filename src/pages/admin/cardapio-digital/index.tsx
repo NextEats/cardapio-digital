@@ -83,9 +83,16 @@ export default function CardapioDigital({ productCategories, products, productSe
     setProductsState(products.data)
     async function setProtoduct() {
       const product = products.data.find(p => p.id === productId)
+
       const productSelectsByProdctId = productSelects.data.filter(select => select.product_id === product?.id)
+
       const selectsByProductSelect = selects.data.map(select => {
-        return selects.data[productSelectsByProdctId.findIndex(productSelect => productSelect.select_id === select?.id)]
+        // return productSelectsByProdctId.filter(productSelect => productSelect.select_id === select?.id)
+        const productSelectsIndex = productSelectsByProdctId.findIndex(productSelect => productSelect.select_id === select?.id)
+        //         if (productSelectsIndex < 0) {
+        //            return
+        //         }
+        return selects.data[productSelectsIndex]
       })
       const productOptiosBySelectId = productOptions.data.filter(option => {
         return selectsByProductSelect.map(select => select?.id === option.select_id && option)
@@ -96,6 +103,7 @@ export default function CardapioDigital({ productCategories, products, productSe
       const additionalsByProductAdditionalsId = productAdditionalsByProductId?.map(productAdditional => {
         return additionals.data[additionals?.data.findIndex(additional => productAdditional.additional_id === additional.id)]
       })
+      console.log("option -", productOptiosBySelectId, selectsByProductSelect, productSelectsByProdctId)
       dispatch(setViewpProductAction(product!, selectsByProductSelect, productOptiosBySelectId, productAdditionalsByProductId, additionalsByProductAdditionalsId))
     }
 

@@ -1,4 +1,4 @@
-import { iProduct, iInsertProductOptions, iInsertAdditionals, iInsertProductAdditionals, iInsertProductSelects, iInsertSelects, iInsertSelect, iInsertAdditional, iInsertProductCategory } from "../../types/types"
+import { iProduct, iInsertProductOptions, iInsertAdditionals, iInsertProductAdditionals, iInsertSelects, iInsertSelect, iInsertAdditional, iInsertProductCategory } from "../../types/types"
 
 export enum EditableProductActions {
 
@@ -105,5 +105,23 @@ export function setCategoryAction(category: iInsertProductCategory["data"]) {
     return {
         type: EditableProductActions.SET_CATEGORY,
         payload: { category }
+    }
+}
+export function setUpdateIngredient(name: string) {
+    return {
+        type: EditableProductActions.UPDATE_INGREDIENT_NAME,
+        payload: { ingredientName: name }
+    }
+}
+// export function setAddNewAdditional(name: string) {
+//     return {
+//         type: EditableProductActions.ADD_NEW_ADDITIONAL,
+//         payload: { }
+//     }
+// }
+export function setAddNewOption(optionName: string, optionPicture_url: string, ingredientId: string) {
+    return {
+        type: EditableProductActions.ADD_NEW_OPTION_TO_INGREDIENT,
+        payload: { optionName, optionPicture_url, ingredientId }
     }
 }

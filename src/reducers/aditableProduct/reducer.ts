@@ -1,5 +1,4 @@
-import { IAdditionalData, IIngredientOptionsData } from "../../types/product"
-import { iAdditionals, iInsertAdditional, iInsertAdditionals, iInsertIngredients, iInsertProductCategory, iInsertProductOptions, iInsertSelect } from "../../types/types";
+import { iInsertAdditional, iInsertAdditionals, iInsertIngredients, iInsertProductCategory, iInsertProductOptions, iInsertSelect } from "../../types/types";
 import { EditableProductActions } from "./actions";
 
 export const defaultValues = {
@@ -182,7 +181,8 @@ export function editableProductReducer(state: IEditableProductReducerData, actio
             break
         case EditableProductActions.UPDATE_INGREDIENT_NAME:
             const ingredientIndexToUpdate = state.ingredients.findIndex((ingredient) => ingredient.name === action.payload.ingredientName)
-            state.ingredients[ingredientIndexToUpdate].name! = action.payload.ingredientName
+            console.log(state.ingredients[ingredientIndexToUpdate])
+            state.ingredients[ingredientIndexToUpdate].name = action.payload.ingredientName
             return { ...state }
             break
         // Remove ingredient
@@ -196,15 +196,22 @@ export function editableProductReducer(state: IEditableProductReducerData, actio
         // case EditableProductActions.IS_ADDING_NEW_OPTION_TO_INGREDIENT:
         //     return { ...state, ingredientIdToShowModalAddNewOption: action.payload.ingredientIdToShowModalAddNewOption }
         //     break
-        // case EditableProductActions.ADD_NEW_OPTION_TO_INGREDIENT:
-        //     const ingredientIndex = state.ingredients.findIndex( ingredient => ingredient.id == action.payload.ingredientIdToAddNewOption  )
-        //     state.ingredients[ingredientIndex].options.push( { 
-        //             id: action.payload.id!,
-        //             name: action.payload.optionName!,
-        //             picture_url: action.payload.optionPicture_url!,
-        //         })
-        //     return { ...state  }
-        //     break
+        case EditableProductActions.ADD_NEW_OPTION_TO_INGREDIENT:
+            console.log(action.payload.optionName)
+            // const ingredientIndex = state.ingredients.findIndex(ingredient => ingredient.id == action.payload.ingredientIdToAddNewOption)
+            // state.ingredients[ingredientIndex].options.push( { 
+            //         id: action.payload.id!,
+            //         name: action.payload.optionName!,
+            //         picture_url: action.payload.optionPicture_url!,
+            //     })
+            state.options.push({
+                name: action.payload.optionName,
+                picture_url: action.payload.optionPicture_url,
+                select_id: Number(action.payload.ingredientId),
+            })
+            console.log(state.options)
+            return { ...state }
+            break
         // case EditableProductActions.REMOVE_OPTION_FROM_INGREDIENT:
         //     const ingredientIndexToRemoveOption = state.ingredients.findIndex( ingredient => ingredient.id === action.payload.ingredientId )
         //     const optionIndex = state.ingredients[ingredientIndexToRemoveOption].options.findIndex( option => option.id === action.payload.optionId)
@@ -217,15 +224,24 @@ export function editableProductReducer(state: IEditableProductReducerData, actio
             return { ...state, additionals: [...state.additionals, action.payload.additional] }
             break
         case EditableProductActions.UPDATE_ADDITIONAL:
-            const additionalIndex = state.additionals.findIndex(additional => additional.name === action.payload.additionalName)
-            state.additionals[additionalIndex].name = action.payload.additionalName;
-            state.additionals[additionalIndex].price = action.payload.additionalPrice;
-            state.additionals[additionalIndex].picture_url = action.payload.additionalPicture_url;
-            return { ...state }
+            const undateAdditionalState = { ...state }
+            const additionalIndex = undateAdditionalState.additionals.find(additional => additional.name === action.payload.additionalName)
+            console.log(action.payload.additionalName, state.additionals, additionalIndex)
+            // if (additionalIndex!.name === undefined) {
+            //     return
+            // }
+            additionalIndex!.name = action.payload.additionalName;
+            additionalIndex!.price = action.payload.additionalPrice;
+            additionalIndex!.picture_url = action.payload.additionalPicture_url;
+            return undateAdditionalState
             break
         case EditableProductActions.REMOVE_ADDITIONAL:
+            console.log(action.payload.additionalName)
+            console.log(state.additionals)
             const additionalWithoutTheRemovedOne = state.additionals.filter(additional => additional.name !== action.payload.additionalName)
-            return { ...state, additional: additionalWithoutTheRemovedOne }
+            console.log(additionalWithoutTheRemovedOne)
+
+            return { ...state, additionals: additionalWithoutTheRemovedOne }
             break
         default:
             return state

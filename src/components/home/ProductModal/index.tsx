@@ -19,11 +19,11 @@ import {
 export default function ProductModal({
   productModal,
   setProductModal,
-  setProducts,
+  productsDispatch,
 }: {
   productModal: iProduct["data"] | undefined | null;
   setProductModal: Function;
-  setProducts: Function;
+  productsDispatch: Function;
 }) {
   // Preencher primeiras informações sobre o produto no objeto checkout
 
@@ -44,7 +44,6 @@ export default function ProductModal({
 
     getProductSelectWithOptions(productModal.id).then((response) => {
       setSelects(response as iProductSelectsWithOptions[]);
-      console.log(response);
     });
   }, [productModal]);
 
@@ -76,30 +75,47 @@ export default function ProductModal({
   function handleSubmit(e: MouseEvent) {
     e.preventDefault();
 
-    setProducts((prev: any) => {
-      if (prev) {
-        return [
-          ...prev,
-          {
-            id: productModal?.id,
-            quantity: quantity,
-            picture_url: productModal?.picture_url,
-            additionals: additionals,
-            options: selects,
-          },
-        ];
-      } else {
-        return [
-          {
-            id: productModal?.id,
-            quantity: quantity,
-            picture_url: productModal?.picture_url,
-            additionals: additionals,
-            options: selects,
-          },
-        ];
-      }
+    productsDispatch({
+      type: "add",
+      payload: {
+        id: productModal?.id,
+        name: productModal?.name,
+        price: productModal?.price,
+        quantity: quantity,
+        picture_url: productModal?.picture_url,
+        additionals: selectedAdditionals,
+        options: selects,
+      },
     });
+
+    // setProducts((prev: any) => {
+    //   if (prev) {
+    //     return [
+    //       ...prev,
+    //       {
+    //         id: productModal?.id,
+    //         name: productModal?.name,
+    //         price: productModal?.price,
+    //         quantity: quantity,
+    //         picture_url: productModal?.picture_url,
+    //         additionals: selectedAdditionals,
+    //         options: selects,
+    //       },
+    //     ];
+    //   } else {
+    //     return [
+    //       {
+    //         id: productModal?.id,
+    //         name: productModal?.name,
+    //         price: productModal?.price,
+    //         quantity: quantity,
+    //         picture_url: productModal?.picture_url,
+    //         additionals: selectedAdditionals,
+    //         options: selects,
+    //       },
+    //     ];
+    //   }
+    // });
 
     setProductModal(null);
   }

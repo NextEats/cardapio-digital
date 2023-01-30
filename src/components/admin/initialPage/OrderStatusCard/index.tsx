@@ -2,10 +2,10 @@ import Image from "next/image";
 import { Dispatch, useState } from "react";
 import { AiFillEye } from "react-icons/ai";
 import { BiArrowFromLeft } from "react-icons/bi";
-import { switchToDeliveredAction, switchToTheWayAction } from "../../../reducers/statusReducer/action";
-import { iStatusReducer } from "../../../reducers/statusReducer/reducer";
-import { supabase } from "../../../server/api";
-import { iInsertOrders } from "../../../types/types";
+import { switchToDeliveredAction, switchToTheWayAction } from "../../../../reducers/statusReducer/action";
+import { iStatusReducer } from "../../../../reducers/statusReducer/reducer";
+import { supabase } from "../../../../server/api";
+import { iInsertOrders } from "../../../../types/types";
 
 interface IOrderStatusCardProps {
   statusName: string,

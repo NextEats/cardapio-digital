@@ -1,10 +1,10 @@
 import Image from "next/image";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { AiFillEye, AiOutlineCheck } from "react-icons/ai";
-import { switchToProductioAction } from "../../../reducers/statusReducer/action";
-import { iStatusReducer } from "../../../reducers/statusReducer/reducer";
-import { supabase } from "../../../server/api";
-import { iInsertOrders, iInsertOrdersProducts, iInsertOrderStatuss } from "../../../types/types";
+import { showModalAction, switchToProductioAction } from "../../../../reducers/statusReducer/action";
+import { iStatusReducer } from "../../../../reducers/statusReducer/reducer";
+import { supabase } from "../../../../server/api";
+import { iInsertOrders, iInsertOrdersProducts, iInsertOrderStatuss } from "../../../../types/types";
 
 interface iNewRequestProps {
   state: iStatusReducer,
@@ -37,7 +37,7 @@ export default function NewRequests({ state, dispatch }: iNewRequestProps) {
           <tbody className="w-full border-collapse ">
             {
               state.emAnaliseOrders?.map(order => {
-                return <tr key={order.id} className="w-full h-4 text-center">
+                return <tr key={order.id!} className="w-full h-4 text-center">
                   <td>
                     <Image
                       src="https://i.ibb.co/d0MYCmv/Design-sem-nome.jpg"
@@ -64,9 +64,11 @@ export default function NewRequests({ state, dispatch }: iNewRequestProps) {
                   </td>
                   <td className={`${tdStyle}`}>
                     <div className="flex items-center justify-center gap-2">
-                      <div className="rounded-full pl-[1px] w-8 h-6 bg-gray-400 cursor-pointer flex items-center justify-center">
+                      <button
+                        onClick={() => dispatch(showModalAction())}
+                        className="rounded-full pl-[1px] w-8 h-6 bg-gray-400 cursor-pointer flex items-center justify-center">
                         <AiFillEye className="text-xl text-white" />
-                      </div>
+                      </button>
                       <button
                         onClick={() => moveToEmProduçãoCard(order.id!)}
                         className=" w-10 h-6 pb-[1px] rounded-full  bg-green-400 text-white text-base font-bold flex items-center justify-center">

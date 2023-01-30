@@ -1,12 +1,13 @@
 import { Card } from "../../components/admin/Card";
-import NewRequests from "../../components/admin/NewRequests";
-import OrderStatusCard from "../../components/admin/OrderStatusCard";
+import NewRequests from "../../components/admin/initialPage/NewRequests";
+import OrderStatusCard from "../../components/admin/initialPage/OrderStatusCard";
 import AdminWrapper from "../../components/admin/AdminWrapper";
 import { supabase } from "../../server/api";
 import { iInsertOrders, iInsertOrdersProducts, iInsertOrderStatus, iInsertOrderStatuss, iProducts } from "../../types/types";
 import { GetServerSideProps } from "next";
 import { useState, useEffect, useReducer } from "react";
 import { iStatusReducer, statusReducer } from "../../reducers/statusReducer/reducer";
+import { OrderModal } from "../../components/admin/initialPage/OrderModal";
 
 interface iAdminHomePageProps {
   orders: iInsertOrders,
@@ -90,7 +91,30 @@ export default function AdminHomepage({ orders, orderStatuss, ordersProducts, pr
     emProduçãoOrders,
     aCaminhoOrders,
     entregueOrders,
-    isOpenOrderModal: false
+    isOpenOrderModal: false,
+    modalData: {
+      restaurant: {
+        address_id: 0,
+        name: '',
+        picture_url: '',
+        restaurant_type_id: 0,
+      },
+      dataClient: {
+        cep: '',
+        complement: '',
+        number: 0,
+        reference_point: '',
+      },
+      // product: [
+      //   {
+      //     category_id: 0,
+      //     description: '',
+      //     name: '',
+      //     picture_url: '',
+      //     price: 0,
+      //   }
+      // ]
+    },
   })
 
   return (
@@ -109,10 +133,9 @@ export default function AdminHomepage({ orders, orderStatuss, ordersProducts, pr
           <OrderStatusCard statusName="Entregue" state={state} dispatch={dispatch} orders={state.entregueOrders} />
         </div>
 
-        <div>
-
-
-        </div>
+        {
+          state.isOpenOrderModal ? <OrderModal state={state} dispatch={dispatch} /> : null
+        }
 
       </div>
     </AdminWrapper>

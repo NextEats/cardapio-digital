@@ -1,4 +1,4 @@
-import { iInsertOrders, iInsertOrdersProducts, iInsertOrderStatuss } from "../../types/types"
+import { iInsertAddresse, iInsertOrders, iInsertOrdersProducts, iInsertOrderStatuss, iInsertProduct, iInsertProducts, iInsertRestaurant } from "../../types/types"
 import { statusReducerAction } from "./action"
 
 export interface iStatusReducer {
@@ -12,6 +12,11 @@ export interface iStatusReducer {
     entregueOrders: iInsertOrders["data"],
 
     isOpenOrderModal: boolean,
+    modalData: {
+        restaurant: iInsertRestaurant["data"]
+        dataClient: iInsertAddresse["data"],
+        // produst: iInsertProducts["data"],
+    },
     // orderStatuss: iInsertOrderStatuss["data"],
     // ordersProducts: iInsertOrdersProducts["data"]
 }

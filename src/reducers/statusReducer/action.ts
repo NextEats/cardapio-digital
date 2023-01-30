@@ -25,3 +25,8 @@ export function switchToDeliveredAction(orderId: number) {
         payload: { orderId }
     }
 }
+export function showModalAction() {
+    return {
+        type: statusReducerAction.IS_OPEN_ORDER_MODAL,
+    }
+}

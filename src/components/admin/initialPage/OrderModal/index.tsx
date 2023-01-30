@@ -95,7 +95,7 @@ export function OrderModal({ state, dispatch }: iOrderModalProps) {
     const totalPriceOfProducts = result.reduce((acc, product) => acc + product.price, 0)
     const deliveryPrice = 10
 
-    return (
+    return <>
         <div>
             <Dialog.Root open={state.isOpenOrderModal}>
 
@@ -178,11 +178,6 @@ export function OrderModal({ state, dispatch }: iOrderModalProps) {
                             <CardapioDigitalButton name="Imprimir" w="w-28" h="h-8" />
                         </div>
 
-                        {/* <div style={{ display: 'flex', marginTop: 25, justifyContent: 'flex-end' }}>
-                            <Dialog.Close asChild>
-                                <button className="Button green">Save changes</button>
-                            </Dialog.Close>
-                        </div> */}
                         <Dialog.Close asChild onClick={() => dispatch(showModalAction())}>
                             <button className="absolute top-3 right-3" aria-label="Close">
                                 <FiX className="w-6 h-6" />
@@ -192,5 +187,5 @@ export function OrderModal({ state, dispatch }: iOrderModalProps) {
                 </Dialog.Portal>
             </Dialog.Root>
         </div>
-    )
+    </>
 }

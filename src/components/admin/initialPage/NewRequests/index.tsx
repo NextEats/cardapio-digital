@@ -1,10 +1,10 @@
 import Image from "next/image";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { Dispatch, useMemo, useState } from "react";
 import { AiFillEye, AiOutlineCheck } from "react-icons/ai";
+import { dataByOrderId } from "../../../../hooks/DataByOrderId";
 import { getModalDataAction, showModalAction, switchToProductioAction } from "../../../../reducers/statusReducer/action";
 import { iStatusReducer } from "../../../../reducers/statusReducer/reducer";
-import { supabase } from "../../../../server/api";
-import { iInsertOrders, iInsertOrdersProducts, iInsertOrderStatuss } from "../../../../types/types";
+import { api, supabase } from "../../../../server/api";
 
 interface iNewRequestProps {
   state: iStatusReducer,
@@ -32,7 +32,37 @@ export default function NewRequests({ state, dispatch }: iNewRequestProps) {
     dispatch(showModalAction())
     dispatch(getModalDataAction(orderId))
   }
+  // const [orderId, setOrderId] = useState(0)
+  // const [order, setOrder] = useState({})
+  // useMemo(() => {
+  //   const { address, client, phone, totalProductsPrice, productsFiltered } = dataByOrderId(state, orderId)
+  //   setOrder({ address, client, phone, totalProductsPrice, productsFiltered })
+  // }, [orderId, state])
+  // console.log(order)
 
+  const [addressState, setAddressState] = useState<{
+    bairro: string,
+    cep: string,
+    complemento: string,
+    ddd: string,
+    gia: string,
+    ibge: string,
+    localidade: string,
+    logradouro: string,
+    siafi: string,
+    uf: string,
+  }>({
+    bairro: '',
+    cep: '',
+    complemento: '',
+    ddd: '',
+    gia: '',
+    ibge: '',
+    localidade: '',
+    logradouro: '',
+    siafi: '',
+    uf: '',
+  })
 
   return (
     <div className="flex flex-1 flex-col min-h-[230px] bg-white w-auto shadow-sm px-6 pt-2 rounded-md ">
@@ -42,6 +72,25 @@ export default function NewRequests({ state, dispatch }: iNewRequestProps) {
           <tbody className="w-full border-collapse ">
             {
               state.emAnaliseOrders?.map(order => {
+                // setOrderId(order.id!)
+                const ordersProductsFiltered = state.ordersProducts.filter(op => op.order_id === order.id!)
+                const productsFiltered = ordersProductsFiltered.map(op => {
+                  return state.products[state.products.findIndex(p => op.product_id === p.id)]
+                })
+                const totalProductsPrice = productsFiltered.reduce((acc, p) => acc + p.price, 0)
+                const client = state.clients.find(cl => cl.id === order.client_id)
+                const contact = state.contacts.find(co => co.id === client?.contact_id)
+                const phone = contact?.phone?.toString()
+
+                const address = state.addresses.find(ad => ad.id === client?.address_id)
+
+
+                const getAddress = async () => {
+                  const res = await api.get(`https://viacep.com.br/ws/${address?.cep}/json/`)
+                  return res
+                }
+                getAddress()
+
                 return <tr key={order.id!} className="w-full h-4 text-center">
                   <td>
                     <Image
@@ -53,19 +102,19 @@ export default function NewRequests({ state, dispatch }: iNewRequestProps) {
                     />
                   </td>
                   <td className="text-left h-4 text-sm font-medium p-2">
-                    Fulano da silva
+                    {client?.name}
                   </td>
-                  <td className={`${tdStyle} w-16 hidden 3xs:table-cell`}>3</td>
-                  <td className={`${tdStyle} hidden 3xs:table-cell`}>R$ 256,90</td>
+                  <td className={`${tdStyle} w-16 hidden 3xs:table-cell`}> {productsFiltered.length} </td>
+                  <td className={`${tdStyle} hidden 3xs:table-cell`}>R$ {totalProductsPrice} </td>
                   <td
                     className={`${tdStyle} w-auto text-ellipsis whitespace-nowrap overflow-hidden hidden sm:table-cell`}
                   >
-                    (87) 99999 - 9999
+                    {'( ' + phone?.slice(0, 2) + ' ) ' + phone?.slice(2, 7) + '-' + phone?.slice(7, phone.length)}
                   </td>
                   <td
                     className={`${tdStyle} w-auto text-ellipsis whitespace-nowrap overflow-hidden hidden lg:table-cell`}
                   >
-                    Rua Osvaldo de lima, 456 ...
+                    {addressState.logradouro}, {address?.number} ...
                   </td>
                   <td className={`${tdStyle}`}>
                     <div className="flex items-center justify-center gap-2">

@@ -4,7 +4,7 @@ import { AiFillEye } from "react-icons/ai";
 import { BiArrowFromLeft } from "react-icons/bi";
 import { getModalDataAction, showModalAction, switchToDeliveredAction, switchToTheWayAction } from "../../../../reducers/statusReducer/action";
 import { iStatusReducer } from "../../../../reducers/statusReducer/reducer";
-import { supabase } from "../../../../server/api";
+import { api, supabase } from "../../../../server/api";
 import { iInsertOrders } from "../../../../types/types";
 
 interface IOrderStatusCardProps {
@@ -27,6 +27,7 @@ export default function OrderStatusCard({ statusName, orders, state, dispatch }:
       })
       dispatch(switchToTheWayAction(orderId))
     } else if (statusName === "A caminho") {
+      console.log('entrou Aqui')
       const entregueStatus = state.orderStatuss?.find(status => status.status_name === "entregue")
       const ordersproductFiltered = state.ordersProducts?.filter(op => op.order_id === orderId)
       ordersproductFiltered.forEach(async op => {
@@ -54,6 +55,13 @@ export default function OrderStatusCard({ statusName, orders, state, dispatch }:
         <tbody className="w-full border-collapse ">
           {
             orders?.map(order => {
+
+              const ordersProductsFiltered = state.ordersProducts.filter(op => op.order_id === order.id!)
+              const productsFiltered = ordersProductsFiltered.map(op => {
+                return state.products[state.products.findIndex(p => op.product_id === p.id)]
+              })
+              const client = state.clients.find(cl => cl.id === order.client_id)
+
               return <tr key={order.id} className="w-full h-4 text-center ">
                 <td className=" min-w-8 mx-2">
                   <Image
@@ -66,10 +74,10 @@ export default function OrderStatusCard({ statusName, orders, state, dispatch }:
                 </td>
                 <td className="text-left text-sm font-medium px-2 hidden 2xs:table-cell md:hidden xl:table-cell">
                   <span className=" " >
-                    Fulano da silva
+                    {client?.name}
                   </span>
                 </td>
-                <td className={`${tdStyle} px-5  hidden sm:table-cell md:hiden 2xl:table-cell`}>3</td>
+                <td className={`${tdStyle} px-5  hidden sm:table-cell md:hiden 2xl:table-cell`}> {productsFiltered.length} </td>
                 {/* <td className={tdStyle}> 00 : 15 </td> */}
                 <td className={`${tdStyle}`}>
                   <div className="flex items-center justify-center gap-2">

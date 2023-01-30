@@ -3,7 +3,7 @@ import NewRequests from "../../components/admin/initialPage/NewRequests";
 import OrderStatusCard from "../../components/admin/initialPage/OrderStatusCard";
 import AdminWrapper from "../../components/admin/AdminWrapper";
 import { supabase } from "../../server/api";
-import { iInsertOrders, iInsertOrdersProducts, iInsertOrderStatus, iInsertOrderStatuss, iProducts } from "../../types/types";
+import { iInsertAddresses, iInsertClients, iInsertContacts, iInsertOrders, iInsertOrdersProducts, iInsertOrderStatus, iInsertOrderStatuss, iInsertProducts, iProducts } from "../../types/types";
 import { GetServerSideProps } from "next";
 import { useState, useEffect, useReducer } from "react";
 import { iStatusReducer, statusReducer } from "../../reducers/statusReducer/reducer";
@@ -13,7 +13,10 @@ interface iAdminHomePageProps {
   orders: iInsertOrders,
   orderStatuss: iInsertOrderStatuss,
   ordersProducts: iInsertOrdersProducts,
-  products: iProducts,
+  addresses: iInsertAddresses,
+  products: iInsertProducts,
+  contacts: iInsertContacts,
+  clients: iInsertClients,
 }
 
 
@@ -23,6 +26,9 @@ export const getServerSideProps: GetServerSideProps = async () => {
   const orderStatuss = await supabase.from("order_status").select()
   const ordersProducts = await supabase.from("orders_products").select()
   const products = await supabase.from("products").select()
+  const clients = await supabase.from("clients").select()
+  const contacts = await supabase.from("contacts").select()
+  const addresses = await supabase.from("addresses").select()
   // const loacal =  window.localStorage.setItem("product_categories", JSON.stringify(productCategories.data))
 
   return {
@@ -31,11 +37,14 @@ export const getServerSideProps: GetServerSideProps = async () => {
       orderStatuss,
       ordersProducts,
       products,
+      clients,
+      contacts,
+      addresses,
     }
   }
 }
 
-export default function AdminHomepage({ orders, orderStatuss, ordersProducts, products }: iAdminHomePageProps) {
+export default function AdminHomepage({ orders, orderStatuss, ordersProducts, products, contacts, addresses, clients }: iAdminHomePageProps) {
 
   const orderEmAnalise = orderStatuss?.data.find(status => status.status_name === "em análise")
   const orderEmProdução = orderStatuss?.data.find(status => status.status_name === "em produção")
@@ -86,35 +95,36 @@ export default function AdminHomepage({ orders, orderStatuss, ordersProducts, pr
     orders: orders.data,
     orderStatuss: orderStatuss.data,
     ordersProducts: ordersProducts.data,
+    addresses: addresses?.data,
+    products: products.data,
+    contacts: contacts?.data,
+    clients: clients?.data,
 
     emAnaliseOrders,
     emProduçãoOrders,
     aCaminhoOrders,
     entregueOrders,
     isOpenOrderModal: false,
-    modalData: {
-      restaurant: {
-        address_id: 0,
-        name: '',
-        picture_url: '',
-        restaurant_type_id: 0,
-      },
-      dataClient: {
-        cep: '',
-        complement: '',
-        number: 0,
-        reference_point: '',
-      },
-      // product: [
-      //   {
-      //     category_id: 0,
-      //     description: '',
-      //     name: '',
-      //     picture_url: '',
-      //     price: 0,
-      //   }
-      // ]
-    },
+    orderId: 0,
+    // modalData: {
+    //   restaurant: {
+    //     address_id: 0,
+    //     name: '',
+    //     picture_url: '',
+    //     restaurant_type_id: 0,
+    //   },
+    //   address: {
+    //     cep: '',
+    //     complement: '',
+    //     number: 0,
+    //     reference_point: '',
+    //   },
+    //   products: [],
+    //   contact: {
+    //     email: '',
+    //     phone: 0,
+    //   }
+    // },
   })
 
   return (

@@ -1,10 +1,14 @@
-import { iInsertAddresse, iInsertOrders, iInsertOrdersProducts, iInsertOrderStatuss, iInsertProduct, iInsertProducts, iInsertRestaurant } from "../../types/types"
+import { iInsertAddress, iInsertAddresses, iInsertClients, iInsertContact, iInsertContacts, iInsertOrders, iInsertOrdersProducts, iInsertOrderStatuss, iInsertProduct, iInsertProducts, iInsertRestaurant } from "../../types/types"
 import { statusReducerAction } from "./action"
 
 export interface iStatusReducer {
     orders: iInsertOrders["data"],
     orderStatuss: iInsertOrderStatuss["data"],
     ordersProducts: iInsertOrdersProducts["data"],
+    addresses: iInsertAddresses["data"],
+    products: iInsertProducts["data"],
+    contacts: iInsertContacts["data"],
+    clients: iInsertClients["data"],
 
     emAnaliseOrders: iInsertOrders["data"],
     emProduçãoOrders: iInsertOrders["data"],
@@ -12,11 +16,13 @@ export interface iStatusReducer {
     entregueOrders: iInsertOrders["data"],
 
     isOpenOrderModal: boolean,
-    modalData: {
-        restaurant: iInsertRestaurant["data"]
-        dataClient: iInsertAddresse["data"],
-        // produst: iInsertProducts["data"],
-    },
+    orderId: number,
+    // modalData: {
+    //     restaurant: iInsertRestaurant["data"]
+    //     address: iInsertAddress["data"],
+    //     products: iInsertProducts["data"],
+    //     contact: iInsertContact["data"],
+    // },
     // orderStatuss: iInsertOrderStatuss["data"],
     // ordersProducts: iInsertOrdersProducts["data"]
 }
@@ -48,6 +54,25 @@ export function statusReducer(state: iStatusReducer, action: any) {
             if (state.isOpenOrderModal === true) state.isOpenOrderModal = false
             else state.isOpenOrderModal = true
             return { ...state }
+            break
+        case statusReducerAction.GET_MODAL_DATA:
+            // const newSatateModalData = { ...state }
+            // // get products
+            // const orderProductFiltered = state.ordersProducts.filter(op => op.order_id === action.payload.orderId)
+            // const productsFiltered = orderProductFiltered.map(op => {
+            //     return state.products.find(p => {
+
+            //         return p.id === op?.product_id
+            //     })
+            // })            // console.log(productsFiltered)
+            // // newSatateModalData.modalData.products.splice(0, newSatateModalData.modalData.products.length)
+            // // newSatateModalData.modalData.products =  [ ...productsFiltered ]
+
+            // // get client data
+            // const orderFound = state.orders.find(order => order.id === action.payload.orderId);
+            // const clientFuound = state.clients.find(client => client.id === orderFound?.client_id)
+            // console.log(clientFuound)
+            return { ...state, orderId: action.payload.orderId }
             break
 
         default:

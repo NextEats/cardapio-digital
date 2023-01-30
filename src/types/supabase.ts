@@ -205,18 +205,21 @@ export interface Database {
       }
       orders: {
         Row: {
+          client_id: number | null
           created_at: string | null
           id: number
           order_type_id: number
           payment_method_id: number | null
         }
         Insert: {
+          client_id?: number | null
           created_at?: string | null
           id?: number
           order_type_id: number
           payment_method_id?: number | null
         }
         Update: {
+          client_id?: number | null
           created_at?: string | null
           id?: number
           order_type_id?: number

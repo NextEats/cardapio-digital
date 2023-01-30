@@ -2,7 +2,7 @@ import Image from "next/image";
 import { Dispatch, useState } from "react";
 import { AiFillEye } from "react-icons/ai";
 import { BiArrowFromLeft } from "react-icons/bi";
-import { switchToDeliveredAction, switchToTheWayAction } from "../../../../reducers/statusReducer/action";
+import { getModalDataAction, showModalAction, switchToDeliveredAction, switchToTheWayAction } from "../../../../reducers/statusReducer/action";
 import { iStatusReducer } from "../../../../reducers/statusReducer/reducer";
 import { supabase } from "../../../../server/api";
 import { iInsertOrders } from "../../../../types/types";
@@ -38,6 +38,11 @@ export default function OrderStatusCard({ statusName, orders, state, dispatch }:
     }
   }
 
+  function showModal(orderId: number) {
+    dispatch(showModalAction())
+    dispatch(getModalDataAction(orderId))
+  }
+
   return (
     <div className="flex flex-1 min-h-[240px]  lg:w-full flex-col shadow-sm px-4 pt-2 pb-4">
       <div className=" flex items-center justify-between mb-4">
@@ -68,9 +73,11 @@ export default function OrderStatusCard({ statusName, orders, state, dispatch }:
                 {/* <td className={tdStyle}> 00 : 15 </td> */}
                 <td className={`${tdStyle}`}>
                   <div className="flex items-center justify-center gap-2">
-                    <div className="rounded-full pl-[1px] w-8 h-6 bg-gray-400 cursor-pointer flex items-center justify-center">
+                    <button
+                      onClick={() => showModal(order.id!)}
+                      className="rounded-full pl-[1px] w-8 h-6 bg-gray-400 cursor-pointer flex items-center justify-center">
                       <AiFillEye className="text-xl text-white" />
-                    </div>
+                    </button>
                     {
                       statusName !== "Entregue" ? <button
                         onClick={() => switchToTheWay(order.id!)}

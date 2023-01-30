@@ -71,6 +71,20 @@ export interface iOrdersStatus {
 
 
 //  INSERTS
+export interface iInsertContact {
+  data: Database["public"]["Tables"]["contacts"]["Insert"];
+}
+
+export interface iInsertContacts {
+  data: Array<Database["public"]["Tables"]["contacts"]["Insert"]>;
+}
+export interface iInsertClient {
+  data: Database["public"]["Tables"]["clients"]["Insert"];
+}
+
+export interface iInsertClients {
+  data: Array<Database["public"]["Tables"]["clients"]["Insert"]>;
+}
 export interface iInsertProduct {
   data: Database["public"]["Tables"]["products"]["Insert"];
 }
@@ -86,7 +100,7 @@ export interface iInsertRestaurant {
 export interface iInsertRestaurants {
   data: Array<Database["public"]["Tables"]["restaurants"]["Insert"]>;
 }
-export interface iInsertAddresse {
+export interface iInsertAddress {
   data: Database["public"]["Tables"]["addresses"]["Insert"];
 }
 export interface iInsertAddresses {

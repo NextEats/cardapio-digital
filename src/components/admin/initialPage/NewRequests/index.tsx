@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { AiFillEye, AiOutlineCheck } from "react-icons/ai";
-import { showModalAction, switchToProductioAction } from "../../../../reducers/statusReducer/action";
+import { getModalDataAction, showModalAction, switchToProductioAction } from "../../../../reducers/statusReducer/action";
 import { iStatusReducer } from "../../../../reducers/statusReducer/reducer";
 import { supabase } from "../../../../server/api";
 import { iInsertOrders, iInsertOrdersProducts, iInsertOrderStatuss } from "../../../../types/types";
@@ -25,9 +25,14 @@ export default function NewRequests({ state, dispatch }: iNewRequestProps) {
     })
 
     dispatch(switchToProductioAction(orderId))
-    console.log(state)
     // window.location.reload()
   }
+
+  function showModal(orderId: number) {
+    dispatch(showModalAction())
+    dispatch(getModalDataAction(orderId))
+  }
+
 
   return (
     <div className="flex flex-1 flex-col min-h-[230px] bg-white w-auto shadow-sm px-6 pt-2 rounded-md ">
@@ -65,7 +70,7 @@ export default function NewRequests({ state, dispatch }: iNewRequestProps) {
                   <td className={`${tdStyle}`}>
                     <div className="flex items-center justify-center gap-2">
                       <button
-                        onClick={() => dispatch(showModalAction())}
+                        onClick={() => showModal(order.id!)}
                         className="rounded-full pl-[1px] w-8 h-6 bg-gray-400 cursor-pointer flex items-center justify-center">
                         <AiFillEye className="text-xl text-white" />
                       </button>

@@ -127,11 +127,18 @@ export default function AdminHomepage({ orders, orderStatuss, ordersProducts, pr
     // },
   })
 
+  function billing() {
+    const ordersProductId = ordersProducts.data.map(ordersProduct => ordersProduct.product_id)
+    const selectedProduct = ordersProductId.map(productId => products.data[products.data.findIndex(product => productId === product.id)])
+    return selectedProduct.reduce((acc, product) => acc + product.price, 0)
+  }
+
+
   return (
     <AdminWrapper>
       <div className="flex flex-col gap-8">
         <div className="grid 2xs:grid-cols-2 lg:grid-cols-3 gap-3">
-          <Card color="red" name="Faturamento" value={"R$ 115,00"} />
+          <Card color="red" name="Faturamento" value={`R$ ${billing()}`} />
           <Card color="green" name="Pedidos" value={"16"} />
           <Card color="yellow" name="Produtos no Cardápio" value={products?.data.length.toString()} />
         </div>

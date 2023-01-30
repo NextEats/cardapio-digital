@@ -40,8 +40,10 @@ export function statusReducer(state: iStatusReducer, action: any) {
             const orderFoundW = state.emProduçãoOrders.find(order => order.id === action.payload.orderId)
             const orderiIndexW = state.emProduçãoOrders.findIndex(order => order.id == action.payload.orderId)
             state.emProduçãoOrders.splice(orderiIndexW, 1)
+            console.log(action.payload.orderId)
+            console.log(orderFoundW)
             // const newEmAnaliseState = state.emProduçãoOrders = state.emAnaliseOrders.filter(order => order.id !== action.payload.orderId)
-            return { ...state, acaminhoOrders: [...state.aCaminhoOrders, orderFoundW!] }
+            return { ...state, aCaminhoOrders: [...state.aCaminhoOrders, orderFoundW!] }
             break
         case statusReducerAction.SWITCH_TO_DELIVERED:
             const orderFoundD = state.aCaminhoOrders.find(order => order.id === action.payload.orderId)

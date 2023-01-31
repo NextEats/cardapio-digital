@@ -13,10 +13,10 @@ export const defaultValues = {
     },
     //INGREDIENT
     ingredients: [
-        {
-            name: '',
-            picture_url: '',
-        }
+        // {
+        //     name: '',
+        //     picture_url: '',
+        // }
     ],
 
     //  CATEGORY
@@ -28,19 +28,21 @@ export const defaultValues = {
 
     // //  OPTIONS
     // ingredientIdToShowModalAddNewOption: '',
-    options: [{
-        name: '',
-        picture_url: '',
-        select_id: 0,
-    }],
+    options: [
+        //     {
+        //     name: '',
+        //     picture_url: '',
+        //     select_id: 0,
+        // }
+    ],
 
     // // ADDITIONAL
     additionals: [
-        {
-            name: '',
-            price: 0,
-            picture_url: '',
-        }
+        // {
+        //     name: '',
+        //     price: 0,
+        //     picture_url: '',
+        // }
     ],
     showModalToUpdateAdditional: false,
 }

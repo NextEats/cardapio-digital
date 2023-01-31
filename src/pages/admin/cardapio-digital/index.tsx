@@ -84,27 +84,34 @@ export default function CardapioDigital({ productCategories, products, productSe
     async function setProtoduct() {
       const product = products.data.find(p => p.id === productId)
 
+      // filtering the ingredinets ones
       const productSelectsByProdctId = productSelects.data.filter(select => select.product_id === product?.id)
 
-      const selectsByProductSelect = selects.data.map(select => {
-        // return productSelectsByProdctId.filter(productSelect => productSelect.select_id === select?.id)
-        const productSelectsIndex = productSelectsByProdctId.findIndex(productSelect => productSelect.select_id === select?.id)
-        //         if (productSelectsIndex < 0) {
-        //            return
-        //         }
-        return selects.data[productSelectsIndex]
-      })
+      let selectsByProductSelect: Array<{
+        created_at?: string | null | undefined;
+        id?: number | undefined;
+        name: string;
+      }> = []
+      for (let i = 0; i < productSelectsByProdctId.length; i++) {
+        const selectsIndex = selects.data.findIndex(select => select.id === productSelectsByProdctId[i].select_id)
+        if (selectsIndex <= -1) {
+          return
+        }
+        selectsByProductSelect = [...selectsByProductSelect, selects.data[selectsIndex]]
+      }
+
+      // filtering the options ones
       const productOptiosBySelectId = productOptions.data.filter(option => {
         return selectsByProductSelect.map(select => select?.id === option.select_id && option)
       })
 
+      // filtering the additional ones
       const productAdditionalsByProductId = productAdditionals.data.filter(productAdditional => productAdditional.product_id === productId)
 
       const additionalsByProductAdditionalsId = productAdditionalsByProductId?.map(productAdditional => {
         return additionals.data[additionals?.data.findIndex(additional => productAdditional.additional_id === additional.id)]
       })
-      console.log("option -", productOptiosBySelectId, selectsByProductSelect, productSelectsByProdctId)
-      dispatch(setViewpProductAction(product!, selectsByProductSelect, productOptiosBySelectId, productAdditionalsByProductId, additionalsByProductAdditionalsId))
+      dispatch(setViewpProductAction(product!, selectsByProductSelect, productOptiosBySelectId, additionalsByProductAdditionalsId))
     }
 
     if (state.isViewingUpdatingOrAdding === "VIEWING") {
@@ -147,8 +154,8 @@ export default function CardapioDigital({ productCategories, products, productSe
 
             <div className="flex items-center justify-between mb-5 mt-7">
               <h2 className="text-xl font-bold text-gray-700 "> Categorias </h2>
-              <input type="text" placeholder="Pesquisar"
-                className="mx-8 h-6 pb-1 max-w-64 px-2 text-gray-600 font-semibold placeholder:text-gray-500 rounded outline-none border border-solid border-gray-400" />
+              {/* <input type="text" placeholder="Pesquisar"
+                className="mx-8 h-6 pb-1 max-w-64 px-2 text-gray-600 font-semibold placeholder:text-gray-500 rounded outline-none border border-solid border-gray-400" /> */}
               {/* <select name="" id=""
                   onChange={(e) => filterProductCategories(e.target.value)}
                   className="mx-8 h-6 pb-1 max-w-64 px-2 text-gray-600 font-semibold placeholder:text-gray-500 rounded outline-none border border-solid border-gray-400" >

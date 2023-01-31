@@ -34,7 +34,6 @@ export default function EditableMenuProductCard({ state, dispatch, setProductMod
     }
 
     function setAdditionalSelected(additionalId: number) {
-
         const additional = additionals.find(additional => additional.id === additionalId)
         if (!additional) {
             return
@@ -42,10 +41,7 @@ export default function EditableMenuProductCard({ state, dispatch, setProductMod
         dispatch(setAddAdditionalAction(additional!))
     }
 
-
-
     function setCategorySelected(categoryId: number) {
-
         const categoryFinded = productCategories.find(c => c.id === categoryId)
         if (!categoryFinded) {
             return
@@ -98,9 +94,6 @@ export default function EditableMenuProductCard({ state, dispatch, setProductMod
             console.log(optionData)
         })
     }
-    async function postIngredientToSupabase() {
-
-    }
 
     async function postAdditionalToSupabase(prodductData: iProduct["data"]) {
         if (state.additionals.length > 0) {
@@ -121,8 +114,6 @@ export default function EditableMenuProductCard({ state, dispatch, setProductMod
                     picture_url: additional.picture_url,
                     price: additional.price,
                 }).select("*")
-                console.log(status)
-                console.log(data)
                 if (status === 400 || data === null) {
                     return
                 }
@@ -206,8 +197,8 @@ export default function EditableMenuProductCard({ state, dispatch, setProductMod
                         </NavigationMenu.Indicator>
                     </NavigationMenu.List>
 
-                    <div className="ViewportPosition">
-                        <NavigationMenu.Viewport className="NavigationMenuViewport" />
+                    <div className="">
+                        <NavigationMenu.Viewport className="" />
                     </div>
                 </NavigationMenu.Root>
 
@@ -216,7 +207,6 @@ export default function EditableMenuProductCard({ state, dispatch, setProductMod
                 <Igredient state={state} selects={selects} dispatch={dispatch} />
 
                 <Additional state={state} dispatch={dispatch} />
-
 
                 <CardapioDigitalButton
                     onClick={() => handleCreateProduct()}

@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { Dispatch, useMemo, useState } from "react";
+import { Dispatch, useMemo, useRef, useState } from "react";
 import { AiFillEye, AiOutlineCheck } from "react-icons/ai";
 import { getModalDataAction, showModalAction, switchToProductioAction } from "../../../../reducers/statusReducer/action";
 import { iStatusReducer } from "../../../../reducers/statusReducer/reducer";
@@ -13,7 +13,6 @@ interface iNewRequestProps {
 export default function NewRequests({ state, dispatch }: iNewRequestProps) {
 
   const tdStyle = "border-collapse border-l-2 px-2 border-gray-300 text-sm font-medium";
-
 
   async function moveToEmProduçãoCard(orderId: number) {
 

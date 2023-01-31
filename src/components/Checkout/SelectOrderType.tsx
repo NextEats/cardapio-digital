@@ -26,7 +26,7 @@ export function SelectOrderType({
   };
 
   const nextStep = () => {
-    setCurrentStep("payment");
+    setCurrentStep("cepInput");
   };
 
   const cssSelectItemsText = "text-xl";

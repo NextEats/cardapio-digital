@@ -5,9 +5,17 @@ import { FaMinus, FaPlus } from "react-icons/fa";
 
 import { ProductList } from "./ProductList";
 import { SelectOrderType } from "./SelectOrderType";
+
 import { TypeCEP } from "./TypeCEP";
+import { Address } from "./Address";
+import { Payment } from "./Payment";
 
 export type iOrderType = "delivery" | "takeout" | "reserve";
+
+export interface iPaymentOption {
+  id: number;
+  name: string;
+}
 
 export default function Checkout({
   products,
@@ -19,11 +27,26 @@ export default function Checkout({
   productsDispatch: Function;
 }) {
   const [currentStep, setCurrentStep] = useState<
-    "productList" | "orderType" | "payment"
+    | "productList"
+    | "orderType"
+    | "cepInput"
+    | "address"
+    | "payment"
+    | "legalInfo"
+    | "whatsappInput"
+    | "whatsappCode"
   >("productList");
 
   const [orderType, setOrderType] = useState<iOrderType>("delivery");
   const [cepState, setCepState] = useState<string>("");
+  const [address, setAddress] = useState();
+
+  const [paymentOptions, setPaymentOptions] = useState<iPaymentOption[]>([
+    {
+      id: 1,
+      name: "Cartão de Crédito",
+    },
+  ]);
 
   if (products === null || products === undefined) {
     return <></>;
@@ -36,8 +59,6 @@ export default function Checkout({
     onClose();
     body?.classList.remove("overflow-hidden");
   }
-
-  console.log("checkout products: ", products);
 
   return (
     <>
@@ -52,7 +73,16 @@ export default function Checkout({
               <h4 className="font-semibold text-xl text-gray-800">
                 {currentStep == "productList" && "FINALIZAR PEDIDO"}
                 {currentStep == "orderType" && "TIPO DE PEDIDO"}
-                {currentStep == "payment" && "MÉTODO DE PAGAMENTO"}
+
+                {currentStep == "cepInput" && "ENDEREÇO DE ENTREGA"}
+                {currentStep == "address" && "ENDEREÇO DE ENTREGA"}
+
+                {currentStep == "payment" && "PAGAMENTO"}
+
+                {currentStep == "legalInfo" && "INFORMAÇÕES LEGAIS"}
+
+                {currentStep == "whatsappInput" && "WHATSAPP"}
+                {currentStep == "whatsappCode" && "WHATSAPP"}
               </h4>
 
               <BsX
@@ -78,12 +108,64 @@ export default function Checkout({
                 setOrderType={setOrderType}
               />
             )}
-            {currentStep == "payment" && (
+            {currentStep == "cepInput" && (
               <TypeCEP
                 products={products}
                 setCurrentStep={setCurrentStep}
                 cepState={cepState}
                 setCepState={setCepState}
+                address={address}
+                setAddress={setAddress}
+              />
+            )}
+            {currentStep == "address" && (
+              <Address
+                products={products}
+                setCurrentStep={setCurrentStep}
+                cepState={cepState}
+                setCepState={setCepState}
+                address={address}
+                setAddress={setAddress}
+              />
+            )}
+            {currentStep == "payment" && (
+              <Payment
+                products={products}
+                setCurrentStep={setCurrentStep}
+                cepState={cepState}
+                setCepState={setCepState}
+                address={address}
+                setAddress={setAddress}
+              />
+            )}
+            {currentStep == "legalInfo" && (
+              <Address
+                products={products}
+                setCurrentStep={setCurrentStep}
+                cepState={cepState}
+                setCepState={setCepState}
+                address={address}
+                setAddress={setAddress}
+              />
+            )}
+            {currentStep == "whatsappInput" && (
+              <Address
+                products={products}
+                setCurrentStep={setCurrentStep}
+                cepState={cepState}
+                setCepState={setCepState}
+                address={address}
+                setAddress={setAddress}
+              />
+            )}
+            {currentStep == "whatsappCode" && (
+              <Address
+                products={products}
+                setCurrentStep={setCurrentStep}
+                cepState={cepState}
+                setCepState={setCepState}
+                address={address}
+                setAddress={setAddress}
               />
             )}
           </div>

@@ -4,19 +4,23 @@ import { MdRestaurant } from "react-icons/md";
 import { iOrderType } from "./index";
 import InputMask from "react-input-mask";
 import { useState } from "react";
-import cep from "cep-promise";
+import cep, { CEP } from "cep-promise";
 
 interface iTypeCEP {
   products: Array<iCheckoutProduct> | null | undefined;
   setCurrentStep: Function;
   cepState: string;
   setCepState: Function;
+  address: (CEP & { number: number | undefined }) | undefined;
+  setAddress: Function;
 }
 export function TypeCEP({
   products,
   setCurrentStep,
   cepState,
   setCepState,
+  address,
+  setAddress,
 }: iTypeCEP) {
   const [hasError, setHasError] = useState<boolean>(false);
 
@@ -42,9 +46,9 @@ export function TypeCEP({
 
     cep(clearNumbers())
       .then((res) => {
-        console.log(res);
+        setAddress(res);
         setHasError(false);
-        setCurrentStep("payment");
+        setCurrentStep("address");
       })
       .catch((err) => setHasError(true));
   };

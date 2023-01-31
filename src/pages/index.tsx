@@ -41,7 +41,6 @@ interface iDataHomepage {
     groupedProducts: iGroupedProducts;
   };
 }
-let totalPrice = 0;
 
 import { FaUtensils } from "react-icons/fa";
 import Checkout from "../components/Checkout";

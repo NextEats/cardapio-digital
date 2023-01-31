@@ -17,14 +17,6 @@ export interface iStatusReducer {
 
     isOpenOrderModal: boolean,
     orderId: number,
-    // modalData: {
-    //     restaurant: iInsertRestaurant["data"]
-    //     address: iInsertAddress["data"],
-    //     products: iInsertProducts["data"],
-    //     contact: iInsertContact["data"],
-    // },
-    // orderStatuss: iInsertOrderStatuss["data"],
-    // ordersProducts: iInsertOrdersProducts["data"]
 }
 
 export function statusReducer(state: iStatusReducer, action: any) {
@@ -58,22 +50,6 @@ export function statusReducer(state: iStatusReducer, action: any) {
             return { ...state }
             break
         case statusReducerAction.GET_MODAL_DATA:
-            // const newSatateModalData = { ...state }
-            // // get products
-            // const orderProductFiltered = state.ordersProducts.filter(op => op.order_id === action.payload.orderId)
-            // const productsFiltered = orderProductFiltered.map(op => {
-            //     return state.products.find(p => {
-
-            //         return p.id === op?.product_id
-            //     })
-            // })            // console.log(productsFiltered)
-            // // newSatateModalData.modalData.products.splice(0, newSatateModalData.modalData.products.length)
-            // // newSatateModalData.modalData.products =  [ ...productsFiltered ]
-
-            // // get client data
-            // const orderFound = state.orders.find(order => order.id === action.payload.orderId);
-            // const clientFuound = state.clients.find(client => client.id === orderFound?.client_id)
-            // console.log(clientFuound)
             return { ...state, orderId: action.payload.orderId }
             break
 

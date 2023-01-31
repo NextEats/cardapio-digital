@@ -1,7 +1,6 @@
 import Image from "next/image";
 import { Dispatch, useMemo, useState } from "react";
 import { AiFillEye, AiOutlineCheck } from "react-icons/ai";
-import { dataByOrderId } from "../../../../hooks/DataByOrderId";
 import { getModalDataAction, showModalAction, switchToProductioAction } from "../../../../reducers/statusReducer/action";
 import { iStatusReducer } from "../../../../reducers/statusReducer/reducer";
 import { api, supabase } from "../../../../server/api";
@@ -25,20 +24,13 @@ export default function NewRequests({ state, dispatch }: iNewRequestProps) {
     })
 
     dispatch(switchToProductioAction(orderId))
-    // window.location.reload()
   }
 
   function showModal(orderId: number) {
     dispatch(showModalAction())
     dispatch(getModalDataAction(orderId))
   }
-  // const [orderId, setOrderId] = useState(0)
-  // const [order, setOrder] = useState({})
-  // useMemo(() => {
-  //   const { address, client, phone, totalProductsPrice, productsFiltered } = dataByOrderId(state, orderId)
-  //   setOrder({ address, client, phone, totalProductsPrice, productsFiltered })
-  // }, [orderId, state])
-  // console.log(order)
+
 
   const [addressState, setAddressState] = useState<{
     bairro: string,
@@ -72,7 +64,6 @@ export default function NewRequests({ state, dispatch }: iNewRequestProps) {
           <tbody className="w-full border-collapse ">
             {
               state.emAnaliseOrders?.map(order => {
-                // setOrderId(order.id!)
                 const ordersProductsFiltered = state.ordersProducts.filter(op => op.order_id === order.id!)
                 const productsFiltered = ordersProductsFiltered.map(op => {
                   return state.products[state.products.findIndex(p => op.product_id === p.id)]
@@ -87,7 +78,7 @@ export default function NewRequests({ state, dispatch }: iNewRequestProps) {
 
                 const getAddress = async () => {
                   const res = await api.get(`https://viacep.com.br/ws/${address?.cep}/json/`)
-                  return res
+                  setAddressState(res.data)
                 }
                 getAddress()
 

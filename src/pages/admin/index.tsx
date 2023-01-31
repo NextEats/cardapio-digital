@@ -106,32 +106,32 @@ export default function AdminHomepage({ orders, orderStatuss, ordersProducts, pr
     entregueOrders,
     isOpenOrderModal: false,
     orderId: 0,
-    // modalData: {
-    //   restaurant: {
-    //     address_id: 0,
-    //     name: '',
-    //     picture_url: '',
-    //     restaurant_type_id: 0,
-    //   },
-    //   address: {
-    //     cep: '',
-    //     complement: '',
-    //     number: 0,
-    //     reference_point: '',
-    //   },
-    //   products: [],
-    //   contact: {
-    //     email: '',
-    //     phone: 0,
-    //   }
-    // },
   })
 
   function billing() {
-    const ordersProductId = ordersProducts.data.map(ordersProduct => ordersProduct.product_id)
+    const statusId = orderStatuss.data.find(s => s.status_name === 'entregue')
+    const ordersProductFiltered = ordersProducts.data.filter(ordersProduct => statusId?.id === ordersProduct.order_status_id)
+    const ordersProductId = ordersProductFiltered.map(ordersProduct => ordersProduct.product_id)
     const selectedProduct = ordersProductId.map(productId => products.data[products.data.findIndex(product => productId === product.id)])
     return selectedProduct.reduce((acc, product) => acc + product.price, 0)
   }
+  // const [count, setCount] = useState(0);
+
+  // useEffect(() => {
+  //   console.log(count >= billing())
+  //   const revenue = billing() - Math.floor(billing() * 0.9)
+  //   // setCount(revenue)
+  //   let intervalId = setInterval(() => {
+  //     if (count + revenue >= billing()) {
+  //       clearInterval(intervalId);
+  //       return
+  //     }
+  //     setCount(count + 1);
+  //   }, 5);
+
+  //   return () => clearInterval(intervalId);
+  // }, [count, orderStatuss, products, ordersProducts]);
+
 
 
   return (

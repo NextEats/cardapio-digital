@@ -17,7 +17,6 @@ interface IOrderStatusCardProps {
 export default function OrderStatusCard({ statusName, orders, state, dispatch }: IOrderStatusCardProps) {
   const tdStyle =
     "border-collapse border-l-2 px-2 border-gray-300 text-sm font-medium";
-  const [nn, setnn] = useState(0)
   function switchToTheWay(orderId: number) {
     if (statusName === "Em produção") {
       const aCaminhoStatus = state.orderStatuss?.find(status => status.status_name === "a caminho")

@@ -114,7 +114,11 @@ export function Additional({ state, dispatch }: IAdditionalProps) {
 
     return (
         <div className="mb-24">
-            <h2 className="mb-5 font-semibold text-sm">Adicionais</h2>
+            {
+                state.isViewingUpdatingOrAdding !== "VIEWING" || state.additionals.length !== 0 ? (
+                    <h2 className="mb-5 font-semibold text-sm">Adicionais</h2>
+                ) : null
+            }
 
             <div className="flex flex-col mb-3 relative">
                 <div className="flex flex-col gap-2">
@@ -142,14 +146,18 @@ export function Additional({ state, dispatch }: IAdditionalProps) {
                                         </p>
                                     </div>
                                 </div>
-                                <div className="flex items-center gap-2 absolute top-1 right-1">
-                                    <BiPencil
-                                        onClick={() => showModalToUpdateAdditional(additional!)}
-                                        className="text-xl text-blue-500 cursor-pointer hover:scale-125 hover:transition-all ease-in-out" />
-                                    <FiTrash2
-                                        onClick={() => removeAdditional(additional?.name)}
-                                        className="text-xl text-red-500 cursor-pointer hover:scale-125 hover:transition-all ease-in-out" />
-                                </div>
+                                {
+                                    state.isViewingUpdatingOrAdding !== "VIEWING" ? (
+                                        <div className="flex items-center gap-2 absolute top-1 right-1">
+                                            <BiPencil
+                                                onClick={() => showModalToUpdateAdditional(additional!)}
+                                                className="text-xl text-blue-500 cursor-pointer hover:scale-125 hover:transition-all ease-in-out" />
+                                            <FiTrash2
+                                                onClick={() => removeAdditional(additional?.name)}
+                                                className="text-xl text-red-500 cursor-pointer hover:scale-125 hover:transition-all ease-in-out" />
+                                        </div>
+                                    ) : null
+                                }
                             </div>
                         )
                     }
@@ -183,9 +191,13 @@ export function Additional({ state, dispatch }: IAdditionalProps) {
 
                 {/*                       Add new additional button                             */}
             </div>
-            <div className="w-full flex items-center justify-end mt-6" >
-                <CardapioDigitalButton w="w-28" h="h-8" name="Adicionar" onClick={() => setShowAdditionalModal('ADD')} />
-            </div>
+            {
+                state.isViewingUpdatingOrAdding !== "VIEWING" ? (
+                    <div className="w-full flex items-center justify-end mt-6" >
+                        <CardapioDigitalButton w="w-28" h="h-8" name="Adicionar" onClick={() => setShowAdditionalModal('ADD')} />
+                    </div>
+                ) : null
+            }
         </div >
     )
 }

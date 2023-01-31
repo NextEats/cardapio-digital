@@ -140,67 +140,71 @@ export default function EditableMenuProductCard({ state, dispatch, setProductMod
 
                 <HeadersCard state={state} dispatch={dispatch} />
 
-                <NavigationMenu.Root className="w-full h-10 relative shadow-sm bg-white mb-4 ">
-                    <NavigationMenu.List className="flex h-full flex-1 items-center justify-around p-1">
+                {
+                    state.isViewingUpdatingOrAdding !== "VIEWING" ? (
+                        <NavigationMenu.Root className="w-full h-10 relative shadow-sm bg-white mb-4 ">
+                            <NavigationMenu.List className="flex h-full flex-1 items-center justify-around p-1">
 
-                        <NavigationMenu.Item className="h-full flex flex-1 flex-col">
-                            <NavigationMenu.Trigger className="h-full flex flex-1 gap-2 items-center justify-center rounded hover:bg-gray-200">
-                                Categorias <IoIosArrowDown className="hover:rotate-180" />
-                            </NavigationMenu.Trigger>
-                            <NavigationMenu.Content className="flex flex-1 w-auto p-1 rounded-md flex-wrap absolut top-0 left-0 bg-white shadow-md">
-                                {productCategories.map(category => {
-                                    return <NavigationMenu.List key={category.id}
-                                        onClick={() => setCategorySelected(category.id!)}
-                                        className=" px-2 py-1 cursor-pointer hover:bg-violet-200 rounded  " >
-                                        {category.name}
-                                    </NavigationMenu.List>
-                                })}
-                            </NavigationMenu.Content>
-                        </NavigationMenu.Item>
+                                <NavigationMenu.Item className="h-full flex flex-1 flex-col">
+                                    <NavigationMenu.Trigger className="h-full flex flex-1 gap-2 items-center justify-center rounded hover:bg-gray-200">
+                                        Categorias <IoIosArrowDown className="hover:rotate-180" />
+                                    </NavigationMenu.Trigger>
+                                    <NavigationMenu.Content className="flex flex-1 w-auto p-1 rounded-md flex-wrap absolut top-0 left-0 bg-white shadow-md">
+                                        {productCategories.map(category => {
+                                            return <NavigationMenu.List key={category.id}
+                                                onClick={() => setCategorySelected(category.id!)}
+                                                className=" px-2 py-1 cursor-pointer hover:bg-violet-200 rounded  " >
+                                                {category.name}
+                                            </NavigationMenu.List>
+                                        })}
+                                    </NavigationMenu.Content>
+                                </NavigationMenu.Item>
 
-                        <NavigationMenu.Item className="h-full flex flex-1 flex-col">
-                            <NavigationMenu.Trigger className="h-full flex flex-1 gap-2 items-center justify-center rounded hover:bg-gray-200">
-                                Ingredients <IoIosArrowDown className="hover:rotate-180" />
-                            </NavigationMenu.Trigger>
-                            <NavigationMenu.Content className="flex flex-1 w-auto p-1 rounded-md flex-wrap absolut top-0 left-0 bg-white shadow-md">
-                                {selects.map(select => {
-                                    return <NavigationMenu.List title={select.name}
-                                        onClick={() => setIngredientSelected(select.id!)}
-                                        key={select.id} className="px-2 py-1 cursor-pointer hover:bg-violet-200 rounded ">
-                                        {select.name}
-                                    </NavigationMenu.List>
-                                })}
-                            </NavigationMenu.Content>
-                        </NavigationMenu.Item>
+                                <NavigationMenu.Item className="h-full flex flex-1 flex-col">
+                                    <NavigationMenu.Trigger className="h-full flex flex-1 gap-2 items-center justify-center rounded hover:bg-gray-200">
+                                        Ingredients <IoIosArrowDown className="hover:rotate-180" />
+                                    </NavigationMenu.Trigger>
+                                    <NavigationMenu.Content className="flex flex-1 w-auto p-1 rounded-md flex-wrap absolut top-0 left-0 bg-white shadow-md">
+                                        {selects.map(select => {
+                                            return <NavigationMenu.List title={select.name}
+                                                onClick={() => setIngredientSelected(select.id!)}
+                                                key={select.id} className="px-2 py-1 cursor-pointer hover:bg-violet-200 rounded ">
+                                                {select.name}
+                                            </NavigationMenu.List>
+                                        })}
+                                    </NavigationMenu.Content>
+                                </NavigationMenu.Item>
 
-                        <NavigationMenu.Item className="h-full flex flex-1 flex-col">
-                            <NavigationMenu.Trigger className="h-full flex flex-1 gap-2 items-center justify-center rounded hover:bg-gray-200">
-                                Adicinais <IoIosArrowDown className="hover:rotate-180" />
-                            </NavigationMenu.Trigger>
-                            <NavigationMenu.Content className="flex flex-1 w-auto p-1 rounded-md flex-wrap absolut top-0 left-0 z-50 bg-white shadow-md">
-                                {
-                                    additionals.map(additional => {
-                                        return <NavigationMenu.List
-                                            onClick={() => setAdditionalSelected(additional.id!)}
-                                            key={additional.id} className="px-2 py-1 cursor-pointer hover:bg-violet-200 rounded ">
-                                            {additional.name}
-                                        </NavigationMenu.List>
-                                    })
+                                <NavigationMenu.Item className="h-full flex flex-1 flex-col">
+                                    <NavigationMenu.Trigger className="h-full flex flex-1 gap-2 items-center justify-center rounded hover:bg-gray-200">
+                                        Adicinais <IoIosArrowDown className="hover:rotate-180" />
+                                    </NavigationMenu.Trigger>
+                                    <NavigationMenu.Content className="flex flex-1 w-auto p-1 rounded-md flex-wrap absolut top-0 left-0 z-50 bg-white shadow-md">
+                                        {
+                                            additionals.map(additional => {
+                                                return <NavigationMenu.List
+                                                    onClick={() => setAdditionalSelected(additional.id!)}
+                                                    key={additional.id} className="px-2 py-1 cursor-pointer hover:bg-violet-200 rounded ">
+                                                    {additional.name}
+                                                </NavigationMenu.List>
+                                            })
 
-                                }
-                            </NavigationMenu.Content>
-                        </NavigationMenu.Item>
+                                        }
+                                    </NavigationMenu.Content>
+                                </NavigationMenu.Item>
 
 
-                        <NavigationMenu.Indicator className="h-[10px] top-full transition-all ease-in-out duration-300 overflow-hidden flex items-end justify-center">
-                            <div className="relative top-[70%] bg-white w-[10px] h-[10px] rotate-[45deg] rounded-tl-sm" />
-                        </NavigationMenu.Indicator>
-                    </NavigationMenu.List>
+                                <NavigationMenu.Indicator className="h-[10px] top-full transition-all ease-in-out duration-300 overflow-hidden flex items-end justify-center">
+                                    <div className="relative top-[70%] bg-white w-[10px] h-[10px] rotate-[45deg] rounded-tl-sm" />
+                                </NavigationMenu.Indicator>
+                            </NavigationMenu.List>
 
-                    <div className="">
-                        <NavigationMenu.Viewport className="" />
-                    </div>
-                </NavigationMenu.Root>
+                            <div className="">
+                                <NavigationMenu.Viewport className="" />
+                            </div>
+                        </NavigationMenu.Root>
+                    ) : null
+                }
 
                 <h2>{!state.category ? 'Selecione uma categoria' : `${state.category.name}`}</h2>
 
@@ -208,10 +212,14 @@ export default function EditableMenuProductCard({ state, dispatch, setProductMod
 
                 <Additional state={state} dispatch={dispatch} />
 
-                <CardapioDigitalButton
-                    onClick={() => handleCreateProduct()}
-                    disabled={!state.productInformation.name || !state.productInformation.description || !state.productInformation.price || !state.picture_url}
-                    name='Adicionar novo item' h="h-10" w="w-full" />
+                {
+                    state.isViewingUpdatingOrAdding !== "VIEWING" ? (
+                        <CardapioDigitalButton
+                            onClick={() => handleCreateProduct()}
+                            disabled={!state.productInformation.name || !state.productInformation.description || !state.productInformation.price || !state.picture_url}
+                            name={`${state.isViewingUpdatingOrAdding === "ADDING" ? 'Adicionar novo item' : "Editar"}`} h="h-10" w="w-full" />
+                    ) : null
+                }
 
             </div>
         </>

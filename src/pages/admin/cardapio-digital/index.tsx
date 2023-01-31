@@ -49,10 +49,11 @@ export const getServerSideProps: GetServerSideProps = async () => {
 
 export default function CardapioDigital({ productCategories, products, productSelects, productOptions, productAdditionals, additionals, selects }: iCardapioDigitalProps) {
 
-  const [state, dispatch] = useReducer(editableProductReducer, defaultValues);
-
-  // const tdClasses = "[&:not(:last-child)]:p-4";
+  const [productId, setProductId] = useState<number | null>(null)
   const [modalIsOpen, setModalIsOpen] = useState(false)
+  const [productModal, setProductModal] = useState(false)
+  const [productsState, setProductsState] = useState<iProducts["data"]>([])
+  const [productsFilteredState, setProductsFilteredState] = useState<iProducts["data"]>([])
   const [viewCategory, setViewCategory] = useState<{
     isViewing: boolean;
     categoryId: number;
@@ -73,11 +74,10 @@ export default function CardapioDigital({ productCategories, products, productSe
       id: 0,
     }
   })
-  const [productId, setProductId] = useState<number | null>(null)
 
+  const [state, dispatch] = useReducer(editableProductReducer, defaultValues);
 
-  const [productsState, setProductsState] = useState<iProducts["data"]>([])
-  const [productsFilteredState, setProductsFilteredState] = useState<iProducts["data"]>([])
+  // const tdClasses = "[&:not(:last-child)]:p-4";
 
   useEffect(() => {
     setProductsState(products.data)
@@ -139,16 +139,12 @@ export default function CardapioDigital({ productCategories, products, productSe
     productCategories,
   ])
 
-  const [productModal, setProductModal] = useState(false)
-
   function filterProducts(name: string) {
 
     let productsFiltered: iProducts["data"] = []
-
     productsFiltered = productsState.filter((product) => {
       return product.name.toLocaleLowerCase().includes(name.toLocaleLowerCase())
     })
-
     setProductsFilteredState(productsFiltered)
   }
 
@@ -187,6 +183,7 @@ export default function CardapioDigital({ productCategories, products, productSe
                 className="mx-8 h-6 pb-1 max-w-64 px-2 text-gray-600 text-sm font-semibold placeholder:text-gray-500 rounded outline-none border border-solid border-gray-400" />
               <CardapioDigitalButton onClick={() => {
                 dispatch(setAddingProductAction())
+                dispatch(setIsViewingAddingOrOpdatingProductAction("ADDING"))
                 setProductModal(true)
               }} name='Novo' h="h-7" w="w-24" Icon={<AiOutlinePlus />} />
 
@@ -217,5 +214,3 @@ export default function CardapioDigital({ productCategories, products, productSe
     </AdminWrapper>
   );
 }
-
-

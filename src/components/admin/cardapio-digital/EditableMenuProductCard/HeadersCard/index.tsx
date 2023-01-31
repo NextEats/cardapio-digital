@@ -76,11 +76,15 @@ export default function HeadersCard({ state, dispatch }: IHeadersCardProps) {
                             className="h-7 bg-red-50 pb-1 felx flex-1 px-2 text-gray-600 text-sm font-semibold
                                  placeholder:text-gray-400 rounded outline-none"
                         />
-                        <BiPencil
-                            onClick={() => setProductIsEditing(true)}
-                            className={`text-2xl text-blue-500  cursor-pointer hover:scale-125 hover:transition-all ease-in-out
+                        {
+                            state.isViewingUpdatingOrAdding !== "VIEWING" ? (
+                                <BiPencil
+                                    onClick={() => setProductIsEditing(true)}
+                                    className={`text-2xl text-blue-500  cursor-pointer hover:scale-125 hover:transition-all ease-in-out
                             ${state.isEditingInfo ? "hidden" : ""}
                             `} />
+                            ) : null
+                        }
                         <button type="submit" className={`${state.isEditingInfo ? "" : "hidden"} `} >
                             <BsCheck2
                                 className={`text-2xl text-blue-500  cursor-p ointer hover:scale-125 hover:transition-all ease-in-out
@@ -152,6 +156,7 @@ function ProductImage({ state, dispatch }: iProductImagePros) {
         })
         setProductPictureIsEditing(false)
     }
+    console.log(state.isViewingUpdatingOrAdding)
 
     return (
         <form onSubmit={handleSubmit(handleProductPicture_url)} className="w-full h-[350px] relative mb-4">
@@ -173,11 +178,14 @@ function ProductImage({ state, dispatch }: iProductImagePros) {
                 </button>
             </div>}
 
-            <BiPencil
-                onClick={() => setProductPictureIsEditing(true)}
-                className={`text-2xl text-blue-500 cursor-pointer hover:scale-125 hover:transition-all ease-in-out absolute top-3 right-3 z-10
-                ${state.isEditingPicture ? 'hidden' : ''}`}
-            />
+            {
+                state.isViewingUpdatingOrAdding === "UPDATING" || state.isViewingUpdatingOrAdding === "ADDING" &&
+                <BiPencil
+                    onClick={() => setProductPictureIsEditing(true)}
+                    className={`text-2xl text-blue-500 cursor-pointer hover:scale-125 hover:transition-all ease-in-out absolute top-3 right-3 z-10
+                                ${state.isEditingPicture ? 'hidden' : ''}`}
+                />
+            }
             {state.picture_url === '' && <div
                 className="rounded-2xl w-full h-full flex items-center justify-center border border-solid border-gray-400">
                 <HiPlus className=" text-gray-400 text-9xl font-light" />

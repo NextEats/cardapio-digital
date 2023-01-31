@@ -169,17 +169,21 @@ export function Igredient({ state, dispatch, selects }: iIgradientsCardProps) {
                                 </div> :
                                 <div className="w-full flex items-center justify-between" >
                                     <h3> {ingredient?.name}  </h3>
-                                    <div className="flex items-center gap-2">
-                                        <BiPencil
-                                            onClick={() => {
-                                                setValue("updateIngredientName", ingredient?.name!)
-                                                setIsUpdatingIngradientNameState(ingredient?.name!)
-                                            }}
-                                            className="text-xl text-blue-500 cursor-pointer hover:scale-125 hover:transition-all ease-in-out" />
-                                        <FiTrash2
-                                            onClick={() => removeIngredient(ingredient?.name!)}
-                                            className="text-xl text-red-500 cursor-pointer hover:scale-125 hover:transition-all ease-in-out" />
-                                    </div>
+                                    {
+                                        state.isViewingUpdatingOrAdding !== "VIEWING" ? (
+                                            <div className="flex items-center gap-2">
+                                                <BiPencil
+                                                    onClick={() => {
+                                                        setValue("updateIngredientName", ingredient?.name!)
+                                                        setIsUpdatingIngradientNameState(ingredient?.name!)
+                                                    }}
+                                                    className="text-xl text-blue-500 cursor-pointer hover:scale-125 hover:transition-all ease-in-out" />
+                                                <FiTrash2
+                                                    onClick={() => removeIngredient(ingredient?.name!)}
+                                                    className="text-xl text-red-500 cursor-pointer hover:scale-125 hover:transition-all ease-in-out" />
+                                            </div>
+                                        ) : null
+                                    }
                                 </div>
                             }
 
@@ -208,9 +212,8 @@ export function Igredient({ state, dispatch, selects }: iIgradientsCardProps) {
                                 </div>
                             </div>}
                             {/* ========================================================================= */}
+
                             {state.options.map((option) => {
-                                // console.log(state.options)
-                                // console.log(option.name)
                                 if (option.name === '' || option.picture_url === '' || option === undefined) {
                                     return
                                 }
@@ -219,10 +222,14 @@ export function Igredient({ state, dispatch, selects }: iIgradientsCardProps) {
                                 }
                                 return (
                                     <div key={option.id} className="rounded-lg w-[100px] h-24 flex items-center relative justify-center" >
-                                        <FiTrash2
-                                            onClick={() => removeOptionFromIngredient(ingredient.id!.toString(), option.id!.toString())}
-                                            className="text-xl text-red-500 cursor-pointer hover:scale-125 hover:transition-all ease-in-out
-                                                absolute top-2 right-2 z-30" />
+                                        {
+                                            state.isViewingUpdatingOrAdding !== "VIEWING" ? (
+                                                <FiTrash2
+                                                    onClick={() => removeOptionFromIngredient(ingredient.id!.toString(), option.id!.toString())}
+                                                    className="text-xl text-red-500 cursor-pointer hover:scale-125 hover:transition-all ease-in-out
+                                                        absolute top-2 right-2 z-30" />
+                                            ) : null
+                                        }
                                         {option.picture_url &&
                                             <Image
                                                 className="w-full h-full rounded-lg"
@@ -238,11 +245,15 @@ export function Igredient({ state, dispatch, selects }: iIgradientsCardProps) {
                                 )
                             })
                             }
-                            <button
-                                onClick={() => setShowModalOption(ingredient.name)}
-                                className="rounded-lg w-[100px] h-24 flex items-center justify-center border border-solid border-gray-400 cursor-pointer" >
-                                <HiPlus className=" text-gray-400 text-4xl" />
-                            </button>
+                            {
+                                state.isViewingUpdatingOrAdding !== "VIEWING" ? (
+                                    <button
+                                        onClick={() => setShowModalOption(ingredient.name)}
+                                        className="rounded-lg w-[100px] h-24 flex items-center justify-center border border-solid border-gray-400 cursor-pointer" >
+                                        <HiPlus className=" text-gray-400 text-4xl" />
+                                    </button>
+                                ) : null
+                            }
                         </div>
                     </div>
                 )
@@ -276,9 +287,13 @@ export function Igredient({ state, dispatch, selects }: iIgradientsCardProps) {
 
 
             {/*                       Add new ingredient button                             */}
-            <div className="w-full flex items-center justify-end mt-6">
-                <CardapioDigitalButton onClick={() => setIsAddingNewIngradient(isAddingNewIngradientState ? false : true)} name={!isAddingNewIngradientState ? 'Adicionar' : 'Cancelar'} h="h-8" w="w-28" />
-            </div>
+            {
+                state.isViewingUpdatingOrAdding !== "VIEWING" ? (
+                    <div className="w-full flex items-center justify-end mt-6">
+                        <CardapioDigitalButton onClick={() => setIsAddingNewIngradient(isAddingNewIngradientState ? false : true)} name={!isAddingNewIngradientState ? 'Adicionar' : 'Cancelar'} h="h-8" w="w-28" />
+                    </div>
+                ) : null
+            }
 
         </div>
     )

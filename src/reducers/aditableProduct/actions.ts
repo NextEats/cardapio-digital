@@ -46,6 +46,7 @@ export function setViewpProductAction(
     selectsByProdctId: iInsertSelects["data"],
     productOptiosBySelectId: iInsertProductOptions["data"],
     additionalsByProductAdditionalsId: iInsertAdditionals["data"],
+    categoryFound: iInsertProductCategory["data"]
 ) {
     // console.log(product, selectsByProdctId, productOptiosBySelectId, additionalsByProductAdditionalsId)
     return {
@@ -55,6 +56,7 @@ export function setViewpProductAction(
             selects: selectsByProdctId,
             productOptions: productOptiosBySelectId,
             additionals: additionalsByProductAdditionalsId,
+            category: categoryFound,
         }
     }
 }

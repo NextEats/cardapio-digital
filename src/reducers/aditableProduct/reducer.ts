@@ -131,23 +131,25 @@ export function editableProductReducer(state: IEditableProductReducerData, actio
                 ingredients: action.payload.selects,
                 options: action.payload.productOptions,
                 additionals: action.payload.additionals,
+                category: action.payload.category,
 
             }
             break
         case EditableProductActions.SET_ADDING_PRDUCT:
-            state.productInformation = {
+            const newProductState = { ...state }
+            newProductState.productInformation = {
                 name: '',
                 description: '',
                 price: '',
             };
-            state.picture_url = '';
-            state.isEditingPicture = true;
-            state.isEditingInfo = true;
-            state.ingredients = [];
-            state.options = [];
-            state.additionals = [];
+            newProductState.picture_url = '';
+            newProductState.isEditingPicture = true;
+            newProductState.isEditingInfo = true;
+            newProductState.ingredients = [];
+            newProductState.options = [];
+            newProductState.additionals = [];
 
-            return { ...state }
+            return { ...newProductState }
             break
         case EditableProductActions.IS_EDITING_INFORMATION:
             return { ...state, isEditingInfo: action.payload.isEditingInfo }

@@ -100,6 +100,9 @@ export default function CardapioDigital({ productCategories, products, productSe
         selectsByProductSelect = [...selectsByProductSelect, selects.data[selectsIndex]]
       }
 
+      // finding the category 
+      const categoryFound = productCategories.data.find(c => c.id === product?.category_id)
+
       // filtering the options ones
       const productOptiosBySelectId = productOptions.data.filter(option => {
         return selectsByProductSelect.map(select => select?.id === option.select_id && option)
@@ -111,7 +114,13 @@ export default function CardapioDigital({ productCategories, products, productSe
       const additionalsByProductAdditionalsId = productAdditionalsByProductId?.map(productAdditional => {
         return additionals.data[additionals?.data.findIndex(additional => productAdditional.additional_id === additional.id)]
       })
-      dispatch(setViewpProductAction(product!, selectsByProductSelect, productOptiosBySelectId, additionalsByProductAdditionalsId))
+      dispatch(setViewpProductAction(
+        product!,
+        selectsByProductSelect,
+        productOptiosBySelectId,
+        additionalsByProductAdditionalsId,
+        categoryFound!,
+      ))
     }
 
     if (state.isViewingUpdatingOrAdding === "VIEWING") {

@@ -80,6 +80,14 @@ export function setProductInformationAction(name: string, description: string, p
         }
     }
 }
+export function setIsViewingAddingOrOpdatingProductAction(type: "VIEWING" | "ADDING" | "UPDATING" | "") {
+    return {
+        type: EditableProductActions.IS_VIEWING_UPDATING_OR_ADDING,
+        payload: {
+            isViewingUpdatingOrAdding: type
+        }
+    }
+}
 export function setAddingProductAction() {
     return {
         type: EditableProductActions.SET_ADDING_PRDUCT,

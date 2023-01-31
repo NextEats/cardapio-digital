@@ -136,6 +136,7 @@ export function editableProductReducer(state: IEditableProductReducerData, actio
             }
             break
         case EditableProductActions.SET_ADDING_PRDUCT:
+            console.log("adasd")
             const newProductState = { ...state }
             newProductState.productInformation = {
                 name: '',

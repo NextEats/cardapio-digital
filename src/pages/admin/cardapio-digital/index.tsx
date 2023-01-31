@@ -10,7 +10,7 @@ import { defaultValues, editableProductReducer } from "../../../reducers/aditabl
 import { iInsertProductCategory, iProductCategories, iInsertProductOptions, iProducts, iInsertAdditionals, iInsertProductAdditionals, iInsertSelects, iInsertProductSelects } from "../../../types/types";
 import { CategoryModal } from "../../../components/admin/cardapio-digital/CategoryModal";
 import EditableMenuProductCard from "../../../components/admin/cardapio-digital/EditableMenuProductCard";
-import { setAddingProductAction, setViewpProductAction } from "../../../reducers/aditableProduct/actions";
+import { setAddingProductAction, setIsViewingAddingOrOpdatingProductAction, setViewpProductAction } from "../../../reducers/aditableProduct/actions";
 import { CardapioDigitalButton } from "../../../components/admin/cardapio-digital/CardapioDigitalButton";
 
 interface iCardapioDigitalProps {
@@ -126,9 +126,6 @@ export default function CardapioDigital({ productCategories, products, productSe
     if (state.isViewingUpdatingOrAdding === "VIEWING") {
       setProtoduct()
     }
-    if (state.isViewingUpdatingOrAdding === "ADDING") {
-      setProtoduct()
-    }
 
   }, [
     state.isViewingUpdatingOrAdding,
@@ -139,6 +136,7 @@ export default function CardapioDigital({ productCategories, products, productSe
     productAdditionals,
     additionals,
     selects,
+    productCategories,
   ])
 
   const [productModal, setProductModal] = useState(false)
@@ -188,7 +186,7 @@ export default function CardapioDigital({ productCategories, products, productSe
                 onChange={(e) => filterProducts(e.target.value)}
                 className="mx-8 h-6 pb-1 max-w-64 px-2 text-gray-600 text-sm font-semibold placeholder:text-gray-500 rounded outline-none border border-solid border-gray-400" />
               <CardapioDigitalButton onClick={() => {
-                setAddingProductAction()
+                dispatch(setAddingProductAction())
                 setProductModal(true)
               }} name='Novo' h="h-7" w="w-24" Icon={<AiOutlinePlus />} />
 

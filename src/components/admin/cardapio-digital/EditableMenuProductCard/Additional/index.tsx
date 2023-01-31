@@ -58,7 +58,6 @@ export function Additional({ state, dispatch }: IAdditionalProps) {
         const additionalName = getValues("additionalName")
         const additionalPrice = Number(getValues("additionalPrice"))
         const additionalPicture_url = getValues("additionalPicture_url")
-        console.log(additionalName, state)
         dispatch({
             type: EditableProductActions.ADD_NEW_ADDITIONAL,
             payload: {
@@ -95,11 +94,9 @@ export function Additional({ state, dispatch }: IAdditionalProps) {
         const additionalPicture_url = getValues("additionalPicture_url")
 
         if (state.additionals.some(additional => additional.name === additionalName)) {
-            console.log(state.additionals, state.additionals.some(additional => additional.name === additionalName))
             return
         }
 
-        console.log(state.additionals, state.additionals.some(additional => additional.name === additionalName))
         dispatch({
             type: EditableProductActions.UPDATE_ADDITIONAL,
             payload: {
@@ -126,7 +123,6 @@ export function Additional({ state, dispatch }: IAdditionalProps) {
                         if (additional?.name === '' && additional?.picture_url === '') {
                             return
                         }
-
                         return (
                             <div key={additional?.id} className="flex flex-1 items-center pr-4 shadow-md rounded-md relative bg-white-300">
                                 <div className="flex items-center gap-3 h-[60px]">

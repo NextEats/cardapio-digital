@@ -12,12 +12,7 @@ export const defaultValues = {
         price: '',
     },
     //INGREDIENT
-    ingredients: [
-        // {
-        //     name: '',
-        //     picture_url: '',
-        // }
-    ],
+    ingredients: [],
 
     //  CATEGORY
     category: {
@@ -25,25 +20,12 @@ export const defaultValues = {
         restaurant_id: 0,
     },
 
-
     // //  OPTIONS
     // ingredientIdToShowModalAddNewOption: '',
-    options: [
-        //     {
-        //     name: '',
-        //     picture_url: '',
-        //     select_id: 0,
-        // }
-    ],
+    options: [],
 
     // // ADDITIONAL
-    additionals: [
-        // {
-        //     name: '',
-        //     price: 0,
-        //     picture_url: '',
-        // }
-    ],
+    additionals: [],
     showModalToUpdateAdditional: false,
 }
 
@@ -136,7 +118,6 @@ export function editableProductReducer(state: IEditableProductReducerData, actio
             }
             break
         case EditableProductActions.SET_ADDING_PRDUCT:
-            console.log("adasd")
             const newProductState = { ...state }
             newProductState.productInformation = {
                 name: '',

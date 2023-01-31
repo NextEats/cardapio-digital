@@ -1,6 +1,6 @@
 import { Dispatch, SetStateAction } from "react";
 import { FiX } from "react-icons/fi";
-import { setAddAdditionalAction, setAddIngredientAction, setCategoryAction } from "../../../../reducers/aditableProduct/actions";
+import { setAddAdditionalAction, setAddIngredientAction, setCategoryAction, setIsViewingAddingOrOpdatingProductAction } from "../../../../reducers/aditableProduct/actions";
 import { IEditableProductReducerData, iPayloadProduct } from "../../../../reducers/aditableProduct/reducer";
 import { supabase } from "../../../../server/api";
 import { iInsertAdditionals, iInsertProductCategories, iInsertProductOptions, iInsertSelects, iProduct } from "../../../../types/types";
@@ -10,6 +10,7 @@ import HeadersCard from "./HeadersCard";
 import { Igredient } from "./Ingredients";
 import * as NavigationMenu from '@radix-ui/react-navigation-menu';
 import { IoIosArrowDown } from "react-icons/io"
+import { BsArrowLeftCircle } from "react-icons/bs";
 
 interface iEditableMenuProductCardProps {
     state: IEditableProductReducerData,
@@ -91,7 +92,6 @@ export default function EditableMenuProductCard({ state, dispatch, setProductMod
                 picture_url: option.picture_url,
                 select_id: option.select_id
             }).select("*")
-            console.log(optionData)
         })
     }
 
@@ -132,10 +132,15 @@ export default function EditableMenuProductCard({ state, dispatch, setProductMod
                 onClick={() => { setProductModal(false) }}
             ></div>
             <div className={`w-[360px] md:w-[420px] 2xl:w-[468px] fixed ${productModal ? 'right-0' : 'right-[-700px]'} transition-all ease-out z-30 top-16 bg-white shadow-md rounded-md h-[calc(100vh-64px)] overflow-auto p-4`}>
-                <div className="flex flex-1 items-center justify-end pb-2">
-                    <FiX
+                <div className="flex flex-1 items-center justify-between pb-6">
+                    <BsArrowLeftCircle
                         onClick={() => setProductModal(false)}
-                        className="text-3xl text-red-500 cursor-pointer hover:scale-125 hover:transition-all ease-in-out" />
+                        className="text-3xl text-gray-600 cursor-pointer hover:scale-110 hover:transition-all ease-in-out" />
+                    {
+                        state.isViewingUpdatingOrAdding === "VIEWING" ? (
+                            <CardapioDigitalButton name="Editar" h="h-8" w="w-28" onClick={() => dispatch(setIsViewingAddingOrOpdatingProductAction("UPDATING"))} />
+                        ) : null
+                    }
                 </div>
 
                 <HeadersCard state={state} dispatch={dispatch} />
@@ -212,13 +217,20 @@ export default function EditableMenuProductCard({ state, dispatch, setProductMod
 
                 <Additional state={state} dispatch={dispatch} />
 
-                {
-                    state.isViewingUpdatingOrAdding !== "VIEWING" ? (
-                        <CardapioDigitalButton
-                            onClick={() => handleCreateProduct()}
+                {state.isViewingUpdatingOrAdding === "ADDING" &&
+                    <CardapioDigitalButton onClick={() => handleCreateProduct()}
+                        disabled={!state.productInformation.name || !state.productInformation.description || !state.productInformation.price || !state.picture_url}
+                        name='Adicionar novo item' h="h-10" w="w-full" />
+                }
+                {state.isViewingUpdatingOrAdding === "UPDATING" &&
+                    <div className="flex flex-1 gap-2">
+                        <CardapioDigitalButton onClick={() => dispatch(setIsViewingAddingOrOpdatingProductAction("VIEWING"))}
                             disabled={!state.productInformation.name || !state.productInformation.description || !state.productInformation.price || !state.picture_url}
-                            name={`${state.isViewingUpdatingOrAdding === "ADDING" ? 'Adicionar novo item' : "Editar"}`} h="h-10" w="w-full" />
-                    ) : null
+                            name='Cancelar' h="h-10" w="w-full" />
+                        <CardapioDigitalButton onClick={() => console.log("Faça a edição do produto!")}
+                            disabled={!state.productInformation.name || !state.productInformation.description || !state.productInformation.price || !state.picture_url}
+                            name='Editar' h="h-10" w="w-full" />
+                    </div>
                 }
 
             </div>

@@ -1,7 +1,7 @@
 import { BsArrowLeftCircle } from "react-icons/bs";
-import { useEffect, useMemo, useState } from "react";
+import { MouseEvent, useEffect, useMemo, useState } from "react";
 import Image from "next/image";
-import { iProduct } from "../../../types/types";
+import { iCheckoutProduct, iProduct } from "../../../types/types";
 import Additionals from "./Additionals";
 import ProductOptions from "./ProductOptions";
 import SubmitButtons from "./SubmitButtons";
@@ -19,13 +19,23 @@ import {
 export default function ProductModal({
   productModal,
   setProductModal,
+  productsDispatch,
 }: {
   productModal: iProduct["data"] | undefined | null;
   setProductModal: Function;
+  productsDispatch: Function;
 }) {
+  // Preencher primeiras informações sobre o produto no objeto checkout
+
   const [additionals, setAdditionals] = useState<iProductAdditional[]>();
   const [price, setPrice] = useState<number>(0);
-  const [options, setOptions] = useState<iProductSelectsWithOptions[]>([]);
+  const [selects, setSelects] = useState<iProductSelectsWithOptions[]>([]);
+  const [selectedAdditionals, setSelectedAdditionals] = useState<any[]>([]);
+  const [quantity, setQuantity] = useState<number>(1);
+
+  useEffect(() => {
+    setQuantity(1);
+  }, []);
 
   useEffect(() => {
     if (!productModal) {
@@ -33,7 +43,7 @@ export default function ProductModal({
     }
 
     getProductSelectWithOptions(productModal.id).then((response) => {
-      setOptions(response as iProductSelectsWithOptions[]);
+      setSelects(response as iProductSelectsWithOptions[]);
     });
   }, [productModal]);
 
@@ -47,9 +57,6 @@ export default function ProductModal({
     });
   }, [productModal]);
 
-  var body = document.getElementById("body");
-  body?.classList.add("overflow-hidden");
-
   useMemo(() => {
     if (!productModal) {
       return;
@@ -62,13 +69,60 @@ export default function ProductModal({
     return <div>Carregando</div>;
   }
 
+  function handleSubmit(e: MouseEvent) {
+    e.preventDefault();
+
+    productsDispatch({
+      type: "add",
+      payload: {
+        id: productModal?.id,
+        name: productModal?.name,
+        price: productModal?.price,
+        quantity: quantity,
+        picture_url: productModal?.picture_url,
+        additionals: selectedAdditionals,
+        options: selects,
+      },
+    });
+
+    // setProducts((prev: any) => {
+    //   if (prev) {
+    //     return [
+    //       ...prev,
+    //       {
+    //         id: productModal?.id,
+    //         name: productModal?.name,
+    //         price: productModal?.price,
+    //         quantity: quantity,
+    //         picture_url: productModal?.picture_url,
+    //         additionals: selectedAdditionals,
+    //         options: selects,
+    //       },
+    //     ];
+    //   } else {
+    //     return [
+    //       {
+    //         id: productModal?.id,
+    //         name: productModal?.name,
+    //         price: productModal?.price,
+    //         quantity: quantity,
+    //         picture_url: productModal?.picture_url,
+    //         additionals: selectedAdditionals,
+    //         options: selects,
+    //       },
+    //     ];
+    //   }
+    // });
+
+    setProductModal(null);
+  }
+
   return (
     <>
       <div
         className="fixed bg-black w-screen h-screen opacity-60 z-[100] cursor-pointer"
         onClick={() => {
           setProductModal(null);
-          body?.classList.remove("overflow-hidden");
         }}
       ></div>
       <div
@@ -80,7 +134,6 @@ export default function ProductModal({
             size={30}
             onClick={() => {
               setProductModal(null);
-              body?.classList.remove("overflow-hidden");
             }}
           />
           <div className="w-full flex items-center justify-center mb-9">
@@ -101,12 +154,26 @@ export default function ProductModal({
             </p>
           </div>
 
-          {options?.length != 0 && options && <ProductOptions data={options} />}
+          {selects?.length != 0 && selects && (
+            <ProductOptions selects={selects} setSelects={setSelects} />
+          )}
 
           {additionals?.length != 0 && additionals && (
-            <Additionals data={additionals} setPrice={setPrice} />
+            <Additionals
+              data={additionals}
+              setPrice={setPrice}
+              selectedAdditionals={selectedAdditionals}
+              setSelectedAdditionals={setSelectedAdditionals}
+            />
           )}
-          <SubmitButtons price={price} />
+          <SubmitButtons
+            productModal={productModal}
+            price={price}
+            quantity={quantity}
+            setQuantity={setQuantity}
+            setPrice={setPrice}
+            submitFunction={(e: MouseEvent) => handleSubmit(e)}
+          />
         </div>
       </div>
     </>

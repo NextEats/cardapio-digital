@@ -1,8 +1,7 @@
-import { useContext, useMemo, useState, useEffect, useCallback } from "react";
+import { useMemo, useState, useCallback, useReducer } from "react";
 
 // NEXT JS IMPORTS
 import { GetServerSideProps } from "next";
-import Link from "next/link";
 import Head from "next/head";
 
 // COMPONENTS
@@ -10,7 +9,12 @@ import ProductsList from "./../components/home/ProductsList";
 import RestaurantHeader from "./../components/home/RestaurantHeader";
 
 // DATABASE
-import { supabase } from "../server/api";
+import {
+  getGroupedProducts,
+  returnAllCategoriesForThisRestaurant,
+  returnRestaurantType,
+  supabase,
+} from "../server/api";
 
 // TYPES
 import {
@@ -21,10 +25,9 @@ import {
   iRestaurant,
   iAdditionals,
   iRestaurantType,
-  iProductCategories,
   iProductCategory,
   iGroupedProducts,
-  ProductWithCategory,
+  iCheckoutProduct,
 } from "./../types/types";
 import ProductModal from "../components/home/ProductModal";
 
@@ -39,60 +42,12 @@ interface iDataHomepage {
   };
 }
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
+import { FaUtensils } from "react-icons/fa";
+import Checkout from "../components/Checkout";
+
+export const getServerSideProps: GetServerSideProps = async () => {
   // FETCH DATA FROM DATABASE;
   const restaurants = await supabase.from("restaurants").select().eq("id", 3);
-  const ingredients = await supabase.from("ingredients").select();
-  const additionals = await supabase.from("additionals").select();
-  const products = await supabase.from("products").select();
-
-  const getGroupedProducts = async () => {
-    // Cria um mapa para armazenar os nomes das categorias correspondentes a cada ID de categoria
-    const categoryMap = new Map<number, string>();
-    let groupedProducts;
-    try {
-      // Faz uma requisição para a tabela de categorias de produtos
-      const res = await supabase.from("product_categories").select("id, name");
-      if (!res.data) {
-        return;
-      }
-      // Percorre os dados da resposta e adiciona os nomes das categorias ao mapa, usando o ID da categoria como chave
-      for (const category of res.data) {
-        categoryMap.set(category.id, category.name);
-      }
-      // Faz uma requisição para a tabela de produtos
-      const resProduct = await supabase.from("products").select("*");
-      if (!resProduct.data) {
-        return;
-      }
-      // Armazena os dados da resposta em uma variável
-      const products = resProduct.data;
-      // Utiliza a função reduce para agrupar os produtos por categoria e adicionar o nome da categoria a cada produto agrupado
-      groupedProducts = products.reduce((acc: iGroupedProducts, product) => {
-        // Verifica se ja existe uma entrada para essa categoria no objeto agrupado
-        if (!acc[product.category_id]) {
-          acc[product.category_id] = {
-            // Se não existir, adiciona uma nova entrada para essa categoria e coloca o nome da categoria recuperado do mapa
-            category_name: categoryMap.get(product.category_id) || "",
-            products: [],
-          };
-        }
-        // Cria um objeto "productWithCategory" com as propriedades do produto e a categoria_name
-        const productWithCategory: ProductWithCategory = {
-          ...product,
-          category_name: acc[product.category_id].category_name,
-        };
-        // Adiciona o objeto "productWithCategory" ao array de produtos da categoria
-        acc[product.category_id].products.push(productWithCategory);
-        return acc;
-      }, {});
-    } catch (error) {
-      console.error(error);
-    } finally {
-      // retorna a variavel groupedProducts
-      return groupedProducts;
-    }
-  };
 
   var groupedProducts: iGroupedProducts | undefined =
     await getGroupedProducts();
@@ -102,44 +57,89 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     props: {
       data: {
         restaurants: restaurants,
-        ingredients: ingredients,
-        additionals: additionals,
-        products: products,
         groupedProducts: groupedProducts,
       },
     },
   };
 };
 
-async function returnRestaurantType(id: number) {
-  const { data } = await supabase
-    .from("restaurant_types")
-    .select()
-    .eq("id", id);
-
-  return data as unknown as Array<iRestaurantType["data"]>;
-}
-
-async function returnAllCategoriesForThisRestaurant(restaurantId: number) {
-  const { data } = await supabase
-    .from("product_categories")
-    .select("*")
-    .eq("restaurant_id", restaurantId);
-
-  return data as unknown as Array<iProductCategory["data"]>;
+function productsReducer(state: any, action: any) {
+  switch (action.type) {
+    case "add":
+      if (state) {
+        return [
+          ...state,
+          {
+            id: action.payload.id,
+            name: action.payload.name,
+            price: action.payload.price,
+            quantity: action.payload.quantity,
+            picture_url: action.payload.picture_url,
+            additionals: action.payload.additionals,
+            options: action.payload.options,
+          },
+        ];
+      } else {
+        return [
+          {
+            id: action.payload.id,
+            name: action.payload.name,
+            price: action.payload.price,
+            quantity: action.payload.quantity,
+            picture_url: action.payload.picture_url,
+            additionals: action.payload.additionals,
+            options: action.payload.options,
+          },
+        ];
+      }
+    case "deleteProduct":
+      return state.reduce((acc: any, current: any) => {
+        console.log(action.payload.id, current.id);
+        if (current.id !== action.payload.id) {
+          acc.push(current);
+        }
+        return acc;
+      }, []);
+    case "addQuantity":
+      return state.reduce((acc: any, current: any) => {
+        if (current.id == action.payload.id) {
+          current.quantity += 1;
+          acc.push(current);
+        } else {
+          acc.push(current);
+        }
+        return acc;
+      }, []);
+    case "subtractQuantity":
+      return state.reduce((acc: any, current: any) => {
+        if (current.id == action.payload.id) {
+          current.quantity -= 1;
+          acc.push(current);
+        } else {
+          acc.push(current);
+        }
+        return acc;
+      }, []);
+  }
 }
 
 export default function HomePage({ data }: iDataHomepage) {
   // GETS DATA FROM SERVER SIDE PROPS
-  const { restaurants, ingredients, additionals, products, groupedProducts } =
-    data;
+  const { restaurants, groupedProducts } = data;
+
   var restaurant = restaurants.data[0] as unknown as iRestaurant["data"];
 
   // STATES
-  const [productModal, setProductModal] = useState<iProduct>();
+  const [showCheckoutModal, setShowCheckoutModal] = useState<boolean>(true);
+
+  const [products, productsDispatch] = useReducer(productsReducer, undefined);
+
+  const [productModal, setProductModal] = useState<iProduct["data"]>();
+
   const [restaurantType, setRestaurantType] = useState<
     iRestaurantType["data"] | null | undefined
   >();
+
   const [
     productCategoriesForThisRestaurant,
     setProductCategoriesForThisRestaurant,
@@ -159,7 +159,6 @@ export default function HomePage({ data }: iDataHomepage) {
   }, [restaurant]);
 
   if (!productCategoriesForThisRestaurant) {
-    console.error(productCategoriesForThisRestaurant);
     return <>Loading</>;
   }
 
@@ -171,10 +170,20 @@ export default function HomePage({ data }: iDataHomepage) {
       </Head>
       {productModal && (
         <ProductModal
-          productModal={productModal.data}
+          productModal={productModal}
           setProductModal={setProductModal}
+          productsDispatch={productsDispatch}
         />
       )}
+      {showCheckoutModal && (
+        <Checkout
+          onClose={() => setShowCheckoutModal(false)}
+          products={products}
+          productsDispatch={productsDispatch}
+          restaurant={restaurant}
+        />
+      )}
+
       <div className="bg-[#222] flex justify-center min-h-screen min-w-screen">
         <div className="bg-gray-100 max-w-7xl w-full">
           <RestaurantHeader
@@ -185,8 +194,41 @@ export default function HomePage({ data }: iDataHomepage) {
             groupedProducts={groupedProducts}
             setProductModal={setProductModal}
           />
+
+          {products && products.length > 0 && (
+            <div
+              className="fixed bottom-1 max-w-7xl p-3 w-full"
+              onClick={() => {
+                setShowCheckoutModal(true);
+              }}
+            >
+              <OpenCheckoutButton productsDispatch={productsDispatch} />
+            </div>
+          )}
         </div>
       </div>
     </>
+  );
+}
+
+function OpenCheckoutButton({
+  productsDispatch,
+}: {
+  productsDispatch: Function;
+}) {
+  //   productsDispatch({ type: "calculatePrice" });
+
+  //   function returnTotalOrderPrice() {
+  //     return "R$ " + totalPrice;
+  //   }
+
+  return (
+    <div className="h-16 flex flex-row items-center justify-between bg-gray-900 cursor-pointer rounded-md">
+      <FaUtensils className="text-white text-xl ml-10" />
+      <span className="text-white text-lg block p-0 m-0 font-semibold pl-10">
+        MEU PEDIDO
+      </span>
+      <span className="text-white mr-10 text-md">R$ </span>
+    </div>
   );
 }

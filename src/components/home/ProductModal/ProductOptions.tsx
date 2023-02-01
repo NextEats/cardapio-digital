@@ -7,25 +7,68 @@ import {
 } from "./getProductSelectWithOptions";
 
 interface iProductOptions {
-  data: Array<iProductSelectsWithOptions>;
+  selects: iProductSelectsWithOptions[];
+  setSelects: Function;
 }
 
-export default function ProductOptions({ data }: iProductOptions) {
+interface iSelectedOption {
+  select_id: number;
+  selected_option: number;
+}
+
+export default function ProductOptions({
+  selects,
+  setSelects,
+}: iProductOptions) {
+  const handleOptionClick = (selectId: number, optionId: number) => {
+    const newSelects = [...selects];
+    const selectIndex = newSelects.findIndex(
+      (select) => select.id === selectId
+    );
+    const select = newSelects[selectIndex];
+    const options = select.options;
+
+    if (!options) return;
+
+    const newOptions = options.map((option) => {
+      return {
+        ...option,
+        selected: option.id === optionId,
+      };
+    });
+
+    newSelects[selectIndex] = {
+      ...select,
+      options: newOptions,
+    };
+
+    setSelects(newSelects);
+  };
+
   return (
     <div>
-      {data.map((select, index) => {
+      {selects.map((select, index) => {
         return (
-          <fieldset className="mb-5" key={index}>
+          <fieldset className="mb-10" key={index}>
             <h2 className="mb-4 font-semibold text-sm">{select.name}</h2>
             <div className="flex flex-wrap gap-2">
               {select.options?.map((option) => {
                 return (
-                  <div key={option.id}>
+                  <div
+                    key={option.id}
+                    onClick={() => {
+                      handleOptionClick(select.id, option.id);
+                    }}
+                  >
                     <label
                       className=""
                       htmlFor={stringToNormalForm(select.name) + option.id}
                     >
-                      <div className="w-[99px] h-[94px] rounded-lg relative cursor-pointer ">
+                      <div
+                        className={`w-[130px] h-[130px] rounded-lg relative cursor-pointer ${
+                          option.selected ? "selected" : "unselected"
+                        }`}
+                      >
                         <div className="w-full h-full absolute rounded-lg z-10 bg-gradient-to-t from-[#000000ff] via-[#00000063] to-[#00000000]"></div>
                         <span className="absolute bottom-1 left-1 z-20 text-white-300 text-sm font-medium ">
                           {option.name}
@@ -33,7 +76,7 @@ export default function ProductOptions({ data }: iProductOptions) {
                         {option.picture_url && (
                           <Image
                             src={option.picture_url}
-                            alt="carne malpassada"
+                            alt={option.name}
                             className={
                               "wi-full h-full relative rounded-lg object-cover"
                             }
@@ -46,9 +89,9 @@ export default function ProductOptions({ data }: iProductOptions) {
                     <input
                       type="radio"
                       name={stringToNormalForm(select.name)}
-                      id={stringToNormalForm(select.name) + option.id}
                       value={stringToNormalForm(select.name) + option.id}
                       defaultChecked={option.is_default_value}
+                      style={{ display: "none" }}
                     />
                   </div>
                 );

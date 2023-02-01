@@ -1,23 +1,25 @@
 import InputMask from "react-input-mask";
 import { useState } from "react";
 import { iRestaurant } from "../../types/types";
-import { createNewWhatsAppCode } from "../../server/api";
-import { returnTreatedNumber } from "../../helpers/returnTreatedNumber";
+import { createNewWhatsAppCode, isWhatsappCodeValid } from "../../server/api";
 
-interface iWhatsappNumberInput {
+const axios = require("axios").default;
+
+function returnTreatedNumber(value: string): string {
+  return value.replace(/\D/g, "").replace(/\s/g, "");
+}
+
+interface iWhatsappCodeInput {
   whatsappNumber: number | undefined;
-  setWhatsappNumber: Function;
   nextStepIndex: Function;
   previousStepIndex: Function;
-  restaurant: iRestaurant["data"];
 }
-export function WhatsappNumberInput({
-  whatsappNumber,
-  setWhatsappNumber,
+export function WhatsappCodeInput({
   nextStepIndex,
   previousStepIndex,
-  restaurant,
-}: iWhatsappNumberInput) {
+  whatsappNumber,
+}: iWhatsappCodeInput) {
+  const [whatsappCode, setWhatsappCode] = useState("");
   const [hasError, setHasError] = useState<boolean>(false);
 
   const backStep = () => {
@@ -25,20 +27,22 @@ export function WhatsappNumberInput({
   };
 
   const nextStep = async () => {
-    if (!whatsappNumber) {
+    if (!whatsappCode || !whatsappNumber) {
       setHasError(true);
       return;
     }
 
-    let treatedNumber = returnTreatedNumber("55" + whatsappNumber.toString());
+    const treatedNumber = returnTreatedNumber("55" + whatsappNumber.toString());
 
-    await createNewWhatsAppCode(treatedNumber, restaurant.name);
-
-    nextStepIndex();
+    if (await isWhatsappCodeValid(whatsappCode, treatedNumber)) {
+      console.log("success");
+    } else {
+      console.log("failure");
+    }
   };
 
-  const handleWhatsappChange = (e: any) => {
-    setWhatsappNumber(e.target.value);
+  const handleWhatsappCodeChange = (e: any) => {
+    setWhatsappCode(e.target.value);
   };
 
   return (
@@ -46,9 +50,9 @@ export function WhatsappNumberInput({
       <div className="text-gray-800 flex flex-col gap-y-2 min-h-[400px]">
         <div>
           <InputMask
-            mask="(99) 99999-9999"
-            value={whatsappNumber}
-            onChange={(e) => handleWhatsappChange(e)}
+            mask="999999"
+            value={whatsappCode}
+            onChange={(e) => handleWhatsappCodeChange(e)}
             type="text"
             className="border-b-indigo-800 border-b-2 w-full py-2 text-3xl text-center focus:outline-0 focus:border-b-4"
             placeholder="WhatsApp"
@@ -56,7 +60,7 @@ export function WhatsappNumberInput({
         </div>
         {hasError && (
           <span className="text-center w-full text-sm text-red-400">
-            Este WhatsApp não é válido, verifique se o número está correto.
+            Este Código não é válido, verifique se o número está correto.
           </span>
         )}
       </div>

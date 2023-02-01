@@ -45,6 +45,7 @@ export const getServerSideProps: GetServerSideProps = async () => {
   const selects = await supabase.from("selects").select();
   const productSelects = await supabase.from("product_selects").select();
   const productOptions = await supabase.from("product_options").select();
+
   const productAdditionals = await supabase
     .from("product_additionals")
     .select();

@@ -131,3 +131,29 @@ export async function createNewWhatsAppCode(
     console.error(error);
   }
 }
+
+export async function isWhatsappCodeValid(
+  code: string,
+  whatsappNumber: string
+) {
+  try {
+    const supabaseConsult = await supabase
+      .from("whatsapp_code")
+      .select()
+      .eq("code", code)
+      .eq("whatsapp_number", whatsappNumber);
+
+    if (!supabaseConsult.data || supabaseConsult.data.length === 0) {
+      return false;
+    }
+
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+export async function paymentMethodRestaurant(restaurantId: number) {
+  await supabase.from("payment_methods_restaurants").select().eq();
+  return data;
+}

@@ -10,6 +10,7 @@ import { TypeCEP } from "./TypeCEP";
 import { Address } from "./Address";
 import { Payment } from "./Payment";
 import { WhatsappNumberInput } from "./WhatsappNumberInput";
+import { WhatsappCodeInput } from "./WhatsappCodeInput";
 
 export type iOrderType = "delivery" | "takeout" | "reserve";
 
@@ -79,18 +80,18 @@ export default function Checkout({
         />
       ),
     },
-    {
-      name: "Tipo de Pedido",
-      component: (
-        <SelectOrderType
-          products={products}
-          orderType={orderType}
-          setOrderType={setOrderType}
-          nextStepIndex={nextStepIndex}
-          previousStepIndex={previousStepIndex}
-        />
-      ),
-    },
+    // {
+    //   name: "Tipo de Pedido",
+    //   component: (
+    //     <SelectOrderType
+    //       products={products}
+    //       orderType={orderType}
+    //       setOrderType={setOrderType}
+    //       nextStepIndex={nextStepIndex}
+    //       previousStepIndex={previousStepIndex}
+    //     />
+    //   ),
+    // },
     {
       name: "Digite seu CEP",
       component: (
@@ -119,6 +120,9 @@ export default function Checkout({
       name: "Selecione o Método de Pagamento",
       component: (
         <Payment
+          orderType={orderType}
+          products={products}
+          setOrderType={setOrderType}
           nextStepIndex={nextStepIndex}
           previousStepIndex={previousStepIndex}
         />
@@ -138,7 +142,13 @@ export default function Checkout({
     },
     {
       name: "Digite o Código",
-      component: <></>,
+      component: (
+        <WhatsappCodeInput
+          whatsappNumber={whatsappNumber}
+          nextStepIndex={nextStepIndex}
+          previousStepIndex={previousStepIndex}
+        />
+      ),
     },
   ];
 

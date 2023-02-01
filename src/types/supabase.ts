@@ -247,6 +247,7 @@ export interface Database {
           id: number
           order_type_id: number
           payment_method_id: number | null
+          restaurant_id: number | null
         }
         Insert: {
           client_id?: number | null
@@ -254,6 +255,7 @@ export interface Database {
           id?: number
           order_type_id: number
           payment_method_id?: number | null
+          restaurant_id?: number | null
         }
         Update: {
           client_id?: number | null
@@ -261,6 +263,7 @@ export interface Database {
           id?: number
           order_type_id?: number
           payment_method_id?: number | null
+          restaurant_id?: number | null
         }
       }
       orders_products: {
@@ -467,6 +470,7 @@ export interface Database {
           name: string
           picture_url: string
           price: number
+          restaurant_id: number | null
         }
         Insert: {
           category_id: number
@@ -476,6 +480,7 @@ export interface Database {
           name: string
           picture_url: string
           price: number
+          restaurant_id?: number | null
         }
         Update: {
           category_id?: number
@@ -485,6 +490,7 @@ export interface Database {
           name?: string
           picture_url?: string
           price?: number
+          restaurant_id?: number | null
         }
       }
       restaurant_types: {
@@ -513,6 +519,7 @@ export interface Database {
           name: string
           picture_url: string
           restaurant_type_id: number
+          slug: string | null
         }
         Insert: {
           address_id: number
@@ -522,6 +529,7 @@ export interface Database {
           name: string
           picture_url: string
           restaurant_type_id: number
+          slug?: string | null
         }
         Update: {
           address_id?: number
@@ -531,6 +539,7 @@ export interface Database {
           name?: string
           picture_url?: string
           restaurant_type_id?: number
+          slug?: string | null
         }
       }
       selects: {

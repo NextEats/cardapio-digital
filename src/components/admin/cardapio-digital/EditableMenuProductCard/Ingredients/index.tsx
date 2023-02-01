@@ -10,7 +10,7 @@ import { BiPencil } from "react-icons/bi";
 
 import { HiPlus } from "react-icons/hi";
 import Image from "next/image";
-import { EditableProductActions, setAddIngredientAction, setAddNewOption } from "../../../../../reducers/aditableProduct/actions";
+import { EditableProductActions, removeOptionFromINgredientAction, setAddIngredientAction, setAddNewOption } from "../../../../../reducers/aditableProduct/actions";
 import { IEditableProductReducerData, iPayloadProduct } from "../../../../../reducers/aditableProduct/reducer";
 import { CardapioDigitalButton } from "../../CardapioDigitalButton";
 import { supabase } from "../../../../../server/api";
@@ -118,13 +118,8 @@ export function Igredient({ state, dispatch, selects }: iIgradientsCardProps) {
         setShowModalOption('')
     }
 
-    function removeOptionFromIngredient(ingredientId: string, optionId: string) {
-        dispatch({
-            type: EditableProductActions.REMOVE_OPTION_FROM_INGREDIENT,
-            payload: {
-                ingredientId,
-            }
-        })
+    function removeOptionFromIngredient(ingredientId: number, optionName: string) {
+        dispatch(removeOptionFromINgredientAction(optionName, `${ingredientId}`))
     }
 
 
@@ -224,7 +219,7 @@ export function Igredient({ state, dispatch, selects }: iIgradientsCardProps) {
                                         {
                                             state.isViewingUpdatingOrAdding !== "VIEWING" ? (
                                                 <FiTrash2
-                                                    onClick={() => removeOptionFromIngredient(ingredient.id!.toString(), option.id!.toString())}
+                                                    onClick={() => removeOptionFromIngredient(ingredient.id!, option.name!)}
                                                     className="text-xl text-red-500 cursor-pointer hover:scale-125 hover:transition-all ease-in-out
                                                         absolute top-2 right-2 z-30" />
                                             ) : null

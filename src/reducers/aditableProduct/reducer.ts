@@ -174,14 +174,11 @@ export function editableProductReducer(state: IEditableProductReducerData, actio
         // Remove ingredient
         case EditableProductActions.REMOVE_INGREDIENT:
             const ingredientsWithoutIngredientRemoved = state.ingredients.filter(ingredient => ingredient.name !== action.payload.ingredientName)
-            return { ...state, ingredients: ingredientsWithoutIngredientRemoved }
+            const findIngredient = state.ingredients.find(ingredient => ingredient.name === action.payload.ingredientName)
+            const optionsRemoved = state.options.filter(option => option.select_id !== findIngredient?.id)
+
+            return { ...state, ingredients: ingredientsWithoutIngredientRemoved, options: optionsRemoved }
             break
-
-
-        //  ADD OPTION TO INGREDIENT OPRIONS 
-        // case EditableProductActions.IS_ADDING_NEW_OPTION_TO_INGREDIENT:
-        //     return { ...state, ingredientIdToShowModalAddNewOption: action.payload.ingredientIdToShowModalAddNewOption }
-        //     break
         case EditableProductActions.ADD_NEW_OPTION_TO_INGREDIENT:
             console.log(action.payload.optionName)
             // const ingredientIndex = state.ingredients.findIndex(ingredient => ingredient.id == action.payload.ingredientIdToAddNewOption)

@@ -1,4 +1,4 @@
-import { iInsertAddress, iInsertAddresses, iInsertClients, iInsertContact, iInsertContacts, iInsertOrders, iInsertOrdersProducts, iInsertOrderStatuss, iInsertProduct, iInsertProducts, iInsertRestaurant } from "../../types/types"
+import { iInsertAddresses, iInsertClients, iInsertContacts, iInsertOrders, iInsertOrdersProducts, iInsertOrderStatuss, iInsertProducts } from "../../types/types"
 import { statusReducerAction } from "./action"
 
 export interface iStatusReducer {

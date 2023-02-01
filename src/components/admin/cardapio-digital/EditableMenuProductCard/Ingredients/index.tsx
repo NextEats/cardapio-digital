@@ -113,7 +113,6 @@ export function Igredient({ state, dispatch, selects }: iIgradientsCardProps) {
     function handleAddNewOptionToIngredient(ingredientId: number) {
         const optionName = getValues('optionName')
         const optionPicture_url = getValues('optionPicture_url')
-        // console.log(optionName, optionPicture_url, ingredientId)
 
         dispatch(setAddNewOption(optionName, optionPicture_url, ingredientId.toString()))
         setShowModalOption('')

@@ -1,5 +1,4 @@
-import { Dispatch, SetStateAction } from "react";
-import { FiX } from "react-icons/fi";
+import { Dispatch, SetStateAction, useRef, useState } from "react";
 import { setAddAdditionalAction, setAddIngredientAction, setCategoryAction, setIsViewingAddingOrOpdatingProductAction } from "../../../../reducers/aditableProduct/actions";
 import { IEditableProductReducerData, iPayloadProduct } from "../../../../reducers/aditableProduct/reducer";
 import { supabase } from "../../../../server/api";
@@ -11,6 +10,10 @@ import { Igredient } from "./Ingredients";
 import * as NavigationMenu from '@radix-ui/react-navigation-menu';
 import { IoIosArrowDown } from "react-icons/io"
 import { BsArrowLeftCircle } from "react-icons/bs";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { supabaseError, supaBaseSuccess } from "../../../../helpers/toasts";
+
 
 interface iEditableMenuProductCardProps {
     state: IEditableProductReducerData,
@@ -51,7 +54,8 @@ export default function EditableMenuProductCard({ state, dispatch, setProductMod
     }
 
     async function handleCreateProduct() {
-        const { data } = await supabase.from("products").insert({
+
+        const { data, status } = await supabase.from("products").insert({
             category_id: state.category.id!,
             description: state.productInformation.description,
             name: state.productInformation.name,
@@ -63,11 +67,7 @@ export default function EditableMenuProductCard({ state, dispatch, setProductMod
             return
         }
         // let additionalsStatus  
-        postAdditionalToSupabase(data[0])
-
-        // if (additionalsStatus === 400) {
-        //     return
-        // }
+        postAdditionalToSupabase(data[0], status)
 
         state.ingredients.forEach(async (ingredient) => {
             if (ingredient?.name === '') {
@@ -83,6 +83,7 @@ export default function EditableMenuProductCard({ state, dispatch, setProductMod
     }
 
     async function postOptionToSupabase() {
+        let optionStatus
         state.options.forEach(async (option) => {
             if (option.name === '' || productOptions.some(op => op.name === option.name)) {
                 return
@@ -92,37 +93,44 @@ export default function EditableMenuProductCard({ state, dispatch, setProductMod
                 picture_url: option.picture_url,
                 select_id: option.select_id
             }).select("*")
+            optionStatus = optionData.status
         })
+        return optionStatus
     }
 
-    async function postAdditionalToSupabase(prodductData: iProduct["data"]) {
+    async function postAdditionalToSupabase(prodductData: iProduct["data"], productStatus: number) {
         if (state.additionals.length > 0) {
             return
         }
+        let additionalStatus
         state.additionals.forEach(async (additional) => {
             if (additional.name === '') {
                 return
             }
             if (additionals.some((additionalValidate) => additionalValidate.name === additional.name)) {
-                const { status } = await supabase.from("product_additionals").insert({
+                const productAdditionalDada = await supabase.from("product_additionals").insert({
                     additional_id: additional.id!,
                     product_id: prodductData.id
                 }).select("*")
+                additionalStatus = productAdditionalDada.status
             } else {
-                const { status, data } = await supabase.from("additionals").insert({
+                const additionalData = await supabase.from("additionals").insert({
                     name: additional.name,
                     picture_url: additional.picture_url,
                     price: additional.price,
                 }).select("*")
-                if (status === 400 || data === null) {
+                if (additionalData.status === 400 || additionalData.data === null) {
                     return
                 }
-                const { } = await supabase.from("product_additionals").insert({
-                    additional_id: data[0]?.id!,
+                const productAdditionalDada = await supabase.from("product_additionals").insert({
+                    additional_id: additionalData.data[0]?.id!,
                     product_id: prodductData.id
                 }).select("*")
+                additionalStatus = productAdditionalDada.status
             }
         })
+
+        return additionalStatus
     }
 
     return (
@@ -227,11 +235,12 @@ export default function EditableMenuProductCard({ state, dispatch, setProductMod
                         <CardapioDigitalButton onClick={() => dispatch(setIsViewingAddingOrOpdatingProductAction("VIEWING"))}
                             disabled={!state.productInformation.name || !state.productInformation.description || !state.productInformation.price || !state.picture_url}
                             name='Cancelar' h="h-10" w="w-full" />
-                        <CardapioDigitalButton onClick={() => console.log("Faça a edição do produto!")}
+                        <CardapioDigitalButton onClick={() => console.log('Editar')}
                             disabled={!state.productInformation.name || !state.productInformation.description || !state.productInformation.price || !state.picture_url}
                             name='Editar' h="h-10" w="w-full" />
                     </div>
                 }
+                <ToastContainer />
 
             </div>
         </>

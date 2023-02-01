@@ -179,7 +179,7 @@ function ProductImage({ state, dispatch }: iProductImagePros) {
             </div>}
 
             {
-                state.isViewingUpdatingOrAdding === "UPDATING" || state.isViewingUpdatingOrAdding === "ADDING" &&
+                state.isViewingUpdatingOrAdding !== "VIEWING" &&
                 <BiPencil
                     onClick={() => setProductPictureIsEditing(true)}
                     className={`text-2xl text-blue-500 cursor-pointer hover:scale-125 hover:transition-all ease-in-out absolute top-3 right-3 z-10

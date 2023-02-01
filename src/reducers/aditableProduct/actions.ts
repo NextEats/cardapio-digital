@@ -48,7 +48,6 @@ export function setViewpProductAction(
     additionalsByProductAdditionalsId: iInsertAdditionals["data"],
     categoryFound: iInsertProductCategory["data"]
 ) {
-    // console.log(product, selectsByProdctId, productOptiosBySelectId, additionalsByProductAdditionalsId)
     return {
         type: EditableProductActions.VIEW_PRODUCT,
         payload: {

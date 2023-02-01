@@ -195,7 +195,6 @@ export function editableProductReducer(state: IEditableProductReducerData, actio
                 picture_url: action.payload.optionPicture_url,
                 select_id: Number(action.payload.ingredientId),
             })
-            console.log(state.options)
             return { ...state }
             break
         // case EditableProductActions.REMOVE_OPTION_FROM_INGREDIENT:
@@ -212,7 +211,6 @@ export function editableProductReducer(state: IEditableProductReducerData, actio
         case EditableProductActions.UPDATE_ADDITIONAL:
             const undateAdditionalState = { ...state }
             const additionalIndex = undateAdditionalState.additionals.find(additional => additional.name === action.payload.additionalName)
-            console.log(action.payload.additionalName, state.additionals, additionalIndex)
             // if (additionalIndex!.name === undefined) {
             //     return
             // }
@@ -222,11 +220,7 @@ export function editableProductReducer(state: IEditableProductReducerData, actio
             return undateAdditionalState
             break
         case EditableProductActions.REMOVE_ADDITIONAL:
-            console.log(action.payload.additionalName)
-            console.log(state.additionals)
             const additionalWithoutTheRemovedOne = state.additionals.filter(additional => additional.name !== action.payload.additionalName)
-            console.log(additionalWithoutTheRemovedOne)
-
             return { ...state, additionals: additionalWithoutTheRemovedOne }
             break
         default:

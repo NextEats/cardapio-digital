@@ -26,7 +26,6 @@ export default function OrderStatusCard({ statusName, orders, state, dispatch }:
       })
       dispatch(switchToTheWayAction(orderId))
     } else if (statusName === "A caminho") {
-      console.log('entrou Aqui')
       const entregueStatus = state.orderStatuss?.find(status => status.status_name === "entregue")
       const ordersproductFiltered = state.ordersProducts?.filter(op => op.order_id === orderId)
       ordersproductFiltered.forEach(async op => {

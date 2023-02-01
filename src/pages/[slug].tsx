@@ -3,6 +3,7 @@ import { useMemo, useState, useCallback, useReducer } from "react";
 // NEXT JS IMPORTS
 import { GetServerSideProps } from "next";
 import Head from "next/head";
+import { useRouter } from "next/router";
 
 // COMPONENTS
 import ProductsList from "./../components/home/ProductsList";
@@ -19,25 +20,17 @@ import {
 // TYPES
 import {
   iProduct,
-  iProducts,
-  iIngredients,
-  iRestaurants,
   iRestaurant,
-  iAdditionals,
   iRestaurantType,
   iProductCategory,
   iGroupedProducts,
-  iCheckoutProduct,
 } from "./../types/types";
 import ProductModal from "../components/home/ProductModal";
 
 // HOMEPAGE TYPESCRIPT INTERFACE
 interface iDataHomepage {
   data: {
-    restaurants: iRestaurants;
-    ingredients: iIngredients;
-    additionals: iAdditionals;
-    products: iProducts;
+    restaurant: iRestaurant["data"];
     groupedProducts: iGroupedProducts;
   };
 }
@@ -45,20 +38,40 @@ interface iDataHomepage {
 import { FaUtensils } from "react-icons/fa";
 import Checkout from "../components/Checkout";
 
-export const getServerSideProps: GetServerSideProps = async () => {
-  // FETCH DATA FROM DATABASE;
-  const restaurants = await supabase.from("restaurants").select().eq("id", 3);
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  interface iData {
+    restaurant: iRestaurant["data"] | undefined;
+    groupedProducts: iGroupedProducts | undefined;
+  }
 
-  var groupedProducts: iGroupedProducts | undefined =
-    await getGroupedProducts();
+  var data: iData = { restaurant: undefined, groupedProducts: undefined };
+
+  // FETCH DATA FROM DATABASE;
+  const restaurants = await supabase
+    .from("restaurants")
+    .select()
+    .eq("slug", context.query.slug);
+
+  if (
+    !restaurants.data ||
+    !restaurants.data.length ||
+    restaurants.data === null
+  ) {
+    return {
+      props: {
+        data: data,
+      },
+    };
+  }
+
+  data.restaurant = restaurants.data[0] as unknown as iRestaurant["data"];
+
+  data.groupedProducts = await getGroupedProducts(data.restaurant.id);
 
   // PASS DATA TO PAGE
   return {
     props: {
-      data: {
-        restaurants: restaurants,
-        groupedProducts: groupedProducts,
-      },
+      data: data,
     },
   };
 };
@@ -125,9 +138,7 @@ function productsReducer(state: any, action: any) {
 
 export default function HomePage({ data }: iDataHomepage) {
   // GETS DATA FROM SERVER SIDE PROPS
-  const { restaurants, groupedProducts } = data;
-
-  var restaurant = restaurants.data[0] as unknown as iRestaurant["data"];
+  const { restaurant, groupedProducts } = data;
 
   // STATES
   const [showCheckoutModal, setShowCheckoutModal] = useState<boolean>(true);

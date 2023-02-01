@@ -6,33 +6,49 @@ import { supabase } from "../../../server/api";
 import AdminWrapper from "../../../components/admin/AdminWrapper";
 import Categories from "../../../components/admin/cardapio-digital/Categories";
 import MenuProduct from "../../../components/admin/cardapio-digital/MenuProduct";
-import { defaultValues, editableProductReducer } from "../../../reducers/aditableProduct/reducer";
-import { iInsertProductCategory, iProductCategories, iInsertProductOptions, iProducts, iInsertAdditionals, iInsertProductAdditionals, iInsertSelects, iInsertProductSelects } from "../../../types/types";
+import {
+  defaultValues,
+  editableProductReducer,
+} from "../../../reducers/aditableProduct/reducer";
+import {
+  iInsertProductCategory,
+  iProductCategories,
+  iInsertProductOptions,
+  iProducts,
+  iInsertAdditionals,
+  iInsertProductAdditionals,
+  iInsertSelects,
+  iInsertProductSelects,
+} from "../../../types/types";
 import { CategoryModal } from "../../../components/admin/cardapio-digital/CategoryModal";
 import EditableMenuProductCard from "../../../components/admin/cardapio-digital/EditableMenuProductCard";
-import { setAddingProductAction, setIsViewingAddingOrOpdatingProductAction, setViewpProductAction } from "../../../reducers/aditableProduct/actions";
+import {
+  setAddingProductAction,
+  setIsViewingAddingOrOpdatingProductAction,
+  setViewpProductAction,
+} from "../../../reducers/aditableProduct/actions";
 import { CardapioDigitalButton } from "../../../components/admin/cardapio-digital/CardapioDigitalButton";
 
 interface iCardapioDigitalProps {
-  productCategories: iProductCategories,
-  products: iProducts,
-  selects: iInsertSelects,
-  productSelects: iInsertProductSelects,
-  productOptions: iInsertProductOptions,
-  productAdditionals: iInsertProductAdditionals,
-  additionals: iInsertAdditionals,
+  productCategories: iProductCategories;
+  products: iProducts;
+  selects: iInsertSelects;
+  productSelects: iInsertProductSelects;
+  productOptions: iInsertProductOptions;
+  productAdditionals: iInsertProductAdditionals;
+  additionals: iInsertAdditionals;
 }
 
 export const getServerSideProps: GetServerSideProps = async () => {
-
-  const productCategories = await supabase.from("product_categories").select()
-  const products = await supabase.from("products").select()
-  const selects = await supabase.from("selects").select()
-  const productSelects = await supabase.from("product_selects").select()
-  const productOptions = await supabase.from("product_options").select()
-  const productAdditionals = await supabase.from("product_additionals").select()
-  const additionals = await supabase.from("additionals").select()
-  // const loacal =  window.localStorage.setItem("product_categories", JSON.stringify(productCategories.data))
+  const productCategories = await supabase.from("product_categories").select();
+  const products = await supabase.from("products").select();
+  const selects = await supabase.from("selects").select();
+  const productSelects = await supabase.from("product_selects").select();
+  const productOptions = await supabase.from("product_options").select();
+  const productAdditionals = await supabase
+    .from("product_additionals")
+    .select();
+  const additionals = await supabase.from("additionals").select();
 
   return {
     props: {
@@ -43,17 +59,26 @@ export const getServerSideProps: GetServerSideProps = async () => {
       productAdditionals,
       additionals,
       selects,
-    }
-  }
-}
+    },
+  };
+};
 
-export default function CardapioDigital({ productCategories, products, productSelects, productOptions, productAdditionals, additionals, selects }: iCardapioDigitalProps) {
-
-  const [productId, setProductId] = useState<number | null>(null)
-  const [modalIsOpen, setModalIsOpen] = useState(false)
-  const [productModal, setProductModal] = useState(false)
-  const [productsState, setProductsState] = useState<iProducts["data"]>([])
-  const [productsFilteredState, setProductsFilteredState] = useState<iProducts["data"]>([])
+export default function CardapioDigital({
+  productCategories,
+  products,
+  productSelects,
+  productOptions,
+  productAdditionals,
+  additionals,
+  selects,
+}: iCardapioDigitalProps) {
+  const [productId, setProductId] = useState<number | null>(null);
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [productModal, setProductModal] = useState(false);
+  const [productsState, setProductsState] = useState<iProducts["data"]>([]);
+  const [productsFilteredState, setProductsFilteredState] = useState<
+    iProducts["data"]
+  >([]);
   const [viewCategory, setViewCategory] = useState<{
     isViewing: boolean;
     categoryId: number;
@@ -61,72 +86,91 @@ export default function CardapioDigital({ productCategories, products, productSe
   }>({
     isViewing: false,
     categoryId: 0,
-    categoryName: '',
-  })
+    categoryName: "",
+  });
   const [editCategory, setEditCategory] = useState<{
-    isEditing: boolean,
-    categoryData: iInsertProductCategory["data"]
+    isEditing: boolean;
+    categoryData: iInsertProductCategory["data"];
   }>({
     isEditing: false,
     categoryData: {
-      name: '',
+      name: "",
       restaurant_id: 0,
       id: 0,
-    }
-  })
+    },
+  });
 
   const [state, dispatch] = useReducer(editableProductReducer, defaultValues);
 
   // const tdClasses = "[&:not(:last-child)]:p-4";
 
   useEffect(() => {
-    setProductsState(products.data)
+    setProductsState(products.data);
     async function setProtoduct() {
-      const product = products.data.find(p => p.id === productId)
+      const product = products.data.find((p) => p.id === productId);
 
       // filtering the ingredinets ones
-      const productSelectsByProdctId = productSelects.data.filter(select => select.product_id === product?.id)
+      const productSelectsByProdctId = productSelects.data.filter(
+        (select) => select.product_id === product?.id
+      );
 
       let selectsByProductSelect: Array<{
         created_at?: string | null | undefined;
         id?: number | undefined;
         name: string;
-      }> = []
+      }> = [];
       for (let i = 0; i < productSelectsByProdctId.length; i++) {
-        const selectsIndex = selects.data.findIndex(select => select.id === productSelectsByProdctId[i].select_id)
+        const selectsIndex = selects.data.findIndex(
+          (select) => select.id === productSelectsByProdctId[i].select_id
+        );
         if (selectsIndex <= -1) {
-          return
+          return;
         }
-        selectsByProductSelect = [...selectsByProductSelect, selects.data[selectsIndex]]
+        selectsByProductSelect = [
+          ...selectsByProductSelect,
+          selects.data[selectsIndex],
+        ];
       }
 
-      // finding the category 
-      const categoryFound = productCategories.data.find(c => c.id === product?.category_id)
+      // finding the category
+      const categoryFound = productCategories.data.find(
+        (c) => c.id === product?.category_id
+      );
 
       // filtering the options ones
-      const productOptiosBySelectId = productOptions.data.filter(option => {
-        return selectsByProductSelect.map(select => select?.id === option.select_id && option)
-      })
+      const productOptiosBySelectId = productOptions.data.filter((option) => {
+        return selectsByProductSelect.map(
+          (select) => select?.id === option.select_id && option
+        );
+      });
 
       // filtering the additional ones
-      const productAdditionalsByProductId = productAdditionals.data.filter(productAdditional => productAdditional.product_id === productId)
+      const productAdditionalsByProductId = productAdditionals.data.filter(
+        (productAdditional) => productAdditional.product_id === productId
+      );
 
-      const additionalsByProductAdditionalsId = productAdditionalsByProductId?.map(productAdditional => {
-        return additionals.data[additionals?.data.findIndex(additional => productAdditional.additional_id === additional.id)]
-      })
-      dispatch(setViewpProductAction(
-        product!,
-        selectsByProductSelect,
-        productOptiosBySelectId,
-        additionalsByProductAdditionalsId,
-        categoryFound!,
-      ))
+      const additionalsByProductAdditionalsId =
+        productAdditionalsByProductId?.map((productAdditional) => {
+          return additionals.data[
+            additionals?.data.findIndex(
+              (additional) => productAdditional.additional_id === additional.id
+            )
+          ];
+        });
+      dispatch(
+        setViewpProductAction(
+          product!,
+          selectsByProductSelect,
+          productOptiosBySelectId,
+          additionalsByProductAdditionalsId,
+          categoryFound!
+        )
+      );
     }
 
     if (state.isViewingUpdatingOrAdding === "VIEWING") {
-      setProtoduct()
+      setProtoduct();
     }
-
   }, [
     state.isViewingUpdatingOrAdding,
     products,
@@ -137,15 +181,16 @@ export default function CardapioDigital({ productCategories, products, productSe
     additionals,
     selects,
     productCategories,
-  ])
+  ]);
 
   function filterProducts(name: string) {
-
-    let productsFiltered: iProducts["data"] = []
+    let productsFiltered: iProducts["data"] = [];
     productsFiltered = productsState.filter((product) => {
-      return product.name.toLocaleLowerCase().includes(name.toLocaleLowerCase())
-    })
-    setProductsFilteredState(productsFiltered)
+      return product.name
+        .toLocaleLowerCase()
+        .includes(name.toLocaleLowerCase());
+    });
+    setProductsFilteredState(productsFiltered);
   }
 
   return (
@@ -153,7 +198,10 @@ export default function CardapioDigital({ productCategories, products, productSe
       <>
         <div className="flex gap-10">
           <div className="flex flex-col flex-1 ">
-            <h2 className="text-xl font-bold text-gray-700"> 5 itens mais vendidos  </h2>
+            <h2 className="text-xl font-bold text-gray-700">
+              {" "}
+              5 itens mais vendidos{" "}
+            </h2>
 
             <div className="flex items-center justify-between mb-5 mt-7">
               <h2 className="text-xl font-bold text-gray-700 "> Categorias </h2>
@@ -168,36 +216,86 @@ export default function CardapioDigital({ productCategories, products, productSe
               })
               }
             </select> */}
-              <CardapioDigitalButton onClick={() => setModalIsOpen(true)} name='Novo' h="h-7" w="w-24" Icon={<AiOutlinePlus />} />
-
+              <CardapioDigitalButton
+                onClick={() => setModalIsOpen(true)}
+                name="Novo"
+                h="h-7"
+                w="w-24"
+                Icon={<AiOutlinePlus />}
+              />
             </div>
-            <CategoryModal modalIsOpen={modalIsOpen} products={products.data} setViewCategory={setViewCategory} viewCategory={viewCategory} editCategory={editCategory} setEditCategory={setEditCategory} setModalIsOpen={setModalIsOpen} />
-            <Categories productCategories={productCategories.data} products={products.data} setViewCategory={setViewCategory} setEditCategory={setEditCategory} />
+            <CategoryModal
+              modalIsOpen={modalIsOpen}
+              products={products.data}
+              setViewCategory={setViewCategory}
+              viewCategory={viewCategory}
+              editCategory={editCategory}
+              setEditCategory={setEditCategory}
+              setModalIsOpen={setModalIsOpen}
+            />
+            <Categories
+              productCategories={productCategories.data}
+              products={products.data}
+              setViewCategory={setViewCategory}
+              setEditCategory={setEditCategory}
+            />
 
             {/* <MenuProduct  /> */}
             <div className="flex items-center justify-between mb-5 mt-7">
-
-              <h2 className="text-xl font-bold text-gray-700 "> Itens do cardápio </h2>
-              <input type="text" placeholder="Pesquisar"
+              <h2 className="text-xl font-bold text-gray-700 ">
+                {" "}
+                Itens do cardápio{" "}
+              </h2>
+              <input
+                type="text"
+                placeholder="Pesquisar"
                 onChange={(e) => filterProducts(e.target.value)}
-                className="mx-8 h-6 pb-1 max-w-64 px-2 text-gray-600 text-sm font-semibold placeholder:text-gray-500 rounded outline-none border border-solid border-gray-400" />
-              <CardapioDigitalButton onClick={() => {
-                dispatch(setAddingProductAction())
-                dispatch(setIsViewingAddingOrOpdatingProductAction("ADDING"))
-                setProductModal(true)
-              }} name='Novo' h="h-7" w="w-24" Icon={<AiOutlinePlus />} />
-
+                className="mx-8 h-6 pb-1 max-w-64 px-2 text-gray-600 text-sm font-semibold placeholder:text-gray-500 rounded outline-none border border-solid border-gray-400"
+              />
+              <CardapioDigitalButton
+                onClick={() => {
+                  dispatch(setAddingProductAction());
+                  dispatch(setIsViewingAddingOrOpdatingProductAction("ADDING"));
+                  setProductModal(true);
+                }}
+                name="Novo"
+                h="h-7"
+                w="w-24"
+                Icon={<AiOutlinePlus />}
+              />
             </div>
             <div className="grid grid-cols-1 xl:grid-cols-2 gap-2">
-              {productsFilteredState.length > 0 ? <>
-                {productsFilteredState.map(product => {
-                  return <MenuProduct dispatch={dispatch} setProductModal={setProductModal} setProductId={setProductId} key={product.id} product={product} />
-                })}
-              </> : <> {productsState.map(product => {
-                return <MenuProduct dispatch={dispatch} setProductModal={setProductModal} setProductId={setProductId} key={product.id} product={product} />
-              })}</>}
+              {productsFilteredState.length > 0 ? (
+                <>
+                  {productsFilteredState.map((product) => {
+                    return (
+                      <MenuProduct
+                        dispatch={dispatch}
+                        setProductModal={setProductModal}
+                        setProductId={setProductId}
+                        key={product.id}
+                        product={product}
+                      />
+                    );
+                  })}
+                </>
+              ) : (
+                <>
+                  {" "}
+                  {productsState.map((product) => {
+                    return (
+                      <MenuProduct
+                        dispatch={dispatch}
+                        setProductModal={setProductModal}
+                        setProductId={setProductId}
+                        key={product.id}
+                        product={product}
+                      />
+                    );
+                  })}
+                </>
+              )}
             </div>
-
           </div>
           <EditableMenuProductCard
             state={state}

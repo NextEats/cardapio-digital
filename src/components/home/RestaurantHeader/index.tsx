@@ -34,15 +34,11 @@ export default function RestaurantHeader({
           height={130}
           className="rounded-md"
         />
-        <div className="ml-5 mt-3">
+        <div className="ml-5 h-100 flex items-center">
           <h1 className="text-2xl font-semibold text-[#3e3e3e]">
             {restaurant.name}
           </h1>
           <span className="text-md text-[#676767]">{restaurantType?.name}</span>
-          <RestaurantRate averageRating={4.5} />
-          <span className="font-normal text-md">
-            Avalidado por 356 clientes
-          </span>
         </div>
       </div>
       <div className="flex flex-row gap-2 mt-2 ml-3 pb-3">

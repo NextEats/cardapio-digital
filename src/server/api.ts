@@ -9,21 +9,24 @@ import {
 } from "../types/types";
 
 export const api = axios.create({
-  baseURL: "http://localhost:3000"
-})
+  baseURL: "http://localhost:3000",
+});
 
 export const supabase = createClient<Database>(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.NEXT_PUBLIC_SUPABASE_KEY!
 );
 
-export const getGroupedProducts = async () => {
+export const getGroupedProducts = async (restaurantId: number) => {
   // Cria um mapa para armazenar os nomes das categorias correspondentes a cada ID de categoria
   const categoryMap = new Map<number, string>();
   let groupedProducts;
   try {
     // Faz uma requisição para a tabela de categorias de produtos
-    const res = await supabase.from("product_categories").select("id, name");
+    const res = await supabase
+      .from("product_categories")
+      .select("id, name")
+      .eq("restaurant_id", restaurantId);
     if (!res.data) {
       return;
     }
@@ -32,7 +35,10 @@ export const getGroupedProducts = async () => {
       categoryMap.set(category.id, category.name);
     }
     // Faz uma requisição para a tabela de produtos
-    const resProduct = await supabase.from("products").select("*");
+    const resProduct = await supabase
+      .from("products")
+      .select("*")
+      .eq("restaurant_id", restaurantId);
     if (!resProduct.data) {
       return;
     }

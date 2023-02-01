@@ -10,7 +10,7 @@ import { defaultValues, editableProductReducer } from "../../../reducers/aditabl
 import { iInsertProductCategory, iProductCategories, iInsertProductOptions, iProducts, iInsertAdditionals, iInsertProductAdditionals, iInsertSelects, iInsertProductSelects } from "../../../types/types";
 import { CategoryModal } from "../../../components/admin/cardapio-digital/CategoryModal";
 import EditableMenuProductCard from "../../../components/admin/cardapio-digital/EditableMenuProductCard";
-import { setAddingProductAction, setViewpProductAction } from "../../../reducers/aditableProduct/actions";
+import { setAddingProductAction, setIsViewingAddingOrOpdatingProductAction, setViewpProductAction } from "../../../reducers/aditableProduct/actions";
 import { CardapioDigitalButton } from "../../../components/admin/cardapio-digital/CardapioDigitalButton";
 
 interface iCardapioDigitalProps {
@@ -49,10 +49,11 @@ export const getServerSideProps: GetServerSideProps = async () => {
 
 export default function CardapioDigital({ productCategories, products, productSelects, productOptions, productAdditionals, additionals, selects }: iCardapioDigitalProps) {
 
-  const [state, dispatch] = useReducer(editableProductReducer, defaultValues);
-
-  // const tdClasses = "[&:not(:last-child)]:p-4";
+  const [productId, setProductId] = useState<number | null>(null)
   const [modalIsOpen, setModalIsOpen] = useState(false)
+  const [productModal, setProductModal] = useState(false)
+  const [productsState, setProductsState] = useState<iProducts["data"]>([])
+  const [productsFilteredState, setProductsFilteredState] = useState<iProducts["data"]>([])
   const [viewCategory, setViewCategory] = useState<{
     isViewing: boolean;
     categoryId: number;
@@ -73,33 +74,56 @@ export default function CardapioDigital({ productCategories, products, productSe
       id: 0,
     }
   })
-  const [productId, setProductId] = useState<number | null>(null)
 
+  const [state, dispatch] = useReducer(editableProductReducer, defaultValues);
 
-  const [productsState, setProductsState] = useState<iProducts["data"]>([])
-  const [productsFilteredState, setProductsFilteredState] = useState<iProducts["data"]>([])
+  // const tdClasses = "[&:not(:last-child)]:p-4";
 
   useEffect(() => {
     setProductsState(products.data)
     async function setProtoduct() {
       const product = products.data.find(p => p.id === productId)
-      const selectsByProdctId = productSelects.data.filter(select => select.product_id === product?.id)
+
+      // filtering the ingredinets ones
+      const productSelectsByProdctId = productSelects.data.filter(select => select.product_id === product?.id)
+
+      let selectsByProductSelect: Array<{
+        created_at?: string | null | undefined;
+        id?: number | undefined;
+        name: string;
+      }> = []
+      for (let i = 0; i < productSelectsByProdctId.length; i++) {
+        const selectsIndex = selects.data.findIndex(select => select.id === productSelectsByProdctId[i].select_id)
+        if (selectsIndex <= -1) {
+          return
+        }
+        selectsByProductSelect = [...selectsByProductSelect, selects.data[selectsIndex]]
+      }
+
+      // finding the category 
+      const categoryFound = productCategories.data.find(c => c.id === product?.category_id)
+
+      // filtering the options ones
       const productOptiosBySelectId = productOptions.data.filter(option => {
-        return selectsByProdctId.map(select => select.id === option.select_id && option)
+        return selectsByProductSelect.map(select => select?.id === option.select_id && option)
       })
 
+      // filtering the additional ones
       const productAdditionalsByProductId = productAdditionals.data.filter(productAdditional => productAdditional.product_id === productId)
 
       const additionalsByProductAdditionalsId = productAdditionalsByProductId?.map(productAdditional => {
         return additionals.data[additionals?.data.findIndex(additional => productAdditional.additional_id === additional.id)]
       })
-      // dispatch(setViewpProductAction(product!, selectsByProdctId, productOptiosBySelectId, productAdditionalsByProductId, additionalsByProductAdditionalsId))
+      dispatch(setViewpProductAction(
+        product!,
+        selectsByProductSelect,
+        productOptiosBySelectId,
+        additionalsByProductAdditionalsId,
+        categoryFound!,
+      ))
     }
 
     if (state.isViewingUpdatingOrAdding === "VIEWING") {
-      setProtoduct()
-    }
-    if (state.isViewingUpdatingOrAdding === "ADDING") {
       setProtoduct()
     }
 
@@ -111,18 +135,16 @@ export default function CardapioDigital({ productCategories, products, productSe
     productOptions,
     productAdditionals,
     additionals,
+    selects,
+    productCategories,
   ])
-
-  const [productModal, setProductModal] = useState(false)
 
   function filterProducts(name: string) {
 
     let productsFiltered: iProducts["data"] = []
-
     productsFiltered = productsState.filter((product) => {
       return product.name.toLocaleLowerCase().includes(name.toLocaleLowerCase())
     })
-
     setProductsFilteredState(productsFiltered)
   }
 
@@ -135,8 +157,8 @@ export default function CardapioDigital({ productCategories, products, productSe
 
             <div className="flex items-center justify-between mb-5 mt-7">
               <h2 className="text-xl font-bold text-gray-700 "> Categorias </h2>
-              <input type="text" placeholder="Pesquisar"
-                className="mx-8 h-6 pb-1 max-w-64 px-2 text-gray-600 font-semibold placeholder:text-gray-500 rounded outline-none border border-solid border-gray-400" />
+              {/* <input type="text" placeholder="Pesquisar"
+                className="mx-8 h-6 pb-1 max-w-64 px-2 text-gray-600 font-semibold placeholder:text-gray-500 rounded outline-none border border-solid border-gray-400" /> */}
               {/* <select name="" id=""
                   onChange={(e) => filterProductCategories(e.target.value)}
                   className="mx-8 h-6 pb-1 max-w-64 px-2 text-gray-600 font-semibold placeholder:text-gray-500 rounded outline-none border border-solid border-gray-400" >
@@ -160,7 +182,8 @@ export default function CardapioDigital({ productCategories, products, productSe
                 onChange={(e) => filterProducts(e.target.value)}
                 className="mx-8 h-6 pb-1 max-w-64 px-2 text-gray-600 text-sm font-semibold placeholder:text-gray-500 rounded outline-none border border-solid border-gray-400" />
               <CardapioDigitalButton onClick={() => {
-                setAddingProductAction()
+                dispatch(setAddingProductAction())
+                dispatch(setIsViewingAddingOrOpdatingProductAction("ADDING"))
                 setProductModal(true)
               }} name='Novo' h="h-7" w="w-24" Icon={<AiOutlinePlus />} />
 
@@ -191,5 +214,3 @@ export default function CardapioDigital({ productCategories, products, productSe
     </AdminWrapper>
   );
 }
-
-

@@ -13,7 +13,6 @@
 //   Legend
 // );
 
-
 // const orders = [
 //   { date: '2022-04-01', price: 100 },
 //   { date: '2022-05-02', price: 200 },
@@ -44,7 +43,6 @@
 //       const end = endOfDay(endDate);
 //       return eachDayOfInterval({start, end});
 //     }
-//     console.log(generateDatesArray())
 
 //   const ordersFilteredByPeriod = orders.filter(order => {
 //     const dateFormated = `${order.created_at?.slice(0, 19)}`
@@ -68,7 +66,7 @@
 //             const orderDateFormated = `${orderByPeriod.created_at?.slice(0, 19)}`
 //             if(product.id === order.product_id && format(new Date(orderDateFormated), 'yyyy-MM-dd') === format(date, 'yyyy-MM-dd'))
 
-//             return 
+//             return
 //           })
 
 //         })
@@ -77,7 +75,6 @@
 //     })
 
 //   }
-
 
 //   const productsFilterdByOrderId = orderProductsFilterdByOrderId.map(orderProduct => {
 //     return products[products.findIndex(product => product.id === orderProduct.product_id)]
@@ -96,9 +93,6 @@
 //     ],
 //   };
 
-
-
-
 //   return (
 
 //     <div className="w-full xl:h-auto xl:w-auto">
@@ -107,16 +101,27 @@
 //   )
 // }
 
-
-
 //  =============================================================================================================  //
 
+import React, { useState } from "react";
+import { Line } from "react-chartjs-2";
+import {
+  iOrders,
+  iProducts,
+  iProductCategories,
+  iOrdersProducts,
+} from "../../../../../types/types";
 
-import React, { useState } from 'react';
-import { Line } from 'react-chartjs-2';
-import { iOrders, iProducts, iProductCategories, iOrdersProducts } from '../../../../../types/types';
-
-import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, } from 'chart.js';
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+} from "chart.js";
 
 ChartJS.register(
   CategoryScale,
@@ -135,38 +140,40 @@ interface DailyRevenue {
 
 interface iLineChartsProps {
   globalValuesData: {
-    orders: iOrders["data"],
-    products: iProducts["data"],
-    productCategories: iProductCategories["data"],
-    ordersProducts: iOrdersProducts["data"],
-  }
+    orders: iOrders["data"];
+    products: iProducts["data"];
+    productCategories: iProductCategories["data"];
+    ordersProducts: iOrdersProducts["data"];
+  };
 }
 
 export const options = {
   responsive: true,
   plugins: {
     legend: {
-      position: 'top' as const,
+      position: "top" as const,
     },
     title: {
       display: true,
-      text: 'Faturamento',
+      text: "Faturamento",
     },
     style: {
-      width: '100%',
-    }
+      width: "100%",
+    },
   },
 };
 
 export function LineChart({ globalValuesData }: iLineChartsProps) {
-  const { orders, products, ordersProducts } = globalValuesData
+  const { orders, products, ordersProducts } = globalValuesData;
 
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
 
   const [dailyRevenue, setDailyRevenue] = useState<DailyRevenue[]>([]);
 
-  const handleStartDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleStartDateChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     setStartDate(new Date(event.target.value));
   };
 
@@ -176,36 +183,46 @@ export function LineChart({ globalValuesData }: iLineChartsProps) {
 
   const handleFilterClick = () => {
     // Filter orders by date
-    const filteredOrders = orders.filter(order => {
+    const filteredOrders = orders.filter((order) => {
       if (!order.created_at) return false;
       const orderDate = new Date(order.created_at);
       return orderDate >= startDate! && orderDate <= endDate!;
     });
 
     // Filter order details by order id
-    const filteredOrdersProducts = ordersProducts.filter(detail =>
-      filteredOrders.some(order => order.id === detail.order_id)
+    const filteredOrdersProducts = ordersProducts.filter((detail) =>
+      filteredOrders.some((order) => order.id === detail.order_id)
     );
 
     // Filter products by product id
-    const filteredProducts = products.filter(product =>
-      filteredOrdersProducts.some(detail => detail.product_id === product.id)
+    const filteredProducts = products.filter((product) =>
+      filteredOrdersProducts.some((detail) => detail.product_id === product.id)
     );
 
-    const dailyRevenue = filteredOrdersProducts.reduce((acc: { [date: string]: number }, detail) => {
-      const date = new Date(detail.created_at!).toDateString();
-      if (acc[date]) {
-        acc[date] += filteredProducts.find(product => product.id === detail.product_id)?.price || 0;
-      } else {
-        acc[date] = filteredProducts.find(product => product.id === detail.product_id)?.price || 0;
-      }
-      return acc;
-    }, {})
+    const dailyRevenue = filteredOrdersProducts.reduce(
+      (acc: { [date: string]: number }, detail) => {
+        const date = new Date(detail.created_at!).toDateString();
+        if (acc[date]) {
+          acc[date] +=
+            filteredProducts.find((product) => product.id === detail.product_id)
+              ?.price || 0;
+        } else {
+          acc[date] =
+            filteredProducts.find((product) => product.id === detail.product_id)
+              ?.price || 0;
+        }
+        return acc;
+      },
+      {}
+    );
 
-    setDailyRevenue(Object.entries(dailyRevenue).map(([date, revenue]) => ({ date: new Date(date), revenue })));
-
-  }
-
+    setDailyRevenue(
+      Object.entries(dailyRevenue).map(([date, revenue]) => ({
+        date: new Date(date),
+        revenue,
+      }))
+    );
+  };
 
   return (
     <div>
@@ -219,18 +236,18 @@ export function LineChart({ globalValuesData }: iLineChartsProps) {
       </label>
       <button onClick={handleFilterClick}>Filter</button>
       <Line
-      options={options}
-      data={{
-        labels: dailyRevenue.map(r => r.date.toDateString()),
-        datasets: [
-          {
-            label: 'Revenue',
-            data: dailyRevenue.map(r => r.revenue),
-            backgroundColor: 'rgba(75,192,192,0.4)',
-            borderColor: 'rgba(75,192,192,1)',
-          },
-        ],
-      }}
+        options={options}
+        data={{
+          labels: dailyRevenue.map((r) => r.date.toDateString()),
+          datasets: [
+            {
+              label: "Revenue",
+              data: dailyRevenue.map((r) => r.revenue),
+              backgroundColor: "rgba(75,192,192,0.4)",
+              borderColor: "rgba(75,192,192,1)",
+            },
+          ],
+        }}
       />
     </div>
   );

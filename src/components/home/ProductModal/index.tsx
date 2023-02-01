@@ -19,11 +19,11 @@ import {
 export default function ProductModal({
   productModal,
   setProductModal,
-  setProducts,
+  productsDispatch,
 }: {
   productModal: iProduct["data"] | undefined | null;
   setProductModal: Function;
-  setProducts: Function;
+  productsDispatch: Function;
 }) {
   // Preencher primeiras informações sobre o produto no objeto checkout
 
@@ -44,7 +44,6 @@ export default function ProductModal({
 
     getProductSelectWithOptions(productModal.id).then((response) => {
       setSelects(response as iProductSelectsWithOptions[]);
-      console.log(response);
     });
   }, [productModal]);
 
@@ -57,9 +56,6 @@ export default function ProductModal({
       setAdditionals(response as iProductAdditional[]);
     });
   }, [productModal]);
-
-  var body = document.getElementById("body");
-  body?.classList.add("overflow-hidden");
 
   useMemo(() => {
     if (!productModal) {
@@ -76,30 +72,47 @@ export default function ProductModal({
   function handleSubmit(e: MouseEvent) {
     e.preventDefault();
 
-    setProducts((prev: any) => {
-      if (prev) {
-        return [
-          ...prev,
-          {
-            id: productModal?.id,
-            quantity: quantity,
-            picture_url: productModal?.picture_url,
-            additionals: additionals,
-            options: selects,
-          },
-        ];
-      } else {
-        return [
-          {
-            id: productModal?.id,
-            quantity: quantity,
-            picture_url: productModal?.picture_url,
-            additionals: additionals,
-            options: selects,
-          },
-        ];
-      }
+    productsDispatch({
+      type: "add",
+      payload: {
+        id: productModal?.id,
+        name: productModal?.name,
+        price: productModal?.price,
+        quantity: quantity,
+        picture_url: productModal?.picture_url,
+        additionals: selectedAdditionals,
+        options: selects,
+      },
     });
+
+    // setProducts((prev: any) => {
+    //   if (prev) {
+    //     return [
+    //       ...prev,
+    //       {
+    //         id: productModal?.id,
+    //         name: productModal?.name,
+    //         price: productModal?.price,
+    //         quantity: quantity,
+    //         picture_url: productModal?.picture_url,
+    //         additionals: selectedAdditionals,
+    //         options: selects,
+    //       },
+    //     ];
+    //   } else {
+    //     return [
+    //       {
+    //         id: productModal?.id,
+    //         name: productModal?.name,
+    //         price: productModal?.price,
+    //         quantity: quantity,
+    //         picture_url: productModal?.picture_url,
+    //         additionals: selectedAdditionals,
+    //         options: selects,
+    //       },
+    //     ];
+    //   }
+    // });
 
     setProductModal(null);
   }
@@ -110,7 +123,6 @@ export default function ProductModal({
         className="fixed bg-black w-screen h-screen opacity-60 z-[100] cursor-pointer"
         onClick={() => {
           setProductModal(null);
-          body?.classList.remove("overflow-hidden");
         }}
       ></div>
       <div
@@ -122,7 +134,6 @@ export default function ProductModal({
             size={30}
             onClick={() => {
               setProductModal(null);
-              body?.classList.remove("overflow-hidden");
             }}
           />
           <div className="w-full flex items-center justify-center mb-9">

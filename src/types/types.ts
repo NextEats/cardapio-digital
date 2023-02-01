@@ -70,6 +70,62 @@ export interface iOrdersStatus {
 }
 
 //  INSERTS
+export interface iInsertContact {
+  data: Database["public"]["Tables"]["contacts"]["Insert"];
+}
+
+export interface iInsertContacts {
+  data: Array<Database["public"]["Tables"]["contacts"]["Insert"]>;
+}
+export interface iInsertClient {
+  data: Database["public"]["Tables"]["clients"]["Insert"];
+}
+
+export interface iInsertClients {
+  data: Array<Database["public"]["Tables"]["clients"]["Insert"]>;
+}
+export interface iInsertProduct {
+  data: Database["public"]["Tables"]["products"]["Insert"];
+}
+
+export interface iInsertProducts {
+  data: Array<Database["public"]["Tables"]["products"]["Insert"]>;
+}
+
+export interface iInsertRestaurant {
+  data: Database["public"]["Tables"]["restaurants"]["Insert"];
+}
+
+export interface iInsertRestaurants {
+  data: Array<Database["public"]["Tables"]["restaurants"]["Insert"]>;
+}
+export interface iInsertAddress {
+  data: Database["public"]["Tables"]["addresses"]["Insert"];
+}
+export interface iInsertAddresses {
+  data: Array<Database["public"]["Tables"]["addresses"]["Insert"]>;
+}
+export interface iInsertOrderProduct {
+  data: Database["public"]["Tables"]["orders_products"]["Insert"];
+}
+
+export interface iInsertOrdersProducts {
+  data: Array<Database["public"]["Tables"]["orders_products"]["Insert"]>;
+}
+export interface iInsertOrderStatus {
+  data: Database["public"]["Tables"]["order_status"]["Insert"];
+}
+
+export interface iInsertOrderStatuss {
+  data: Array<Database["public"]["Tables"]["order_status"]["Insert"]>;
+}
+export interface iInsertOrder {
+  data: Database["public"]["Tables"]["orders"]["Insert"];
+}
+
+export interface iInsertOrders {
+  data: Array<Database["public"]["Tables"]["orders"]["Insert"]>;
+}
 export interface iInsertSelect {
   data: Database["public"]["Tables"]["selects"]["Insert"];
 }

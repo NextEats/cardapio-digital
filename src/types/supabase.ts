@@ -103,6 +103,26 @@ export interface Database {
           name?: string
         }
       }
+      colors: {
+        Row: {
+          created_at: string | null
+          hexadecimal_code: string
+          id: number
+          name: string
+        }
+        Insert: {
+          created_at?: string | null
+          hexadecimal_code: string
+          id?: number
+          name: string
+        }
+        Update: {
+          created_at?: string | null
+          hexadecimal_code?: string
+          id?: number
+          name?: string
+        }
+      }
       contacts: {
         Row: {
           created_at: string | null
@@ -123,30 +143,27 @@ export interface Database {
           phone?: number | null
         }
       }
-      ingredient_options: {
+      delivery_distance_fee: {
         Row: {
-          created_at: string
+          created_at: string | null
+          distance_in_meters: number
+          fee_in_reais: number
           id: number
-          id_default_value: boolean
-          ingredient_id: number
-          name: string
-          picture_url: string
+          restaurant_id: number
         }
         Insert: {
-          created_at?: string
-          id: number
-          id_default_value?: boolean
-          ingredient_id: number
-          name: string
-          picture_url: string
+          created_at?: string | null
+          distance_in_meters?: number
+          fee_in_reais?: number
+          id?: number
+          restaurant_id: number
         }
         Update: {
-          created_at?: string
+          created_at?: string | null
+          distance_in_meters?: number
+          fee_in_reais?: number
           id?: number
-          id_default_value?: boolean
-          ingredient_id?: number
-          name?: string
-          picture_url?: string
+          restaurant_id?: number
         }
       }
       ingredients: {
@@ -170,6 +187,26 @@ export interface Database {
           id?: number
           name?: string
           picture_url?: string
+        }
+      }
+      operating_time_restaurants: {
+        Row: {
+          created_at: string | null
+          id: number
+          restaurant_id: number
+          weekday_operating_time_id: number
+        }
+        Insert: {
+          created_at?: string | null
+          id?: number
+          restaurant_id: number
+          weekday_operating_time_id: number
+        }
+        Update: {
+          created_at?: string | null
+          id?: number
+          restaurant_id?: number
+          weekday_operating_time_id?: number
         }
       }
       order_status: {
@@ -205,18 +242,21 @@ export interface Database {
       }
       orders: {
         Row: {
+          client_id: number | null
           created_at: string | null
           id: number
           order_type_id: number
           payment_method_id: number | null
         }
         Insert: {
+          client_id?: number | null
           created_at?: string | null
           id?: number
           order_type_id: number
           payment_method_id?: number | null
         }
         Update: {
+          client_id?: number | null
           created_at?: string | null
           id?: number
           order_type_id?: number
@@ -261,6 +301,26 @@ export interface Database {
           created_at?: string | null
           id?: number
           name?: string
+        }
+      }
+      payment_methods_restaurants: {
+        Row: {
+          created_at: string | null
+          id: number
+          payment_method_id: number
+          restaurant_id: number
+        }
+        Insert: {
+          created_at?: string | null
+          id?: number
+          payment_method_id: number
+          restaurant_id: number
+        }
+        Update: {
+          created_at?: string | null
+          id?: number
+          payment_method_id?: number
+          restaurant_id?: number
         }
       }
       product_additionals: {
@@ -488,6 +548,75 @@ export interface Database {
           created_at?: string | null
           id?: number
           name?: string
+        }
+      }
+      weekday_operating_time: {
+        Row: {
+          closing_time: string | null
+          created_at: string | null
+          id: number
+          is_active: boolean
+          opening_time: string | null
+          restaurant_id: number
+          weekday_id: number
+        }
+        Insert: {
+          closing_time?: string | null
+          created_at?: string | null
+          id?: number
+          is_active?: boolean
+          opening_time?: string | null
+          restaurant_id: number
+          weekday_id: number
+        }
+        Update: {
+          closing_time?: string | null
+          created_at?: string | null
+          id?: number
+          is_active?: boolean
+          opening_time?: string | null
+          restaurant_id?: number
+          weekday_id?: number
+        }
+      }
+      weekdays: {
+        Row: {
+          created_at: string | null
+          id: number
+          name: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: number
+          name: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: number
+          name?: string
+        }
+      }
+      whatsapp_code: {
+        Row: {
+          code: string
+          created_at: string | null
+          expiration_date: string
+          id: number
+          whatsapp_number: string
+        }
+        Insert: {
+          code: string
+          created_at?: string | null
+          expiration_date: string
+          id?: number
+          whatsapp_number: string
+        }
+        Update: {
+          code?: string
+          created_at?: string | null
+          expiration_date?: string
+          id?: number
+          whatsapp_number?: string
         }
       }
     }

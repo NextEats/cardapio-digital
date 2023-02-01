@@ -1,18 +1,146 @@
 import { BsX } from "react-icons/bs";
 import { useEffect, useMemo, useState } from "react";
-import Image from "next/image";
-import { iCheckoutProduct } from "../../types/types";
+import { iCheckoutProduct, iRestaurant } from "../../types/types";
 import { FaMinus, FaPlus } from "react-icons/fa";
+
+import { ProductList } from "./ProductList";
+import { SelectOrderType } from "./SelectOrderType";
+
+import { TypeCEP } from "./TypeCEP";
+import { Address } from "./Address";
+import { Payment } from "./Payment";
+import { WhatsappNumberInput } from "./WhatsappNumberInput";
+
+export type iOrderType = "delivery" | "takeout" | "reserve";
+
+export interface iPaymentOption {
+  id: number;
+  name: string;
+}
 
 export default function Checkout({
   products,
   onClose,
+  restaurant,
+  productsDispatch,
 }: {
   products: Array<iCheckoutProduct> | null | undefined;
   onClose: () => void;
+  productsDispatch: Function;
+  restaurant: iRestaurant["data"];
 }) {
-  var body = document.getElementById("body");
-  //   body?.classList.add("overflow-hidden");
+  const [orderType, setOrderType] = useState<iOrderType>("delivery");
+  const [cepState, setCepState] = useState<string>("");
+  const [address, setAddress] = useState();
+  const [whatsappNumber, setWhatsappNumber] = useState<number | undefined>(
+    undefined
+  );
+
+  const [paymentOptions, setPaymentOptions] = useState<iPaymentOption[]>([
+    {
+      id: 1,
+      name: "Cartão de Crédito",
+    },
+  ]);
+
+  function closeModal() {
+    onClose();
+  }
+
+  const [currentStepIndex, setCurrentStepIndex] = useState(0);
+
+  function nextStepIndex() {
+    setCurrentStepIndex((prev) => {
+      return (prev += 1);
+    });
+  }
+
+  function previousStepIndex() {
+    setCurrentStepIndex((prev) => {
+      if (prev === 0) {
+        closeModal();
+        return prev;
+      }
+
+      return (prev -= 1);
+    });
+  }
+
+  const steps = [
+    {
+      name: "Finalizar Pedido",
+      component: (
+        <ProductList
+          closeModal={closeModal}
+          products={products}
+          productsDispatch={productsDispatch}
+          nextStepIndex={nextStepIndex}
+          previousStepIndex={previousStepIndex}
+        />
+      ),
+    },
+    {
+      name: "Tipo de Pedido",
+      component: (
+        <SelectOrderType
+          products={products}
+          orderType={orderType}
+          setOrderType={setOrderType}
+          nextStepIndex={nextStepIndex}
+          previousStepIndex={previousStepIndex}
+        />
+      ),
+    },
+    {
+      name: "Digite seu CEP",
+      component: (
+        <TypeCEP
+          products={products}
+          cepState={cepState}
+          setCepState={setCepState}
+          setAddress={setAddress}
+          nextStepIndex={nextStepIndex}
+          previousStepIndex={previousStepIndex}
+        />
+      ),
+    },
+    {
+      name: "Confirme Seu Endereço",
+      component: (
+        <Address
+          address={address}
+          setAddress={setAddress}
+          nextStepIndex={nextStepIndex}
+          previousStepIndex={previousStepIndex}
+        />
+      ),
+    },
+    {
+      name: "Selecione o Método de Pagamento",
+      component: (
+        <Payment
+          nextStepIndex={nextStepIndex}
+          previousStepIndex={previousStepIndex}
+        />
+      ),
+    },
+    {
+      name: "Digite seu Número de WhatsApp",
+      component: (
+        <WhatsappNumberInput
+          restaurant={restaurant}
+          whatsappNumber={whatsappNumber}
+          setWhatsappNumber={setWhatsappNumber}
+          nextStepIndex={nextStepIndex}
+          previousStepIndex={previousStepIndex}
+        />
+      ),
+    },
+    {
+      name: "Digite o Código",
+      component: <></>,
+    },
+  ];
 
   if (products === null || products === undefined) {
     return <></>;
@@ -23,92 +151,21 @@ export default function Checkout({
       <div className="absolute h-screen w-screen flex items-center justify-center">
         <div
           className="fixed bg-black w-screen h-screen opacity-60 z-[100] cursor-pointer"
-          onClick={() => {
-            onClose();
-            body?.classList.remove("overflow-hidden");
-          }}
+          onClick={closeModal}
         ></div>
-        <div className="pb-9 px-4 bg-white z-[200] fixed overflow-auto shadow-2xl w-full max-w-[600px]">
+        <div className="pb-9 px-4 bg-white rounded-lg z-[200] fixed overflow-auto shadow-2xl w-[95vw] max-w-[600px] ">
           <div className="sticky top-0">
-            <BsX className="my-8 cursor-pointer" size={30} onClick={onClose} />
-            <div className="w-full flex items-center justify-center mb-9">
-              <h1 className="font-semibold text-xl text-gray-800 ">
-                FINALIZAR PEDIDO
-              </h1>
+            <div className="flex flex-row w-full items-center py-12 justify-center">
+              <h4 className="font-semibold text-xl text-gray-800">
+                {steps[currentStepIndex].name}
+              </h4>
+              <BsX
+                className="my-8 cursor-pointer absolute right-7"
+                size={30}
+                onClick={closeModal}
+              />
             </div>
-            <div className="mb-9">
-              <ul className="text-gray-800">
-                {products.map((item) => (
-                  <div key={item.id} className="flex items-center py-2">
-                    <Image
-                      src={item.picture_url}
-                      alt={item.name}
-                      width={200}
-                      height={200}
-                      className="w-16 h-16 rounded-full mr-4"
-                    />
-                    <div className="flex-1">
-                      <h2 className="font-medium text-lg text-gray-800">
-                        {item.name}
-                      </h2>
-                      <p className="text-sm text-gray-600">
-                        {item.description}
-                      </p>
-                      <p className="text-sm text-gray-600">
-                        Quantity: {item.quantity}
-                      </p>
-                      <p className="text-sm text-gray-600">
-                        Price: {item.price}
-                      </p>
-                      {item.selects &&
-                        item.selects.map((select) => (
-                          <div key={select.name}>
-                            <p className="text-sm text-gray-600">
-                              {select.name}:{" "}
-                              {select.options
-                                .filter((o) => o.selected)
-                                .map((o) => o.name)}
-                            </p>
-                          </div>
-                        ))}
-                      {item.additionals &&
-                        item.additionals.map((additional) => (
-                          <div key={additional.id}>
-                            <p className="text-sm text-gray-600">
-                              {additional.name} x {additional.quantity} -{" "}
-                              {additional.price}
-                            </p>
-                          </div>
-                        ))}
-                    </div>
-                    <div className="bg-slate-900 text-white w-24 flex flex-row justify-between p-1">
-                      <button
-                        className="w-6 text-md flex items-center justify-center"
-                        onClick={(e) => {
-                          e.preventDefault();
-                        }}
-                      >
-                        <FaMinus />
-                      </button>
-                      <span className="">1</span>
-                      <button
-                        className="w-6 text-md flex items-center justify-center"
-                        onClick={(e) => {
-                          e.preventDefault();
-                        }}
-                      >
-                        <FaPlus />
-                      </button>
-                    </div>
-                  </div>
-                ))}
-                <div className="fixed bottom-0 left-0 right-0 px-4 py-2 bg-white">
-                  <button className="bg-indigo-500 text-white px-4 py-2 rounded-full hover:bg-indigo-600">
-                    CONTINUAR
-                  </button>
-                </div>
-              </ul>
-            </div>
+            {steps[currentStepIndex].component}
           </div>
         </div>
       </div>

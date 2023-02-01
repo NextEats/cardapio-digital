@@ -1,4 +1,4 @@
-import { iProduct, iInsertProductOptions, iInsertAdditionals, iInsertProductAdditionals, iInsertProductSelects, iInsertSelects, iInsertSelect, iInsertAdditional, iInsertProductCategory } from "../../types/types"
+import { iProduct, iInsertProductOptions, iInsertAdditionals, iInsertProductAdditionals, iInsertSelects, iInsertSelect, iInsertAdditional, iInsertProductCategory } from "../../types/types"
 
 export enum EditableProductActions {
 
@@ -6,7 +6,7 @@ export enum EditableProductActions {
     VIEW_PRODUCT = "VIEW_PRODUCT",
 
     SET_ADDING_PRDUCT = "SET_ADDING_PRDUCT",
-    
+
     SET_CATEGORY = "SET_CATEGORY",
     // PRODUCT INFORMATION
     IS_EDITING_INFORMATION = "IS_EDITING_INFORMATION",
@@ -41,20 +41,21 @@ export enum EditableProductActions {
     // IS_EDITING_INGREDIENT = "IS_EDITING_INGREDIENT",
 }
 
-export function setViewpProductAction( 
-    product: iProduct["data"], 
-    selectsByProdctId: iInsertSelects["data"], 
+export function setViewpProductAction(
+    product: iProduct["data"],
+    selectsByProdctId: iInsertSelects["data"],
     productOptiosBySelectId: iInsertProductOptions["data"],
-    productAdditionalsByProductId: iInsertProductAdditionals["data"],
     additionalsByProductAdditionalsId: iInsertAdditionals["data"],
-    ) {
+    categoryFound: iInsertProductCategory["data"]
+) {
     return {
         type: EditableProductActions.VIEW_PRODUCT,
-        payload: { 
+        payload: {
             product: product,
             selects: selectsByProdctId,
             productOptions: productOptiosBySelectId,
             additionals: additionalsByProductAdditionalsId,
+            category: categoryFound,
         }
     }
 }
@@ -78,9 +79,17 @@ export function setProductInformationAction(name: string, description: string, p
         }
     }
 }
+export function setIsViewingAddingOrOpdatingProductAction(type: "VIEWING" | "ADDING" | "UPDATING" | "") {
+    return {
+        type: EditableProductActions.IS_VIEWING_UPDATING_OR_ADDING,
+        payload: {
+            isViewingUpdatingOrAdding: type
+        }
+    }
+}
 export function setAddingProductAction() {
     return {
-            type: EditableProductActions.SET_ADDING_PRDUCT,
+        type: EditableProductActions.SET_ADDING_PRDUCT,
     }
 }
 export function setIsUpdatingInformationAction(isUpdatig: boolean) {
@@ -89,21 +98,39 @@ export function setIsUpdatingInformationAction(isUpdatig: boolean) {
         payload: { isUpdatig }
     }
 }
-export function setAddIngredientAction(selectName: string, optionsFilteredBySelectId: iInsertProductOptions["data"]) {
+export function setAddIngredientAction(select: iInsertSelect["data"], optionsFilteredBySelectId: iInsertProductOptions["data"]) {
     return {
-            type: EditableProductActions.ADD_NEW_INGREDIENT,
-            payload: { selectName, productOptions: optionsFilteredBySelectId }
+        type: EditableProductActions.ADD_NEW_INGREDIENT,
+        payload: { select, productOptions: optionsFilteredBySelectId }
     }
 }
 export function setAddAdditionalAction(additional: iInsertAdditional["data"]) {
     return {
-            type: EditableProductActions.ADD_NEW_ADDITIONAL,
-            payload: { additional }
+        type: EditableProductActions.ADD_NEW_ADDITIONAL,
+        payload: { additional }
     }
 }
 export function setCategoryAction(category: iInsertProductCategory["data"]) {
     return {
-            type: EditableProductActions.SET_CATEGORY,
-            payload: { category }
+        type: EditableProductActions.SET_CATEGORY,
+        payload: { category }
+    }
+}
+export function setUpdateIngredient(name: string) {
+    return {
+        type: EditableProductActions.UPDATE_INGREDIENT_NAME,
+        payload: { ingredientName: name }
+    }
+}
+// export function setAddNewAdditional(name: string) {
+//     return {
+//         type: EditableProductActions.ADD_NEW_ADDITIONAL,
+//         payload: { }
+//     }
+// }
+export function setAddNewOption(optionName: string, optionPicture_url: string, ingredientId: string) {
+    return {
+        type: EditableProductActions.ADD_NEW_OPTION_TO_INGREDIENT,
+        payload: { optionName, optionPicture_url, ingredientId }
     }
 }

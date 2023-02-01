@@ -1,32 +1,25 @@
 import { iCheckoutProduct } from "../../types/types";
-import { FaMotorcycle, FaShoppingBag } from "react-icons/fa";
-import { MdRestaurant } from "react-icons/md";
-import { iOrderType } from "./index";
 import InputMask from "react-input-mask";
 import { useState } from "react";
-import cep, { CEP } from "cep-promise";
+import { CEP } from "cep-promise";
 
 interface iAddress {
-  products: Array<iCheckoutProduct> | null | undefined;
-  setCurrentStep: Function;
-  cepState: string;
-  setCepState: Function;
   address: (CEP & { number: number | undefined }) | undefined;
   setAddress: Function;
+  nextStepIndex: Function;
+  previousStepIndex: Function;
 }
 export function Address({
-  products,
-  setCurrentStep,
-  cepState,
-  setCepState,
   address,
   setAddress,
+  nextStepIndex,
+  previousStepIndex,
 }: iAddress) {
   const [number, setNumber] = useState("");
   const [hasError, setHasError] = useState(false);
 
   const backStep = () => {
-    setCurrentStep("cepInput");
+    previousStepIndex();
   };
 
   const nextStep = () => {
@@ -37,7 +30,7 @@ export function Address({
         prev.number = parseInt(number);
         return prev;
       });
-      setCurrentStep("payment");
+      nextStepIndex();
     }
   };
 

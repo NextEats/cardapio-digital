@@ -134,8 +134,6 @@ export default function HomePage({ data }: iDataHomepage) {
 
   const [products, productsDispatch] = useReducer(productsReducer, undefined);
 
-  console.log(products);
-
   const [productModal, setProductModal] = useState<iProduct["data"]>();
 
   const [restaurantType, setRestaurantType] = useState<
@@ -182,6 +180,7 @@ export default function HomePage({ data }: iDataHomepage) {
           onClose={() => setShowCheckoutModal(false)}
           products={products}
           productsDispatch={productsDispatch}
+          restaurant={restaurant}
         />
       )}
 

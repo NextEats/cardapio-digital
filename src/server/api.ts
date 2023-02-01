@@ -1,4 +1,5 @@
 import { createClient } from "@supabase/supabase-js";
+import axios from "axios";
 import { Database } from "../types/supabase";
 import {
   iGroupedProducts,
@@ -77,4 +78,46 @@ export async function returnAllCategoriesForThisRestaurant(
     .eq("restaurant_id", restaurantId);
 
   return data as unknown as Array<iProductCategory["data"]>;
+}
+
+export async function createNewWhatsAppCode(
+  whatsappNumber: string,
+  restaurantName: string
+) {
+  try {
+    const verificationCode = Math.floor(Math.random() * 1000000)
+      .toString()
+      .padStart(6, "0");
+
+    const expirationDate = new Date();
+
+    expirationDate.setMinutes(expirationDate.getMinutes() + 5);
+
+    await supabase.from("whatsapp_code").insert([
+      {
+        code: verificationCode,
+        expiration_date: expirationDate.toLocaleString(),
+        whatsapp_number: whatsappNumber,
+      },
+    ]);
+
+    await axios
+      .post(
+        "https://api.z-api.io/instances/3B83B938A0A810B2F72A763E6F7F9F35/token/F0897214AC8EA63A77A36B5C/send-text",
+        {
+          phone: whatsappNumber,
+          message: `😋 Olá, você fez um pedido no *${restaurantName}*\n\n▶ Seu código é: _*${verificationCode}*_`,
+        }
+      )
+      .then(function (response: any) {
+        return response;
+      })
+      .catch(function (error: any) {
+        console.error(error);
+      });
+
+    return verificationCode;
+  } catch (error) {
+    console.error(error);
+  }
 }

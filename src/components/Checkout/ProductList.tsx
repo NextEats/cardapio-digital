@@ -5,14 +5,16 @@ import { QuantitySelector } from "../QuantitySelector";
 interface iProductList {
   products: Array<iCheckoutProduct> | null | undefined;
   productsDispatch: Function;
-  setCurrentStep: Function;
   closeModal: Function;
+  nextStepIndex: Function;
+  previousStepIndex: Function;
 }
 export function ProductList({
   products,
   productsDispatch,
-  setCurrentStep,
   closeModal,
+  nextStepIndex,
+  previousStepIndex,
 }: iProductList) {
   const deleteProduct = (id: number) => {
     productsDispatch({
@@ -39,13 +41,9 @@ export function ProductList({
     return <></>;
   }
 
-  const nextStep = () => {
-    setCurrentStep("orderType");
-  };
-
   return (
-    <div className="mb-9">
-      <ul className="text-gray-800 flex flex-col gap-y-4 min-h-[400px]">
+    <>
+      <div className="min-h-[400px] gap-y-2 flex flex-col">
         {products.map((item, index) => (
           <div
             key={index}
@@ -70,7 +68,8 @@ export function ProductList({
             />
           </div>
         ))}
-      </ul>
+      </div>
+
       <button
         onClick={() => closeModal()}
         className="font-semibold border-indigo-600 border-2 hover:text-white text-indigo-600 px-4 py-2 rounded-sm hover:bg-indigo-800 w-full mt-5"
@@ -78,11 +77,11 @@ export function ProductList({
         ADICIONAR MAIS ITENS
       </button>
       <button
-        onClick={nextStep}
+        onClick={() => nextStepIndex()}
         className="font-semibold bg-indigo-500 text-white px-4 py-2 rounded-sm hover:bg-indigo-800 w-full mt-1"
       >
         CONTINUAR
       </button>
-    </div>
+    </>
   );
 }

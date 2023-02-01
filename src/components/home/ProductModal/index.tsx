@@ -57,9 +57,6 @@ export default function ProductModal({
     });
   }, [productModal]);
 
-  var body = document.getElementById("body");
-  body?.classList.add("overflow-hidden");
-
   useMemo(() => {
     if (!productModal) {
       return;
@@ -126,7 +123,6 @@ export default function ProductModal({
         className="fixed bg-black w-screen h-screen opacity-60 z-[100] cursor-pointer"
         onClick={() => {
           setProductModal(null);
-          body?.classList.remove("overflow-hidden");
         }}
       ></div>
       <div
@@ -138,7 +134,6 @@ export default function ProductModal({
             size={30}
             onClick={() => {
               setProductModal(null);
-              body?.classList.remove("overflow-hidden");
             }}
           />
           <div className="w-full flex items-center justify-center mb-9">

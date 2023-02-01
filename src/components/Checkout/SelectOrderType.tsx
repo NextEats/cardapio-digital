@@ -5,29 +5,21 @@ import { iOrderType } from "./index";
 
 interface iSelectOrderType {
   products: Array<iCheckoutProduct> | null | undefined;
-  productsDispatch: Function;
-  setCurrentStep: Function;
   orderType: iOrderType;
   setOrderType: Function;
+  nextStepIndex: Function;
+  previousStepIndex: Function;
 }
 export function SelectOrderType({
   products,
-  productsDispatch,
-  setCurrentStep,
   orderType,
   setOrderType,
+  nextStepIndex,
+  previousStepIndex,
 }: iSelectOrderType) {
   if (products === null || products === undefined) {
     return <></>;
   }
-
-  const backStep = () => {
-    setCurrentStep("productList");
-  };
-
-  const nextStep = () => {
-    setCurrentStep("cepInput");
-  };
 
   const cssSelectItemsText = "text-xl";
   const cssSelectItemsIcon = "text-4xl mr-4";
@@ -72,13 +64,13 @@ export function SelectOrderType({
         </div>
       </div>
       <button
-        onClick={backStep}
+        onClick={() => previousStepIndex()}
         className="font-semibold border-indigo-600 border-2 hover:text-white text-indigo-600 px-4 py-2 rounded-sm hover:bg-indigo-800 w-full mt-5"
       >
         VOLTAR
       </button>
       <button
-        onClick={nextStep}
+        onClick={() => nextStepIndex()}
         className="font-semibold bg-indigo-500 text-white px-4 py-2 rounded-sm hover:bg-indigo-800 w-full mt-1"
       >
         CONTINUAR

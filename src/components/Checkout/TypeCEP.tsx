@@ -1,36 +1,29 @@
 import { iCheckoutProduct } from "../../types/types";
-import { FaMotorcycle, FaShoppingBag } from "react-icons/fa";
-import { MdRestaurant } from "react-icons/md";
-import { iOrderType } from "./index";
 import InputMask from "react-input-mask";
 import { useState } from "react";
 import cep, { CEP } from "cep-promise";
 
 interface iTypeCEP {
   products: Array<iCheckoutProduct> | null | undefined;
-  setCurrentStep: Function;
   cepState: string;
   setCepState: Function;
-  address: (CEP & { number: number | undefined }) | undefined;
   setAddress: Function;
+  nextStepIndex: Function;
+  previousStepIndex: Function;
 }
 export function TypeCEP({
   products,
-  setCurrentStep,
   cepState,
   setCepState,
-  address,
   setAddress,
+  nextStepIndex,
+  previousStepIndex,
 }: iTypeCEP) {
   const [hasError, setHasError] = useState<boolean>(false);
 
   if (products === null || products === undefined) {
     return <></>;
   }
-
-  const backStep = () => {
-    setCurrentStep("orderType");
-  };
 
   const nextStep = () => {
     function clearNumbers() {
@@ -48,7 +41,7 @@ export function TypeCEP({
       .then((res) => {
         setAddress(res);
         setHasError(false);
-        setCurrentStep("address");
+        nextStepIndex("address");
       })
       .catch((err) => setHasError(true));
   };
@@ -77,13 +70,13 @@ export function TypeCEP({
         )}
       </div>
       <button
-        onClick={backStep}
+        onClick={() => previousStepIndex()}
         className="font-semibold border-indigo-600 border-2 hover:text-white text-indigo-600 px-4 py-2 rounded-sm hover:bg-indigo-800 w-full mt-5"
       >
         VOLTAR
       </button>
       <button
-        onClick={nextStep}
+        onClick={() => nextStep()}
         className="font-semibold bg-indigo-500 text-white px-4 py-2 rounded-sm hover:bg-indigo-800 w-full mt-1"
       >
         CONTINUAR

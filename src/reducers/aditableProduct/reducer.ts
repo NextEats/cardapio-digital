@@ -5,7 +5,6 @@ export const defaultValues = {
     isViewingUpdatingOrAdding: '',
     isEditingInfo: true,
     picture_url: '',
-    isEditingPicture: true,
     productInformation: {
         name: '',
         description: '',
@@ -36,7 +35,6 @@ export interface IEditableProductReducerData {
     // PRODUCT INFORMATION
     isEditingInfo: boolean,
     picture_url: string,
-    isEditingPicture: boolean,
     productInformation: {
         name: string,
         description: string,
@@ -115,7 +113,7 @@ export function editableProductReducer(state: IEditableProductReducerData, actio
         case EditableProductActions.SET_ADDING_PRDUCT:
             state.productInformation = { name: '', description: '', price: '', };
             state.picture_url = '';
-            state.isEditingPicture = true;
+
             state.isEditingInfo = true;
             state.ingredients = [];
             state.options = [];
@@ -136,9 +134,9 @@ export function editableProductReducer(state: IEditableProductReducerData, actio
                 }
             }
             break
-        case EditableProductActions.IS_EDITING_PICTURE:
-            return { ...state, isEditingPicture: action.payload.isEditingPicture }
-            break
+        // case EditableProductActions.IS_EDITING_PICTURE:
+        //     return { ...state, isEditingPicture: action.payload.isEditingPicture }
+        //     break
         case EditableProductActions.SET_PICTURE_URL:
             return { ...state, picture_url: action.payload.picture_url }
             break

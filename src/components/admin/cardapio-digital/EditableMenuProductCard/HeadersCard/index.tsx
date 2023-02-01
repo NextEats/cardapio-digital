@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { useForm } from "react-hook-form";
-import { Dispatch, useState } from "react";
+import { Dispatch, useEffect, useState } from "react";
 import * as zod from "zod"
 
 
@@ -36,7 +36,6 @@ export default function HeadersCard({ state, dispatch }: IHeadersCardProps) {
             price: "",
         },
     });
-    const [incompliteFieldes, setIncompliteFieldes] = useState(false)
 
     function setProductIsEditing(isEditingInfo: boolean) {
         dispatch({
@@ -113,7 +112,6 @@ export default function HeadersCard({ state, dispatch }: IHeadersCardProps) {
                                  placeholder:text-gray-400 rounded outline-none"
                         />
 
-
                     </div>
                 </form>
             </div>
@@ -134,17 +132,15 @@ type NewPirtureUrlFormData = zod.infer<typeof newPictureUrlFormValidationSchema>
 
 function ProductImage({ state, dispatch }: iProductImagePros) {
 
+    const [productPictureIsEditing, setProductPictureIsEditing] = useState(true)
     const { register, handleSubmit, watch } = useForm<NewPirtureUrlFormData>({
         resolver: zodResolver(newPictureUrlFormValidationSchema),
         defaultValues: { picture_url: '' },
     });
 
-    function setProductPictureIsEditing(isEditingPicture: boolean) {
-        dispatch({
-            type: EditableProductActions.IS_EDITING_PICTURE,
-            payload: { isEditingPicture }
-        })
-    }
+    useEffect(() => {
+        if (state.isViewingUpdatingOrAdding === "VIEWING") setProductPictureIsEditing(false)
+    }, [state.isViewingUpdatingOrAdding])
 
     function handleProductPicture_url(data: NewPirtureUrlFormData) {
         if (watch("picture_url") === '') {
@@ -161,7 +157,7 @@ function ProductImage({ state, dispatch }: iProductImagePros) {
     return (
         <form onSubmit={handleSubmit(handleProductPicture_url)} className="w-full h-[350px] relative mb-4">
 
-            {state.isEditingPicture && state.picture_url === '' && <div
+            {state.picture_url === '' || productPictureIsEditing === true ? <div
                 className={` flex flex-1 w-[305px] items-center justify-center bg-white h-9 px-2 rounded-md  absolute top-3 right-3 z-10`}>
                 <input
                     type="text"
@@ -176,14 +172,14 @@ function ProductImage({ state, dispatch }: iProductImagePros) {
                     className="w-7 h-6 flex items-center justify-center rounded-tr-md rounded-br-md hover:scale-110 transition-all ease-in-out bg-green-300 ">
                     <BsCheck2 className="text-base text-white" />
                 </button>
-            </div>}
+            </div> : null}
 
             {
                 state.isViewingUpdatingOrAdding !== "VIEWING" &&
                 <BiPencil
                     onClick={() => setProductPictureIsEditing(true)}
                     className={`text-2xl text-blue-500 cursor-pointer hover:scale-125 hover:transition-all ease-in-out absolute top-3 right-3 z-10
-                                ${state.isEditingPicture ? 'hidden' : ''}`}
+                                ${productPictureIsEditing ? 'hidden' : ''}`}
                 />
             }
             {state.picture_url === '' && <div

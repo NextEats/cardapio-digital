@@ -164,3 +164,12 @@ export async function getPaymentMethod() {
   const paymentMethodData = await supabase.from("payment_methods").select();
   return paymentMethodData;
 }
+
+export async function updateIngredientName(ingredientId: number, name: string) {
+  console.log(ingredientId, name)
+  const ingredientData = await supabase.from("selects").update({
+    name: name
+  }).eq("id", ingredientId).select("*");
+  console.log(ingredientData)
+  return ingredientData
+}

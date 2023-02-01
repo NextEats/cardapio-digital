@@ -227,3 +227,10 @@ export interface iCheckoutProduct {
     quantity: number;
   }>;
 }
+
+
+export interface iAddress {
+  data: Database["public"]["Tables"]["addresses"]["Row"];
+}
+
+export type iRestaurantsWithAddresses = iRestaurant["data"] & { addresses: iAddress["data"] }

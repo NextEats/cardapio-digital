@@ -10,11 +10,12 @@ import { BiPencil } from "react-icons/bi";
 
 import { HiPlus } from "react-icons/hi";
 import Image from "next/image";
-import { EditableProductActions, removeOptionFromINgredientAction, setAddIngredientAction, setAddNewOption } from "../../../../../reducers/aditableProduct/actions";
+import { EditableProductActions, removeOptionFromIngredientAction, setAddIngredientAction, setAddNewOption, setUpdateIngredient } from "../../../../../reducers/aditableProduct/actions";
 import { IEditableProductReducerData, iPayloadProduct } from "../../../../../reducers/aditableProduct/reducer";
 import { CardapioDigitalButton } from "../../CardapioDigitalButton";
-import { supabase } from "../../../../../server/api";
-import { iInsertSelects } from "../../../../../types/types";
+import { supabase, updateIngredientName } from "../../../../../server/api";
+import { iInsertSelect, iInsertSelects } from "../../../../../types/types";
+import { toast } from "react-toastify";
 
 
 interface iIgradientsCardProps {
@@ -29,6 +30,7 @@ interface iIgradientsCardProps {
 const newIngredientFormValidationSchema = zod.object({
     ingredientName: zod.string(),
     updateIngredientName: zod.string(),
+    ingredientId: zod.number(),
     optionName: zod.string(),
     optionPicture_url: zod.string(),
 });
@@ -47,6 +49,7 @@ export function Igredient({ state, dispatch, selects }: iIgradientsCardProps) {
         defaultValues: {
             ingredientName: '',
             updateIngredientName: '',
+            ingredientId: 0,
             optionName: '',
             optionPicture_url: '',
         },
@@ -92,13 +95,16 @@ export function Igredient({ state, dispatch, selects }: iIgradientsCardProps) {
     function handleUpdateIngredientName(data: NewIngredientFormData) {
         // const ingredientName = getValues('editIngredientName')
 
-        const nameAlreadyExists = state.ingredients.some(ingredient => ingredient.name.toLowerCase() === data.updateIngredientName.toLowerCase())
-        if (nameAlreadyExists) {
-            console.log('Ingredient already exists')
+        // const findIngredient = state.ingredients.find(ingredient => ingredient.name.toLowerCase() === data.updateIngredientName.toLowerCase())
+
+        if (state.ingredients.some(ingredient => ingredient.name.toLowerCase() === data.updateIngredientName.toLowerCase())) {
             setError('Esse Ingrediente já existe')
             return
         }
-        // dispatch(setUpdateIngredient(data.ingredientName))
+
+        updateIngredientName(data.ingredientId, data.updateIngredientName)
+
+        dispatch(setUpdateIngredient(data.updateIngredientName, isUpdatingIngradientNameState))
         setError('')
         setIsUpdatingIngradientNameState('')
     }
@@ -119,7 +125,7 @@ export function Igredient({ state, dispatch, selects }: iIgradientsCardProps) {
     }
 
     function removeOptionFromIngredient(ingredientId: number, optionName: string) {
-        dispatch(removeOptionFromINgredientAction(optionName, `${ingredientId}`))
+        dispatch(removeOptionFromIngredientAction(optionName, `${ingredientId}`))
     }
 
 
@@ -146,6 +152,7 @@ export function Igredient({ state, dispatch, selects }: iIgradientsCardProps) {
                                                     text-gray-700 text-sm font-semibold placeholder:text-gray-500 
                                                     outline-none border border-solid border-gray-300 rounded"
                                             />
+                                            <input type="number" hidden value={ingredient.id} {...register("ingredientId")} />
                                             <button
                                                 type="button"
                                                 onClick={() => setIsUpdatingIngradientNameState('')}

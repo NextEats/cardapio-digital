@@ -77,6 +77,8 @@ export interface iPayloadProduct {
 
     ingredientId?: string,
     ingredientName?: string,
+    newIngredientName?: string,
+    oldIngredientName?: string,
 
     ingredientIdToAddNewOption?: string,
     optionName?: string,
@@ -155,9 +157,8 @@ export function editableProductReducer(state: IEditableProductReducerData, actio
             }
             break
         case EditableProductActions.UPDATE_INGREDIENT_NAME:
-            const ingredientIndexToUpdate = state.ingredients.findIndex((ingredient) => ingredient.name === action.payload.ingredientName)
-            console.log(state.ingredients[ingredientIndexToUpdate])
-            state.ingredients[ingredientIndexToUpdate].name = action.payload.ingredientName
+            const ingredientIndexToUpdate = state.ingredients.findIndex((ingredient) => ingredient.name === action.payload.oldIngredientName)
+            state.ingredients[ingredientIndexToUpdate].name = action.payload.newIngredientName
             return { ...state }
             break
         // Remove ingredient

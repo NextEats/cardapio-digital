@@ -115,10 +115,10 @@ export function setCategoryAction(category: iInsertProductCategory["data"]) {
         payload: { category }
     }
 }
-export function setUpdateIngredient(name: string) {
+export function setUpdateIngredient(newIngredientName: string, oldIngredientName: string,) {
     return {
         type: EditableProductActions.UPDATE_INGREDIENT_NAME,
-        payload: { ingredientName: name }
+        payload: { newIngredientName, oldIngredientName }
     }
 }
 // export function setAddNewAdditional(name: string) {
@@ -133,7 +133,7 @@ export function setAddNewOption(optionName: string, optionPicture_url: string, i
         payload: { optionName, optionPicture_url, ingredientId }
     }
 }
-export function removeOptionFromINgredientAction(optionName: string, ingredientId: string) {
+export function removeOptionFromIngredientAction(optionName: string, ingredientId: string) {
     return {
         type: EditableProductActions.REMOVE_OPTION_FROM_INGREDIENT,
         payload: { optionName, ingredientId }

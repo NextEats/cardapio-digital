@@ -1,4 +1,4 @@
-import { useMemo, useState, useCallback, useReducer } from "react";
+import { useMemo, useState, useCallback, useReducer, createContext } from "react";
 
 // NEXT JS IMPORTS
 import { GetServerSideProps } from "next";
@@ -24,19 +24,23 @@ import {
   iRestaurantType,
   iProductCategory,
   iGroupedProducts,
+  iAddress,
+  iRestaurantsWithAddresses
 } from "./../types/types";
 import ProductModal from "../components/home/ProductModal";
 
 // HOMEPAGE TYPESCRIPT INTERFACE
 interface iDataHomepage {
   data: {
-    restaurant: iRestaurant["data"];
+    restaurant: iRestaurantsWithAddresses;
     groupedProducts: iGroupedProducts;
   };
 }
 
 import { FaUtensils } from "react-icons/fa";
 import Checkout from "../components/Checkout";
+
+import { RestaurantContext } from "./../contexts/restaurantContext"
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   interface iData {
@@ -49,7 +53,24 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   // FETCH DATA FROM DATABASE;
   const restaurants = await supabase
     .from("restaurants")
-    .select()
+    .select(`
+      id,
+      created_at,
+      name,
+      restaurant_type_id,
+      picture_url,
+      banner_url,
+      slug,
+      addresses (
+        id,
+        created_at,
+        cep,
+        number,
+        reference_point,
+        complement,
+        google_maps_link
+      )
+    `)
     .eq("slug", context.query.slug);
 
   if (
@@ -140,6 +161,9 @@ export default function HomePage({ data }: iDataHomepage) {
   // GETS DATA FROM SERVER SIDE PROPS
   const { restaurant, groupedProducts } = data;
 
+  const [restaurantContext, setRestaurantContext] = useState(restaurant)
+
+
   // STATES
   const [showCheckoutModal, setShowCheckoutModal] = useState<boolean>(true);
 
@@ -174,7 +198,7 @@ export default function HomePage({ data }: iDataHomepage) {
   }
 
   return (
-    <>
+    <RestaurantContext.Provider value={{ restaurant: [restaurantContext, setRestaurantContext] }}>
       <Head>
         <title>{restaurant.name}</title>
         <link href={restaurant.picture_url} rel="icon" sizes="any" />
@@ -198,7 +222,6 @@ export default function HomePage({ data }: iDataHomepage) {
       <div className="bg-[#222] flex justify-center min-h-screen min-w-screen">
         <div className="bg-gray-100 max-w-7xl w-full">
           <RestaurantHeader
-            restaurant={restaurant}
             restaurantType={restaurantType}
           />
           <ProductsList
@@ -218,7 +241,8 @@ export default function HomePage({ data }: iDataHomepage) {
           )}
         </div>
       </div>
-    </>
+    </RestaurantContext.Provider>
+
   );
 }
 

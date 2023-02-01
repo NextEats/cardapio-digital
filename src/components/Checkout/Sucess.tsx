@@ -9,41 +9,12 @@ function returnTreatedNumber(value: string): string {
   return value.replace(/\D/g, "").replace(/\s/g, "");
 }
 
-interface iWhatsappCodeInput {
-  whatsappNumber: number | undefined;
-  nextStepIndex: Function;
-  previousStepIndex: Function;
+interface SuccessMessage {
+    restaurant: iRestaurant["data"];
 }
 export function WhatsappCodeInput({
-  nextStepIndex,
-  previousStepIndex,
-  whatsappNumber,
+  restaurant,
 }: iWhatsappCodeInput) {
-  const [whatsappCode, setWhatsappCode] = useState("");
-  const [hasError, setHasError] = useState<boolean>(false);
-
-  const backStep = () => {
-    previousStepIndex();
-  };
-
-  const nextStep = async () => {
-    if (!whatsappCode || !whatsappNumber) {
-      setHasError(true);
-      return;
-    }
-
-    const treatedNumber = returnTreatedNumber("55" + whatsappNumber.toString());
-
-    if (await isWhatsappCodeValid(whatsappCode, treatedNumber)) {
-      nextStepIndex();
-    } else {
-      console.log("failure");
-    }
-  };
-
-  const handleWhatsappCodeChange = (e: any) => {
-    setWhatsappCode(e.target.value);
-  };
 
   return (
     <div className="mb-9">

@@ -47,7 +47,7 @@ export default function ProductList({
           );
         })}
       </div>
-      <div className="h-[1000px]"></div>
+      <div className="h-[300px]"></div>
     </div>
   );
 }

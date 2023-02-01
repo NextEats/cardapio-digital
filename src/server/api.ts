@@ -153,7 +153,14 @@ export async function isWhatsappCodeValid(
   }
 }
 
-export async function paymentMethodRestaurant(restaurantId: number) {
-  await supabase.from("payment_methods_restaurants").select().eq();
-  return data;
+export async function getPaymentMethodRestaurant(restaurantId: number) {
+  const paymentMethodRestaurantData = await supabase
+    .from("payment_methods_restaurants")
+    .select()
+    .eq("restaurant_id", restaurantId);
+  return paymentMethodRestaurantData;
+}
+export async function getPaymentMethod() {
+  const paymentMethodData = await supabase.from("payment_methods").select();
+  return paymentMethodData;
 }

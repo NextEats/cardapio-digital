@@ -11,6 +11,7 @@ import { Address } from "./Address";
 import { Payment } from "./Payment";
 import { WhatsappNumberInput } from "./WhatsappNumberInput";
 import { WhatsappCodeInput } from "./WhatsappCodeInput";
+import { SuccessMessage } from "./SuccessMessage";
 
 export type iOrderType = "delivery" | "takeout" | "reserve";
 
@@ -121,6 +122,7 @@ export default function Checkout({
       component: (
         <Payment
           orderType={orderType}
+          restaurant={restaurant}
           products={products}
           setOrderType={setOrderType}
           nextStepIndex={nextStepIndex}
@@ -149,6 +151,10 @@ export default function Checkout({
           previousStepIndex={previousStepIndex}
         />
       ),
+    },
+    {
+      name: "Sucesso!!",
+      component: <SuccessMessage restaurant={restaurant} />,
     },
   ];
 

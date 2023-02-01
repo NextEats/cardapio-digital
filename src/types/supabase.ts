@@ -59,6 +59,7 @@ export interface Database {
           cep: string
           complement: string | null
           created_at: string | null
+          google_maps_link: string | null
           id: number
           number: number
           reference_point: string | null
@@ -67,6 +68,7 @@ export interface Database {
           cep: string
           complement?: string | null
           created_at?: string | null
+          google_maps_link?: string | null
           id?: number
           number: number
           reference_point?: string | null
@@ -75,6 +77,7 @@ export interface Database {
           cep?: string
           complement?: string | null
           created_at?: string | null
+          google_maps_link?: string | null
           id?: number
           number?: number
           reference_point?: string | null

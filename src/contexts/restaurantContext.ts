@@ -1,8 +1,8 @@
 import { createContext } from "react"
-import { iRestaurantsWithAddresses } from "./../types/types"
+import { iRestaurantWithFKData } from "./../types/types"
 
 interface iRestaurantContext {
-    restaurant: [iRestaurantsWithAddresses | undefined, React.Dispatch<React.SetStateAction<iRestaurantsWithAddresses>> | undefined]
+    restaurant: [iRestaurantWithFKData | undefined, React.Dispatch<React.SetStateAction<iRestaurantWithFKData>> | undefined]
 }
 
 export const RestaurantContext = createContext({} as iRestaurantContext);

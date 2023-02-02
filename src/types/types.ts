@@ -228,9 +228,23 @@ export interface iCheckoutProduct {
   }>;
 }
 
-
 export interface iAddress {
   data: Database["public"]["Tables"]["addresses"]["Row"];
 }
 
-export type iRestaurantsWithAddresses = iRestaurant["data"] & { addresses: iAddress["data"] }
+export interface iWeekdayOperatingTime {
+  data: Database["public"]["Tables"]["weekday_operating_time"]["Row"];
+}
+
+export interface iWeekday {
+  data: Database["public"]["Tables"]["weekdays"]["Row"];
+}
+
+export type iRestaurantWithFKData = iRestaurant["data"] & {
+  addresses: iAddress["data"];
+  weekday_operating_time: Array<
+    iWeekdayOperatingTime["data"] & {
+      weekdays: iWeekday["data"];
+    }
+  >;
+};

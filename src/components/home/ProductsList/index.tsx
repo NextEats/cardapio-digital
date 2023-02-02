@@ -109,9 +109,9 @@ function ProductsHorizontalList({
               onClick={() => {
                 setProductModal(product);
               }}
-              className="border bg-gray-100 hover:bg-gray-300 w-44 h-72 p-3 mr-3 inline-block rounded-md cursor-pointer"
+              className="border bg-gray-100 hover:bg-gray-300 w-44 px-3 py-6 mr-3 inline-block rounded-md cursor-pointer"
             >
-              <div className="h-36 w-full mt-1 rounded-md">
+              <div className="w-full mt-1 rounded-md">
                 <Image
                   src={product.picture_url}
                   width={180}
@@ -123,14 +123,14 @@ function ProductsHorizontalList({
               <div className="mt-3">
                 <p className="text-md truncate">{product.name}</p>
               </div>
-              <div className="mt-3 flex flex-row items-center">
+              {/* <div className="mt-3 flex flex-row items-center">
                 <span className="px-2 py-1 rounded-sm text-white bg-green-500 text-sm">
                   {100 - (45 * 100) / 50}%
                 </span>
                 <span className="ml-2 before:content-['R$'] line-through text-sm">
                   &nbsp;50,00
                 </span>
-              </div>
+              </div> */}
               <div className="mt-2">
                 <span className="block before:content-['R$'] text-md font-semibold">
                   &nbsp;{product.price}

@@ -1,13 +1,13 @@
-import { Card } from "../../components/admin/Card";
-import NewRequests from "../../components/admin/initialPage/NewRequests";
-import OrderStatusCard from "../../components/admin/initialPage/OrderStatusCard";
-import AdminWrapper from "../../components/admin/AdminWrapper";
-import { supabase } from "../../server/api";
-import { iInsertAddresses, iInsertClients, iInsertContacts, iInsertOrders, iInsertOrdersProducts, iInsertOrderStatus, iInsertOrderStatuss, iInsertProducts, iProducts } from "../../types/types";
+import { Card } from "../../../components/admin/Card";
+import NewRequests from "../../../components/admin/initialPage/NewRequests";
+import OrderStatusCard from "../../../components/admin/initialPage/OrderStatusCard";
+import AdminWrapper from "../../../components/admin/AdminWrapper";
+import { supabase } from "../../../server/api";
+import { iInsertAddresses, iInsertClients, iInsertContacts, iInsertOrders, iInsertOrdersProducts, iInsertOrderStatus, iInsertOrderStatuss, iInsertProducts, iProducts } from "../../../types/types";
 import { GetServerSideProps } from "next";
 import { useState, useEffect, useReducer } from "react";
-import { iStatusReducer, statusReducer } from "../../reducers/statusReducer/reducer";
-import { OrderModal } from "../../components/admin/initialPage/OrderModal";
+import { iStatusReducer, statusReducer } from "../../../reducers/statusReducer/reducer";
+import { OrderModal } from "../../../components/admin/initialPage/OrderModal";
 
 interface iAdminHomePageProps {
   orders: iInsertOrders,

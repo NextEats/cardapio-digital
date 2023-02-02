@@ -2,14 +2,14 @@ import { GetServerSideProps } from "next";
 import { useEffect, useReducer, useState } from "react";
 import { AiOutlinePlus } from "react-icons/ai";
 
-import { supabase } from "../../../server/api";
-import AdminWrapper from "../../../components/admin/AdminWrapper";
-import Categories from "../../../components/admin/cardapio-digital/Categories";
-import MenuProduct from "../../../components/admin/cardapio-digital/MenuProduct";
+import { supabase } from "../../../../server/api";
+import AdminWrapper from "../../../../components/admin/AdminWrapper";
+import Categories from "../../../../components/admin/cardapio-digital/Categories";
+import MenuProduct from "../../../../components/admin/cardapio-digital/MenuProduct";
 import {
   defaultValues,
   editableProductReducer,
-} from "../../../reducers/aditableProduct/reducer";
+} from "../../../../reducers/aditableProduct/reducer";
 import {
   iInsertProductCategory,
   iProductCategories,
@@ -19,15 +19,15 @@ import {
   iInsertProductAdditionals,
   iInsertSelects,
   iInsertProductSelects,
-} from "../../../types/types";
-import { CategoryModal } from "../../../components/admin/cardapio-digital/CategoryModal";
-import EditableMenuProductCard from "../../../components/admin/cardapio-digital/EditableMenuProductCard";
+} from "../../../../types/types";
+import { CategoryModal } from "../../../../components/admin/cardapio-digital/CategoryModal";
+import EditableMenuProductCard from "../../../../components/admin/cardapio-digital/EditableMenuProductCard";
 import {
   setAddingProductAction,
   setIsViewingAddingOrOpdatingProductAction,
   setViewpProductAction,
-} from "../../../reducers/aditableProduct/actions";
-import { CardapioDigitalButton } from "../../../components/admin/cardapio-digital/CardapioDigitalButton";
+} from "../../../../reducers/aditableProduct/actions";
+import { CardapioDigitalButton } from "../../../../components/admin/cardapio-digital/CardapioDigitalButton";
 
 interface iCardapioDigitalProps {
   productCategories: iProductCategories;

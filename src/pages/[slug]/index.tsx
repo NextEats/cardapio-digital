@@ -1,4 +1,11 @@
-import { useMemo, useState, useCallback, useReducer, createContext } from "react";
+import { WeekdayOperatingTime } from "../../components/WeekdayOperatingTime";
+import {
+  useMemo,
+  useState,
+  useCallback,
+  useReducer,
+  createContext,
+} from "react";
 
 // NEXT JS IMPORTS
 import { GetServerSideProps } from "next";
@@ -6,8 +13,8 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 
 // COMPONENTS
-import ProductsList from "./../components/home/ProductsList";
-import RestaurantHeader from "./../components/home/RestaurantHeader";
+import ProductsList from "../../components/home/ProductsList";
+import RestaurantHeader from "../../components/home/RestaurantHeader";
 
 // DATABASE
 import {
@@ -15,7 +22,7 @@ import {
   returnAllCategoriesForThisRestaurant,
   returnRestaurantType,
   supabase,
-} from "../server/api";
+} from "../../server/api";
 
 // TYPES
 import {
@@ -25,22 +32,24 @@ import {
   iProductCategory,
   iGroupedProducts,
   iAddress,
-  iRestaurantsWithAddresses
-} from "./../types/types";
-import ProductModal from "../components/home/ProductModal";
+  iRestaurantWithFKData,
+} from "../../types/types";
+import ProductModal from "../../components/home/ProductModal";
+
+import { BsX } from "react-icons/bs";
 
 // HOMEPAGE TYPESCRIPT INTERFACE
 interface iDataHomepage {
   data: {
-    restaurant: iRestaurantsWithAddresses;
+    restaurant: iRestaurantWithFKData;
     groupedProducts: iGroupedProducts;
   };
 }
 
 import { FaUtensils } from "react-icons/fa";
-import Checkout from "../components/Checkout";
+import Checkout from "../../components/Checkout";
 
-import { RestaurantContext } from "./../contexts/restaurantContext"
+import { RestaurantContext } from "../../contexts/restaurantContext";
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   interface iData {
@@ -53,7 +62,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   // FETCH DATA FROM DATABASE;
   const restaurants = await supabase
     .from("restaurants")
-    .select(`
+    .select(
+      `
       id,
       created_at,
       name,
@@ -69,8 +79,17 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         reference_point,
         complement,
         google_maps_link
+      ),
+      weekday_operating_time (
+        restaurant_id,
+        is_active,
+        opening_time,
+        closing_time,
+        weekday_id,
+        weekdays (id, name)
       )
-    `)
+    `
+    )
     .eq("slug", context.query.slug);
 
   if (
@@ -161,11 +180,12 @@ export default function HomePage({ data }: iDataHomepage) {
   // GETS DATA FROM SERVER SIDE PROPS
   const { restaurant, groupedProducts } = data;
 
-  const [restaurantContext, setRestaurantContext] = useState(restaurant)
-
+  const [restaurantContext, setRestaurantContext] = useState(restaurant);
 
   // STATES
   const [showCheckoutModal, setShowCheckoutModal] = useState<boolean>(true);
+  const [showWeekdayOperatingTimeModal, setShowWeekdayOperatingTimeModal] =
+    useState<boolean>(false);
 
   const [products, productsDispatch] = useReducer(productsReducer, undefined);
 
@@ -174,6 +194,8 @@ export default function HomePage({ data }: iDataHomepage) {
   const [restaurantType, setRestaurantType] = useState<
     iRestaurantType["data"] | null | undefined
   >();
+
+  console.log("restaurant", restaurant);
 
   const [
     productCategoriesForThisRestaurant,
@@ -198,11 +220,20 @@ export default function HomePage({ data }: iDataHomepage) {
   }
 
   return (
-    <RestaurantContext.Provider value={{ restaurant: [restaurantContext, setRestaurantContext] }}>
+    <RestaurantContext.Provider
+      value={{ restaurant: [restaurantContext, setRestaurantContext] }}
+    >
       <Head>
         <title>{restaurant.name}</title>
         <link href={restaurant.picture_url} rel="icon" sizes="any" />
       </Head>
+      {showWeekdayOperatingTimeModal && (
+        <WeekdayOperatingTime
+          close={() => {
+            setShowWeekdayOperatingTimeModal(false);
+          }}
+        />
+      )}
       {productModal && (
         <ProductModal
           productModal={productModal}
@@ -223,6 +254,9 @@ export default function HomePage({ data }: iDataHomepage) {
         <div className="bg-gray-100 max-w-7xl w-full">
           <RestaurantHeader
             restaurantType={restaurantType}
+            openWeekdayOperatingTimeModal={() => {
+              setShowWeekdayOperatingTimeModal(true);
+            }}
           />
           <ProductsList
             groupedProducts={groupedProducts}
@@ -236,27 +270,16 @@ export default function HomePage({ data }: iDataHomepage) {
                 setShowCheckoutModal(true);
               }}
             >
-              <OpenCheckoutButton productsDispatch={productsDispatch} />
+              <OpenCheckoutButton products={products} />
             </div>
           )}
         </div>
       </div>
     </RestaurantContext.Provider>
-
   );
 }
 
-function OpenCheckoutButton({
-  productsDispatch,
-}: {
-  productsDispatch: Function;
-}) {
-  //   productsDispatch({ type: "calculatePrice" });
-
-  //   function returnTotalOrderPrice() {
-  //     return "R$ " + totalPrice;
-  //   }
-
+function OpenCheckoutButton({ products }: { products: any }) {
   return (
     <div className="h-16 flex flex-row items-center justify-between bg-gray-900 cursor-pointer rounded-md">
       <FaUtensils className="text-white text-xl ml-10" />

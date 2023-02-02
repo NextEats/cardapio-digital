@@ -85,35 +85,6 @@ export default function ProductModal({
       },
     });
 
-    // setProducts((prev: any) => {
-    //   if (prev) {
-    //     return [
-    //       ...prev,
-    //       {
-    //         id: productModal?.id,
-    //         name: productModal?.name,
-    //         price: productModal?.price,
-    //         quantity: quantity,
-    //         picture_url: productModal?.picture_url,
-    //         additionals: selectedAdditionals,
-    //         options: selects,
-    //       },
-    //     ];
-    //   } else {
-    //     return [
-    //       {
-    //         id: productModal?.id,
-    //         name: productModal?.name,
-    //         price: productModal?.price,
-    //         quantity: quantity,
-    //         picture_url: productModal?.picture_url,
-    //         additionals: selectedAdditionals,
-    //         options: selects,
-    //       },
-    //     ];
-    //   }
-    // });
-
     setProductModal(null);
   }
 

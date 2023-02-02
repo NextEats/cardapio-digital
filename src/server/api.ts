@@ -173,3 +173,28 @@ export async function updateIngredientName(ingredientId: number, name: string) {
   console.log(ingredientData)
   return ingredientData
 }
+export async function updateAdditional(additionalId: number, picture_url: string, price: number, name: string) {
+  const additionalData = await supabase.from("additionals").update({
+    name,
+    picture_url,
+    price,
+  }).eq("id", additionalId).select("*");
+  console.log(additionalData)
+  return additionalData
+}
+export async function updateProduct(productId: number, category_id: number, picture_url: string, price: number, description: string, name: string) {
+  const productData = await supabase.from("products").update({
+    name,
+    description,
+    price,
+    picture_url,
+    category_id
+  }).eq("id", productId).select("*");
+  console.log(productData)
+  return productData
+}
+export async function deleteProduct(productId: number) {
+  // await supabase.query(`DELETE FROM products   WHERE parent_id = ? ON DELETE CASCADE; `, [parent_id]);
+  console.log(productId);
+  await supabase.from("products").delete().eq("id", productId)
+}

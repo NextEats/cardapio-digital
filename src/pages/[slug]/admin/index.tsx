@@ -29,7 +29,45 @@ export const getServerSideProps: GetServerSideProps = async () => {
   const clients = await supabase.from("clients").select()
   const contacts = await supabase.from("contacts").select()
   const addresses = await supabase.from("addresses").select()
-  // const loacal =  window.localStorage.setItem("product_categories", JSON.stringify(productCategories.data))
+
+  // const channel = supabase
+  //   .channel('')
+  //   .on(
+  //     'postgres_changes',
+  //     {
+  //       event: '*',
+  //       schema: 'public',
+  //       table: 'orders',
+  //     },
+  //     (payload) => console.log(payload)
+  //   )
+  //   .subscribe()
+  // console.log(channel, orders)
+
+  // const SupabaseWebSocket = () => {
+  //   const [data, setData] = useState([]);
+
+  //   useEffect(() => {
+  //     const socket = new WebSocket('wss://api.supabase.co/realtime/<SUA_CHAVE_API>');
+
+  //     socket.addEventListener('open', (event) => {
+  //       socket.send(JSON.stringify({
+  //         type: 'subscribe',
+  //         payload: {
+  //           channel: '<NOME_DA_TABELA>',
+  //           event: 'update',
+  //         },
+  //       }));
+  //     });
+
+  //     socket.addEventListener('message', (event) => {
+  //       setData((prevData) => [...prevData, event.data]);
+  //     });
+
+  //     return () => {
+  //       socket.close();
+  //     };
+  //   }, []);
 
   return {
     props: {

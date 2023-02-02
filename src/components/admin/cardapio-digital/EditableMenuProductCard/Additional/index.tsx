@@ -10,6 +10,7 @@ import { EditableProductActions } from "../../../../../reducers/aditableProduct/
 import { IEditableProductReducerData, iPayloadProduct } from "../../../../../reducers/aditableProduct/reducer";
 import { iInsertAdditional } from "../../../../../types/types";
 import { CardapioDigitalButton } from "../../CardapioDigitalButton";
+import { updateAdditional } from "../../../../../server/api";
 
 interface IAdditionalProps {
     state: IEditableProductReducerData,
@@ -33,8 +34,10 @@ type NewAdditionlFormData = zod.infer<typeof newAdditionalFormValidationSchema>;
 export function Additional({ state, dispatch }: IAdditionalProps) {
 
     const [showAdditionalModal, setShowAdditionalModal] = useState<"UPDATE" | "ADD" | "">('')
+    const [oldAdditionalId, setOldAdditionalId] = useState<number | undefined>(undefined)
 
-    const { register, setValue, reset, getValues } = useForm<NewAdditionlFormData>({
+
+    const { register, setValue, reset, getValues, watch } = useForm<NewAdditionlFormData>({
         resolver: zodResolver(newAdditionalFormValidationSchema),
         defaultValues: {
             additionalName: '',
@@ -85,10 +88,11 @@ export function Additional({ state, dispatch }: IAdditionalProps) {
         setValue('additionalName', additional.name)
         setValue('additionalPrice', additional.price.toString())
         setValue('additionalPicture_url', additional.picture_url)
+        setOldAdditionalId(additional.id)
         setShowAdditionalModal('UPDATE')
     }
 
-    function updateAdditional() {
+    function setUpdateAdditional() {
         const additionalName = getValues("additionalName")
         const additionalPrice = Number(getValues("additionalPrice"))
         const additionalPicture_url = getValues("additionalPicture_url")
@@ -99,12 +103,10 @@ export function Additional({ state, dispatch }: IAdditionalProps) {
 
         dispatch({
             type: EditableProductActions.UPDATE_ADDITIONAL,
-            payload: {
-                additionalName,
-                additionalPrice,
-                additionalPicture_url,
-            }
+            payload: { additionalName, additionalPrice, additionalPicture_url, oldAdditionalId }
         })
+
+        updateAdditional(oldAdditionalId!, additionalPicture_url, additionalPrice, additionalName)
         setShowAdditionalModal('')
         reset()
     }
@@ -175,10 +177,17 @@ export function Additional({ state, dispatch }: IAdditionalProps) {
                         <div className="w-full flex items-center gap-2 mt-6">
 
                             <CardapioDigitalButton onClick={() => setShowAdditionalModal('')} name='Cancelar' h="h-7" w="flex-1" />
-                            <CardapioDigitalButton
-                                onClick={() => showAdditionalModal === "UPDATE" ? updateAdditional() : handleNewAdditionl()}
-                                name={showAdditionalModal === "UPDATE" ? 'Editar' : 'Adicionar'} h="h-7" w="flex-1"
-                            />
+                            {
+                                showAdditionalModal === "UPDATE" && <CardapioDigitalButton
+                                    onClick={() => setUpdateAdditional()} name='Editar' h="h-7" w="flex-1"
+                                />
+                            }
+                            {
+                                showAdditionalModal === "ADD" && <CardapioDigitalButton
+                                    onClick={() => handleNewAdditionl()}
+                                    name={'Adicionar'} h="h-7" w="flex-1"
+                                />
+                            }
 
                         </div>
                     </div> : null

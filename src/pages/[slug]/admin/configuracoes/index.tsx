@@ -1,9 +1,2 @@
-import AdminWrapper from "../../../../components/admin/AdminWrapper";
-
-export default function Config() {
-  return (
-    <AdminWrapper>
-      <div>Configurações</div>
-    </AdminWrapper>
-  );
-}
+import Config from "./Config"
+export default Config

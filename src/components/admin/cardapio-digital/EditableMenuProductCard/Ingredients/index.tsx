@@ -102,9 +102,11 @@ export function Igredient({ state, dispatch, selects }: iIgradientsCardProps) {
             return
         }
 
-        updateIngredientName(data.ingredientId, data.updateIngredientName)
+        console.log(data.ingredientId)
 
-        dispatch(setUpdateIngredient(data.updateIngredientName, isUpdatingIngradientNameState))
+        // updateIngredientName(data.ingredientId, data.updateIngredientName)
+
+        // dispatch(setUpdateIngredient(data.updateIngredientName, isUpdatingIngradientNameState))
         setError('')
         setIsUpdatingIngradientNameState('')
     }
@@ -152,7 +154,7 @@ export function Igredient({ state, dispatch, selects }: iIgradientsCardProps) {
                                                     text-gray-700 text-sm font-semibold placeholder:text-gray-500 
                                                     outline-none border border-solid border-gray-300 rounded"
                                             />
-                                            <input type="number" hidden value={ingredient.id} {...register("ingredientId")} />
+                                            <input type="number" hidden value={ingredient.id} {...register("ingredientId", { value: ingredient.id })} />
                                             <button
                                                 type="button"
                                                 onClick={() => setIsUpdatingIngradientNameState('')}

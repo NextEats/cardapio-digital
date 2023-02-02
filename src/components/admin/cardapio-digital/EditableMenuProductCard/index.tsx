@@ -9,7 +9,7 @@ import {
   IEditableProductReducerData,
   iPayloadProduct,
 } from "../../../../reducers/aditableProduct/reducer";
-import { supabase } from "../../../../server/api";
+import { deleteProduct, supabase, updateProduct } from "../../../../server/api";
 import {
   iInsertAdditionals,
   iInsertProductCategories,
@@ -34,6 +34,7 @@ interface iEditableMenuProductCardProps {
     type: string;
     payload: iPayloadProduct;
   }>;
+  productId: number | null,
   setProductModal: Dispatch<SetStateAction<boolean>>;
   productModal: boolean;
   selects: iInsertSelects["data"];
@@ -47,6 +48,7 @@ export default function EditableMenuProductCard({
   dispatch,
   setProductModal,
   productModal,
+  productId,
   selects,
   productCategories,
   productOptions,
@@ -63,6 +65,8 @@ export default function EditableMenuProductCard({
   }
 
   function setAdditionalSelected(additionalId: number) {
+    console.log("foi");
+
     const additional = additionals.find(
       (additional) => additional.id === additionalId
     );
@@ -110,7 +114,6 @@ export default function EditableMenuProductCard({
         })
         .select("*");
     });
-
     postOptionToSupabase();
   }
 
@@ -140,9 +143,6 @@ export default function EditableMenuProductCard({
     prodductData: iProduct["data"],
     productStatus: number
   ) {
-    if (state.additionals.length > 0) {
-      return;
-    }
     let additionalStatus;
     state.additionals.forEach(async (additional) => {
       if (additional.name === "") {
@@ -187,6 +187,18 @@ export default function EditableMenuProductCard({
     return additionalStatus;
   }
 
+  function handleUpdateProduct() {
+    const { description, name, price } = state.productInformation
+    updateProduct(
+      productId!,
+      state.category.id!,
+      state.picture_url,
+      Number(price),
+      description, name
+    )
+    // updateProduct()
+  }
+
   return (
     <>
       <div
@@ -206,14 +218,21 @@ export default function EditableMenuProductCard({
             className="text-3xl text-gray-600 cursor-pointer hover:scale-110 hover:transition-all ease-in-out"
           />
           {state.isViewingUpdatingOrAdding === "VIEWING" ? (
-            <CardapioDigitalButton
-              name="Editar"
-              h="h-8"
-              w="w-28"
-              onClick={() =>
-                dispatch(setIsViewingAddingOrOpdatingProductAction("UPDATING"))
-              }
-            />
+            <div className="flex items-center gap-3">
+              <CardapioDigitalButton
+                name="Excluir"
+                h="h-8"
+                w="w-28"
+                onClick={() => deleteProduct(productId!)} />
+              <CardapioDigitalButton
+                name="Editar"
+                h="h-8"
+                w="w-28"
+                onClick={() =>
+                  dispatch(setIsViewingAddingOrOpdatingProductAction("UPDATING"))
+                } />
+            </div>
+
           ) : null}
         </div>
 
@@ -335,7 +354,7 @@ export default function EditableMenuProductCard({
               w="w-full"
             />
             <CardapioDigitalButton
-              onClick={() => console.log("Editar")}
+              onClick={() => handleUpdateProduct()}
               disabled={
                 !state.productInformation.name ||
                 !state.productInformation.description ||

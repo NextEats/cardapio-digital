@@ -46,9 +46,7 @@ export const getServerSideProps: GetServerSideProps = async () => {
   const productSelects = await supabase.from("product_selects").select();
   const productOptions = await supabase.from("product_options").select();
 
-  const productAdditionals = await supabase
-    .from("product_additionals")
-    .select();
+  const productAdditionals = await supabase.from("product_additionals").select();
   const additionals = await supabase.from("additionals").select();
 
   return {
@@ -282,7 +280,6 @@ export default function CardapioDigital({
                 </>
               ) : (
                 <>
-                  {" "}
                   {productsState.map((product) => {
                     return (
                       <MenuProduct
@@ -302,6 +299,7 @@ export default function CardapioDigital({
             state={state}
             dispatch={dispatch}
             productModal={productModal}
+            productId={productId}
             productOptions={productOptions.data}
             selects={selects?.data}
             setProductModal={setProductModal}

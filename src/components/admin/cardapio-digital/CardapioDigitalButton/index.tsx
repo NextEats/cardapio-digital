@@ -2,7 +2,7 @@ import { ReactNode } from "react";
 interface iButtonProps {
     onClick?: () => void,
     Icon?: ReactNode,
-    name?: "Criar nova categoria" | "Novo" | "Cancelar" | "Editar" | "Adicionar" | "Adicionar novo item" | "Imprimir",
+    name?: "Criar nova categoria" | "Novo" | "Excluir" | "Cancelar" | "Editar" | "Adicionar" | "Adicionar novo item" | "Imprimir",
     h?: string,
     w?: string,
     disabled?: boolean,
@@ -18,6 +18,7 @@ export function CardapioDigitalButton({ name = 'Adicionar', onClick, h, w, Icon,
         ${name === "Adicionar" || name === "Novo" || name === "Adicionar novo item" ? ' hover:bg-green-600 bg-green-300' : ''}
         ${name === "Criar nova categoria" || name === "Imprimir" || name === "Editar" && 'hover:bg-blue-700 bg-blue-500'}
         ${name === "Cancelar" && 'hover:bg-yellow-500 bg-yellow-400'}
+        ${name === "Excluir" && 'hover:bg-red-500 bg-red-400'}
         `}
         // ${name !== "Criar nova categoria" ? 'h-7' : ' h-10'}
         >

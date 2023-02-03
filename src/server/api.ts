@@ -1,5 +1,6 @@
 import { createClient } from "@supabase/supabase-js";
 import axios from "axios";
+import { supaBaseSuccess } from "../helpers/toasts";
 import { Database } from "../types/supabase";
 import {
   iGroupedProducts,
@@ -195,6 +196,9 @@ export async function updateProduct(productId: number, category_id: number, pict
 }
 export async function deleteProduct(productId: number) {
   // await supabase.query(`DELETE FROM products   WHERE parent_id = ? ON DELETE CASCADE; `, [parent_id]);
-  console.log(productId);
-  await supabase.from("products").delete().eq("id", productId)
+  await supabase.from("product_selects").delete().eq("product_id", productId)
+  await supabase.from("product_additionals").delete().eq("product_id", productId)
+  const data = await supabase.from("products").delete().eq("id", productId)
+  supaBaseSuccess(data)
+  window.location.reload()
 }

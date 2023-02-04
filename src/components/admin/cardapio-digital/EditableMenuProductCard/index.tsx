@@ -9,7 +9,7 @@ import {
   IEditableProductReducerData,
   iPayloadProduct,
 } from "../../../../reducers/aditableProduct/reducer";
-import { deleteProduct, supabase, updateProduct } from "../../../../server/api";
+import { createProduct, deleteProduct, supabase, updateProduct } from "../../../../server/api";
 import {
   iInsertAdditionals,
   iInsertProductCategories,
@@ -26,7 +26,6 @@ import { IoIosArrowDown } from "react-icons/io";
 import { BsArrowLeftCircle } from "react-icons/bs";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { supabaseError, supaBaseSuccess } from "../../../../helpers/toasts";
 
 interface iEditableMenuProductCardProps {
   state: IEditableProductReducerData;
@@ -85,128 +84,18 @@ export default function EditableMenuProductCard({
   }
 
   async function handleCreateProduct() {
-    const { data, status } = await supabase
-      .from("products")
-      .insert({
-        category_id: state.category.id!,
-        description: state.productInformation.description,
-        name: state.productInformation.name,
-        picture_url: state.picture_url,
-        price: Number(state.productInformation.price),
-      })
-      .select("*");
-
-    if (data === null) {
-      return;
-    }
-    // let additionalsStatus
-    postAdditionalToSupabase(data[0], status);
-
-    state.ingredients.forEach(async (ingredient) => {
-      if (ingredient?.name === "") {
-        return;
-      }
-      const productSelectaData = await supabase
-        .from("product_selects")
-        .insert({
-          select_id: ingredient?.id,
-          product_id: data[0].id,
-        })
-        .select("*");
-    });
-    postOptionToSupabase();
-  }
-
-  async function postOptionToSupabase() {
-    let optionStatus;
-    state.options.forEach(async (option) => {
-      if (
-        option.name === "" ||
-        productOptions.some((op) => op.name === option.name)
-      ) {
-        return;
-      }
-      const optionData = await supabase
-        .from("product_options")
-        .insert({
-          name: option.name,
-          picture_url: option.picture_url,
-          select_id: option.select_id,
-        })
-        .select("*");
-      optionStatus = optionData.status;
-    });
-    return optionStatus;
-  }
-
-  async function postAdditionalToSupabase(
-    prodductData: iProduct["data"],
-    productStatus: number
-  ) {
-    let additionalStatus;
-    state.additionals.forEach(async (additional) => {
-      if (additional.name === "") {
-        return;
-      }
-      if (
-        additionals.some(
-          (additionalValidate) => additionalValidate.name === additional.name
-        )
-      ) {
-        const productAdditionalDada = await supabase
-          .from("product_additionals")
-          .insert({
-            additional_id: additional.id!,
-            product_id: prodductData.id,
-          })
-          .select("*");
-        additionalStatus = productAdditionalDada.status;
-      } else {
-        const additionalData = await supabase
-          .from("additionals")
-          .insert({
-            name: additional.name,
-            picture_url: additional.picture_url,
-            price: additional.price,
-          })
-          .select("*");
-        if (additionalData.status === 400 || additionalData.data === null) {
-          return;
-        }
-        const productAdditionalDada = await supabase
-          .from("product_additionals")
-          .insert({
-            additional_id: additionalData.data[0]?.id!,
-            product_id: prodductData.id,
-          })
-          .select("*");
-        additionalStatus = productAdditionalDada.status;
-      }
-    });
-
-    return additionalStatus;
+    await createProduct(state, productOptions, additionals)
   }
 
   function handleUpdateProduct() {
-    const { description, name, price } = state.productInformation
-    updateProduct(
-      productId!,
-      state.category.id!,
-      state.picture_url,
-      Number(price),
-      description, name
-    )
-    // updateProduct()
+    updateProduct(state, productId!, additionals)
   }
 
   return (
     <>
       <div
-        className={`fixed inset-0 bg-black w-screen h-screen opacity-60 z-20 cursor-pointer ${productModal ? "opacity-40" : "opacity-0 pointer-events-none"
-          } `}
-        onClick={() => {
-          setProductModal(false);
-        }}
+        className={`fixed inset-0 bg-black w-screen h-screen opacity-60 z-20 cursor-pointer ${productModal ? "opacity-40" : "opacity-0 pointer-events-none"}`}
+        onClick={() => setProductModal(false)}
       ></div>
       <div
         className={`w-[360px] md:w-[420px] 2xl:w-[468px] fixed ${productModal ? "right-0" : "right-[-700px]"

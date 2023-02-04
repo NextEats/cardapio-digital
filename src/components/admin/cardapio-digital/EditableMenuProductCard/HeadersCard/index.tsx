@@ -155,7 +155,7 @@ function ProductImage({ state, dispatch }: iProductImagePros) {
     console.log(state.isViewingUpdatingOrAdding)
 
     return (
-        <form onSubmit={handleSubmit(handleProductPicture_url)} className="w-full h-[350px] relative mb-4">
+        <form onSubmit={handleSubmit(handleProductPicture_url)} className="w-full relative mb-4">
 
             {state.picture_url === '' || productPictureIsEditing === true ? <div
                 className={` flex flex-1 w-[305px] items-center justify-center bg-white h-9 px-2 rounded-md  absolute top-3 right-3 z-10`}>
@@ -183,15 +183,15 @@ function ProductImage({ state, dispatch }: iProductImagePros) {
                 />
             }
             {state.picture_url === '' && <div
-                className="rounded-2xl w-full h-full flex items-center justify-center border border-solid border-gray-400">
+                className="rounded-2xl w-full h-[400px] flex items-center justify-center border border-solid border-gray-400">
                 <HiPlus className=" text-gray-400 text-9xl font-light" />
             </div>}
             {state.picture_url !== '' && <Image
-                className="rounded-2xl w-full h-full"
+                className="rounded-2xl w-full"
                 src={state.picture_url}
                 alt=""
-                width={50}
-                height={50}
+                width={500}
+                height={500}
             />}
         </form>
     )

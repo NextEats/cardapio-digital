@@ -1,20 +1,27 @@
 import { PostgrestResponse } from '@supabase/supabase-js';
 import { toast } from 'react-toastify';
 
-export function supaBaseSuccess(data: PostgrestResponse<undefined>) {
+interface iPromiseAlert {
+    pending: string,
+    success: string,
+    error: string,
+    data: PostgrestResponse<any>
+}
+
+export function promiseAlert({ data, error, pending, success }: iPromiseAlert) {
     const fetchData = () => {
         return new Promise((resolve, reject) => {
             setTimeout(() => {
                 resolve({ data: data });
-            }, 1000);
+            }, 1500);
         });
     };
     toast.promise(
         fetchData,
         {
-            pending: 'Promise is pending',
-            success: 'Promise resolved 👌',
-            error: 'Promise rejected 🤯'
+            pending,
+            success,
+            error,
         }
     )
 }

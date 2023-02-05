@@ -50,7 +50,7 @@ export function BarChart({ globalValuesData }: iBarCgart) {
 
     return (
         <div className="flex flex-col w-[600px] shadow-sm bg-white rounded-md px-4 pt-3 pb-4">
-            <h2 className="text-xl font-bold text-blue-500 mb-3"> Dados dos produtos mais vendido </h2>
+            <h2 className="text-xl font-bold text-blue-500 mb-3"> Dados dos produtos mais vendidos </h2>
             <div className=" h-[300px] flex items-end gap-3">
                 {
                     top12ProductsThatHaveBeenDelivered.map(product => {
@@ -86,20 +86,20 @@ export function BarChart({ globalValuesData }: iBarCgart) {
                                                         height={60}
                                                     />
                                                     <div className="flex flex-col gap-4">
-                                                        <span className="text-lg font-bold">  { product.product.name } </span>
+                                                        <span className="text-lg font-bold">  {product.product.name} </span>
 
-                                                        <p className="text-base font-normal text-gray-600 truncate"> { product.product.description } </p>
+                                                        <p className="text-base font-normal text-gray-600 truncate"> {product.product.description} </p>
                                                         <div style={{ display: 'flex', gap: 15 }}>
                                                             <div style={{ display: 'flex', gap: 5 }}>
-                                                                <span className="text-lg font-bold text-gray-700"> { product.numberOfProductsPurchased } de { ordersProductWithStatusEntrega.length } </span> <span className="text-lg font-medium text-gray-500">Produtos vendidos </span>
+                                                                <span className="text-lg font-bold text-gray-700"> {product.numberOfProductsPurchased} de {ordersProductWithStatusEntrega.length} </span> <span className="text-lg font-medium text-gray-500">Produtos vendidos </span>
                                                             </div>
                                                             <div style={{ display: 'flex', gap: 5 }}>
-                                                                <span className="text-lg font-bold text-gray-700"> { percentageOfProducts.toFixed(2) }% </span> <span className="text-lg font-medium text-gray-500">Percentual de Produtos vendidos</span>
+                                                                <span className="text-lg font-bold text-gray-700"> {percentageOfProducts.toFixed(2)}% </span> <span className="text-lg font-medium text-gray-500">Percentual de Produtos vendidos</span>
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <HoverCard.Arrow  className="fill-white"/>
+                                                <HoverCard.Arrow className="fill-white" />
                                             </HoverCard.Content>
                                         </HoverCard.Portal>
                                     </HoverCard.Root>

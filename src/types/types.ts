@@ -54,6 +54,7 @@ export interface iOrder {
 export interface iOrders {
   data: Array<Database["public"]["Tables"]["orders"]["Row"]>;
 }
+
 export interface iOrderProduct {
   data: Database["public"]["Tables"]["orders_products"]["Row"];
 }

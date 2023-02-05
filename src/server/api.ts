@@ -1,8 +1,13 @@
-import { createClient } from "@supabase/supabase-js";
+import { createClient, PostgrestResponse } from "@supabase/supabase-js";
 import axios from "axios";
+import { promiseAlert } from "../helpers/toasts";
+import { IEditableProductReducerData } from "../reducers/aditableProduct/reducer";
 import { Database } from "../types/supabase";
 import {
   iGroupedProducts,
+  iInsertAdditionals,
+  iInsertProductOptions,
+  iProduct,
   iProductCategory,
   iRestaurantType,
   ProductWithCategory,
@@ -176,6 +181,250 @@ export async function updateIngredientName(ingredientId: number, name: string) {
     .select("*");
   console.log(ingredientData);
   return ingredientData;
+}
+export async function updateAdditional(
+  additionalId: number,
+  picture_url: string,
+  price: number,
+  name: string
+) {
+  const additionalData = await supabase
+    .from("additionals")
+    .update({
+      name,
+      picture_url,
+      price,
+    })
+    .eq("id", additionalId)
+    .select("*");
+  console.log(additionalData);
+  return additionalData;
+}
+export async function updateProduct(
+  state: IEditableProductReducerData,
+  productId: number,
+  additionals: iInsertAdditionals["data"]
+) {
+  const { description, name, price } = state.productInformation;
+
+  const productData = await supabase
+    .from("products")
+    .upsert({
+      id: productId,
+      name,
+      description,
+      price: Number(price),
+      picture_url: state.picture_url,
+      category_id: state.category.id!,
+    })
+    .select("*");
+
+  state.additionals.forEach(async (additional) => {
+    const { name, picture_url, price } = additional;
+
+    if (additionals.some((add) => add.name === name) === false) {
+      console.log("10");
+      const aditionalData = await supabase
+        .from("additionals")
+        .insert({
+          name,
+          price,
+          picture_url,
+          restaurant_id: 7,
+        })
+        .select("*");
+      await supabase
+        .from("product_additionals")
+        .insert({
+          additional_id: aditionalData.data![0].id!,
+          product_id: productId,
+        })
+        .select("*");
+      return;
+    }
+
+    // if (additionals.some((add) => add.id === additional.id)) {
+    //   console.log("2")
+    //   await supabase
+    //     .from("product_additionals").insert({
+    //       additional_id: additional.id!,
+    //       product_id: productId,
+    //     }).select("*");
+    //   return;
+    // }
+  });
+  //   for (let i = 0; i < state.additionals.length; i++) {
+  //     const { name, picture_url, price } = state.additionals[i];
+
+  //     console.log(state.additionals.length)
+  //     // if (additionals.some(add => add.name !== name)) {
+  //     //   const aditionalData = await supabase
+  //     //     .from("additionals").insert({
+  //     //       name,
+  //     //       price,
+  //     //       picture_url,
+  //     //       restaurant_id: 7
+  //     //     }).select("*");
+  //     //   await supabase
+  //     //     .from("product_additionals").insert({
+  //     //       additional_id: aditionalData.data![0].id!,
+  //     //       product_id: productId,
+  //     //     }).select("*");
+  //     //   return
+  //     // }
+
+  //     console.log("5")
+  //     if (additionals.some((additionalValidate) => additionalValidate.id !== state.additionals[i].id)) {
+  //       console.log("2")
+  //       await supabase
+  //         .from("product_additionals").insert({
+  //           additional_id: state.additionals[i].id!,
+  //           product_id: productId,
+  //         }).select("*");
+  //       return;
+  //     }
+
+  //     if (additionals.some(ad => ad.id === state.additionals[i].id)) {
+  //       updateAdditional(state.additionals[i].id!, picture_url, price, name)
+  //       console.log("1")
+  //     } else {
+  //       console.log("4")
+  //     }
+  //   }
+
+  //   return productData
+}
+export async function deleteProduct(productId: number) {
+  // await supabase.query(`DELETE FROM products   WHERE parent_id = ? ON DELETE CASCADE; `, [parent_id]);
+  await supabase.from("product_selects").delete().eq("product_id", productId);
+  await supabase
+    .from("product_additionals")
+    .delete()
+    .eq("product_id", productId);
+  const data = await supabase.from("products").delete().eq("id", productId);
+  promiseAlert({
+    pending: "Aguarde um momento.",
+    success: "Produto deletado com sucesso!",
+    error: "Desculpe, Não foi possivel deletar esse produto!",
+    data,
+  });
+  window.location.reload();
+}
+
+export async function createProduct(
+  state: IEditableProductReducerData,
+  productOptions: iInsertProductOptions["data"],
+  additionals: iInsertAdditionals["data"]
+) {
+  const data = await supabase
+    .from("products")
+    .insert({
+      category_id: state.category.id!,
+      description: state.productInformation.description,
+      name: state.productInformation.name,
+      picture_url: state.picture_url,
+      price: Number(state.productInformation.price),
+    })
+    .select("*");
+
+  if (data.data === null) {
+    return;
+  }
+  // let additionalsStatus
+  postAdditionalToSupabase(data.data[0].id, state, additionals);
+
+  state.ingredients.forEach(async (ingredient) => {
+    if (ingredient?.name === "") {
+      return;
+    }
+    const productSelectaData = await supabase
+      .from("product_selects")
+      .insert({
+        select_id: ingredient?.id,
+        product_id: data.data[0].id,
+      })
+      .select("*");
+  });
+  postOptionToSupabase(state, productOptions);
+  promiseAlert({
+    pending: "Aguarde um momento, estamos criando o produto.",
+    success: "Produto criado com sucesso!",
+    error: "Desculpe, Não foi possivel criar o produto!",
+    data,
+  });
+}
+
+async function postOptionToSupabase(
+  state: IEditableProductReducerData,
+  productOptions: iInsertProductOptions["data"]
+) {
+  let optionStatus;
+  state.options.forEach(async (option) => {
+    if (
+      option.name === "" ||
+      productOptions.some((op) => op.name === option.name)
+    ) {
+      return;
+    }
+    const optionData = await supabase
+      .from("product_options")
+      .insert({
+        name: option.name,
+        picture_url: option.picture_url,
+        select_id: option.select_id,
+      })
+      .select("*");
+    optionStatus = optionData.status;
+  });
+  window.location.reload();
+  return optionStatus;
+}
+
+async function postAdditionalToSupabase(
+  productId: number,
+  state: IEditableProductReducerData,
+  additionals: iInsertAdditionals["data"]
+) {
+  let data: PostgrestResponse<any>;
+  state.additionals.forEach(async (additional) => {
+    if (additional.name === "") {
+      return;
+    }
+    if (
+      additionals.some(
+        (additionalValidate) => additionalValidate.name === additional.name
+      )
+    ) {
+      const productAdditionalDada = await supabase
+        .from("product_additionals")
+        .insert({
+          additional_id: additional.id!,
+          product_id: productId,
+        })
+        .select("*");
+      data = productAdditionalDada;
+    } else {
+      const additionalData = await supabase
+        .from("additionals")
+        .insert({
+          name: additional.name,
+          picture_url: additional.picture_url,
+          price: additional.price,
+        })
+        .select("*");
+      if (additionalData.status === 400 || additionalData.data === null) {
+        return;
+      }
+      const productAdditionalDada = await supabase
+        .from("product_additionals")
+        .insert({
+          additional_id: additionalData.data[0]?.id!,
+          product_id: productId,
+        })
+        .select("*");
+      data = productAdditionalDada;
+    }
+  });
 }
 
 export async function getPaymentMethodsAvailable() {

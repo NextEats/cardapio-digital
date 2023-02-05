@@ -144,7 +144,8 @@ interface iLineChartsProps {
     products: iProducts["data"];
     productCategories: iProductCategories["data"];
     ordersProducts: iOrdersProducts["data"];
-  };
+  },
+  dailyRevenue: DailyRevenue[]
 }
 
 export const options = {
@@ -163,70 +164,70 @@ export const options = {
   },
 };
 
-export function LineChart({ globalValuesData }: iLineChartsProps) {
-  const { orders, products, ordersProducts } = globalValuesData;
+export function LineChart({ dailyRevenue }: iLineChartsProps) {
+  // const { orders, products, ordersProducts } = globalValuesData;
 
-  const [startDate, setStartDate] = useState<Date | null>(null);
-  const [endDate, setEndDate] = useState<Date | null>(null);
+  // const [startDate, setStartDate] = useState<Date | null>(null);
+  // const [endDate, setEndDate] = useState<Date | null>(null);
 
-  const [dailyRevenue, setDailyRevenue] = useState<DailyRevenue[]>([]);
+  // const [dailyRevenue, setDailyRevenue] = useState<DailyRevenue[]>([]);
 
-  const handleStartDateChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setStartDate(new Date(event.target.value));
-  };
+  // const handleStartDateChange = (
+  //   event: React.ChangeEvent<HTMLInputElement>
+  // ) => {
+  //   setStartDate(new Date(event.target.value));
+  // };
 
-  const handleEndDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setEndDate(new Date(event.target.value));
-  };
+  // const handleEndDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   setEndDate(new Date(event.target.value));
+  // };
 
-  const handleFilterClick = () => {
-    // Filter orders by date
-    const filteredOrders = orders.filter((order) => {
-      if (!order.created_at) return false;
-      const orderDate = new Date(order.created_at);
-      return orderDate >= startDate! && orderDate <= endDate!;
-    });
+  // const handleFilterClick = () => {
+  //   // Filter orders by date
+  //   const filteredOrders = orders.filter((order) => {
+  //     if (!order.created_at) return false;
+  //     const orderDate = new Date(order.created_at);
+  //     return orderDate >= startDate! && orderDate <= endDate!;
+  //   });
 
-    // Filter order details by order id
-    const filteredOrdersProducts = ordersProducts.filter((detail) =>
-      filteredOrders.some((order) => order.id === detail.order_id)
-    );
+  //   // Filter order details by order id
+  //   const filteredOrdersProducts = ordersProducts.filter((detail) =>
+  //     filteredOrders.some((order) => order.id === detail.order_id)
+  //   );
 
-    // Filter products by product id
-    const filteredProducts = products.filter((product) =>
-      filteredOrdersProducts.some((detail) => detail.product_id === product.id)
-    );
+  //   // Filter products by product id
+  //   const filteredProducts = products.filter((product) =>
+  //     filteredOrdersProducts.some((detail) => detail.product_id === product.id)
+  //   );
 
-    const dailyRevenue = filteredOrdersProducts.reduce(
-      (acc: { [date: string]: number }, detail) => {
-        const date = new Date(detail.created_at!).toDateString();
-        if (acc[date]) {
-          acc[date] +=
-            filteredProducts.find((product) => product.id === detail.product_id)
-              ?.price || 0;
-        } else {
-          acc[date] =
-            filteredProducts.find((product) => product.id === detail.product_id)
-              ?.price || 0;
-        }
-        return acc;
-      },
-      {}
-    );
+  //   const dailyRevenue = filteredOrdersProducts.reduce(
+  //     (acc: { [date: string]: number }, detail) => {
+  //       const date = new Date(detail.created_at!).toDateString();
+  //       if (acc[date]) {
+  //         acc[date] +=
+  //           filteredProducts.find((product) => product.id === detail.product_id)
+  //             ?.price || 0;
+  //       } else {
+  //         acc[date] =
+  //           filteredProducts.find((product) => product.id === detail.product_id)
+  //             ?.price || 0;
+  //       }
+  //       return acc;
+  //     },
+  //     {}
+  //   );
 
-    setDailyRevenue(
-      Object.entries(dailyRevenue).map(([date, revenue]) => ({
-        date: new Date(date),
-        revenue,
-      }))
-    );
-  };
+  //   setDailyRevenue(
+  //     Object.entries(dailyRevenue).map(([date, revenue]) => ({
+  //       date: new Date(date),
+  //       revenue,
+  //     }))
+  //   );
+  // };
 
   return (
     <div>
-      <label>
+      {/* <label>
         Start Date:
         <input type="date" onChange={handleStartDateChange} />
       </label>
@@ -234,7 +235,7 @@ export function LineChart({ globalValuesData }: iLineChartsProps) {
         End Date:
         <input type="date" onChange={handleEndDateChange} />
       </label>
-      <button onClick={handleFilterClick}>Filter</button>
+      <button onClick={handleFilterClick}>Filter</button> */}
       <Line
         options={options}
         data={{

@@ -29,7 +29,45 @@ export const getServerSideProps: GetServerSideProps = async () => {
   const clients = await supabase.from("clients").select()
   const contacts = await supabase.from("contacts").select()
   const addresses = await supabase.from("addresses").select()
-  // const loacal =  window.localStorage.setItem("product_categories", JSON.stringify(productCategories.data))
+
+  // const channel = supabase
+  //   .channel('')
+  //   .on(
+  //     'postgres_changes',
+  //     {
+  //       event: '*',
+  //       schema: 'public',
+  //       table: 'orders',
+  //     },
+  //     (payload) => console.log(payload)
+  //   )
+  //   .subscribe()
+  // console.log(channel, orders)
+
+  // const SupabaseWebSocket = () => {
+  //   const [data, setData] = useState([]);
+
+  //   useEffect(() => {
+  //     const socket = new WebSocket('wss://api.supabase.co/realtime/<SUA_CHAVE_API>');
+
+  //     socket.addEventListener('open', (event) => {
+  //       socket.send(JSON.stringify({
+  //         type: 'subscribe',
+  //         payload: {
+  //           channel: '<NOME_DA_TABELA>',
+  //           event: 'update',
+  //         },
+  //       }));
+  //     });
+
+  //     socket.addEventListener('message', (event) => {
+  //       setData((prevData) => [...prevData, event.data]);
+  //     });
+
+  //     return () => {
+  //       socket.close();
+  //     };
+  //   }, []);
 
   return {
     props: {
@@ -108,13 +146,14 @@ export default function AdminHomepage({ orders, orderStatuss, ordersProducts, pr
     orderId: 0,
   })
 
+  const statusId = orderStatuss.data.find(s => s.status_name === 'entregue')
+  const ordersProductFiltered = ordersProducts.data.filter(ordersProduct => statusId?.id === ordersProduct.order_status_id)
   function billing() {
-    const statusId = orderStatuss.data.find(s => s.status_name === 'entregue')
-    const ordersProductFiltered = ordersProducts.data.filter(ordersProduct => statusId?.id === ordersProduct.order_status_id)
     const ordersProductId = ordersProductFiltered.map(ordersProduct => ordersProduct.product_id)
     const selectedProduct = ordersProductId.map(productId => products.data[products.data.findIndex(product => productId === product.id)])
     return selectedProduct.reduce((acc, product) => acc + product.price, 0)
   }
+  const ordersAmount = Array.from(new Set(ordersProductFiltered.map(order => order.order_id))).length;
   // const [count, setCount] = useState(0);
 
   // useEffect(() => {
@@ -139,7 +178,7 @@ export default function AdminHomepage({ orders, orderStatuss, ordersProducts, pr
       <div className="flex flex-col gap-8">
         <div className="grid 2xs:grid-cols-2 lg:grid-cols-3 gap-3">
           <Card color="red" name="Faturamento" value={`R$ ${billing()}`} />
-          <Card color="green" name="Pedidos" value={"16"} />
+          <Card color="green" name="Pedidos" value={`${ordersAmount}`} />
           <Card color="yellow" name="Produtos no Cardápio" value={products?.data.length.toString()} />
         </div>
 

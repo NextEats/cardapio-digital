@@ -38,6 +38,7 @@ export interface Database {
           name: string
           picture_url: string
           price: number
+          restaurant_id: number | null
         }
         Insert: {
           created_at?: string | null
@@ -45,6 +46,7 @@ export interface Database {
           name: string
           picture_url: string
           price: number
+          restaurant_id?: number | null
         }
         Update: {
           created_at?: string | null
@@ -52,6 +54,7 @@ export interface Database {
           name?: string
           picture_url?: string
           price?: number
+          restaurant_id?: number | null
         }
       }
       addresses: {

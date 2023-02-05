@@ -15,6 +15,7 @@ export const defaultValues = {
 
     //  CATEGORY
     category: {
+        id: 0,
         name: '',
         restaurant_id: 0,
     },
@@ -79,6 +80,7 @@ export interface iPayloadProduct {
     ingredientName?: string,
     newIngredientName?: string,
     oldIngredientName?: string,
+    oldAdditionalId?: number
 
     ingredientIdToAddNewOption?: string,
     optionName?: string,
@@ -190,20 +192,21 @@ export function editableProductReducer(state: IEditableProductReducerData, actio
             return { ...state, additionals: [...state.additionals, action.payload.additional] }
             break
         case EditableProductActions.UPDATE_ADDITIONAL:
-            const undateAdditionalState = { ...state }
-            const additionalIndex = undateAdditionalState.additionals.find(additional => additional.name === action.payload.additionalName)
-            // if (additionalIndex!.name === undefined) {
-            //     return
-            // }
-            additionalIndex!.name = action.payload.additionalName;
-            additionalIndex!.price = action.payload.additionalPrice;
-            additionalIndex!.picture_url = action.payload.additionalPicture_url;
-            return undateAdditionalState
+            const { oldAdditionalId, additionalName, additionalPrice, additionalPicture_url } = action.payload
+            const additionalFound = state.additionals.find(additional => additional.id === oldAdditionalId)
+            additionalFound!.name = additionalName;
+            additionalFound!.price = additionalPrice;
+            additionalFound!.picture_url = additionalPicture_url;
+            return { ...state }
             break
         case EditableProductActions.REMOVE_ADDITIONAL:
             const additionalWithoutTheRemovedOne = state.additionals.filter(additional => additional.name !== action.payload.additionalName)
             return { ...state, additionals: additionalWithoutTheRemovedOne }
             break
+        // case EditableProductActions.EDIT_PRODUCT:
+        //     // const additionalWithoutTheRemovedOne = state.additionals.filter(additional => additional.name !== action.payload.additionalName)
+        //     return { ...state }
+        //     break
         default:
             return state
     }

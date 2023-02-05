@@ -117,7 +117,7 @@ function ProductsHorizontalList({
                   width={180}
                   height={180}
                   alt={product.name}
-                  className="rounded-md"
+                  className="rounded-md h-44"
                 />
               </div>
               <div className="mt-3">

@@ -1,7 +1,7 @@
 import { createContext } from "react"
 import { iRestaurantWithFKData } from "./../types/types"
 
-interface iRestaurantContext {
+export interface iRestaurantContext {
     restaurant: [iRestaurantWithFKData | undefined, React.Dispatch<React.SetStateAction<iRestaurantWithFKData>> | undefined]
 }
 

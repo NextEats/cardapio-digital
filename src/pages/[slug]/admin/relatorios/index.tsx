@@ -15,7 +15,7 @@ import {
 import { DoughnutChart } from "../../../../components/admin/relatorios/Charts/DoughnutChart";
 import { HorizontalGraphics } from "../../../../components/admin/relatorios/Charts/HorizontalGraphics";
 import { BarChart } from "../../../../components/admin/relatorios/Charts/BarChart";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { CardapioDigitalButton } from "../../../../components/admin/cardapio-digital/CardapioDigitalButton";
 import { format } from "date-fns";
 
@@ -134,11 +134,11 @@ export default function Reports({
       return
     }
 
-    setOrdersDate(orders.data.filter(o => new Date(o.created_at!) >= new Date(startDate)))
-    setStatusDate(ordersStatus.data.filter(o => new Date(o.created_at!) >= new Date(startDate)))
-    setOrdersProductsDate(ordersProducts.data.filter(o => new Date(o.created_at!) >= new Date(startDate)))
-    setProductsDate(products.data.filter(o => new Date(o.created_at!) >= new Date(startDate)))
-    setProductCategoriesDate(productCategories.data.filter(o => new Date(o.created_at!) >= new Date(startDate)))
+    setOrdersDate(orders.data.filter(o => new Date(o.created_at!) >= new Date(startDate) && new Date(o.created_at!) <= new Date(endDate!)))
+    setStatusDate(ordersStatus.data.filter(os => new Date(os.created_at!) >= new Date(startDate) && new Date(os.created_at!) <= new Date(endDate!)))
+    setOrdersProductsDate(ordersProducts.data.filter(op => new Date(op.created_at!) >= new Date(startDate) && new Date(op.created_at!) <= new Date(endDate!)))
+    setProductsDate(products.data.filter(p => new Date(p.created_at!) >= new Date(startDate) && new Date(p.created_at!) <= new Date(endDate!)))
+    setProductCategoriesDate(productCategories.data.filter(pc => new Date(pc.created_at!) >= new Date(startDate) && new Date(pc.created_at!) <= new Date(endDate!)))
 
     setDailyRevenue(
       Object.entries(dailyRevenue).map(([date, revenue]) => ({
@@ -149,6 +149,13 @@ export default function Reports({
   };
   // }, [startDate, endDate, productCategories, products, ordersProducts, ordersStatus, orders]);
   const moment = new Date();
+
+  useMemo(() => {
+    function filter() {
+      handleFilterClick()
+    }
+    filter()
+  }, [])
 
 
   const globalValuesData = {

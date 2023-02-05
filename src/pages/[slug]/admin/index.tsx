@@ -146,13 +146,14 @@ export default function AdminHomepage({ orders, orderStatuss, ordersProducts, pr
     orderId: 0,
   })
 
+  const statusId = orderStatuss.data.find(s => s.status_name === 'entregue')
+  const ordersProductFiltered = ordersProducts.data.filter(ordersProduct => statusId?.id === ordersProduct.order_status_id)
   function billing() {
-    const statusId = orderStatuss.data.find(s => s.status_name === 'entregue')
-    const ordersProductFiltered = ordersProducts.data.filter(ordersProduct => statusId?.id === ordersProduct.order_status_id)
     const ordersProductId = ordersProductFiltered.map(ordersProduct => ordersProduct.product_id)
     const selectedProduct = ordersProductId.map(productId => products.data[products.data.findIndex(product => productId === product.id)])
     return selectedProduct.reduce((acc, product) => acc + product.price, 0)
   }
+  const ordersAmount = Array.from(new Set(ordersProductFiltered.map(order => order.order_id))).length;
   // const [count, setCount] = useState(0);
 
   // useEffect(() => {
@@ -177,7 +178,7 @@ export default function AdminHomepage({ orders, orderStatuss, ordersProducts, pr
       <div className="flex flex-col gap-8">
         <div className="grid 2xs:grid-cols-2 lg:grid-cols-3 gap-3">
           <Card color="red" name="Faturamento" value={`R$ ${billing()}`} />
-          <Card color="green" name="Pedidos" value={"16"} />
+          <Card color="green" name="Pedidos" value={`${ordersAmount}`} />
           <Card color="yellow" name="Produtos no Cardápio" value={products?.data.length.toString()} />
         </div>
 

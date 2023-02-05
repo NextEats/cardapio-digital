@@ -10,7 +10,7 @@ import { EditableProductActions } from "../../../../../reducers/aditableProduct/
 import { IEditableProductReducerData, iPayloadProduct } from "../../../../../reducers/aditableProduct/reducer";
 import { iInsertAdditional } from "../../../../../types/types";
 import { CardapioDigitalButton } from "../../CardapioDigitalButton";
-import { updateAdditional } from "../../../../../server/api";
+import { createAdditionalsAndIsertIntoProductAdditionalsIfIsUpdatingProduct, deleteProductAdditionalsIfIsUpdatingProduct, updateAdditional } from "../../../../../server/api";
 
 interface IAdditionalProps {
     state: IEditableProductReducerData,
@@ -18,6 +18,7 @@ interface IAdditionalProps {
         type: string,
         payload: iPayloadProduct
     }>,
+    productId: number,
 }
 
 const newAdditionalFormValidationSchema = zod.object({
@@ -29,13 +30,10 @@ const newAdditionalFormValidationSchema = zod.object({
 
 type NewAdditionlFormData = zod.infer<typeof newAdditionalFormValidationSchema>;
 
-
-
-export function Additional({ state, dispatch }: IAdditionalProps) {
+export function Additional({ state, dispatch, productId }: IAdditionalProps) {
 
     const [showAdditionalModal, setShowAdditionalModal] = useState<"UPDATE" | "ADD" | "">('')
     const [oldAdditionalId, setOldAdditionalId] = useState<number | undefined>(undefined)
-
 
     const { register, setValue, reset, getValues, watch } = useForm<NewAdditionlFormData>({
         resolver: zodResolver(newAdditionalFormValidationSchema),
@@ -61,6 +59,11 @@ export function Additional({ state, dispatch }: IAdditionalProps) {
         const additionalName = getValues("additionalName")
         const additionalPrice = Number(getValues("additionalPrice"))
         const additionalPicture_url = getValues("additionalPicture_url")
+
+        if (state.isViewingUpdatingOrAdding === "UPDATING") {
+            createAdditionalsAndIsertIntoProductAdditionalsIfIsUpdatingProduct(additionalName, additionalPrice, additionalPicture_url, productId!)
+        }
+
         dispatch({
             type: EditableProductActions.ADD_NEW_ADDITIONAL,
             payload: {
@@ -75,7 +78,10 @@ export function Additional({ state, dispatch }: IAdditionalProps) {
         setShowAdditionalModal('')
     }
 
-    function removeAdditional(additionalName: string) {
+    function removeAdditional(additionalName: string, additionalId: number) {
+        if (state.isViewingUpdatingOrAdding === "UPDATING") {
+            deleteProductAdditionalsIfIsUpdatingProduct(additionalId, productId)
+        }
         dispatch({
             type: EditableProductActions.REMOVE_ADDITIONAL,
             payload: {
@@ -151,7 +157,7 @@ export function Additional({ state, dispatch }: IAdditionalProps) {
                                                 onClick={() => showModalToUpdateAdditional(additional!)}
                                                 className="text-xl text-blue-500 cursor-pointer hover:scale-125 hover:transition-all ease-in-out" />
                                             <FiTrash2
-                                                onClick={() => removeAdditional(additional?.name)}
+                                                onClick={() => removeAdditional(additional?.name, additional?.id!)}
                                                 className="text-xl text-red-500 cursor-pointer hover:scale-125 hover:transition-all ease-in-out" />
                                         </div>
                                     ) : null

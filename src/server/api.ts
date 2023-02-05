@@ -198,80 +198,8 @@ export async function updateProduct(state: IEditableProductReducerData, productI
     picture_url: state.picture_url,
     category_id: state.category.id!,
   }).select("*");
-
-  state.additionals.forEach(async additional => {
-    const { name, picture_url, price } = additional;
-
-
-    if (additionals.some(add => add.name === name) === false) {
-      console.log("10")
-      const aditionalData = await supabase
-        .from("additionals").insert({
-          name,
-          price,
-          picture_url,
-          restaurant_id: 7
-        }).select("*");
-      await supabase
-        .from("product_additionals").insert({
-          additional_id: aditionalData.data![0].id!,
-          product_id: productId,
-        }).select("*");
-      return
-    }
-
-    // if (additionals.some((add) => add.id === additional.id)) {
-    //   console.log("2")
-    //   await supabase
-    //     .from("product_additionals").insert({
-    //       additional_id: additional.id!,
-    //       product_id: productId,
-    //     }).select("*");
-    //   return;
-    // }
-
-  })
-  //   for (let i = 0; i < state.additionals.length; i++) {
-  //     const { name, picture_url, price } = state.additionals[i];
-
-  //     console.log(state.additionals.length)
-  //     // if (additionals.some(add => add.name !== name)) {
-  //     //   const aditionalData = await supabase
-  //     //     .from("additionals").insert({
-  //     //       name,
-  //     //       price,
-  //     //       picture_url,
-  //     //       restaurant_id: 7
-  //     //     }).select("*");
-  //     //   await supabase
-  //     //     .from("product_additionals").insert({
-  //     //       additional_id: aditionalData.data![0].id!,
-  //     //       product_id: productId,
-  //     //     }).select("*");
-  //     //   return
-  //     // }
-
-  //     console.log("5")
-  //     if (additionals.some((additionalValidate) => additionalValidate.id !== state.additionals[i].id)) {
-  //       console.log("2")
-  //       await supabase
-  //         .from("product_additionals").insert({
-  //           additional_id: state.additionals[i].id!,
-  //           product_id: productId,
-  //         }).select("*");
-  //       return;
-  //     }
-
-  //     if (additionals.some(ad => ad.id === state.additionals[i].id)) {
-  //       updateAdditional(state.additionals[i].id!, picture_url, price, name)
-  //       console.log("1")
-  //     } else {
-  //       console.log("4")
-  //     }
-  //   }
-
-  //   return productData
 }
+
 export async function deleteProduct(productId: number) {
   // await supabase.query(`DELETE FROM products   WHERE parent_id = ? ON DELETE CASCADE; `, [parent_id]);
   await supabase.from("product_selects").delete().eq("product_id", productId)
@@ -286,6 +214,27 @@ export async function deleteProduct(productId: number) {
   window.location.reload()
 }
 
+export async function createAdditionalsAndIsertIntoProductAdditionalsIfIsUpdatingProduct(name: string, price: number, picture_url: string, product_id: number) {
+  const aditionalData = await supabase
+    .from("additionals").insert({
+      name,
+      price,
+      picture_url,
+      restaurant_id: 7
+    }).select("*");
+  await supabase
+    .from("product_additionals").insert({
+      additional_id: aditionalData.data![0].id!,
+      product_id,
+    }).select("*");
+}
+export async function deleteProductAdditionalsIfIsUpdatingProduct(additional_id: number, product_id: number) {
+  await supabase.from("product_additionals").delete().eq("additional_id", additional_id).eq("product_id", product_id)
+}
+
+export async function createProductAdditionalsIfIsUpdatingProduct(additional_id: number, product_id: number) {
+  await supabase.from("product_additionals").insert({ additional_id, product_id, }).select("*");
+}
 
 export async function createProduct(
   state: IEditableProductReducerData,

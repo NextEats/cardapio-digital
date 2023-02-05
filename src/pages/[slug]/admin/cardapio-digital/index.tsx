@@ -197,10 +197,7 @@ export default function CardapioDigital({
       <>
         <div className="flex gap-10">
           <div className="flex flex-col flex-1 ">
-            <h2 className="text-xl font-bold text-gray-700">
-              {" "}
-              5 itens mais vendidos{" "}
-            </h2>
+            <h2 className="text-xl font-bold text-gray-700"> 5 itens mais vendidos </h2>
 
             <div className="flex items-center justify-between mb-5 mt-7">
               <h2 className="text-xl font-bold text-gray-700 "> Categorias </h2>

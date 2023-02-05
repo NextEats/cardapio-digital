@@ -9,7 +9,7 @@ import {
   IEditableProductReducerData,
   iPayloadProduct,
 } from "../../../../reducers/aditableProduct/reducer";
-import { createProduct, deleteProduct, supabase, updateProduct } from "../../../../server/api";
+import { createProduct, createProductAdditionalsIfIsUpdatingProduct, deleteProduct, supabase, updateProduct } from "../../../../server/api";
 import {
   iInsertAdditionals,
   iInsertProductCategories,
@@ -161,7 +161,9 @@ export default function EditableMenuProductCard({
                     return (
                       <NavigationMenu.List
                         title={select.name}
-                        onClick={() => setIngredientSelected(select.id!)}
+                        onClick={() => {
+                          setIngredientSelected(select.id!)
+                        }}
                         key={select.id}
                         className="px-2 py-1 cursor-pointer hover:bg-violet-200 rounded "
                       >
@@ -178,9 +180,15 @@ export default function EditableMenuProductCard({
                 </NavigationMenu.Trigger>
                 <NavigationMenu.Content className="flex flex-1 w-auto p-1 rounded-md flex-wrap absolut top-0 left-0 z-50 bg-white shadow-md">
                   {additionals.map((additional) => {
+                    if (state.additionals.some(add => add.id === additional.id)) {
+                      return
+                    }
                     return (
                       <NavigationMenu.List
-                        onClick={() => setAdditionalSelected(additional.id!)}
+                        onClick={() => {
+                          createProductAdditionalsIfIsUpdatingProduct(additional.id!, productId!)
+                          setAdditionalSelected(additional.id!)
+                        }}
                         key={additional.id}
                         className="px-2 py-1 cursor-pointer hover:bg-violet-200 rounded "
                       >
@@ -210,7 +218,7 @@ export default function EditableMenuProductCard({
 
         <Igredient state={state} selects={selects} dispatch={dispatch} />
 
-        <Additional state={state} dispatch={dispatch} />
+        <Additional state={state} dispatch={dispatch} productId={productId!} />
 
         {state.isViewingUpdatingOrAdding === "ADDING" && (
           <CardapioDigitalButton

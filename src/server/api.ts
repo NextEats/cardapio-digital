@@ -431,3 +431,47 @@ export async function getPaymentMethodsAvailable() {
   const paymentMethods = await supabase.from("payment_methods").select("*");
   return paymentMethods;
 }
+
+export async function getPaymentMethodsForThisRestaurant(restaurantId: number) {
+  try {
+    const paymentMethods = await supabase.from("payment_methods").select("*");
+
+    if (!paymentMethods.data) {
+      throw new Error("No data returned from payment_methods table");
+    }
+
+    paymentMethods.data.map(async (paymentMethod, index) => {
+      const paymentMethodsRestaurant = await supabase
+        .from("payment_methods_restaurants")
+        .select("*")
+        .eq("payment_method_id", paymentMethod.id)
+        .eq("restaurant_id", restaurantId);
+
+      if (paymentMethodsRestaurant.data?.length === 0) {
+        await supabase.from("payment_methods_restaurants").insert({
+          payment_method_id: paymentMethod.id,
+          restaurant_id: restaurantId,
+        });
+      }
+    });
+
+    const paymentMethodsRestaurant = await supabase
+      .from("payment_methods_restaurants")
+      .select(
+        `id,
+         created_at,
+         payment_method_id,
+         restaurant_id,
+         is_active,
+         payment_methods (
+            id, 
+            name
+        )`
+      )
+      .eq("restaurant_id", restaurantId);
+
+    return paymentMethodsRestaurant;
+  } catch (error) {
+    console.error(error);
+  }
+}

@@ -240,6 +240,14 @@ export interface iWeekday {
   data: Database["public"]["Tables"]["weekdays"]["Row"];
 }
 
+export interface iPaymentMethod {
+  data: Database["public"]["Tables"]["payment_methods"]["Row"];
+}
+
+export interface iPaymentMethodsRestaurants {
+  data: Database["public"]["Tables"]["payment_methods_restaurants"]["Row"];
+}
+
 export type iRestaurantWithFKData = iRestaurant["data"] & {
   addresses: iAddress["data"];
   weekday_operating_time: Array<

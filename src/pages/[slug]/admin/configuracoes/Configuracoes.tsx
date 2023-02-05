@@ -4,6 +4,7 @@ import InputWithLabel from "../../../../components/InputWithLabel";
 
 import { getPaymentMethodsAvailable } from "./../../../../server/api";
 import { iPaymentMethod } from "../../../../types/types";
+import Whatsapp from "./Whatsapp";
 
 type iCurrentSection = "general" | "payment" | "distance_fee" | "whatsapp";
 
@@ -60,7 +61,7 @@ export default function Config() {
           {currentSection === "general" && <General />}
           {currentSection === "payment" && <Payment />}
           {currentSection === "distance_fee" && <DistanceFee />}
-          {currentSection === "whatsapp" && <WhatsApp />}
+          {currentSection === "whatsapp" && <Whatsapp />}
         </div>
       </>
     </AdminWrapper>
@@ -118,9 +119,5 @@ function Payment() {
 }
 
 function DistanceFee() {
-  return <div>general</div>;
-}
-
-function WhatsApp() {
   return <div>general</div>;
 }

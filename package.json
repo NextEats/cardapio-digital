@@ -45,11 +45,12 @@
     "react-dom": "18.2.0",
     "react-hook-form": "^7.41.5",
     "react-icons": "^4.7.1",
-    "react-toastify": "^9.1.1",
     "react-input-mask": "^2.0.4",
     "react-redux": "^8.0.5",
+    "react-toastify": "^9.1.1",
     "request": "^2.88.2",
     "typescript": "4.9.4",
+    "whatsapp-web.js": "^1.19.3",
     "zod": "^3.20.2"
   },
   "devDependencies": {

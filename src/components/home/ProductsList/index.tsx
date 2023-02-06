@@ -98,7 +98,7 @@ function ProductsHorizontalList({
 }) {
   return (
     <div id={category.category_name} className="mb-12 scroll-mt-24">
-      <h2 className="text-2xl mb-3 mt-5 text-gray-500">
+      <h2 className="text-2xl mb-3 mt-5 font-semibold text-gray-700">
         {category.category_name}
       </h2>
       <div className="whitespace-nowrap overflow-auto scrollbar-custom">

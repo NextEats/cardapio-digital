@@ -1,15 +1,16 @@
 import Image from "next/image";
 import { useForm } from "react-hook-form";
-import { Dispatch, useEffect, useState } from "react";
+import { Dispatch, FormEvent, useEffect, useState } from "react";
 import * as zod from "zod"
 
 
 import { BiPencil } from "react-icons/bi";
 import { BsCheck2 } from "react-icons/bs";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { HiPlus } from "react-icons/hi";
-import { EditableProductActions } from "../../../../../reducers/aditableProduct/actions";
+import { HiOutlineUpload, HiPlus } from "react-icons/hi";
+import { EditableProductActions, setProductPictureFileAction, setProductPictureUrlAction } from "../../../../../reducers/aditableProduct/actions";
 import { IEditableProductReducerData, iPayloadProduct } from "../../../../../reducers/aditableProduct/reducer";
+import { supabase } from "../../../../../server/api";
 
 interface IHeadersCardProps {
     state: IEditableProductReducerData,
@@ -124,75 +125,79 @@ interface iProductImagePros {
     dispatch: Dispatch<any>,
 }
 
-const newPictureUrlFormValidationSchema = zod.object({
-    picture_url: zod.string()
-});
+// const newPictureUrlFormValidationSchema = zod.object({
+//     picture_url: zod.object({ name: zod.string() })
+// });
 
-type NewPirtureUrlFormData = zod.infer<typeof newPictureUrlFormValidationSchema>;
+// type NewPirtureUrlFormData = zod.infer<typeof newPictureUrlFormValidationSchema>;
 
 function ProductImage({ state, dispatch }: iProductImagePros) {
 
     const [productPictureIsEditing, setProductPictureIsEditing] = useState(true)
-    const { register, handleSubmit, watch } = useForm<NewPirtureUrlFormData>({
-        resolver: zodResolver(newPictureUrlFormValidationSchema),
-        defaultValues: { picture_url: '' },
-    });
+    // const { register, handleSubmit, getValues, watch } = useForm<NewPirtureUrlFormData>({
+    //     resolver: zodResolver(newPictureUrlFormValidationSchema),
+    //     defaultValues: { picture_url: { name: '' } },
+    // });
 
     useEffect(() => {
         if (state.isViewingUpdatingOrAdding === "VIEWING") setProductPictureIsEditing(false)
     }, [state.isViewingUpdatingOrAdding])
 
-    function handleProductPicture_url(data: NewPirtureUrlFormData) {
-        if (watch("picture_url") === '') {
-            return
+
+    // function handleProductPicture_url(data: NewPirtureUrlFormData) {
+    //     if (!getValues("picture_url")) {
+    //         return
+    //     }
+    //     console.log(data.picture_url)
+
+    //     setProductPictureIsEditing(false)
+    // }
+
+    const [file, setFile] = useState<File | undefined>();
+
+    useEffect(() => {
+        if (!file) {
+            return;
         }
-        dispatch({
-            type: EditableProductActions.SET_PICTURE_URL,
-            payload: { picture_url: data.picture_url }
-        })
-        setProductPictureIsEditing(false)
-    }
-    console.log(state.isViewingUpdatingOrAdding)
+        async function handleUploadFile() {
+            if (!file) {
+                return;
+            }
+            dispatch(setProductPictureFileAction(file))
+            dispatch(setProductPictureUrlAction(URL.createObjectURL(file)))
+            setProductPictureIsEditing(false)
+        }
+        handleUploadFile()
+    }, [file, dispatch]);
 
     return (
-        <form onSubmit={handleSubmit(handleProductPicture_url)} className="w-full relative mb-4">
+        <form className="w-full mb-4">
+            {!state.picture_url || productPictureIsEditing === true ?
+                <>
+                    <label htmlFor="product_picture" className="rounded-2xl w-full h-[400px] flex items-center justify-center border border-solid border-gray-400">
+                        <HiOutlineUpload className="w-20 h-20" />
+                    </label>
+                    <input type="file" id="product_picture" onChange={(e) => setFile(e.target.files![0])} hidden />
+                </>
+                : null}
 
-            {state.picture_url === '' || productPictureIsEditing === true ? <div
-                className={` flex flex-1 w-[305px] items-center justify-center bg-white h-9 px-2 rounded-md  absolute top-3 right-3 z-10`}>
-                <input
-                    type="text"
-                    placeholder="Pesquisar"
-                    {...register("picture_url")}
-                    className=" flex flex-1 h-6 pb-1 max-w-64 px-2 
-                    text-gray-600 text-sm font-semibold placeholder:text-gray-500 
-                    outline-none border border-solid border-gray-400 rounded-tl-md rounded-bl-md"
-                />
-                <button
-                    type="submit"
-                    className="w-7 h-6 flex items-center justify-center rounded-tr-md rounded-br-md hover:scale-110 transition-all ease-in-out bg-green-300 ">
-                    <BsCheck2 className="text-base text-white" />
-                </button>
-            </div> : null}
+            {state.picture_url && <div className="relative">
+                {
+                    state.isViewingUpdatingOrAdding !== "VIEWING" &&
+                    <label htmlFor="product_picture" className={``}>
+                        <BiPencil className={`text-2xl text-blue-500 cursor-pointer hover:scale-125 hover:transition-all ease-in-out absolute top-3 right-3 z-10 ${productPictureIsEditing ? 'hidden' : ''}`} />
+                    </label>
+                }
 
-            {
-                state.isViewingUpdatingOrAdding !== "VIEWING" &&
-                <BiPencil
-                    onClick={() => setProductPictureIsEditing(true)}
-                    className={`text-2xl text-blue-500 cursor-pointer hover:scale-125 hover:transition-all ease-in-out absolute top-3 right-3 z-10
-                                ${productPictureIsEditing ? 'hidden' : ''}`}
+                <Image
+                    className="rounded-2xl w-full"
+                    src={state.picture_url}
+                    alt=""
+                    width={500}
+                    height={500}
                 />
+            </div>
             }
-            {state.picture_url === '' && <div
-                className="rounded-2xl w-full h-[400px] flex items-center justify-center border border-solid border-gray-400">
-                <HiPlus className=" text-gray-400 text-9xl font-light" />
-            </div>}
-            {state.picture_url !== '' && <Image
-                className="rounded-2xl w-full"
-                src={state.picture_url}
-                alt=""
-                width={500}
-                height={500}
-            />}
         </form>
     )
 }

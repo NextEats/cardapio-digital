@@ -112,14 +112,14 @@ export default function EditableMenuProductCard({
                 name="Excluir"
                 h="h-8"
                 w="w-28"
-                onClick={() => deleteProduct(productId!)} />
-              <CardapioDigitalButton
+                onClick={() => deleteProduct(productId!, state.productInformation.name)} />
+              {/* <CardapioDigitalButton
                 name="Editar"
                 h="h-8"
                 w="w-28"
                 onClick={() =>
                   dispatch(setIsViewingAddingOrOpdatingProductAction("UPDATING"))
-                } />
+                } /> */}
             </div>
 
           ) : null}

@@ -195,16 +195,17 @@ export async function updateProduct(state: IEditableProductReducerData, productI
     name,
     description,
     price: Number(price),
-    picture_url: state.picture_url,
+    picture_url: state.picture_url!,
     category_id: state.category.id!,
   }).select("*");
 }
 
-export async function deleteProduct(productId: number) {
+export async function deleteProduct(productId: number, productName: string) {
   // await supabase.query(`DELETE FROM products   WHERE parent_id = ? ON DELETE CASCADE; `, [parent_id]);
   await supabase.from("product_selects").delete().eq("product_id", productId)
   await supabase.from("product_additionals").delete().eq("product_id", productId)
   const data = await supabase.from("products").delete().eq("id", productId)
+  await supabase.storage.from("teste").remove([productName])
   promiseAlert({
     pending: 'Aguarde um momento.',
     success: 'Produto deletado com sucesso!',
@@ -265,14 +266,18 @@ export async function createProduct(
   state: IEditableProductReducerData,
   productOptions: iInsertProductOptions["data"],
   additionals: iInsertAdditionals["data"],
+
 ) {
+  // await supabase.storage.from("teste").upload("teste_4", file)
+  const imageData = await supabase.storage.from("teste").upload(state.productInformation.name, state.picture_file)
+  const getImageData = supabase.storage.from("teste").getPublicUrl(imageData.data?.path!)
   const data = await supabase
     .from("products")
     .insert({
       category_id: state.category.id!,
       description: state.productInformation.description,
       name: state.productInformation.name,
-      picture_url: state.picture_url,
+      picture_url: getImageData.data.publicUrl,
       price: Number(state.productInformation.price),
     })
     .select("*");

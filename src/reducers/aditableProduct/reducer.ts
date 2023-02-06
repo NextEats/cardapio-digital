@@ -36,6 +36,7 @@ export interface IEditableProductReducerData {
     // PRODUCT INFORMATION
     isEditingInfo: boolean,
     picture_url: string,
+    picture_file: File,
     productInformation: {
         name: string,
         description: string,
@@ -138,9 +139,10 @@ export function editableProductReducer(state: IEditableProductReducerData, actio
                 }
             }
             break
-        // case EditableProductActions.IS_EDITING_PICTURE:
-        //     return { ...state, isEditingPicture: action.payload.isEditingPicture }
-        //     break
+
+        case EditableProductActions.SET_PICTURE_FILE:
+            return { ...state, picture_file: action.payload.picture_file }
+            break
         case EditableProductActions.SET_PICTURE_URL:
             return { ...state, picture_url: action.payload.picture_url }
             break

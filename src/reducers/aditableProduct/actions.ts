@@ -13,6 +13,7 @@ export enum EditableProductActions {
     IS_EDITING_INFORMATION = "IS_EDITING_INFORMATION",
     SET_PRODUCT_INFORMATION = "SET_PRODUCT_INFORMATION",
     // IS_EDITING_PICTURE = "IS_EDITING_PICTURE",
+    SET_PICTURE_FILE = "SET_PICTURE_FILE",
     SET_PICTURE_URL = "SET_PICTURE_URL",
     // INGREDIENT
     // Add new ingredient
@@ -60,7 +61,14 @@ export function setViewpProductAction(
     }
 }
 
+export function setProductPictureFileAction(file: File) {
+    return {
+        type: EditableProductActions.SET_PICTURE_FILE,
+        payload: { picture_file: file }
+    }
+}
 export function setProductPictureUrlAction(url: string) {
+    console.log(url)
     return {
         type: EditableProductActions.SET_PICTURE_URL,
         payload: { picture_url: url }

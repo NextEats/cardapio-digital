@@ -171,24 +171,41 @@ export async function getPaymentMethod() {
 }
 
 export async function updateIngredientName(ingredientId: number, name: string) {
-  console.log(ingredientId, name)
-  const ingredientData = await supabase.from("selects").update({
-    name: name
-  }).eq("id", ingredientId).select("*");
-  console.log(ingredientData)
-  return ingredientData
+  console.log(ingredientId, name);
+  const ingredientData = await supabase
+    .from("selects")
+    .update({
+      name: name,
+    })
+    .eq("id", ingredientId)
+    .select("*");
+  console.log(ingredientData);
+  return ingredientData;
 }
-export async function updateAdditional(additionalId: number, picture_url: string, price: number, name: string) {
-  const additionalData = await supabase.from("additionals").update({
-    name,
-    picture_url,
-    price,
-  }).eq("id", additionalId).select("*");
-  console.log(additionalData)
-  return additionalData
+export async function updateAdditional(
+  additionalId: number,
+  picture_url: string,
+  price: number,
+  name: string
+) {
+  const additionalData = await supabase
+    .from("additionals")
+    .update({
+      name,
+      picture_url,
+      price,
+    })
+    .eq("id", additionalId)
+    .select("*");
+  console.log(additionalData);
+  return additionalData;
 }
-export async function updateProduct(state: IEditableProductReducerData, productId: number, additionals: iInsertAdditionals["data"],) {
-  const { description, name, price } = state.productInformation
+export async function updateProduct(
+  state: IEditableProductReducerData,
+  productId: number,
+  additionals: iInsertAdditionals["data"]
+) {
+  const { description, name, price } = state.productInformation;
 
   const productData = await supabase.from("products").upsert({
     id: productId,
@@ -207,12 +224,12 @@ export async function deleteProduct(productId: number, productName: string) {
   const data = await supabase.from("products").delete().eq("id", productId)
   await supabase.storage.from("teste").remove([productName])
   promiseAlert({
-    pending: 'Aguarde um momento.',
-    success: 'Produto deletado com sucesso!',
-    error: 'Desculpe, Não foi possivel deletar esse produto!',
+    pending: "Aguarde um momento.",
+    success: "Produto deletado com sucesso!",
+    error: "Desculpe, Não foi possivel deletar esse produto!",
     data,
-  })
-  window.location.reload()
+  });
+  window.location.reload();
 }
 
 export async function createAdditionalsAndIsertIntoProductAdditionalsIfIsUpdatingProduct(name: string, price: number, picture_url: string, product_id: number) {
@@ -302,14 +319,17 @@ export async function createProduct(
   });
   postOptionToSupabase(state, productOptions);
   promiseAlert({
-    pending: 'Aguarde um momento, estamos criando o produto.',
-    success: 'Produto criado com sucesso!',
-    error: 'Desculpe, Não foi possivel criar o produto!',
+    pending: "Aguarde um momento, estamos criando o produto.",
+    success: "Produto criado com sucesso!",
+    error: "Desculpe, Não foi possivel criar o produto!",
     data,
-  })
+  });
 }
 
-async function postOptionToSupabase(state: IEditableProductReducerData, productOptions: iInsertProductOptions["data"],) {
+async function postOptionToSupabase(
+  state: IEditableProductReducerData,
+  productOptions: iInsertProductOptions["data"]
+) {
   let optionStatus;
   state.options.forEach(async (option) => {
     if (
@@ -328,43 +348,102 @@ async function postOptionToSupabase(state: IEditableProductReducerData, productO
       .select("*");
     optionStatus = optionData.status;
   });
-  window.location.reload()
+  window.location.reload();
   return optionStatus;
 }
 
 async function postAdditionalToSupabase(
   productId: number,
   state: IEditableProductReducerData,
-  additionals: iInsertAdditionals["data"],
+  additionals: iInsertAdditionals["data"]
 ) {
-
   let data: PostgrestResponse<any>;
   state.additionals.forEach(async (additional) => {
     if (additional.name === "") {
       return;
     }
-    if (additionals.some((additionalValidate) => additionalValidate.name === additional.name)) {
+    if (
+      additionals.some(
+        (additionalValidate) => additionalValidate.name === additional.name
+      )
+    ) {
       const productAdditionalDada = await supabase
-        .from("product_additionals").insert({
+        .from("product_additionals")
+        .insert({
           additional_id: additional.id!,
           product_id: productId,
-        }).select("*");
+        })
+        .select("*");
       data = productAdditionalDada;
     } else {
-      const additionalData = await supabase.from("additionals").insert({
-        name: additional.name,
-        picture_url: additional.picture_url,
-        price: additional.price,
-      }).select("*");
+      const additionalData = await supabase
+        .from("additionals")
+        .insert({
+          name: additional.name,
+          picture_url: additional.picture_url,
+          price: additional.price,
+        })
+        .select("*");
       if (additionalData.status === 400 || additionalData.data === null) {
         return;
       }
       const productAdditionalDada = await supabase
-        .from("product_additionals").insert({
+        .from("product_additionals")
+        .insert({
           additional_id: additionalData.data[0]?.id!,
           product_id: productId,
-        }).select("*");
-      data = productAdditionalDada
+        })
+        .select("*");
+      data = productAdditionalDada;
     }
   });
+}
+
+export async function getPaymentMethodsAvailable() {
+  const paymentMethods = await supabase.from("payment_methods").select("*");
+  return paymentMethods;
+}
+
+export async function getPaymentMethodsForThisRestaurant(restaurantId: number) {
+  try {
+    const paymentMethods = await supabase.from("payment_methods").select("*");
+
+    if (!paymentMethods.data) {
+      throw new Error("No data returned from payment_methods table");
+    }
+
+    paymentMethods.data.map(async (paymentMethod, index) => {
+      const paymentMethodsRestaurant = await supabase
+        .from("payment_methods_restaurants")
+        .select("*")
+        .eq("payment_method_id", paymentMethod.id)
+        .eq("restaurant_id", restaurantId);
+
+      if (paymentMethodsRestaurant.data?.length === 0) {
+        await supabase.from("payment_methods_restaurants").insert({
+          payment_method_id: paymentMethod.id,
+          restaurant_id: restaurantId,
+        });
+      }
+    });
+
+    const paymentMethodsRestaurant = await supabase
+      .from("payment_methods_restaurants")
+      .select(
+        `id,
+         created_at,
+         payment_method_id,
+         restaurant_id,
+         is_active,
+         payment_methods (
+            id, 
+            name
+        )`
+      )
+      .eq("restaurant_id", restaurantId);
+
+    return paymentMethodsRestaurant;
+  } catch (error) {
+    console.error(error);
+  }
 }

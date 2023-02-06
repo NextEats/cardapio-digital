@@ -13,7 +13,7 @@ import Image from "next/image";
 import { EditableProductActions, removeOptionFromIngredientAction, setAddIngredientAction, setAddNewOption, setUpdateIngredient } from "../../../../../reducers/aditableProduct/actions";
 import { IEditableProductReducerData, iPayloadProduct } from "../../../../../reducers/aditableProduct/reducer";
 import { CardapioDigitalButton } from "../../CardapioDigitalButton";
-import { supabase, updateIngredientName } from "../../../../../server/api";
+import { createIngredientIfIsUpdatingProduct, createProductOptionIfIsUpdatingProduct, deleteIngredientIfIsUpdatingProduct, deleteProductOptionIfIsUpdatingProduct, supabase, updateIngredientName } from "../../../../../server/api";
 import { iInsertSelect, iInsertSelects } from "../../../../../types/types";
 import { toast } from "react-toastify";
 
@@ -25,6 +25,7 @@ interface iIgradientsCardProps {
         payload: iPayloadProduct,
     }>,
     selects: iInsertSelects["data"],
+    productId: number
 }
 
 const newIngredientFormValidationSchema = zod.object({
@@ -37,7 +38,7 @@ const newIngredientFormValidationSchema = zod.object({
 
 type NewIngredientFormData = zod.infer<typeof newIngredientFormValidationSchema>;
 
-export function Igredient({ state, dispatch, selects }: iIgradientsCardProps) {
+export function Igredient({ state, dispatch, selects, productId }: iIgradientsCardProps) {
 
     const [isAddingNewIngradientState, setIsAddingNewIngradientState] = useState(false)
     const [isUpdatingIngradientNameState, setIsUpdatingIngradientNameState] = useState('')
@@ -69,6 +70,9 @@ export function Igredient({ state, dispatch, selects }: iIgradientsCardProps) {
             setError('Esse Ingrediente já existe')
             return
         }
+        if (state.isViewingUpdatingOrAdding === "UPDATING") {
+            createIngredientIfIsUpdatingProduct(formData.ingredientName, productId)
+        }
         setError('')
         const { data } = await supabase.from("selects").insert({
             name: formData.ingredientName
@@ -83,7 +87,11 @@ export function Igredient({ state, dispatch, selects }: iIgradientsCardProps) {
         setIsAddingNewIngradientState(false)
     }
 
-    function removeIngredient(ingredientName: string) {
+    function removeIngredient(ingredientName: string, ingredientId: number) {
+        if (state.isViewingUpdatingOrAdding === "UPDATING") {
+            deleteIngredientIfIsUpdatingProduct(ingredientId)
+        }
+
         dispatch({
             type: EditableProductActions.REMOVE_INGREDIENT,
             payload: { ingredientName }
@@ -121,13 +129,20 @@ export function Igredient({ state, dispatch, selects }: iIgradientsCardProps) {
     function handleAddNewOptionToIngredient(ingredientId: number) {
         const optionName = getValues('optionName')
         const optionPicture_url = getValues('optionPicture_url')
+        reset()
 
+        if (state.isViewingUpdatingOrAdding === "UPDATING") {
+            createProductOptionIfIsUpdatingProduct(ingredientId, optionName, optionPicture_url)
+        }
         dispatch(setAddNewOption(optionName, optionPicture_url, ingredientId.toString()))
         setShowModalOption('')
     }
 
-    function removeOptionFromIngredient(ingredientId: number, optionName: string) {
+    function removeOptionFromIngredient(ingredientId: number, optionName: string, optionId: number) {
         dispatch(removeOptionFromIngredientAction(optionName, `${ingredientId}`))
+        if (state.isViewingUpdatingOrAdding === "UPDATING") {
+            deleteProductOptionIfIsUpdatingProduct(optionId)
+        }
     }
 
 
@@ -182,7 +197,7 @@ export function Igredient({ state, dispatch, selects }: iIgradientsCardProps) {
                                                     }}
                                                     className="text-xl text-blue-500 cursor-pointer hover:scale-125 hover:transition-all ease-in-out" />
                                                 <FiTrash2
-                                                    onClick={() => removeIngredient(ingredient?.name!)}
+                                                    onClick={() => removeIngredient(ingredient?.name!, ingredient.id!)}
                                                     className="text-xl text-red-500 cursor-pointer hover:scale-125 hover:transition-all ease-in-out" />
                                             </div>
                                         ) : null
@@ -193,6 +208,7 @@ export function Igredient({ state, dispatch, selects }: iIgradientsCardProps) {
                         </div>
 
                         <div className="flex flex-wrap gap-3">
+
                             {/*        =========   DIALOG TO ADD NEW OPTION   ==============        */}
                             {showModalOption === ingredient?.name && <div className="w-56 h-60 p-4 absolute z-50 top-0 right-1/2 translate-x-1/2 rounded-md bg-white shadow-md">
                                 <input type="text" placeholder="Nome" {...register("optionName")}
@@ -228,7 +244,7 @@ export function Igredient({ state, dispatch, selects }: iIgradientsCardProps) {
                                         {
                                             state.isViewingUpdatingOrAdding !== "VIEWING" ? (
                                                 <FiTrash2
-                                                    onClick={() => removeOptionFromIngredient(ingredient.id!, option.name!)}
+                                                    onClick={() => removeOptionFromIngredient(ingredient.id!, option.name!, option.id!)}
                                                     className="text-xl text-red-500 cursor-pointer hover:scale-125 hover:transition-all ease-in-out
                                                         absolute top-2 right-2 z-30" />
                                             ) : null

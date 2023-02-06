@@ -9,7 +9,7 @@ import {
   IEditableProductReducerData,
   iPayloadProduct,
 } from "../../../../reducers/aditableProduct/reducer";
-import { createProduct, createProductAdditionalsIfIsUpdatingProduct, deleteProduct, supabase, updateProduct } from "../../../../server/api";
+import { createProduct, createProductAdditionalsIfIsUpdatingProduct, createProductSelectIfIsUpdatingProduct, deleteProduct, supabase, updateProduct } from "../../../../server/api";
 import {
   iInsertAdditionals,
   iInsertProductCategories,
@@ -162,6 +162,7 @@ export default function EditableMenuProductCard({
                       <NavigationMenu.List
                         title={select.name}
                         onClick={() => {
+                          createProductSelectIfIsUpdatingProduct(select.id!, productId!)
                           setIngredientSelected(select.id!)
                         }}
                         key={select.id}
@@ -216,7 +217,7 @@ export default function EditableMenuProductCard({
             : `${state.category.name}`}
         </h2>
 
-        <Igredient state={state} selects={selects} dispatch={dispatch} />
+        <Igredient state={state} selects={selects} dispatch={dispatch} productId={productId!} />
 
         <Additional state={state} dispatch={dispatch} productId={productId!} />
 

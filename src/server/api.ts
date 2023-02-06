@@ -232,8 +232,33 @@ export async function deleteProductAdditionalsIfIsUpdatingProduct(additional_id:
   await supabase.from("product_additionals").delete().eq("additional_id", additional_id).eq("product_id", product_id)
 }
 
+export async function createProductSelectIfIsUpdatingProduct(select_id: number, product_id: number) {
+  await supabase.from("product_selects").insert({ select_id, product_id, })
+}
+
+export async function createIngredientIfIsUpdatingProduct(name: string, product_id: number) {
+  const ingredientData = await supabase.from("selects").insert({ name }).select("*")
+  await supabase.from("product_selects").insert({ select_id: ingredientData.data![0].id, product_id, })
+}
+
+export async function deleteIngredientIfIsUpdatingProduct(ingredient_id: number) {
+  await supabase.from("product_options").delete().eq("select_id", ingredient_id)
+  await supabase.from("product_selects").delete().eq("select_id", ingredient_id)
+}
+
+export async function deleteProductOptionIfIsUpdatingProduct(id: number) {
+  await supabase.from("product_options").delete().eq("id", id)
+}
+export async function createProductOptionIfIsUpdatingProduct(additional_id: number, name: string, picture_url: string) {
+  await supabase.from("product_options").insert({
+    name,
+    picture_url,
+    select_id: additional_id,
+  });
+}
+
 export async function createProductAdditionalsIfIsUpdatingProduct(additional_id: number, product_id: number) {
-  await supabase.from("product_additionals").insert({ additional_id, product_id, }).select("*");
+  await supabase.from("product_additionals").insert({ additional_id, product_id, });
 }
 
 export async function createProduct(

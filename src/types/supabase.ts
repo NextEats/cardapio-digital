@@ -86,6 +86,32 @@ export interface Database {
           reference_point?: string | null
         }
       }
+      cash_boxes: {
+        Row: {
+          closed_at: string | null
+          created_at: string | null
+          id: number
+          is_open: boolean | null
+          opened_at: string | null
+          restaurant_id: number | null
+        }
+        Insert: {
+          closed_at?: string | null
+          created_at?: string | null
+          id?: number
+          is_open?: boolean | null
+          opened_at?: string | null
+          restaurant_id?: number | null
+        }
+        Update: {
+          closed_at?: string | null
+          created_at?: string | null
+          id?: number
+          is_open?: boolean | null
+          opened_at?: string | null
+          restaurant_id?: number | null
+        }
+      }
       clients: {
         Row: {
           address_id: number
@@ -248,6 +274,7 @@ export interface Database {
       }
       orders: {
         Row: {
+          cash_box_id: number | null
           client_id: number | null
           created_at: string | null
           id: number
@@ -256,6 +283,7 @@ export interface Database {
           restaurant_id: number | null
         }
         Insert: {
+          cash_box_id?: number | null
           client_id?: number | null
           created_at?: string | null
           id?: number
@@ -264,6 +292,7 @@ export interface Database {
           restaurant_id?: number | null
         }
         Update: {
+          cash_box_id?: number | null
           client_id?: number | null
           created_at?: string | null
           id?: number
@@ -316,18 +345,21 @@ export interface Database {
         Row: {
           created_at: string | null
           id: number
+          is_active: boolean
           payment_method_id: number
           restaurant_id: number
         }
         Insert: {
           created_at?: string | null
           id?: number
+          is_active?: boolean
           payment_method_id: number
           restaurant_id: number
         }
         Update: {
           created_at?: string | null
           id?: number
+          is_active?: boolean
           payment_method_id?: number
           restaurant_id?: number
         }

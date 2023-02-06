@@ -180,6 +180,7 @@ export function editableProductReducer(state: IEditableProductReducerData, actio
             return { ...state }
             break
         case EditableProductActions.REMOVE_OPTION_FROM_INGREDIENT:
+            console.log("remove 2")
             const selectOptions = state.options.filter(option => option.select_id === Number(action.payload.ingredientId))
             const optionIndex = selectOptions.findIndex(option => action.payload.optionName === option.name)
             state.options.splice(optionIndex, 1)

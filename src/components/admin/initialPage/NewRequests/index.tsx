@@ -63,7 +63,10 @@ export default function NewRequests({ state, dispatch }: iNewRequestProps) {
           <tbody className="w-full border-collapse ">
             {
               state.emAnaliseOrders?.map(order => {
-                const ordersProductsFiltered = state.ordersProducts.filter(op => op.order_id === order.id!)
+                if (!order) {
+                  return
+                }
+                const ordersProductsFiltered = state.ordersProducts.filter(op => op.order_id === order.id)
                 const productsFiltered = ordersProductsFiltered.map(op => {
                   return state.products[state.products.findIndex(p => op.product_id === p.id)]
                 })

@@ -3,33 +3,39 @@ import NewRequests from "../../../components/admin/initialPage/NewRequests";
 import OrderStatusCard from "../../../components/admin/initialPage/OrderStatusCard";
 import AdminWrapper from "../../../components/admin/AdminWrapper";
 import { supabase } from "../../../server/api";
-import { iInsertAddresses, iInsertClients, iInsertContacts, iInsertOrders, iInsertOrdersProducts, iInsertOrderStatus, iInsertOrderStatuss, iInsertProducts, iProducts } from "../../../types/types";
+import { iCashBoxes, iInsertAddresses, iInsertClients, iInsertContacts, iInsertOrders, iInsertOrdersProducts, iInsertOrderStatus, iInsertOrderStatuss, iInsertProducts, iProducts, iRestaurant, iRestaurants } from "../../../types/types";
 import { GetServerSideProps } from "next";
 import { useState, useEffect, useReducer } from "react";
 import { iStatusReducer, statusReducer } from "../../../reducers/statusReducer/reducer";
 import { OrderModal } from "../../../components/admin/initialPage/OrderModal";
+import { CardapioDigitalButton } from "../../../components/admin/cardapio-digital/CardapioDigitalButton";
 
 interface iAdminHomePageProps {
-  orders: iInsertOrders,
+  ordersData: iInsertOrders,
   orderStatuss: iInsertOrderStatuss,
   ordersProducts: iInsertOrdersProducts,
   addresses: iInsertAddresses,
   products: iInsertProducts,
   contacts: iInsertContacts,
   clients: iInsertClients,
+  restaurant: iRestaurants
+  cashBoxes: iCashBoxes
 }
 
 
-export const getServerSideProps: GetServerSideProps = async () => {
+export const getServerSideProps: GetServerSideProps = async (context) => {
 
-  const orders = await supabase.from("orders").select()
+  const ordersData = await supabase.from("orders").select()
   const orderStatuss = await supabase.from("order_status").select()
   const ordersProducts = await supabase.from("orders_products").select()
   const products = await supabase.from("products").select()
   const clients = await supabase.from("clients").select()
   const contacts = await supabase.from("contacts").select()
   const addresses = await supabase.from("addresses").select()
-
+  const restaurant = await supabase.from("restaurants").select().eq("slug", context.query.slug)
+  const cashBoxes = await supabase.from("cash_boxes").select().eq("restaurant_id", restaurant.data![0].id)
+  console.log('cashBoxes')
+  console.log(cashBoxes)
   // const channel = supabase
   //   .channel('')
   //   .on(
@@ -71,18 +77,33 @@ export const getServerSideProps: GetServerSideProps = async () => {
 
   return {
     props: {
-      orders,
+      ordersData,
       orderStatuss,
       ordersProducts,
       products,
       clients,
       contacts,
       addresses,
+      restaurant,
+      cashBoxes,
     }
   }
 }
 
-export default function AdminHomepage({ orders, orderStatuss, ordersProducts, products, contacts, addresses, clients }: iAdminHomePageProps) {
+export default function AdminHomepage({ ordersData, orderStatuss, ordersProducts, products, contacts, addresses, clients, restaurant, cashBoxes }: iAdminHomePageProps) {
+
+  const cashBoxOpened = cashBoxes.data.find(cb => cb.is_open === true)
+  console.log(ordersData)
+  let orders = ordersData.data!
+
+  if (cashBoxOpened === undefined) {
+    console.log("1")
+    orders = []
+  } else {
+    console.log("2")
+    orders = ordersData.data.filter(o => o.cash_box_id === cashBoxOpened.id!)
+  }
+  console.log(orders)
 
   const orderEmAnalise = orderStatuss?.data.find(status => status.status_name === "em análise")
   const orderEmProdução = orderStatuss?.data.find(status => status.status_name === "em produção")
@@ -95,8 +116,8 @@ export default function AdminHomepage({ orders, orderStatuss, ordersProducts, pr
     return self.findIndex(os => os.order_id === op.order_id) === index
   })
   const emAnaliseOrders = ordersProductsWithStatusEmAnaliseFiltered?.map(op => {
-    const orderIndex = orders?.data.findIndex(or => or.id === op.order_id)
-    return orders.data[orderIndex]
+    const orderIndex = orders.findIndex(or => or.id === op.order_id)
+    return orders[orderIndex]
   })
 
   // EM PRODUÇÃO 
@@ -105,8 +126,8 @@ export default function AdminHomepage({ orders, orderStatuss, ordersProducts, pr
     return self.findIndex(os => os.order_id === op.order_id) === index
   })
   const emProduçãoOrders = ordersProductsWithStatusEmPoduçãoFiltered?.map(op => {
-    const orderIndex = orders?.data.findIndex(or => or.id === op.order_id)
-    return orders.data[orderIndex]
+    const orderIndex = orders?.findIndex(or => or.id === op.order_id)
+    return orders[orderIndex]
   })
 
   // A CAMINHO 
@@ -115,8 +136,8 @@ export default function AdminHomepage({ orders, orderStatuss, ordersProducts, pr
     return self.findIndex(os => os.order_id === op.order_id) === index
   })
   const aCaminhoOrders = ordersProductsWithStatusACaminhoFiltered?.map(op => {
-    const orderIndex = orders?.data.findIndex(or => or.id === op.order_id)
-    return orders.data[orderIndex]
+    const orderIndex = orders?.findIndex(or => or.id === op.order_id)
+    return orders[orderIndex]
   })
 
   // STATUS ENTREGUE 
@@ -125,12 +146,12 @@ export default function AdminHomepage({ orders, orderStatuss, ordersProducts, pr
     return self.findIndex(os => os.order_id === op.order_id) === index
   })
   const entregueOrders = ordersProductsWithStatusEntregueFiltered?.map(op => {
-    const orderIndex = orders?.data.findIndex(or => or.id === op.order_id)
-    return orders.data[orderIndex]
+    const orderIndex = orders?.findIndex(or => or.id === op.order_id)
+    return orders[orderIndex]
   })
 
   const [state, dispatch] = useReducer<(state: iStatusReducer, action: any) => iStatusReducer>(statusReducer, {
-    orders: orders.data,
+    orders: orders,
     orderStatuss: orderStatuss.data,
     ordersProducts: ordersProducts.data,
     addresses: addresses?.data,
@@ -171,11 +192,32 @@ export default function AdminHomepage({ orders, orderStatuss, ordersProducts, pr
   //   return () => clearInterval(intervalId);
   // }, [count, orderStatuss, products, ordersProducts]);
 
+  const [openCashBoxState, setOpenCashBoxState] = useState(false)
 
+  async function handleOpenCashBox() {
+    const cashBoxe = await supabase.from("cash_boxes").insert({
+      is_open: true,
+      opened_at: new Date().toISOString(),
+      restaurant_id: restaurant?.data[0].id
+    }).select("*")
+    setOpenCashBoxState(true)
+  }
+
+  async function handleCloseCashBox() {
+    const cashBoxe = await supabase.from("cash_boxes").update({
+      is_open: false,
+      closed_at: new Date().toISOString(),
+    }).eq("is_open", true).select("*")
+    setOpenCashBoxState(false)
+  }
 
   return (
     <AdminWrapper>
       <div className="flex flex-col gap-8">
+        <div className="flex items-center gap-3">
+          <CardapioDigitalButton name="Abrir caixa" h="h-10" w="w-40" disabled={openCashBoxState || cashBoxes.data.some(cb => cb.is_open === true)} onClick={() => handleOpenCashBox()} />
+          <CardapioDigitalButton name="Fechar caixa" h="h-10" w="w-40" disabled={!cashBoxes.data.some(cb => cb.is_open === true)} onClick={() => handleCloseCashBox()} />
+        </div>
         <div className="grid 2xs:grid-cols-2 lg:grid-cols-3 gap-3">
           <Card color="red" name="Faturamento" value={`R$ ${billing()}`} />
           <Card color="green" name="Pedidos" value={`${ordersAmount}`} />

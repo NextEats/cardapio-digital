@@ -69,8 +69,18 @@ export interface iOrderStatus {
 export interface iOrdersStatus {
   data: Array<Database["public"]["Tables"]["order_status"]["Row"]>;
 }
+export interface iCashBox {
+  data: Database["public"]["Tables"]["cash_boxes"]["Row"];
+}
 
-//  INSERTS
+export interface iCashBoxes {
+  data: Array<Database["public"]["Tables"]["cash_boxes"]["Row"]>;
+}
+
+
+
+
+// ==================   INSERTS  =====================
 export interface iInsertContact {
   data: Database["public"]["Tables"]["contacts"]["Insert"];
 }

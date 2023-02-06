@@ -168,7 +168,7 @@ function CategoryView({ products, setViewCategory, viewCategory }: iCategoryView
                             return <div key={product.id} className="bg-white h-[120px] cursor-pointer sm:h-24 w-full flex items-center gap-3 p-2 rounded-md  hover:shadow-md hover:transition-all ease-in-out">
                                 <Image
                                     className="rounded-md h-[90px] sm:h-full w-20"
-                                    src={"https://i.ibb.co/8KnTRXt/pao.png"}
+                                    src={product.picture_url}
                                     alt=""
                                     width={40}
                                     height={40}

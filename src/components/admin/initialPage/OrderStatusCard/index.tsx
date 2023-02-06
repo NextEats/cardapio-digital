@@ -53,7 +53,9 @@ export default function OrderStatusCard({ statusName, orders, state, dispatch }:
         <tbody className="w-full border-collapse ">
           {
             orders?.map(order => {
-
+              if (!order) {
+                return
+              }
               const ordersProductsFiltered = state.ordersProducts.filter(op => op.order_id === order.id!)
               const productsFiltered = ordersProductsFiltered.map(op => {
                 return state.products[state.products.findIndex(p => op.product_id === p.id)]

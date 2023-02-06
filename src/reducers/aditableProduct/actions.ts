@@ -135,6 +135,7 @@ export function setAddNewOption(optionName: string, optionPicture_url: string, i
     }
 }
 export function removeOptionFromIngredientAction(optionName: string, ingredientId: string) {
+    console.log("remove 1")
     return {
         type: EditableProductActions.REMOVE_OPTION_FROM_INGREDIENT,
         payload: { optionName, ingredientId }

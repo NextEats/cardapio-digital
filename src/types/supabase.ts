@@ -278,6 +278,7 @@ export interface Database {
           client_id: number | null
           created_at: string | null
           id: number
+          order_status_id: number | null
           order_type_id: number
           payment_method_id: number | null
           restaurant_id: number | null
@@ -287,6 +288,7 @@ export interface Database {
           client_id?: number | null
           created_at?: string | null
           id?: number
+          order_status_id?: number | null
           order_type_id: number
           payment_method_id?: number | null
           restaurant_id?: number | null
@@ -296,6 +298,7 @@ export interface Database {
           client_id?: number | null
           created_at?: string | null
           id?: number
+          order_status_id?: number | null
           order_type_id?: number
           payment_method_id?: number | null
           restaurant_id?: number | null
@@ -306,21 +309,18 @@ export interface Database {
           created_at: string | null
           id: number
           order_id: number
-          order_status_id: number | null
           product_id: number
         }
         Insert: {
           created_at?: string | null
           id?: number
           order_id: number
-          order_status_id?: number | null
           product_id: number
         }
         Update: {
           created_at?: string | null
           id?: number
           order_id?: number
-          order_status_id?: number | null
           product_id?: number
         }
       }

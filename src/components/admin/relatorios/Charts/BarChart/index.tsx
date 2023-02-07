@@ -31,10 +31,14 @@ const colors = [
 
 export function BarChart({ globalValuesData }: iBarCgart) {
 
-    const { ordersProducts, products, ordersStatus } = globalValuesData
+    const { ordersProducts, products, ordersStatus, orders } = globalValuesData
 
     const statusEnTregue = ordersStatus.find(status => status.status_name === "entregue")
-    const ordersProductWithStatusEntrega = ordersProducts.filter(orderProduct => orderProduct.order_status_id === statusEnTregue?.id)
+    if (!statusEnTregue) {
+        return
+    }
+    const ordersWithStatusEntregue = orders.filter(o => o.order_status_id === statusEnTregue.id)
+    const ordersProductWithStatusEntrega = ordersProducts.filter(orderProduct => ordersWithStatusEntregue.some(o => o.id === orderProduct.order_id))
 
     let productsThatHaveBeenDelivered: { [key: string]: { product: iProduct["data"], numberOfProductsPurchased: number } } = {}
     for (let i = 0; i < ordersProductWithStatusEntrega.length; i++) {
@@ -94,8 +98,11 @@ export function BarChart({ globalValuesData }: iBarCgart) {
                                                                 <span className="text-lg font-bold text-gray-700"> {product.numberOfProductsPurchased} de {ordersProductWithStatusEntrega.length} </span> <span className="text-lg font-medium text-gray-500">Produtos vendidos </span>
                                                             </div>
                                                             <div style={{ display: 'flex', gap: 5 }}>
-                                                                <span className="text-lg font-bold text-gray-700"> {percentageOfProducts.toFixed(2)}% </span> <span className="text-lg font-medium text-gray-500">Percentual de Produtos vendidos</span>
+                                                                <span className="text-lg font-bold text-gray-700"> {percentageOfProducts.toFixed(2)}% </span> <span className="text-lg font-medium text-gray-500">Percentual do produto vendido</span>
                                                             </div>
+                                                        </div>
+                                                        <div style={{ display: 'flex', gap: 5 }}>
+                                                            <span className="text-lg font-bold text-gray-700"> R$ {(product.numberOfProductsPurchased * product.product.price).toFixed(2)} </span> <span className="text-lg font-medium text-gray-500">Faturado com esse produto</span>
                                                         </div>
                                                     </div>
                                                 </div>

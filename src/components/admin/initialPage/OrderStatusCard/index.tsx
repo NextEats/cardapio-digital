@@ -17,20 +17,20 @@ interface IOrderStatusCardProps {
 export default function OrderStatusCard({ statusName, orders, state, dispatch }: IOrderStatusCardProps) {
   const tdStyle =
     "border-collapse border-l-2 px-2 border-gray-300 text-sm font-medium";
-  function switchToTheWay(orderId: number) {
+  async function switchToTheWay(orderId: number) {
     if (statusName === "Em produção") {
       const aCaminhoStatus = state.orderStatuss?.find(status => status.status_name === "a caminho")
-      const ordersproductFiltered = state.ordersProducts?.filter(op => op.order_id === orderId)
-      ordersproductFiltered.forEach(async op => {
-        const ordersProductData = await supabase.from("orders_products").update({ order_status_id: aCaminhoStatus?.id }).eq("id", op.id).select("*")
-      })
+      // const orderFound = orders.find(o => )
+      // const ordersproductFiltered = state.ordersProducts?.filter(op => op.order_id === orderId)
+      const ordersProductData = await supabase.from("orders").update({ order_status_id: aCaminhoStatus?.id }).eq("id", orderId).select("*")
       dispatch(switchToTheWayAction(orderId))
     } else if (statusName === "A caminho") {
       const entregueStatus = state.orderStatuss?.find(status => status.status_name === "entregue")
-      const ordersproductFiltered = state.ordersProducts?.filter(op => op.order_id === orderId)
-      ordersproductFiltered.forEach(async op => {
-        const ordersProductData = await supabase.from("orders_products").update({ order_status_id: entregueStatus?.id }).eq("id", op.id).select("*")
-      })
+      const ordersProductData = await supabase.from("orders").update({ order_status_id: entregueStatus?.id }).eq("id", orderId).select("*")
+      //   const ordersproductFiltered = state.ordersProducts?.filter(op => op.order_id === orderId)
+      // ordersproductFiltered.forEach(async op => {
+      //   const ordersProductData = await supabase.from("orders_products").update({ order_status_id: entregueStatus?.id }).eq("id", op.id).select("*")
+      // })
       dispatch(switchToDeliveredAction(orderId))
     } else {
 
@@ -43,14 +43,14 @@ export default function OrderStatusCard({ statusName, orders, state, dispatch }:
   }
 
   return (
-    <div className="flex flex-1 min-h-[240px]  lg:w-full flex-col shadow-sm px-4 pt-2 pb-4">
+    <div className="flex flex-1 min-h-[240px]  lg:w-full flex-col shadow-sm px-4 pt-2 pb-4 scrollbar-custom">
       <div className=" flex items-center justify-between mb-4">
         <h2 className="text-base font-bold"> {statusName} </h2>
         <span className="text-md font-medium">{orders.length}</span>
       </div>
 
-      <table className="w-full ">
-        <tbody className="w-full border-collapse ">
+      <table className="w-full  ">
+        <tbody className="w-full border-collapse">
           {
             orders?.map(order => {
               if (!order) {

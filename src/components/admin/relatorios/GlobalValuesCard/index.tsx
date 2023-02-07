@@ -26,13 +26,11 @@ export function GlobalValuesCard({ globalValuesData }: iGlobalValuesCardProps) {
         return selectedProduct.reduce((acc, product) => acc + product.price, 0)
     }
 
-    const ordersAmount = Array.from(new Set(ordersProductFiltered.map(order => order.order_id))).length;
-
     return (
         <>
             <div className="grid 2xs:grid-cols-2 xl:grid-cols-4 gap-3 mb-8">
                 <Card color="red" name="Faturamento" value={"R$" + billing()} />
-                <Card color="green" name="Pedidos" value={`${ordersAmount}`} />
+                <Card color="green" name="Pedidos" value={`${ordersWithStatusEntregue.length}`} />
                 <Card color="yellow" name="Produtos no Cardápio" value={`${products.length}`} />
                 <Card color="blue" name="Ingredientes em Falta" value={"0"} />
             </div>

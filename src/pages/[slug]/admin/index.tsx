@@ -9,6 +9,8 @@ import { useState, useEffect, useReducer } from "react";
 import { iStatusReducer, statusReducer } from "../../../reducers/statusReducer/reducer";
 import { OrderModal } from "../../../components/admin/initialPage/OrderModal";
 import { CardapioDigitalButton } from "../../../components/admin/cardapio-digital/CardapioDigitalButton";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 interface iAdminHomePageProps {
   ordersData: iInsertOrders,
@@ -22,7 +24,6 @@ interface iAdminHomePageProps {
   cashBoxes: iCashBoxes
 }
 
-
 export const getServerSideProps: GetServerSideProps = async (context) => {
 
   const ordersData = await supabase.from("orders").select()
@@ -34,46 +35,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const addresses = await supabase.from("addresses").select()
   const restaurant = await supabase.from("restaurants").select().eq("slug", context.query.slug)
   const cashBoxes = await supabase.from("cash_boxes").select().eq("restaurant_id", restaurant.data![0].id)
-  console.log('cashBoxes')
-  console.log(cashBoxes)
-  // const channel = supabase
-  //   .channel('')
-  //   .on(
-  //     'postgres_changes',
-  //     {
-  //       event: '*',
-  //       schema: 'public',
-  //       table: 'orders',
-  //     },
-  //     (payload) => console.log(payload)
-  //   )
-  //   .subscribe()
-  // console.log(channel, orders)
-
-  // const SupabaseWebSocket = () => {
-  //   const [data, setData] = useState([]);
-
-  //   useEffect(() => {
-  //     const socket = new WebSocket('wss://api.supabase.co/realtime/<SUA_CHAVE_API>');
-
-  //     socket.addEventListener('open', (event) => {
-  //       socket.send(JSON.stringify({
-  //         type: 'subscribe',
-  //         payload: {
-  //           channel: '<NOME_DA_TABELA>',
-  //           event: 'update',
-  //         },
-  //       }));
-  //     });
-
-  //     socket.addEventListener('message', (event) => {
-  //       setData((prevData) => [...prevData, event.data]);
-  //     });
-
-  //     return () => {
-  //       socket.close();
-  //     };
-  //   }, []);
 
   return {
     props: {
@@ -93,62 +54,30 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 export default function AdminHomepage({ ordersData, orderStatuss, ordersProducts, products, contacts, addresses, clients, restaurant, cashBoxes }: iAdminHomePageProps) {
 
   const cashBoxOpened = cashBoxes.data.find(cb => cb.is_open === true)
-  console.log(ordersData)
   let orders = ordersData.data!
 
   if (cashBoxOpened === undefined) {
-    console.log("1")
     orders = []
   } else {
-    console.log("2")
     orders = ordersData.data.filter(o => o.cash_box_id === cashBoxOpened.id!)
   }
-  console.log(orders)
 
-  const orderEmAnalise = orderStatuss?.data.find(status => status.status_name === "em análise")
-  const orderEmProdução = orderStatuss?.data.find(status => status.status_name === "em produção")
-  const orderACaminho = orderStatuss?.data.find(status => status.status_name === "a caminho")
-  const orderEntregue = orderStatuss?.data.find(status => status.status_name === "entregue")
+  const statusEmAnalise = orderStatuss?.data.find(status => status.status_name === "em análise")
+  const statusEmProdução = orderStatuss?.data.find(status => status.status_name === "em produção")
+  const statusACaminho = orderStatuss?.data.find(status => status.status_name === "a caminho")
+  const statusEntregue = orderStatuss?.data.find(status => status.status_name === "entregue")
 
   // EM ANÁLISE
-  const ordersProductsWithStatusEmAnalise = ordersProducts?.data.filter(op => op.order_status_id === orderEmAnalise?.id)
-  const ordersProductsWithStatusEmAnaliseFiltered = ordersProductsWithStatusEmAnalise?.filter((op, index, self) => {
-    return self.findIndex(os => os.order_id === op.order_id) === index
-  })
-  const emAnaliseOrders = ordersProductsWithStatusEmAnaliseFiltered?.map(op => {
-    const orderIndex = orders.findIndex(or => or.id === op.order_id)
-    return orders[orderIndex]
-  })
+  const emAnaliseOrders = orders?.filter(or => or.order_status_id === statusEmAnalise?.id)
 
   // EM PRODUÇÃO 
-  const ordersProductsWithStatusEmPodução = ordersProducts?.data.filter(op => op.order_status_id === orderEmProdução?.id)
-  const ordersProductsWithStatusEmPoduçãoFiltered = ordersProductsWithStatusEmPodução?.filter((op, index, self) => {
-    return self.findIndex(os => os.order_id === op.order_id) === index
-  })
-  const emProduçãoOrders = ordersProductsWithStatusEmPoduçãoFiltered?.map(op => {
-    const orderIndex = orders?.findIndex(or => or.id === op.order_id)
-    return orders[orderIndex]
-  })
+  const emProduçãoOrders = orders?.filter(or => or.order_status_id === statusEmProdução?.id)
 
   // A CAMINHO 
-  const ordersProductsWithStatusACaminho = ordersProducts?.data.filter(op => op.order_status_id === orderACaminho?.id)
-  const ordersProductsWithStatusACaminhoFiltered = ordersProductsWithStatusACaminho?.filter((op, index, self) => {
-    return self.findIndex(os => os.order_id === op.order_id) === index
-  })
-  const aCaminhoOrders = ordersProductsWithStatusACaminhoFiltered?.map(op => {
-    const orderIndex = orders?.findIndex(or => or.id === op.order_id)
-    return orders[orderIndex]
-  })
+  const aCaminhoOrders = orders?.filter(or => or.order_status_id === statusACaminho?.id)
 
   // STATUS ENTREGUE 
-  const ordersProductsWithStatusEntregue = ordersProducts?.data.filter(op => op.order_status_id === orderEntregue?.id)
-  const ordersProductsWithStatusEntregueFiltered = ordersProductsWithStatusEntregue?.filter((op, index, self) => {
-    return self.findIndex(os => os.order_id === op.order_id) === index
-  })
-  const entregueOrders = ordersProductsWithStatusEntregueFiltered?.map(op => {
-    const orderIndex = orders?.findIndex(or => or.id === op.order_id)
-    return orders[orderIndex]
-  })
+  const entregueOrders = orders?.filter(or => or.order_status_id === statusEntregue?.id)
 
   const [state, dispatch] = useReducer<(state: iStatusReducer, action: any) => iStatusReducer>(statusReducer, {
     orders: orders,
@@ -167,15 +96,12 @@ export default function AdminHomepage({ ordersData, orderStatuss, ordersProducts
     orderId: 0,
   })
 
-  const statusId = orderStatuss.data.find(s => s.status_name === 'entregue')
-  const ordersProductFiltered = ordersProducts.data.filter(ordersProduct => statusId?.id === ordersProduct.order_status_id)
+  const ordersProductFiltered = ordersProducts.data.filter(op => entregueOrders.some(o => o.id === op.order_id))
   function billing() {
-    const ordersProductId = ordersProductFiltered.map(ordersProduct => ordersProduct.product_id)
-    const selectedProduct = ordersProductId.map(productId => products.data[products.data.findIndex(product => productId === product.id)])
-    return selectedProduct.reduce((acc, product) => acc + product.price, 0)
+    const productIds = ordersProductFiltered.map(ordersProduct => ordersProduct.product_id)
+    const selectedProduct = productIds.map(productId => products.data[products.data.findIndex(product => productId === product.id)])
+    return selectedProduct.reduce((acc, product) => acc + product?.price!, 0)
   }
-  const ordersAmount = Array.from(new Set(ordersProductFiltered.map(order => order.order_id))).length;
-  // const [count, setCount] = useState(0);
 
   // useEffect(() => {
   //   console.log(count >= billing())
@@ -204,6 +130,10 @@ export default function AdminHomepage({ ordersData, orderStatuss, ordersProducts
   }
 
   async function handleCloseCashBox() {
+    if (state.emAnaliseOrders.length > 0 || state.aCaminhoOrders.length > 0 || state.emProduçãoOrders.length > 0) {
+      alert("Ei vagabundo, crie um toast para avisar para algum desorientado que só pode fechar o caixa se todos os pedidos forem entregue!")
+      return
+    }
     const cashBoxe = await supabase.from("cash_boxes").update({
       is_open: false,
       closed_at: new Date().toISOString(),
@@ -220,7 +150,7 @@ export default function AdminHomepage({ ordersData, orderStatuss, ordersProducts
         </div>
         <div className="grid 2xs:grid-cols-2 lg:grid-cols-3 gap-3">
           <Card color="red" name="Faturamento" value={`R$ ${billing()}`} />
-          <Card color="green" name="Pedidos" value={`${ordersAmount}`} />
+          <Card color="green" name="Pedidos" value={`${entregueOrders.length}`} />
           <Card color="yellow" name="Produtos no Cardápio" value={products?.data.length.toString()} />
         </div>
 
@@ -234,7 +164,6 @@ export default function AdminHomepage({ ordersData, orderStatuss, ordersProducts
         {
           state.isOpenOrderModal ? <OrderModal state={state} dispatch={dispatch} /> : null
         }
-
       </div>
     </AdminWrapper>
   );

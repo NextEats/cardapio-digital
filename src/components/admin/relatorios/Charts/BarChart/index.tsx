@@ -34,10 +34,8 @@ export function BarChart({ globalValuesData }: iBarCgart) {
     const { ordersProducts, products, ordersStatus, orders } = globalValuesData
 
     const statusEnTregue = ordersStatus.find(status => status.status_name === "entregue")
-    if (!statusEnTregue) {
-        return
-    }
-    const ordersWithStatusEntregue = orders.filter(o => o.order_status_id === statusEnTregue.id)
+
+    const ordersWithStatusEntregue = orders.filter(o => o.order_status_id === statusEnTregue!.id)
     const ordersProductWithStatusEntrega = ordersProducts.filter(orderProduct => ordersWithStatusEntregue.some(o => o.id === orderProduct.order_id))
 
     let productsThatHaveBeenDelivered: { [key: string]: { product: iProduct["data"], numberOfProductsPurchased: number } } = {}
@@ -58,7 +56,9 @@ export function BarChart({ globalValuesData }: iBarCgart) {
             <div className=" h-[300px] flex items-end gap-3">
                 {
                     top12ProductsThatHaveBeenDelivered.map(product => {
-
+                        if (!product) {
+                            return
+                        }
                         const percentageOfProducts = product.numberOfProductsPurchased * 100 / ordersProductWithStatusEntrega.length
                         const maxHeightOfbar = 224
                         const barHeight = maxHeightOfbar * percentageOfProducts / 100
@@ -80,7 +80,7 @@ export function BarChart({ globalValuesData }: iBarCgart) {
                                             />
                                         </HoverCard.Trigger>
                                         <HoverCard.Portal>
-                                            <HoverCard.Content className="will-change-transform rounded-md bg-white p-5 shadow-md mx-6 ">
+                                            <HoverCard.Content className="will-change-transform rounded-md bg-white p-5 shadow-md mx-6 max-w-[700px]">
                                                 <div className="flex flex-col gap-1">
                                                     <Image
                                                         className="rounded-full cursor-pointer"
@@ -89,21 +89,18 @@ export function BarChart({ globalValuesData }: iBarCgart) {
                                                         width={60}
                                                         height={60}
                                                     />
-                                                    <div className="flex flex-col gap-4">
+                                                    <div className="flex flex-col gap-3">
                                                         <span className="text-lg font-bold">  {product.product.name} </span>
 
-                                                        <p className="text-base font-normal text-gray-600 truncate"> {product.product.description} </p>
-                                                        <div style={{ display: 'flex', gap: 15 }}>
-                                                            <div style={{ display: 'flex', gap: 5 }}>
-                                                                <span className="text-lg font-bold text-gray-700"> {product.numberOfProductsPurchased} de {ordersProductWithStatusEntrega.length} </span> <span className="text-lg font-medium text-gray-500">Produtos vendidos </span>
-                                                            </div>
-                                                            <div style={{ display: 'flex', gap: 5 }}>
-                                                                <span className="text-lg font-bold text-gray-700"> {percentageOfProducts.toFixed(2)}% </span> <span className="text-lg font-medium text-gray-500">Percentual do produto vendido</span>
-                                                            </div>
+                                                        <p className="text-base font-normal text-gray-600"> {product.product.description} </p>
+                                                        <div className="flex gap-4">
+
+                                                            <span className="text-lg font-bold text-gray-700"> {product.numberOfProductsPurchased} de {ordersProductWithStatusEntrega.length} </span> <span className="text-lg font-medium text-gray-500">Produtos vendidos </span>
+
+                                                            <span className="text-lg font-bold text-gray-700"> {percentageOfProducts.toFixed(2)}% </span> <span className="text-lg font-medium text-gray-500">Percentual do produto vendido</span>
                                                         </div>
-                                                        <div style={{ display: 'flex', gap: 5 }}>
-                                                            <span className="text-lg font-bold text-gray-700"> R$ {(product.numberOfProductsPurchased * product.product.price).toFixed(2)} </span> <span className="text-lg font-medium text-gray-500">Faturado com esse produto</span>
-                                                        </div>
+                                                        <p className="text-lg font-bold text-gray-700"> R$ {(product.numberOfProductsPurchased * product.product.price).toFixed(2)}  <span className="text-lg font-medium text-gray-500 ml-2">Faturado com esse produto</span>  </p>
+
                                                     </div>
                                                 </div>
                                                 <HoverCard.Arrow className="fill-white" />

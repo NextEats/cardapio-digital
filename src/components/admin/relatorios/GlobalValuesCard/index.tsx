@@ -17,13 +17,9 @@ export function GlobalValuesCard({ globalValuesData }: iGlobalValuesCardProps) {
 
     const { orders, products, ordersProducts, ordersStatus } = globalValuesData
 
-    // function billing() {
-    //     const ordersProductId = ordersProducts.map(ordersProduct => ordersProduct.product_id)
-    //     const selectedProduct = ordersProductId.map(productId => products[products.findIndex(product => productId === product.id)])
-    //     return selectedProduct.reduce((acc, product) => acc + product.price, 0)
-    // }
-    const statusId = ordersStatus.find(s => s.status_name === 'entregue')
-    const ordersProductFiltered = ordersProducts.filter(ordersProduct => statusId?.id === ordersProduct.order_status_id)
+    const status = ordersStatus.find(s => s.status_name === 'entregue')
+    const ordersWithStatusEntregue = orders.filter(o => o.order_status_id === status!.id)
+    const ordersProductFiltered = ordersProducts.filter(orderProduct => ordersWithStatusEntregue.some(o => o.id === orderProduct.order_id))
     function billing() {
         const ordersProductId = ordersProductFiltered.map(ordersProduct => ordersProduct.product_id)
         const selectedProduct = ordersProductId.map(productId => products[products.findIndex(product => productId === product.id)])

@@ -135,7 +135,7 @@ export default function Reports({
     }
 
     setOrdersDate(orders.data.filter(o => new Date(o.created_at!) >= new Date(startDate) && new Date(o.created_at!) <= new Date(endDate!)))
-    setStatusDate(ordersStatus.data.filter(os => new Date(os.created_at!) >= new Date(startDate) && new Date(os.created_at!) <= new Date(endDate!)))
+    // setStatusDate(ordersStatus.data.filter(os => new Date(os.created_at!) >= new Date(startDate) && new Date(os.created_at!) <= new Date(endDate!)))
     setOrdersProductsDate(ordersProducts.data.filter(op => new Date(op.created_at!) >= new Date(startDate) && new Date(op.created_at!) <= new Date(endDate!)))
     setProductsDate(products.data.filter(p => new Date(p.created_at!) >= new Date(startDate) && new Date(p.created_at!) <= new Date(endDate!)))
     setProductCategoriesDate(productCategories.data.filter(pc => new Date(pc.created_at!) >= new Date(startDate) && new Date(pc.created_at!) <= new Date(endDate!)))
@@ -157,13 +157,12 @@ export default function Reports({
     filter()
   }, [])
 
-
   const globalValuesData = {
     orders: ordersDate,
-    productCategories: productCategoriesDate,
+    productCategories: productCategories.data,
     products: products.data,
     ordersProducts: ordersProductsDate,
-    ordersStatus: statusDate,
+    ordersStatus: ordersStatus.data,
   };
 
   return (

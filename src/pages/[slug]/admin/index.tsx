@@ -11,9 +11,14 @@ import { OrderModal } from "../../../components/admin/initialPage/OrderModal";
 import { CardapioDigitalButton } from "../../../components/admin/cardapio-digital/CardapioDigitalButton";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { getRestaurantBySlugFetch } from "../../../fetch/restaurant/getRestaurantBySlug";
+import { getRestaurantBySlug } from "../../api/restaurants/[slug]";
+import { api } from "../../../helpers/axiosBaseRout";
+import { getOrdersByRestaurantIdFetch } from "../../../fetch/orders/getOrdersByRestaurantId";
+import axios from "axios";
 
 interface iAdminHomePageProps {
-  ordersData: iInsertOrders,
+  ordersData: iInsertOrders["data"],
   orderStatuss: iInsertOrderStatuss,
   ordersProducts: iInsertOrdersProducts,
   addresses: iInsertAddresses,
@@ -26,15 +31,20 @@ interface iAdminHomePageProps {
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
 
-  const ordersData = await supabase.from("orders").select()
+  //Refatorada
+  const restaurant = await getRestaurantBySlugFetch(context.query.slug)
+  const ordersData = await getOrdersByRestaurantIdFetch(restaurant[0].id)
+
+
+  // A Refatorar
   const orderStatuss = await supabase.from("order_status").select()
   const ordersProducts = await supabase.from("orders_products").select()
   const products = await supabase.from("products").select()
   const clients = await supabase.from("clients").select()
   const contacts = await supabase.from("contacts").select()
   const addresses = await supabase.from("addresses").select()
-  const restaurant = await supabase.from("restaurants").select().eq("slug", context.query.slug)
-  const cashBoxes = await supabase.from("cash_boxes").select().eq("restaurant_id", restaurant.data![0].id)
+  const cashBoxes = await supabase.from("cash_boxes").select().eq("restaurant_id", restaurant![0].id)
+
 
   return {
     props: {
@@ -54,12 +64,12 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 export default function AdminHomepage({ ordersData, orderStatuss, ordersProducts, products, contacts, addresses, clients, restaurant, cashBoxes }: iAdminHomePageProps) {
 
   const cashBoxOpened = cashBoxes.data.find(cb => cb.is_open === true)
-  let orders = ordersData.data!
+  let orders = ordersData!
 
   if (cashBoxOpened === undefined) {
     orders = []
   } else {
-    orders = ordersData.data.filter(o => o.cash_box_id === cashBoxOpened.id!)
+    orders = ordersData.filter(o => o.cash_box_id === cashBoxOpened.id!)
   }
 
   const statusEmAnalise = orderStatuss?.data.find(status => status.status_name === "em análise")

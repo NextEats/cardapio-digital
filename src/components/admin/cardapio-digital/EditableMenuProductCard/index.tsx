@@ -64,7 +64,6 @@ export default function EditableMenuProductCard({
   }
 
   function setAdditionalSelected(additionalId: number) {
-    console.log("foi");
 
     const additional = additionals.find(
       (additional) => additional.id === additionalId

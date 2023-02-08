@@ -27,30 +27,32 @@ import { getOrderStatusFetch } from "src/fetch/orderStatus/getOrdersStatus";
 import { getProductsByRestaurantIdFetch } from "src/fetch/products/getProductsByRestaurantId";
 import { getProductsCategoriesByRestaurantIdFetch } from "src/fetch/productsCategories/getProductsCategoriesByRestaurantId";
 import { getRestaurantBySlugFetch } from "src/fetch/restaurant/getRestaurantBySlug";
+import { getAdditionalsFetch } from "src/fetch/additionals/getAdditionals";
+import { getSelectsFetch } from "src/fetch/selects/getSelects";
+import { getProductSelectsFetch } from "src/fetch/productSelects/getProductSelects";
+import { getProductOptionsFetch } from "src/fetch/productOptions/getProductOptions";
+import { getProductAdditionalsFetch } from "src/fetch/productAdditionals/getProductAdditionals";
 
 interface iCardapioDigitalProps {
   productCategories: iProductCategories["data"];
   products: iProducts["data"];
-  selects: iInsertSelects;
-  productSelects: iInsertProductSelects;
-  productOptions: iInsertProductOptions;
-  productAdditionals: iInsertProductAdditionals;
-  additionals: iInsertAdditionals;
+  selects: iInsertSelects["data"];
+  productSelects: iInsertProductSelects["data"];
+  productOptions: iInsertProductOptions["data"];
+  productAdditionals: iInsertProductAdditionals["data"];
+  additionals: iInsertAdditionals["data"];
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  // new
+
   const restaurant = await getRestaurantBySlugFetch(context.query.slug)
   const productCategories = await getProductsCategoriesByRestaurantIdFetch(restaurant[0].id)
   const products = await getProductsByRestaurantIdFetch(restaurant[0].id)
-
-  // old
-  const selects = await supabase.from("selects").select();
-  const productSelects = await supabase.from("product_selects").select();
-  const productOptions = await supabase.from("product_options").select();
-
-  const productAdditionals = await supabase.from("product_additionals").select();
-  const additionals = await supabase.from("additionals").select();
+  const additionals = await getAdditionalsFetch(restaurant[0].id)
+  const selects = await getSelectsFetch(restaurant[0].id);
+  const productSelects = await getProductSelectsFetch()
+  const productOptions = await getProductOptionsFetch()
+  const productAdditionals = await getProductAdditionalsFetch()
 
   return {
     props: {
@@ -113,7 +115,7 @@ export default function CardapioDigital({
       const product = products.find((p) => p.id === productId);
 
       // filtering the ingredinets ones
-      const productSelectsByProdctId = productSelects.data.filter(
+      const productSelectsByProdctId = productSelects.filter(
         (select) => select.product_id === product?.id
       );
 
@@ -123,7 +125,7 @@ export default function CardapioDigital({
         name: string;
       }> = [];
       for (let i = 0; i < productSelectsByProdctId.length; i++) {
-        const selectsIndex = selects.data.findIndex(
+        const selectsIndex = selects.findIndex(
           (select) => select.id === productSelectsByProdctId[i].select_id
         );
         if (selectsIndex <= -1) {
@@ -131,7 +133,7 @@ export default function CardapioDigital({
         }
         selectsByProductSelect = [
           ...selectsByProductSelect,
-          selects.data[selectsIndex],
+          selects[selectsIndex],
         ];
       }
 
@@ -141,21 +143,21 @@ export default function CardapioDigital({
       );
 
       // filtering the options ones
-      const productOptiosBySelectId = productOptions.data.filter((option) => {
+      const productOptiosBySelectId = productOptions.filter((option) => {
         return selectsByProductSelect.map(
           (select) => select?.id === option.select_id && option
         );
       });
 
       // filtering the additional ones
-      const productAdditionalsByProductId = productAdditionals.data.filter(
+      const productAdditionalsByProductId = productAdditionals.filter(
         (productAdditional) => productAdditional.product_id === productId
       );
 
       const additionalsByProductAdditionalsId =
         productAdditionalsByProductId?.map((productAdditional) => {
-          return additionals.data[
-            additionals?.data.findIndex(
+          return additionals[
+            additionals.findIndex(
               (additional) => productAdditional.additional_id === additional.id
             )
           ];
@@ -301,10 +303,10 @@ export default function CardapioDigital({
             dispatch={dispatch}
             productModal={productModal}
             productId={productId}
-            productOptions={productOptions.data}
-            selects={selects?.data}
+            productOptions={productOptions}
+            selects={selects}
             setProductModal={setProductModal}
-            additionals={additionals.data}
+            additionals={additionals}
             productCategories={productCategories}
           />
         </div>

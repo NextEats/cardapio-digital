@@ -76,6 +76,27 @@ export interface iCashBox {
 export interface iCashBoxes {
   data: Array<Database["public"]["Tables"]["cash_boxes"]["Row"]>;
 }
+export interface iSelect {
+  data: Database["public"]["Tables"]["selects"]["Row"];
+}
+
+export interface iSelects {
+  data: Array<Database["public"]["Tables"]["selects"]["Row"]>;
+}
+export interface iProductSelect {
+  data: Database["public"]["Tables"]["product_selects"]["Row"];
+}
+
+export interface iProductSelects {
+  data: Array<Database["public"]["Tables"]["product_selects"]["Row"]>;
+}
+export interface iProductAdditional {
+  data: Database["public"]["Tables"]["product_additionals"]["Row"];
+}
+
+export interface iProductAdditionals {
+  data: Array<Database["public"]["Tables"]["product_additionals"]["Row"]>;
+}
 
 
 
@@ -208,7 +229,7 @@ export interface iProductOption {
 }
 
 export interface iProductOptions {
-  data: Array<iProduct>;
+  data: Array<Database["public"]["Tables"]["product_options"]["Row"]>;
 }
 
 export interface iCheckoutProduct {

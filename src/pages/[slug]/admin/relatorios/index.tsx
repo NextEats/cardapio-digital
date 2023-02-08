@@ -18,14 +18,33 @@ import { BarChart } from "../../../../components/admin/relatorios/Charts/BarChar
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { CardapioDigitalButton } from "../../../../components/admin/cardapio-digital/CardapioDigitalButton";
 import { format } from "date-fns";
+import { getOrdersByRestaurantIdFetch } from "src/fetch/orders/getOrdersByRestaurantId";
+import { getOrdersProductsFetch } from "src/fetch/ordersProducts/getOrdersProducts";
+import { getOrderStatusFetch } from "src/fetch/orderStatus/getOrdersStatus";
+import { getProductsByRestaurantIdFetch } from "src/fetch/products/getProductsByRestaurantId";
+import { getRestaurantBySlugFetch } from "src/fetch/restaurant/getRestaurantBySlug";
+import { getProductsCategoriesByRestaurantIdFetch } from "src/fetch/productsCategories/getProductsCategoriesByRestaurantId";
+interface DailyRevenue {
+  date: Date;
+  revenue: number;
+}
 
-export const getServerSideProps: GetServerSideProps = async () => {
-  const productCategories = await supabase.from("product_categories").select();
-  const products = await supabase.from("products").select();
-  const orders = await supabase.from("orders").select();
-  const ordersProducts = await supabase.from("orders_products").select();
-  const ordersStatus = await supabase.from("order_status").select();
-  // const loacal =  window.localStorage.setItem("product_categories", JSON.stringify(productCategories.data))
+interface iReportsProps {
+  orders: iOrders["data"];
+  products: iProducts["data"];
+  productCategories: iProductCategories["data"];
+  ordersProducts: iOrdersProducts["data"];
+  ordersStatus: iOrdersStatus["data"];
+}
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+
+  const restaurant = await getRestaurantBySlugFetch(context.query.slug)
+  const productCategories = await getProductsCategoriesByRestaurantIdFetch(restaurant[0].id)
+  const orders = await getOrdersByRestaurantIdFetch(restaurant[0].id)
+  const products = await getProductsByRestaurantIdFetch(restaurant[0].id)
+  const ordersStatus = await getOrderStatusFetch()
+  const ordersProducts = await getOrdersProductsFetch()
 
   return {
     props: {
@@ -38,19 +57,6 @@ export const getServerSideProps: GetServerSideProps = async () => {
   };
 };
 
-interface DailyRevenue {
-  date: Date;
-  revenue: number;
-}
-
-interface iReportsProps {
-  orders: iOrders;
-  products: iProducts;
-  productCategories: iProductCategories;
-  ordersProducts: iOrdersProducts;
-  ordersStatus: iOrdersStatus;
-}
-
 export default function Reports({
   orders,
   productCategories,
@@ -62,10 +68,10 @@ export default function Reports({
   const [dailyRevenue, setDailyRevenue] = useState<DailyRevenue[]>([]);
 
   const [ordersDate, setOrdersDate] = useState<iOrders["data"]>([]);
-  const [statusDate, setStatusDate] = useState<iOrdersStatus["data"]>([]);
-  const [ordersProductsDate, setOrdersProductsDate] = useState<iOrdersProducts["data"]>([]);
-  const [productsDate, setProductsDate] = useState<iProducts["data"]>([]);
-  const [productCategoriesDate, setProductCategoriesDate] = useState<iProductCategories["data"]>([]);
+  // const [statusDate, setStatusDate] = useState<iOrdersStatus["data"]>([]);
+  // // const [ordersProductsDate, setOrdersProductsDate] = useState<iOrdersProducts["data"]>([]);
+  // const [productsDate, setProductsDate] = useState<iProducts["data"]>([]);
+  // const [productCategoriesDate, setProductCategoriesDate] = useState<iProductCategories["data"]>([]);
 
   const [startDate, setStartDate] = useState<Date | null>(new Date(Date.now() - 30 * 24 * 60 * 60 * 1000));
   const [endDate, setEndDate] = useState<Date | null>(new Date());
@@ -80,36 +86,21 @@ export default function Reports({
     setEndDate(new Date(event.target.value));
   };
 
-
-  // useEffect(() => {
-  //   // console.log("entoru")
-  //   // setStartDate(new Date(Date.now() - 30))
-  //   // setEndDate(new Date())
-  //   setOrdersDate(orders.data.filter(o => new Date(o.created_at!) >= new Date(Date.now() - 30)))
-  //   setStatusDate(ordersStatus.data.filter(o => new Date(o.created_at!) >= new Date(Date.now() - 30)))
-  //   setOrdersProductsDate(ordersProducts.data.filter(o => new Date(o.created_at!) >= new Date(Date.now() - 30)))
-  //   setProductsDate(products.data.filter(o => new Date(o.created_at!) >= new Date(Date.now() - 30)))
-  //   setProductCategoriesDate(productCategories.data.filter(o => new Date(o.created_at!) >= new Date(Date.now() - 30)))
-  // }, [])
-  // console.log(orders.data.filter(o => new Date(o.created_at!) >= new Date(Date.now() - 30)))
-  // console.log(orders)
-  // const handleFilterClickCallback = useCallback(() => {
-
   const handleFilterClick = () => {
     // Filter orders by date
-    const filteredOrders = orders.data.filter((order) => {
+    const filteredOrders = orders.filter((order) => {
       if (!order.created_at) return false;
       const orderDate = new Date(order.created_at);
       return orderDate >= startDate! && orderDate <= endDate!;
     });
 
     // Filter order details by order id
-    const filteredOrdersProducts = ordersProducts.data.filter((detail) =>
+    const filteredOrdersProducts = ordersProducts.filter((detail) =>
       filteredOrders.some((order) => order.id === detail.order_id)
     );
 
     // Filter products by product id
-    const filteredProducts = products.data.filter((product) =>
+    const filteredProducts = products.filter((product) =>
       filteredOrdersProducts.some((detail) => detail.product_id === product.id)
     );
 
@@ -134,11 +125,11 @@ export default function Reports({
       return
     }
 
-    setOrdersDate(orders.data.filter(o => new Date(o.created_at!) >= new Date(startDate) && new Date(o.created_at!) <= new Date(endDate!)))
-    // setStatusDate(ordersStatus.data.filter(os => new Date(os.created_at!) >= new Date(startDate) && new Date(os.created_at!) <= new Date(endDate!)))
-    setOrdersProductsDate(ordersProducts.data.filter(op => new Date(op.created_at!) >= new Date(startDate) && new Date(op.created_at!) <= new Date(endDate!)))
-    setProductsDate(products.data.filter(p => new Date(p.created_at!) >= new Date(startDate) && new Date(p.created_at!) <= new Date(endDate!)))
-    setProductCategoriesDate(productCategories.data.filter(pc => new Date(pc.created_at!) >= new Date(startDate) && new Date(pc.created_at!) <= new Date(endDate!)))
+    setOrdersDate(orders.filter(o => new Date(o.created_at!) >= new Date(startDate) && new Date(o.created_at!) <= new Date(endDate!)))
+    // setStatusDate(ordersStatus.filter(os => new Date(os.created_at!) >= new Date(startDate) && new Date(os.created_at!) <= new Date(endDate!)))
+    // setOrdersProductsDate(ordersProducts.filter(op => new Date(op.created_at!) >= new Date(startDate) && new Date(op.created_at!) <= new Date(endDate!)))
+    // setProductsDate(products.filter(p => new Date(p.created_at!) >= new Date(startDate) && new Date(p.created_at!) <= new Date(endDate!)))
+    // setProductCategoriesDate(productCategories.filter(pc => new Date(pc.created_at!) >= new Date(startDate) && new Date(pc.created_at!) <= new Date(endDate!)))
 
     setDailyRevenue(
       Object.entries(dailyRevenue).map(([date, revenue]) => ({
@@ -159,10 +150,10 @@ export default function Reports({
 
   const globalValuesData = {
     orders: ordersDate,
-    productCategories: productCategories.data,
-    products: products.data,
-    ordersProducts: ordersProductsDate,
-    ordersStatus: ordersStatus.data,
+    productCategories: productCategories,
+    products: products,
+    ordersProducts: ordersProducts,
+    ordersStatus: ordersStatus,
   };
 
   return (

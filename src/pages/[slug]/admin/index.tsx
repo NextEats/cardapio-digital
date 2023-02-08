@@ -3,26 +3,26 @@ import NewRequests from "../../../components/admin/initialPage/NewRequests";
 import OrderStatusCard from "../../../components/admin/initialPage/OrderStatusCard";
 import AdminWrapper from "../../../components/admin/AdminWrapper";
 import { supabase } from "../../../server/api";
-import { iCashBoxes, iInsertAddresses, iInsertClients, iInsertContacts, iInsertOrders, iInsertOrdersProducts, iInsertOrderStatus, iInsertOrderStatuss, iInsertProducts, iProducts, iRestaurant, iRestaurants } from "../../../types/types";
+import { iCashBoxes, iInsertAddresses, iInsertClients, iInsertContacts, iInsertOrders, iInsertOrdersProducts, iInsertOrderStatuss, iInsertProducts, iRestaurants } from "../../../types/types";
 import { GetServerSideProps } from "next";
-import { useState, useEffect, useReducer } from "react";
+import { useState, useReducer } from "react";
 import { iStatusReducer, statusReducer } from "../../../reducers/statusReducer/reducer";
 import { OrderModal } from "../../../components/admin/initialPage/OrderModal";
 import { CardapioDigitalButton } from "../../../components/admin/cardapio-digital/CardapioDigitalButton";
-import { toast, ToastContainer } from "react-toastify";
+
 import "react-toastify/dist/ReactToastify.css";
 import { getRestaurantBySlugFetch } from "../../../fetch/restaurant/getRestaurantBySlug";
-import { getRestaurantBySlug } from "../../api/restaurants/[slug]";
-import { api } from "../../../helpers/axiosBaseRout";
 import { getOrdersByRestaurantIdFetch } from "../../../fetch/orders/getOrdersByRestaurantId";
-import axios from "axios";
+import { getProductsByRestaurantIdFetch } from "../../../fetch/products/getProductsByRestaurantId";
+import { getOrderStatusFetch } from "src/fetch/orderStatus/getOrdersStatus";
+import { getOrdersProductsFetch } from "src/fetch/ordersProducts/getOrdersProducts";
 
 interface iAdminHomePageProps {
   ordersData: iInsertOrders["data"],
-  orderStatuss: iInsertOrderStatuss,
-  ordersProducts: iInsertOrdersProducts,
+  orderStatuss: iInsertOrderStatuss["data"],
+  ordersProducts: iInsertOrdersProducts["data"],
   addresses: iInsertAddresses,
-  products: iInsertProducts,
+  products: iInsertProducts["data"],
   contacts: iInsertContacts,
   clients: iInsertClients,
   restaurant: iRestaurants
@@ -34,12 +34,13 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   //Refatorada
   const restaurant = await getRestaurantBySlugFetch(context.query.slug)
   const ordersData = await getOrdersByRestaurantIdFetch(restaurant[0].id)
+  const products = await getProductsByRestaurantIdFetch(restaurant[0].id)
+  const orderStatuss = await getOrderStatusFetch()
+  const ordersProducts = await getOrdersProductsFetch()
 
 
   // A Refatorar
-  const orderStatuss = await supabase.from("order_status").select()
-  const ordersProducts = await supabase.from("orders_products").select()
-  const products = await supabase.from("products").select()
+  // const products = await supabase.from("products").select()
   const clients = await supabase.from("clients").select()
   const contacts = await supabase.from("contacts").select()
   const addresses = await supabase.from("addresses").select()
@@ -72,10 +73,10 @@ export default function AdminHomepage({ ordersData, orderStatuss, ordersProducts
     orders = ordersData.filter(o => o.cash_box_id === cashBoxOpened.id!)
   }
 
-  const statusEmAnalise = orderStatuss?.data.find(status => status.status_name === "em análise")
-  const statusEmProdução = orderStatuss?.data.find(status => status.status_name === "em produção")
-  const statusACaminho = orderStatuss?.data.find(status => status.status_name === "a caminho")
-  const statusEntregue = orderStatuss?.data.find(status => status.status_name === "entregue")
+  const statusEmAnalise = orderStatuss.find(status => status.status_name === "em análise")
+  const statusEmProdução = orderStatuss.find(status => status.status_name === "em produção")
+  const statusACaminho = orderStatuss.find(status => status.status_name === "a caminho")
+  const statusEntregue = orderStatuss.find(status => status.status_name === "entregue")
 
   // EM ANÁLISE
   const emAnaliseOrders = orders?.filter(or => or.order_status_id === statusEmAnalise?.id)
@@ -91,10 +92,10 @@ export default function AdminHomepage({ ordersData, orderStatuss, ordersProducts
 
   const [state, dispatch] = useReducer<(state: iStatusReducer, action: any) => iStatusReducer>(statusReducer, {
     orders: orders,
-    orderStatuss: orderStatuss.data,
-    ordersProducts: ordersProducts.data,
+    orderStatuss: orderStatuss,
+    ordersProducts: ordersProducts,
     addresses: addresses?.data,
-    products: products.data,
+    products: products,
     contacts: contacts?.data,
     clients: clients?.data,
 
@@ -106,10 +107,10 @@ export default function AdminHomepage({ ordersData, orderStatuss, ordersProducts
     orderId: 0,
   })
 
-  const ordersProductFiltered = ordersProducts.data.filter(op => entregueOrders.some(o => o.id === op.order_id))
+  const ordersProductFiltered = ordersProducts.filter(op => entregueOrders.some(o => o.id === op.order_id))
   function billing() {
     const productIds = ordersProductFiltered.map(ordersProduct => ordersProduct.product_id)
-    const selectedProduct = productIds.map(productId => products.data[products.data.findIndex(product => productId === product.id)])
+    const selectedProduct = productIds.map(productId => products[products.findIndex(product => productId === product.id)])
     return selectedProduct.reduce((acc, product) => acc + product?.price!, 0)
   }
 
@@ -161,7 +162,7 @@ export default function AdminHomepage({ ordersData, orderStatuss, ordersProducts
         <div className="grid 2xs:grid-cols-2 lg:grid-cols-3 gap-3">
           <Card color="red" name="Faturamento" value={`R$ ${billing()}`} />
           <Card color="green" name="Pedidos" value={`${entregueOrders.length}`} />
-          <Card color="yellow" name="Produtos no Cardápio" value={products?.data.length.toString()} />
+          <Card color="yellow" name="Produtos no Cardápio" value={products.length.toString()} />
         </div>
 
         <NewRequests dispatch={dispatch} state={state} />

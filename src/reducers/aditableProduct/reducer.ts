@@ -5,6 +5,7 @@ export const defaultValues = {
     isViewingUpdatingOrAdding: '',
     isEditingInfo: true,
     picture_url: '',
+    picture_file: undefined,
     productInformation: {
         name: '',
         description: '',
@@ -36,7 +37,7 @@ export interface IEditableProductReducerData {
     // PRODUCT INFORMATION
     isEditingInfo: boolean,
     picture_url: string,
-    picture_file: File,
+    picture_file: File | undefined,
     productInformation: {
         name: string,
         description: string,
@@ -64,6 +65,7 @@ export interface iPayloadProduct {
 
     isEditingInfo?: boolean,
     picture_url?: string,
+    picture_file?: File | undefined,
     isEditingPicture?: boolean,
     productInformation?: {
         name: string,

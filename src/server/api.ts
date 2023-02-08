@@ -3,15 +3,7 @@ import axios from "axios";
 import { promiseAlert } from "../helpers/toasts";
 import { IEditableProductReducerData } from "../reducers/aditableProduct/reducer";
 import { Database } from "../types/supabase";
-import {
-  iGroupedProducts,
-  iInsertAdditionals,
-  iInsertProductOptions,
-  iProduct,
-  iProductCategory,
-  iRestaurantType,
-  ProductWithCategory,
-} from "../types/types";
+import { iGroupedProducts, iInsertAdditionals, iInsertProductOptions, iProductCategory, iRestaurantType, ProductWithCategory } from "../types/types";
 
 export const api = axios.create({
   baseURL: "http://localhost:3000",
@@ -286,7 +278,7 @@ export async function createProduct(
 
 ) {
   // await supabase.storage.from("teste").upload("teste_4", file)
-  const imageData = await supabase.storage.from("teste").upload(state.productInformation.name, state.picture_file)
+  const imageData = await supabase.storage.from("teste").upload(state.productInformation.name, state.picture_file!)
   const getImageData = supabase.storage.from("teste").getPublicUrl(imageData.data?.path!)
   const data = await supabase
     .from("products")

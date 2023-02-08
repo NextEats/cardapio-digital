@@ -12,8 +12,10 @@ export async function getProductsByRestaurantId(req: NextApiRequest, res: NextAp
                 // const restaurants = await getRestaurantBySlugFetch(slug)
                 const orders = await getProductsByRestaurantIdFetch(Number(restaurant_id))
                 res.status(200).send(orders)
-            } catch {
-                res.status(404).end();
+            } catch (err) {
+                console.log(err)
+                console.log("Error fetching products")
+                res.status(404).end("Não quero pegar os produtos desgraçado");
             }
             break
         default:

@@ -10,7 +10,7 @@ export async function getProductSelects(req: NextApiRequest, res: NextApiRespons
             try {
                 const productSelects = await getProductSelectsFetch()
                 res.status(200).send(productSelects)
-            } catch {
+            } catch (error) {
                 res.status(404).end();
             }
             break

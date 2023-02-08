@@ -1,6 +1,4 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { getProductOptionsFetch } from "src/fetch/productOptions/getProductOptions";
-import { getProductSelectsFetch } from "src/fetch/productSelects/getProductSelects";
 import { getSelectsByRestaurantIdFetch } from "src/fetch/selects/getSelectsByRestaurantId";
 
 export async function getSelectsByRestaurantId(req: NextApiRequest, res: NextApiResponse) {

@@ -2,7 +2,7 @@ import { GetServerSideProps } from "next";
 import { useEffect, useReducer, useState } from "react";
 import { AiOutlinePlus } from "react-icons/ai";
 
-import { supabase } from "../../../../server/api";
+import { api, supabase } from "../../../../server/api";
 import AdminWrapper from "../../../../components/admin/AdminWrapper";
 import Categories from "../../../../components/admin/cardapio-digital/Categories";
 import MenuProduct from "../../../../components/admin/cardapio-digital/MenuProduct";
@@ -77,22 +77,20 @@ export default function CardapioDigital({
   selects,
 }: iCardapioDigitalProps) {
 
+  // useEffect(() => {
+  //   async function ddd() {
+  //     console.log(await api.get(`http://localhost:3000/api/product/${7}`))
+  //     // fetch("http://localhost:3000/api/product_selects").then((response) => console.log(response.json()))
+  //   }
+  //   ddd()
+  // }, [])
+
   const [productId, setProductId] = useState<number | null>(null);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [productModal, setProductModal] = useState(false);
   const [productsState, setProductsState] = useState<iProducts["data"]>([]);
-  const [productsFilteredState, setProductsFilteredState] = useState<
-    iProducts["data"]
-  >([]);
-  const [viewCategory, setViewCategory] = useState<{
-    isViewing: boolean;
-    categoryId: number;
-    categoryName: string;
-  }>({
-    isViewing: false,
-    categoryId: 0,
-    categoryName: "",
-  });
+  const [productsFilteredState, setProductsFilteredState] = useState<iProducts["data"]>([]);
+  const [viewCategory, setViewCategory] = useState({ isViewing: false, categoryId: 0, categoryName: "" });
   const [editCategory, setEditCategory] = useState<{
     isEditing: boolean;
     categoryData: iInsertProductCategory["data"];
@@ -106,8 +104,6 @@ export default function CardapioDigital({
   });
 
   const [state, dispatch] = useReducer(editableProductReducer, defaultValues);
-
-  // const tdClasses = "[&:not(:last-child)]:p-4";
 
   useEffect(() => {
     setProductsState(products);

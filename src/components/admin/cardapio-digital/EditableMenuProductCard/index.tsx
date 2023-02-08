@@ -135,6 +135,9 @@ export default function EditableMenuProductCard({
                 </NavigationMenu.Trigger>
                 <NavigationMenu.Content className="flex flex-1 w-auto p-1 rounded-md flex-wrap absolut top-0 left-0 bg-white shadow-md">
                   {productCategories.map((category) => {
+                    if (state.category.id === category.id) {
+                      return
+                    }
                     return (
                       <NavigationMenu.List
                         key={category.id}
@@ -150,7 +153,7 @@ export default function EditableMenuProductCard({
 
               <NavigationMenu.Item className="h-full flex flex-1 flex-col">
                 <NavigationMenu.Trigger className="h-full flex flex-1 gap-2 items-center justify-center rounded hover:bg-gray-200">
-                  Ingredients <IoIosArrowDown className="hover:rotate-180" />
+                  Ingredientes <IoIosArrowDown className="hover:rotate-180" />
                 </NavigationMenu.Trigger>
                 <NavigationMenu.Content className="flex flex-1 w-auto p-1 rounded-md flex-wrap absolut top-0 left-0 bg-white shadow-md">
                   {selects.map((select) => {
@@ -176,7 +179,7 @@ export default function EditableMenuProductCard({
 
               <NavigationMenu.Item className="h-full flex flex-1 flex-col">
                 <NavigationMenu.Trigger className="h-full flex flex-1 gap-2 items-center justify-center rounded hover:bg-gray-200">
-                  Adicinais <IoIosArrowDown className="hover:rotate-180" />
+                  Adicionais <IoIosArrowDown className="hover:rotate-180" />
                 </NavigationMenu.Trigger>
                 <NavigationMenu.Content className="flex flex-1 w-auto p-1 rounded-md flex-wrap absolut top-0 left-0 z-50 bg-white shadow-md">
                   {additionals.map((additional) => {

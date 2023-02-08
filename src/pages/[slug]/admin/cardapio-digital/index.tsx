@@ -27,8 +27,8 @@ import { getOrderStatusFetch } from "src/fetch/orderStatus/getOrdersStatus";
 import { getProductsByRestaurantIdFetch } from "src/fetch/products/getProductsByRestaurantId";
 import { getProductsCategoriesByRestaurantIdFetch } from "src/fetch/productsCategories/getProductsCategoriesByRestaurantId";
 import { getRestaurantBySlugFetch } from "src/fetch/restaurant/getRestaurantBySlug";
-import { getAdditionalsFetch } from "src/fetch/additionals/getAdditionals";
-import { getSelectsFetch } from "src/fetch/selects/getSelects";
+import { getAdditionalsByRestaurantIdFetch } from "src/fetch/additionals/getAdditionals";
+import { getSelectsByRestaurantIdFetch } from "src/fetch/selects/getSelectsByRestaurantId";
 import { getProductSelectsFetch } from "src/fetch/productSelects/getProductSelects";
 import { getProductOptionsFetch } from "src/fetch/productOptions/getProductOptions";
 import { getProductAdditionalsFetch } from "src/fetch/productAdditionals/getProductAdditionals";
@@ -48,8 +48,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const restaurant = await getRestaurantBySlugFetch(context.query.slug)
   const productCategories = await getProductsCategoriesByRestaurantIdFetch(restaurant[0].id)
   const products = await getProductsByRestaurantIdFetch(restaurant[0].id)
-  const additionals = await getAdditionalsFetch(restaurant[0].id)
-  const selects = await getSelectsFetch(restaurant[0].id);
+  const additionals = await getAdditionalsByRestaurantIdFetch(restaurant[0].id)
+  const selects = await getSelectsByRestaurantIdFetch(restaurant[0].id);
   const productSelects = await getProductSelectsFetch()
   const productOptions = await getProductOptionsFetch()
   const productAdditionals = await getProductAdditionalsFetch()

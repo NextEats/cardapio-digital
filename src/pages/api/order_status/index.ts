@@ -5,15 +5,13 @@ import { getRestaurantBySlugFetch } from "../../../fetch/restaurant/getRestauran
 
 export async function getOrdersStatus(req: NextApiRequest, res: NextApiResponse) {
     const { method, query } = req
-    const restaurant_id = query.restaurant_id
 
     switch (method) {
         case 'GET':
             try {
-                // const restaurants = await getRestaurantBySlugFetch(slug)
-                const orders = await getOrderStatusFetch()
-                console.log(orders)
-                // res.status(200).json(orders)
+                const orderStatus = await getOrderStatusFetch()
+                console.log(orderStatus)
+                res.status(200).send(orderStatus)
             } catch {
                 res.status(404).end();
             }

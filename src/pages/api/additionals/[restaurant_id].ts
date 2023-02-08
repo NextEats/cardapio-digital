@@ -1,15 +1,15 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { getOrdersByRestaurantIdFetch } from "../../../fetch/orders/getOrdersByRestaurantId";
+import { getAdditionalsByRestaurantIdFetch } from "src/fetch/additionals/getAdditionals";
 
-export async function getOrdersByRestaurantId(req: NextApiRequest, res: NextApiResponse) {
+export async function getAdditionalsByRestaurantId(req: NextApiRequest, res: NextApiResponse) {
     const { method, query } = req
     const { restaurant_id } = query
 
     switch (method) {
         case 'GET':
             try {
-                const orders = await getOrdersByRestaurantIdFetch(Number(restaurant_id))
-                res.status(200).send(orders)
+                const additionals = await getAdditionalsByRestaurantIdFetch(Number(restaurant_id))
+                res.status(200).send(additionals)
             } catch {
                 res.status(404).end();
             }

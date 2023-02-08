@@ -6,10 +6,7 @@ import { supabase } from "../../../../server/api";
 import AdminWrapper from "../../../../components/admin/AdminWrapper";
 import Categories from "../../../../components/admin/cardapio-digital/Categories";
 import MenuProduct from "../../../../components/admin/cardapio-digital/MenuProduct";
-import {
-  defaultValues,
-  editableProductReducer,
-} from "../../../../reducers/aditableProduct/reducer";
+import { defaultValues, editableProductReducer } from "../../../../reducers/aditableProduct/reducer";
 import {
   iInsertProductCategory,
   iProductCategories,
@@ -22,16 +19,18 @@ import {
 } from "../../../../types/types";
 import { CategoryModal } from "../../../../components/admin/cardapio-digital/CategoryModal";
 import EditableMenuProductCard from "../../../../components/admin/cardapio-digital/EditableMenuProductCard";
-import {
-  setAddingProductAction,
-  setIsViewingAddingOrOpdatingProductAction,
-  setViewpProductAction,
-} from "../../../../reducers/aditableProduct/actions";
+import { setAddingProductAction, setIsViewingAddingOrOpdatingProductAction, setViewpProductAction } from "../../../../reducers/aditableProduct/actions";
 import { CardapioDigitalButton } from "../../../../components/admin/cardapio-digital/CardapioDigitalButton";
+import { getOrdersByRestaurantIdFetch } from "src/fetch/orders/getOrdersByRestaurantId";
+import { getOrdersProductsFetch } from "src/fetch/ordersProducts/getOrdersProducts";
+import { getOrderStatusFetch } from "src/fetch/orderStatus/getOrdersStatus";
+import { getProductsByRestaurantIdFetch } from "src/fetch/products/getProductsByRestaurantId";
+import { getProductsCategoriesByRestaurantIdFetch } from "src/fetch/productsCategories/getProductsCategoriesByRestaurantId";
+import { getRestaurantBySlugFetch } from "src/fetch/restaurant/getRestaurantBySlug";
 
 interface iCardapioDigitalProps {
-  productCategories: iProductCategories;
-  products: iProducts;
+  productCategories: iProductCategories["data"];
+  products: iProducts["data"];
   selects: iInsertSelects;
   productSelects: iInsertProductSelects;
   productOptions: iInsertProductOptions;
@@ -39,9 +38,13 @@ interface iCardapioDigitalProps {
   additionals: iInsertAdditionals;
 }
 
-export const getServerSideProps: GetServerSideProps = async () => {
-  const productCategories = await supabase.from("product_categories").select();
-  const products = await supabase.from("products").select();
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  // new
+  const restaurant = await getRestaurantBySlugFetch(context.query.slug)
+  const productCategories = await getProductsCategoriesByRestaurantIdFetch(restaurant[0].id)
+  const products = await getProductsByRestaurantIdFetch(restaurant[0].id)
+
+  // old
   const selects = await supabase.from("selects").select();
   const productSelects = await supabase.from("product_selects").select();
   const productOptions = await supabase.from("product_options").select();
@@ -71,6 +74,7 @@ export default function CardapioDigital({
   additionals,
   selects,
 }: iCardapioDigitalProps) {
+
   const [productId, setProductId] = useState<number | null>(null);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [productModal, setProductModal] = useState(false);
@@ -104,9 +108,9 @@ export default function CardapioDigital({
   // const tdClasses = "[&:not(:last-child)]:p-4";
 
   useEffect(() => {
-    setProductsState(products.data);
+    setProductsState(products);
     async function setProtoduct() {
-      const product = products.data.find((p) => p.id === productId);
+      const product = products.find((p) => p.id === productId);
 
       // filtering the ingredinets ones
       const productSelectsByProdctId = productSelects.data.filter(
@@ -132,7 +136,7 @@ export default function CardapioDigital({
       }
 
       // finding the category
-      const categoryFound = productCategories.data.find(
+      const categoryFound = productCategories.find(
         (c) => c.id === product?.category_id
       );
 
@@ -222,7 +226,7 @@ export default function CardapioDigital({
             </div>
             <CategoryModal
               modalIsOpen={modalIsOpen}
-              products={products.data}
+              products={products}
               setViewCategory={setViewCategory}
               viewCategory={viewCategory}
               editCategory={editCategory}
@@ -230,8 +234,8 @@ export default function CardapioDigital({
               setModalIsOpen={setModalIsOpen}
             />
             <Categories
-              productCategories={productCategories.data}
-              products={products.data}
+              productCategories={productCategories}
+              products={products}
               setViewCategory={setViewCategory}
               setEditCategory={setEditCategory}
             />
@@ -301,7 +305,7 @@ export default function CardapioDigital({
             selects={selects?.data}
             setProductModal={setProductModal}
             additionals={additionals.data}
-            productCategories={productCategories.data}
+            productCategories={productCategories}
           />
         </div>
       </>

@@ -2,28 +2,15 @@ import { GetServerSideProps } from "next";
 import { useEffect, useReducer, useState } from "react";
 import { AiOutlinePlus } from "react-icons/ai";
 
-import { api, supabase } from "../../../../server/api";
 import AdminWrapper from "../../../../components/admin/AdminWrapper";
 import Categories from "../../../../components/admin/cardapio-digital/Categories";
 import MenuProduct from "../../../../components/admin/cardapio-digital/MenuProduct";
 import { defaultValues, editableProductReducer } from "../../../../reducers/aditableProduct/reducer";
-import {
-  iInsertProductCategory,
-  iProductCategories,
-  iInsertProductOptions,
-  iProducts,
-  iInsertAdditionals,
-  iInsertProductAdditionals,
-  iInsertSelects,
-  iInsertProductSelects,
-} from "../../../../types/types";
+import { iInsertProductCategory, iProductCategories, iInsertProductOptions, iProducts, iInsertAdditionals, iInsertProductAdditionals, iInsertSelects, iInsertProductSelects, iRestaurants, } from "../../../../types/types";
 import { CategoryModal } from "../../../../components/admin/cardapio-digital/CategoryModal";
 import EditableMenuProductCard from "../../../../components/admin/cardapio-digital/EditableMenuProductCard";
 import { setAddingProductAction, setIsViewingAddingOrOpdatingProductAction, setViewpProductAction } from "../../../../reducers/aditableProduct/actions";
 import { CardapioDigitalButton } from "../../../../components/admin/cardapio-digital/CardapioDigitalButton";
-import { getOrdersByRestaurantIdFetch } from "src/fetch/orders/getOrdersByRestaurantId";
-import { getOrdersProductsFetch } from "src/fetch/ordersProducts/getOrdersProducts";
-import { getOrderStatusFetch } from "src/fetch/orderStatus/getOrdersStatus";
 import { getProductsByRestaurantIdFetch } from "src/fetch/products/getProductsByRestaurantId";
 import { getProductsCategoriesByRestaurantIdFetch } from "src/fetch/productsCategories/getProductsCategoriesByRestaurantId";
 import { getRestaurantBySlugFetch } from "src/fetch/restaurant/getRestaurantBySlug";
@@ -41,6 +28,7 @@ interface iCardapioDigitalProps {
   productOptions: iInsertProductOptions["data"];
   productAdditionals: iInsertProductAdditionals["data"];
   additionals: iInsertAdditionals["data"];
+  restaurant: iRestaurants["data"]
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
@@ -63,6 +51,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       productAdditionals,
       additionals,
       selects,
+      restaurant,
     },
   };
 };
@@ -75,16 +64,8 @@ export default function CardapioDigital({
   productAdditionals,
   additionals,
   selects,
+  restaurant,
 }: iCardapioDigitalProps) {
-
-  useEffect(() => {
-    async function ddd() {
-      // console.log(await api.get(`http://localhost:3000/api/products/${7}`))
-      console.log(await api.get(`https://localhost:3001/api/products/restaurant_id?=7`))
-      // fetch("http://localhost:3000/api/product_selects").then((response) => console.log(response.json()))
-    }
-    ddd()
-  }, [])
 
   const [productId, setProductId] = useState<number | null>(null);
   const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -298,6 +279,7 @@ export default function CardapioDigital({
           <EditableMenuProductCard
             state={state}
             dispatch={dispatch}
+            restaurantId={restaurant[0].id}
             productModal={productModal}
             productId={productId}
             productOptions={productOptions}

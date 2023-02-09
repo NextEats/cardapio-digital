@@ -3,15 +3,7 @@ import { GlobalValuesCard } from "../../../../components/admin/relatorios/Global
 
 import { LineChart } from "../../../../components/admin/relatorios/Charts/LineChart";
 import { GetServerSideProps } from "next";
-import { supabase } from "../../../../server/api";
-import {
-  iOrders,
-  iOrdersProducts,
-  iOrdersStatus,
-  iOrderStatus,
-  iProductCategories,
-  iProducts,
-} from "../../../../types/types";
+import { iOrders, iOrdersProducts, iOrdersStatus, iProductCategories, iProducts } from "../../../../types/types";
 import { DoughnutChart } from "../../../../components/admin/relatorios/Charts/DoughnutChart";
 import { HorizontalGraphics } from "../../../../components/admin/relatorios/Charts/HorizontalGraphics";
 import { BarChart } from "../../../../components/admin/relatorios/Charts/BarChart";

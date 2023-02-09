@@ -97,6 +97,20 @@ export interface iProductAdditional {
 export interface iProductAdditionals {
   data: Array<Database["public"]["Tables"]["product_additionals"]["Row"]>;
 }
+export interface iClient {
+  data: Database["public"]["Tables"]["clients"]["Row"];
+}
+
+export interface iClients {
+  data: Array<Database["public"]["Tables"]["clients"]["Row"]>;
+}
+export interface iContact {
+  data: Database["public"]["Tables"]["contacts"]["Row"];
+}
+
+export interface iContacts {
+  data: Array<Database["public"]["Tables"]["contacts"]["Row"]>;
+}
 
 
 
@@ -263,6 +277,9 @@ export interface iCheckoutProduct {
 export interface iAddress {
   data: Database["public"]["Tables"]["addresses"]["Row"];
 }
+export interface iAddresses {
+  data: Array<Database["public"]["Tables"]["addresses"]["Row"]>;
+}
 
 export interface iWeekdayOperatingTime {
   data: Database["public"]["Tables"]["weekday_operating_time"]["Row"];
@@ -275,9 +292,15 @@ export interface iWeekday {
 export interface iPaymentMethod {
   data: Database["public"]["Tables"]["payment_methods"]["Row"];
 }
+export interface iPaymentMethods {
+  data: Array<Database["public"]["Tables"]["payment_methods"]["Row"]>;
+}
 
 export interface iPaymentMethodsRestaurants {
   data: Database["public"]["Tables"]["payment_methods_restaurants"]["Row"];
+}
+export interface iPaymentMethodsRestaurantss {
+  data: Array<Database["public"]["Tables"]["payment_methods_restaurants"]["Row"]>;
 }
 
 export type iRestaurantWithFKData = iRestaurant["data"] & {

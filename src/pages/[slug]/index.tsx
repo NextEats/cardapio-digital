@@ -5,6 +5,7 @@ import {
   useCallback,
   useReducer,
   createContext,
+  useEffect,
 } from "react";
 
 // NEXT JS IMPORTS
@@ -18,9 +19,8 @@ import RestaurantHeader from "../../components/home/RestaurantHeader";
 
 // DATABASE
 import {
+  api,
   getGroupedProducts,
-  returnAllCategoriesForThisRestaurant,
-  returnRestaurantType,
   supabase,
 } from "../../server/api";
 
@@ -202,17 +202,20 @@ export default function HomePage({ data }: iDataHomepage) {
     setProductCategoriesForThisRestaurant,
   ] = useState<Array<iProductCategory["data"]> | null | undefined>();
 
-  useCallback(() => {
-    returnRestaurantType(restaurant?.restaurant_type_id).then((res) => {
-      var data = res[0] as any;
-      setRestaurantType(data);
-    });
+  useEffect(() => {
+    async function getRestaurntType() {
+      const { data } = await api.get(`api/restaurant_types/${restaurant?.restaurant_type_id}`)
+      setRestaurantType(data)
+    }
+    getRestaurntType()
   }, [restaurant]);
 
   useMemo(() => {
-    returnAllCategoriesForThisRestaurant(restaurant?.id).then((res) => {
-      setProductCategoriesForThisRestaurant(res);
-    });
+    async function getProductCategoriesByRestaurantId() {
+      const { data } = await api.get(`api/product_categories/${restaurant.id}`)
+      setProductCategoriesForThisRestaurant(data);
+    }
+    getProductCategoriesByRestaurantId()
   }, [restaurant]);
 
   if (!productCategoriesForThisRestaurant) {

@@ -34,6 +34,7 @@ interface iEditableMenuProductCardProps {
     payload: iPayloadProduct;
   }>;
   productId: number | null,
+  restaurantId: number
   setProductModal: Dispatch<SetStateAction<boolean>>;
   productModal: boolean;
   selects: iInsertSelects["data"];
@@ -52,6 +53,7 @@ export default function EditableMenuProductCard({
   productCategories,
   productOptions,
   additionals,
+  restaurantId,
 }: iEditableMenuProductCardProps) {
   function setIngredientSelected(selectId: number) {
     const selectFinded = selects.find(
@@ -221,7 +223,7 @@ export default function EditableMenuProductCard({
 
         <Igredient state={state} selects={selects} dispatch={dispatch} productId={productId!} />
 
-        <Additional state={state} dispatch={dispatch} productId={productId!} />
+        <Additional state={state} dispatch={dispatch} productId={productId!} restaurantId={restaurantId} />
 
         {state.isViewingUpdatingOrAdding === "ADDING" && (
           <CardapioDigitalButton

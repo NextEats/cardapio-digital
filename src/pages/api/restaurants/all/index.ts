@@ -1,14 +1,14 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { getProductOptionsFetch } from "src/fetch/productOptions/getProductOptions";
+import { getRestaurantsFetch } from "src/fetch/restaurant/getRestuarants";
 
-export default async function productOptions(req: NextApiRequest, res: NextApiResponse) {
+export default async function restaurants(req: NextApiRequest, res: NextApiResponse) {
     const { method, query } = req
 
     switch (method) {
         case 'GET':
             try {
-                const productOptions = await getProductOptionsFetch()
-                res.status(200).send(productOptions)
+                const restaurants = await getRestaurantsFetch()
+                res.status(200).send(restaurants)
             } catch {
                 res.status(404).end();
             }

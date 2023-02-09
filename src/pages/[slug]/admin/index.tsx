@@ -2,7 +2,7 @@ import { Card } from "../../../components/admin/Card";
 import NewRequests from "../../../components/admin/initialPage/NewRequests";
 import OrderStatusCard from "../../../components/admin/initialPage/OrderStatusCard";
 import AdminWrapper from "../../../components/admin/AdminWrapper";
-import { supabase } from "../../../server/api";
+import { api } from "../../../server/api";
 import { iCashBoxes, iInsertAddresses, iInsertClients, iInsertContacts, iInsertOrders, iInsertOrdersProducts, iInsertOrderStatuss, iInsertProducts, iRestaurants } from "../../../types/types";
 import { GetServerSideProps } from "next";
 import { useState, useReducer } from "react";
@@ -16,35 +16,34 @@ import { getOrdersByRestaurantIdFetch } from "../../../fetch/orders/getOrdersByR
 import { getProductsByRestaurantIdFetch } from "../../../fetch/products/getProductsByRestaurantId";
 import { getOrderStatusFetch } from "src/fetch/orderStatus/getOrdersStatus";
 import { getOrdersProductsFetch } from "src/fetch/ordersProducts/getOrdersProducts";
+import { getclientsFetch } from "src/fetch/clients/getClients";
+import { getContactsFetch } from "src/fetch/contacts/getContacts";
+import { getAddressesFetch } from "src/fetch/addresses/getAddresses";
+import { getCashBoxesByRestaurantIdFetch } from "src/fetch/cashBoxes/getCashBoxesByRestaurantId";
 
 interface iAdminHomePageProps {
   ordersData: iInsertOrders["data"],
   orderStatuss: iInsertOrderStatuss["data"],
   ordersProducts: iInsertOrdersProducts["data"],
-  addresses: iInsertAddresses,
+  addresses: iInsertAddresses["data"],
   products: iInsertProducts["data"],
-  contacts: iInsertContacts,
-  clients: iInsertClients,
-  restaurant: iRestaurants
-  cashBoxes: iCashBoxes
+  contacts: iInsertContacts["data"],
+  clients: iInsertClients["data"],
+  restaurant: iRestaurants["data"]
+  cashBoxes: iCashBoxes["data"]
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
 
-  //Refatorada
   const restaurant = await getRestaurantBySlugFetch(context.query.slug)
   const ordersData = await getOrdersByRestaurantIdFetch(restaurant[0].id)
   const products = await getProductsByRestaurantIdFetch(restaurant[0].id)
   const orderStatuss = await getOrderStatusFetch()
   const ordersProducts = await getOrdersProductsFetch()
-
-
-  // A Refatorar
-  // const products = await supabase.from("products").select()
-  const clients = await supabase.from("clients").select()
-  const contacts = await supabase.from("contacts").select()
-  const addresses = await supabase.from("addresses").select()
-  const cashBoxes = await supabase.from("cash_boxes").select().eq("restaurant_id", restaurant![0].id)
+  const clients = await getclientsFetch()
+  const contacts = await getContactsFetch()
+  const addresses = await getAddressesFetch()
+  const cashBoxes = await getCashBoxesByRestaurantIdFetch(restaurant![0].id)
 
 
   return {
@@ -64,7 +63,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
 export default function AdminHomepage({ ordersData, orderStatuss, ordersProducts, products, contacts, addresses, clients, restaurant, cashBoxes }: iAdminHomePageProps) {
 
-  const cashBoxOpened = cashBoxes.data.find(cb => cb.is_open === true)
+  const cashBoxOpened = cashBoxes.find(cb => cb.is_open === true)
   let orders = ordersData!
 
   if (cashBoxOpened === undefined) {
@@ -94,10 +93,10 @@ export default function AdminHomepage({ ordersData, orderStatuss, ordersProducts
     orders: orders,
     orderStatuss: orderStatuss,
     ordersProducts: ordersProducts,
-    addresses: addresses?.data,
+    addresses: addresses,
     products: products,
-    contacts: contacts?.data,
-    clients: clients?.data,
+    contacts: contacts,
+    clients: clients,
 
     emAnaliseOrders,
     emProduçãoOrders,
@@ -132,11 +131,14 @@ export default function AdminHomepage({ ordersData, orderStatuss, ordersProducts
   const [openCashBoxState, setOpenCashBoxState] = useState(false)
 
   async function handleOpenCashBox() {
-    const cashBoxe = await supabase.from("cash_boxes").insert({
-      is_open: true,
-      opened_at: new Date().toISOString(),
-      restaurant_id: restaurant?.data[0].id
-    }).select("*")
+    // const cashBox = await supabase.from("cash_boxes").insert({
+    //   is_open: true,
+    //   opened_at: new Date().toISOString(),
+    //   restaurant_id: restaurant[0].id
+    // }).select("*")
+    const cashBox = await api.post("api/cash_boxes/open", {
+      restaurant_id: restaurant[0].id
+    })
     setOpenCashBoxState(true)
   }
 
@@ -145,10 +147,13 @@ export default function AdminHomepage({ ordersData, orderStatuss, ordersProducts
       alert("Ei vagabundo, crie um toast para avisar para algum desorientado que só pode fechar o caixa se todos os pedidos forem entregue!")
       return
     }
-    const cashBoxe = await supabase.from("cash_boxes").update({
-      is_open: false,
-      closed_at: new Date().toISOString(),
-    }).eq("is_open", true).select("*")
+    const cashBox = await api.post("api/cash_boxes/close", {
+      restaurant_id: restaurant[0].id
+    })
+    // const cashBox = await supabase.from("cash_boxes").update({
+    //   is_open: false,
+    //   closed_at: new Date().toISOString(),
+    // }).eq("is_open", true).select("*")
     setOpenCashBoxState(false)
   }
 
@@ -156,8 +161,8 @@ export default function AdminHomepage({ ordersData, orderStatuss, ordersProducts
     <AdminWrapper>
       <div className="flex flex-col gap-8">
         <div className="flex items-center gap-3">
-          <CardapioDigitalButton name="Abrir caixa" h="h-10" w="w-40" disabled={openCashBoxState || cashBoxes.data.some(cb => cb.is_open === true)} onClick={() => handleOpenCashBox()} />
-          <CardapioDigitalButton name="Fechar caixa" h="h-10" w="w-40" disabled={!cashBoxes.data.some(cb => cb.is_open === true)} onClick={() => handleCloseCashBox()} />
+          <CardapioDigitalButton name="Abrir caixa" h="h-10" w="w-40" disabled={openCashBoxState || cashBoxes.some(cb => cb.is_open === true)} onClick={() => handleOpenCashBox()} />
+          <CardapioDigitalButton name="Fechar caixa" h="h-10" w="w-40" disabled={!cashBoxes.some(cb => cb.is_open === true)} onClick={() => handleCloseCashBox()} />
         </div>
         <div className="grid 2xs:grid-cols-2 lg:grid-cols-3 gap-3">
           <Card color="red" name="Faturamento" value={`R$ ${billing()}`} />

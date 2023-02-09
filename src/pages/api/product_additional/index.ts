@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { getProductAdditionalsFetch } from "src/fetch/productAdditionals/getProductAdditionals";
 
-export default async function getProductAdditionals(req: NextApiRequest, res: NextApiResponse) {
+export default async function productAdditionals(req: NextApiRequest, res: NextApiResponse) {
     const { method, query } = req
 
     switch (method) {

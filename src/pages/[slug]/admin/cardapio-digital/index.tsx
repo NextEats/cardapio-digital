@@ -77,13 +77,14 @@ export default function CardapioDigital({
   selects,
 }: iCardapioDigitalProps) {
 
-  // useEffect(() => {
-  //   async function ddd() {
-  //     console.log(await api.get(`http://localhost:3000/api/product/${7}`))
-  //     // fetch("http://localhost:3000/api/product_selects").then((response) => console.log(response.json()))
-  //   }
-  //   ddd()
-  // }, [])
+  useEffect(() => {
+    async function ddd() {
+      // console.log(await api.get(`http://localhost:3000/api/products/${7}`))
+      console.log(await api.get(`https://localhost:3001/api/products/restaurant_id?=7`))
+      // fetch("http://localhost:3000/api/product_selects").then((response) => console.log(response.json()))
+    }
+    ddd()
+  }, [])
 
   const [productId, setProductId] = useState<number | null>(null);
   const [modalIsOpen, setModalIsOpen] = useState(false);

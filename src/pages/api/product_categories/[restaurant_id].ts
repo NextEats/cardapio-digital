@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { getProductsCategoriesByRestaurantIdFetch } from "src/fetch/productsCategories/getProductsCategoriesByRestaurantId";
 
-export async function getProductCategories(req: NextApiRequest, res: NextApiResponse) {
+export default async function getProductCategories(req: NextApiRequest, res: NextApiResponse) {
     const { method, query } = req
     const { retaurant_id } = query
 

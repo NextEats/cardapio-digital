@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { getOrdersProductsFetch } from "src/fetch/ordersProducts/getOrdersProducts";
 
-export async function getOrdersProduct(req: NextApiRequest, res: NextApiResponse) {
+export default async function getOrdersProduct(req: NextApiRequest, res: NextApiResponse) {
     const { method, query } = req
 
     switch (method) {

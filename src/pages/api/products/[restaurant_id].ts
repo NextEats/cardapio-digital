@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { getProductsByRestaurantIdFetch } from "../../../fetch/products/getProductsByRestaurantId";
 import { getRestaurantBySlugFetch } from "../../../fetch/restaurant/getRestaurantBySlug";
 
-export async function getProductsByRestaurantId(req: NextApiRequest, res: NextApiResponse) {
+export default async function getProductsByRestaurantId(req: NextApiRequest, res: NextApiResponse) {
     const { method, query } = req
     const restaurant_id = query.restaurant_id
 

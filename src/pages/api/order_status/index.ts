@@ -3,7 +3,7 @@ import { getOrderStatusFetch } from "../../../fetch/orderStatus/getOrdersStatus"
 import { getProductsByRestaurantIdFetch } from "../../../fetch/products/getProductsByRestaurantId";
 import { getRestaurantBySlugFetch } from "../../../fetch/restaurant/getRestaurantBySlug";
 
-export async function getOrdersStatus(req: NextApiRequest, res: NextApiResponse) {
+export default async function getOrdersStatus(req: NextApiRequest, res: NextApiResponse) {
     const { method, query } = req
 
     switch (method) {

@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { getOrdersByRestaurantIdFetch } from "../../../fetch/orders/getOrdersByRestaurantId";
 
-export async function getOrdersByRestaurantId(req: NextApiRequest, res: NextApiResponse) {
+export default async function getOrdersByRestaurantId(req: NextApiRequest, res: NextApiResponse) {
     const { method, query } = req
     const { restaurant_id } = query
 
@@ -17,5 +17,5 @@ export async function getOrdersByRestaurantId(req: NextApiRequest, res: NextApiR
         default:
             res.status(404).end();
     }
-    return []
+    res.status(404).end();
 }

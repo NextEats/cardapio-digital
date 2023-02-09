@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { getSelectsByRestaurantIdFetch } from "src/fetch/selects/getSelectsByRestaurantId";
 
-export async function getSelectsByRestaurantId(req: NextApiRequest, res: NextApiResponse) {
+export default async function getSelectsByRestaurantId(req: NextApiRequest, res: NextApiResponse) {
     const { method, query } = req
     const { restaurant_id } = query
 

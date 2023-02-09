@@ -18,11 +18,11 @@ import {
 import { TbLock } from "react-icons/tb";
 import { FcGoogle } from "react-icons/fc";
 import { BsFacebook } from "react-icons/bs";
-import { IRestaurant } from "../../types/home";
 import { FaRegEnvelope } from "react-icons/fa";
+import { iRestaurant } from "src/types/types";
 
 interface IFinishedProps {
-  restaurant: IRestaurant;
+  restaurant: iRestaurant;
 }
 
 const newUserFormValidationSchema = zod.object({
@@ -61,9 +61,8 @@ export default function Finished({ restaurant }: IFinishedProps) {
         <div className="w-screen h-screen flex items-center justify-center fixed inset-0 z-20 ">
           <div className="w-screen h-screen flex items-center justify-center bg-black opacity-40 blur-lg fixed inset-0 z-10 "></div>
           <div
-            className={`w-[280px] ${
-              account === "register" ? "h-[540px]" : "h-[490px]"
-            } bg-white z-20 rounded shadow-2xl px-4  py-4`}
+            className={`w-[280px] ${account === "register" ? "h-[540px]" : "h-[490px]"
+              } bg-white z-20 rounded shadow-2xl px-4  py-4`}
           >
             <div className="w-full flex justify-end">
               <AiOutlineClose

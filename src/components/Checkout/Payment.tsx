@@ -7,7 +7,7 @@ import { CEP } from "cep-promise";
 import { FaMotorcycle, FaShoppingBag } from "react-icons/fa";
 import { MdRestaurant } from "react-icons/md";
 import { GetServerSideProps } from "next";
-import { getPaymentMethodRestaurant, getPaymentMethod } from "../../server/api";
+import { api } from "../../server/api";
 
 interface iPayment {
   products: Array<iCheckoutProduct> | null | undefined;
@@ -59,13 +59,12 @@ export function Payment({
 
   // let paymentMethod;
   // useMemo(() => {
-  //   const paymentMethodData = getPaymentMethod();
-  //   const paymentMethodRestaurantData = getPaymentMethodRestaurant(
-  //     restaurant.id
-  //   ).then((res: ) => {
-  //     console.log(res.data);
-  //   });
-
+  //   async function getPaymentMethod() {
+  //     const { data } = await api.get("api/payment_method")
+  //   }
+  //   async function getPaymentMethodRestaurant() {
+  //     const { data } = await api.get(`api/payment_method_restaurant/${restaurant.id}`)
+  //   }
   // }, [restaurant]);
 
   return (

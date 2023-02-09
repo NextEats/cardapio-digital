@@ -13,7 +13,7 @@ import Image from "next/image";
 import { EditableProductActions, removeOptionFromIngredientAction, setAddIngredientAction, setAddNewOption, setUpdateIngredient } from "../../../../../reducers/aditableProduct/actions";
 import { IEditableProductReducerData, iPayloadProduct } from "../../../../../reducers/aditableProduct/reducer";
 import { CardapioDigitalButton } from "../../CardapioDigitalButton";
-import { createIngredientIfIsUpdatingProduct, createProductOptionIfIsUpdatingProduct, deleteIngredientIfIsUpdatingProduct, deleteProductOptionIfIsUpdatingProduct, supabase, updateIngredientName } from "../../../../../server/api";
+import { createIngredientIfIsUpdatingProduct, createProductOptionIfIsUpdatingProduct, deleteIngredientIfIsUpdatingProduct, deleteProductOptionIfIsUpdatingProduct, supabase } from "../../../../../server/api";
 import { iInsertSelect, iInsertSelects } from "../../../../../types/types";
 import { toast } from "react-toastify";
 

@@ -3,15 +3,7 @@ import axios from "axios";
 import { promiseAlert } from "../helpers/toasts";
 import { IEditableProductReducerData } from "../reducers/aditableProduct/reducer";
 import { Database } from "../types/supabase";
-import {
-  iGroupedProducts,
-  iInsertAdditionals,
-  iInsertProductOptions,
-  iProduct,
-  iProductCategory,
-  iRestaurantType,
-  ProductWithCategory,
-} from "../types/types";
+import { iGroupedProducts, iInsertAdditionals, iInsertProductOptions, iProductCategory, iRestaurantType, ProductWithCategory } from "../types/types";
 
 export const api = axios.create({
   baseURL: "http://localhost:3000",
@@ -75,25 +67,7 @@ export const getGroupedProducts = async (restaurantId: number) => {
   }
 };
 
-export async function returnRestaurantType(id: number) {
-  const { data } = await supabase
-    .from("restaurant_types")
-    .select()
-    .eq("id", id);
 
-  return data as unknown as Array<iRestaurantType["data"]>;
-}
-
-export async function returnAllCategoriesForThisRestaurant(
-  restaurantId: number
-) {
-  const { data } = await supabase
-    .from("product_categories")
-    .select("*")
-    .eq("restaurant_id", restaurantId);
-
-  return data as unknown as Array<iProductCategory["data"]>;
-}
 
 export async function createNewWhatsAppCode(
   whatsappNumber: string,
@@ -158,30 +132,6 @@ export async function isWhatsappCodeValid(
   }
 }
 
-export async function getPaymentMethodRestaurant(restaurantId: number) {
-  const paymentMethodRestaurantData = await supabase
-    .from("payment_methods_restaurants")
-    .select()
-    .eq("restaurant_id", restaurantId);
-  return paymentMethodRestaurantData;
-}
-export async function getPaymentMethod() {
-  const paymentMethodData = await supabase.from("payment_methods").select();
-  return paymentMethodData;
-}
-
-export async function updateIngredientName(ingredientId: number, name: string) {
-  console.log(ingredientId, name);
-  const ingredientData = await supabase
-    .from("selects")
-    .update({
-      name: name,
-    })
-    .eq("id", ingredientId)
-    .select("*");
-  console.log(ingredientData);
-  return ingredientData;
-}
 export async function updateAdditional(
   additionalId: number,
   picture_url: string,
@@ -286,7 +236,7 @@ export async function createProduct(
 
 ) {
   // await supabase.storage.from("teste").upload("teste_4", file)
-  const imageData = await supabase.storage.from("teste").upload(state.productInformation.name, state.picture_file)
+  const imageData = await supabase.storage.from("teste").upload(state.productInformation.name, state.picture_file!)
   const getImageData = supabase.storage.from("teste").getPublicUrl(imageData.data?.path!)
   const data = await supabase
     .from("products")
@@ -338,13 +288,7 @@ async function postOptionToSupabase(
     ) {
       return;
     }
-    const optionData = await supabase
-      .from("product_options")
-      .insert({
-        name: option.name,
-        picture_url: option.picture_url,
-        select_id: option.select_id,
-      })
+    const optionData = await supabase.from("product_options").insert({ name: option.name, picture_url: option.picture_url, select_id: option.select_id, })
       .select("*");
     optionStatus = optionData.status;
   });
@@ -376,24 +320,11 @@ async function postAdditionalToSupabase(
         .select("*");
       data = productAdditionalDada;
     } else {
-      const additionalData = await supabase
-        .from("additionals")
-        .insert({
-          name: additional.name,
-          picture_url: additional.picture_url,
-          price: additional.price,
-        })
-        .select("*");
+      const additionalData = await supabase.from("additionals").insert({ name: additional.name, picture_url: additional.picture_url, price: additional.price, }).select("*");
       if (additionalData.status === 400 || additionalData.data === null) {
         return;
       }
-      const productAdditionalDada = await supabase
-        .from("product_additionals")
-        .insert({
-          additional_id: additionalData.data[0]?.id!,
-          product_id: productId,
-        })
-        .select("*");
+      const productAdditionalDada = await supabase.from("product_additionals").insert({ additional_id: additionalData.data[0]?.id!, product_id: productId, }).select("*");
       data = productAdditionalDada;
     }
   });

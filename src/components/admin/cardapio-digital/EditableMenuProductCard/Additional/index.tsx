@@ -1,6 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import Image from "next/image";
-import { Dispatch, useState } from "react";
+import { Dispatch, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import * as zod from "zod"
 
@@ -8,9 +8,9 @@ import { BiPencil } from "react-icons/bi";
 import { FiTrash2 } from "react-icons/fi";
 import { EditableProductActions } from "../../../../../reducers/aditableProduct/actions";
 import { IEditableProductReducerData, iPayloadProduct } from "../../../../../reducers/aditableProduct/reducer";
-import { iInsertAdditional } from "../../../../../types/types";
+import { iInsertAdditional, iRestaurants } from "../../../../../types/types";
 import { CardapioDigitalButton } from "../../CardapioDigitalButton";
-import { createAdditionalsAndIsertIntoProductAdditionalsIfIsUpdatingProduct, deleteProductAdditionalsIfIsUpdatingProduct, updateAdditional } from "../../../../../server/api";
+import { api, createAdditionalsAndIsertIntoProductAdditionalsIfIsUpdatingProduct, deleteProductAdditionalsIfIsUpdatingProduct, updateAdditional } from "../../../../../server/api";
 
 interface IAdditionalProps {
     state: IEditableProductReducerData,
@@ -19,6 +19,7 @@ interface IAdditionalProps {
         payload: iPayloadProduct
     }>,
     productId: number,
+    restaurantId: number,
 }
 
 const newAdditionalFormValidationSchema = zod.object({
@@ -30,12 +31,13 @@ const newAdditionalFormValidationSchema = zod.object({
 
 type NewAdditionlFormData = zod.infer<typeof newAdditionalFormValidationSchema>;
 
-export function Additional({ state, dispatch, productId }: IAdditionalProps) {
+export function Additional({ state, dispatch, productId, restaurantId }: IAdditionalProps) {
+    const [restaurant, setRestaurantId] = useState<iRestaurants["data"]>([])
 
     const [showAdditionalModal, setShowAdditionalModal] = useState<"UPDATE" | "ADD" | "">('')
     const [oldAdditionalId, setOldAdditionalId] = useState<number | undefined>(undefined)
 
-    const { register, setValue, reset, getValues, watch } = useForm<NewAdditionlFormData>({
+    const { register, setValue, reset, getValues } = useForm<NewAdditionlFormData>({
         resolver: zodResolver(newAdditionalFormValidationSchema),
         defaultValues: {
             additionalName: '',
@@ -98,7 +100,7 @@ export function Additional({ state, dispatch, productId }: IAdditionalProps) {
         setShowAdditionalModal('UPDATE')
     }
 
-    function setUpdateAdditional() {
+    async function setUpdateAdditional() {
         const additionalName = getValues("additionalName")
         const additionalPrice = Number(getValues("additionalPrice"))
         const additionalPicture_url = getValues("additionalPicture_url")
@@ -111,7 +113,12 @@ export function Additional({ state, dispatch, productId }: IAdditionalProps) {
             type: EditableProductActions.UPDATE_ADDITIONAL,
             payload: { additionalName, additionalPrice, additionalPicture_url, oldAdditionalId }
         })
-
+        // const additionalUpdated = await api.put(`api/additionals/${restaurantId}`, {
+        //     name: additionalName,
+        //     price: additionalPrice,
+        //     picture_url: additionalPicture_url,
+        //     id: oldAdditionalId
+        // })
         updateAdditional(oldAdditionalId!, additionalPicture_url, additionalPrice, additionalName)
         setShowAdditionalModal('')
         reset()

@@ -22,7 +22,7 @@ export function HorizontalGraphics({ globalValuesData }: iHorizontalGraphicsProp
 
     let numberOfProductsSoldInEachCategory: { [key: string]: { name: string, count: number } } = {}
     for (let i = 0; i < productsPurchased.length; i++) {
-        var category_id = productsPurchased[i].category_id;
+        var category_id = productsPurchased[i]?.category_id;
 
         for (let j = 0; j < productCategories.length; j++) {
 
@@ -37,7 +37,7 @@ export function HorizontalGraphics({ globalValuesData }: iHorizontalGraphicsProp
             }
         }
     }
-    
+
     const colors = [
         "bg-red-500",
         "bg-green-300",
@@ -45,7 +45,7 @@ export function HorizontalGraphics({ globalValuesData }: iHorizontalGraphicsProp
         "bg-yellow-500",
         "bg-purple-500",
         "bg-gray-400",
-    
+
         "bg-red-500",
         "bg-green-300",
         "bg-blue-500",

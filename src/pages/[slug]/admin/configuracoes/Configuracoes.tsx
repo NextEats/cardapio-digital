@@ -20,41 +20,37 @@ export default function Config() {
       <>
         <div className="flex flex-row child:px-5 child:py-3 child:cursor-pointer child:border-b-4 child-hover:bg-[rgba(37, 100, 235, 0.164)] ">
           <div
-            className={`${
-              currentSection === "general"
+            className={`${currentSection === "general"
                 ? "border-b-blue-600"
                 : "border-b-white"
-            }`}
+              }`}
             onClick={() => setCurrentSection("general")}
           >
             Configurações Gerais
           </div>
           <div
-            className={`${
-              currentSection === "payment"
+            className={`${currentSection === "payment"
                 ? "border-b-blue-600"
                 : "border-b-white"
-            }`}
+              }`}
             onClick={() => setCurrentSection("payment")}
           >
             Pagamento
           </div>
           <div
-            className={`${
-              currentSection === "distance_fee"
+            className={`${currentSection === "distance_fee"
                 ? "border-b-blue-600"
                 : "border-b-white"
-            }`}
+              }`}
             onClick={() => setCurrentSection("distance_fee")}
           >
             Taxas de Distâncias
           </div>
           <div
-            className={`${
-              currentSection === "whatsapp"
+            className={`${currentSection === "whatsapp"
                 ? "border-b-blue-600"
                 : "border-b-white"
-            }`}
+              }`}
             onClick={() => setCurrentSection("whatsapp")}
           >
             WhatsApp
@@ -117,7 +113,7 @@ function Payment() {
       <h3 className="mb-4 font-semibold">Métodos de Pagamento Ativos</h3>
       {paymentMethods && (
         <div className="flex flex-col gap-y-3">
-          {paymentMethods.data.map((paymentMethod, index: number) => {
+          {paymentMethods.data.map((paymentMethod: any, index: number) => {
             return (
               <div key={index}>
                 <div className="ml-4 relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">

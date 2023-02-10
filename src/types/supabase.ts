@@ -17,15 +17,18 @@ export interface Database {
     Functions: {
       graphql: {
         Args: {
-          operationName: string
-          query: string
-          variables: Json
-          extensions: Json
+          operationName?: string
+          query?: string
+          variables?: Json
+          extensions?: Json
         }
         Returns: Json
       }
     }
     Enums: {
+      [_ in never]: never
+    }
+    CompositeTypes: {
       [_ in never]: never
     }
   }
@@ -38,6 +41,7 @@ export interface Database {
           name: string
           picture_url: string
           price: number
+          restaurant_id: number | null
         }
         Insert: {
           created_at?: string | null
@@ -45,6 +49,7 @@ export interface Database {
           name: string
           picture_url: string
           price: number
+          restaurant_id?: number | null
         }
         Update: {
           created_at?: string | null
@@ -52,6 +57,7 @@ export interface Database {
           name?: string
           picture_url?: string
           price?: number
+          restaurant_id?: number | null
         }
       }
       addresses: {
@@ -81,6 +87,32 @@ export interface Database {
           id?: number
           number?: number
           reference_point?: string | null
+        }
+      }
+      cash_boxes: {
+        Row: {
+          closed_at: string | null
+          created_at: string | null
+          id: number
+          is_open: boolean | null
+          opened_at: string | null
+          restaurant_id: number | null
+        }
+        Insert: {
+          closed_at?: string | null
+          created_at?: string | null
+          id?: number
+          is_open?: boolean | null
+          opened_at?: string | null
+          restaurant_id?: number | null
+        }
+        Update: {
+          closed_at?: string | null
+          created_at?: string | null
+          id?: number
+          is_open?: boolean | null
+          opened_at?: string | null
+          restaurant_id?: number | null
         }
       }
       clients: {
@@ -245,25 +277,31 @@ export interface Database {
       }
       orders: {
         Row: {
+          cash_box_id: number | null
           client_id: number | null
           created_at: string | null
           id: number
+          order_status_id: number | null
           order_type_id: number
           payment_method_id: number | null
           restaurant_id: number | null
         }
         Insert: {
+          cash_box_id?: number | null
           client_id?: number | null
           created_at?: string | null
           id?: number
+          order_status_id?: number | null
           order_type_id: number
           payment_method_id?: number | null
           restaurant_id?: number | null
         }
         Update: {
+          cash_box_id?: number | null
           client_id?: number | null
           created_at?: string | null
           id?: number
+          order_status_id?: number | null
           order_type_id?: number
           payment_method_id?: number | null
           restaurant_id?: number | null
@@ -274,21 +312,18 @@ export interface Database {
           created_at: string | null
           id: number
           order_id: number
-          order_status_id: number | null
           product_id: number
         }
         Insert: {
           created_at?: string | null
           id?: number
           order_id: number
-          order_status_id?: number | null
           product_id: number
         }
         Update: {
           created_at?: string | null
           id?: number
           order_id?: number
-          order_status_id?: number | null
           product_id?: number
         }
       }
@@ -313,18 +348,21 @@ export interface Database {
         Row: {
           created_at: string | null
           id: number
+          is_active: boolean
           payment_method_id: number
           restaurant_id: number
         }
         Insert: {
           created_at?: string | null
           id?: number
+          is_active?: boolean
           payment_method_id: number
           restaurant_id: number
         }
         Update: {
           created_at?: string | null
           id?: number
+          is_active?: boolean
           payment_method_id?: number
           restaurant_id?: number
         }
@@ -496,6 +534,49 @@ export interface Database {
           restaurant_id?: number | null
         }
       }
+      restaurant_admin: {
+        Row: {
+          created_at: string | null
+          id: number
+          name: string | null
+          restaurant_id: number | null
+          role_id: number | null
+          whatsapp_number: number | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: number
+          name?: string | null
+          restaurant_id?: number | null
+          role_id?: number | null
+          whatsapp_number?: number | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: number
+          name?: string | null
+          restaurant_id?: number | null
+          role_id?: number | null
+          whatsapp_number?: number | null
+        }
+      }
+      restaurant_role: {
+        Row: {
+          created_at: string | null
+          id: number
+          name: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: number
+          name?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: number
+          name?: string | null
+        }
+      }
       restaurant_types: {
         Row: {
           created_at: string | null
@@ -550,16 +631,19 @@ export interface Database {
           created_at: string | null
           id: number
           name: string
+          restaurant_id: number | null
         }
         Insert: {
           created_at?: string | null
           id?: number
           name: string
+          restaurant_id?: number | null
         }
         Update: {
           created_at?: string | null
           id?: number
           name?: string
+          restaurant_id?: number | null
         }
       }
       weekday_operating_time: {
@@ -639,6 +723,9 @@ export interface Database {
       [_ in never]: never
     }
     Enums: {
+      [_ in never]: never
+    }
+    CompositeTypes: {
       [_ in never]: never
     }
   }
@@ -731,31 +818,40 @@ export interface Database {
     }
     Functions: {
       extension: {
-        Args: { name: string }
+        Args: {
+          name: string
+        }
         Returns: string
       }
       filename: {
-        Args: { name: string }
+        Args: {
+          name: string
+        }
         Returns: string
       }
       foldername: {
-        Args: { name: string }
+        Args: {
+          name: string
+        }
         Returns: string[]
       }
       get_size_by_bucket: {
         Args: Record<PropertyKey, never>
-        Returns: { size: number; bucket_id: string }[]
+        Returns: {
+          size: number
+          bucket_id: string
+        }[]
       }
       search: {
         Args: {
           prefix: string
           bucketname: string
-          limits: number
-          levels: number
-          offsets: number
-          search: string
-          sortcolumn: string
-          sortorder: string
+          limits?: number
+          levels?: number
+          offsets?: number
+          search?: string
+          sortcolumn?: string
+          sortorder?: string
         }
         Returns: {
           name: string
@@ -768,6 +864,9 @@ export interface Database {
       }
     }
     Enums: {
+      [_ in never]: never
+    }
+    CompositeTypes: {
       [_ in never]: never
     }
   }

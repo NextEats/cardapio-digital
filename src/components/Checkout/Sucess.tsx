@@ -10,15 +10,15 @@ function returnTreatedNumber(value: string): string {
 }
 
 interface SuccessMessage {
-    restaurant: iRestaurant["data"];
+  restaurant: iRestaurant["data"];
 }
 export function WhatsappCodeInput({
   restaurant,
-}: iWhatsappCodeInput) {
+}: SuccessMessage) {
 
   return (
     <div className="mb-9">
-      <div className="text-gray-800 flex flex-col gap-y-2 min-h-[400px]">
+      {/* <div className="text-gray-800 flex flex-col gap-y-2 min-h-[400px]">
         <div>
           <InputMask
             mask="999999"
@@ -46,7 +46,7 @@ export function WhatsappCodeInput({
         className="font-semibold bg-indigo-500 text-white px-4 py-2 rounded-sm hover:bg-indigo-800 w-full mt-1"
       >
         CONTINUAR
-      </button>
+      </button> */}
     </div>
   );
 }

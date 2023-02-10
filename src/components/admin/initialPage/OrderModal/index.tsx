@@ -1,9 +1,8 @@
 import { iStatusReducer } from "../../../../reducers/statusReducer/reducer";
 import * as Dialog from "@radix-ui/react-dialog";
 import { FiX } from "react-icons/fi";
-import Image from "next/image";
 import { CardapioDigitalButton } from "../../cardapio-digital/CardapioDigitalButton";
-import { Dispatch, useEffect, useMemo, useState } from "react";
+import { Dispatch, useMemo, useState } from "react";
 import { showModalAction } from "../../../../reducers/statusReducer/action";
 import { api } from "../../../../server/api";
 
@@ -13,29 +12,7 @@ interface iOrderModalProps {
 }
 
 export function OrderModal({ state, dispatch }: iOrderModalProps) {
-  const [address, setAddress] = useState<{
-    bairro: string;
-    cep: string;
-    complemento: string;
-    ddd: string;
-    gia: string;
-    ibge: string;
-    localidade: string;
-    logradouro: string;
-    siafi: string;
-    uf: string;
-  }>({
-    bairro: "",
-    cep: "",
-    complemento: "",
-    ddd: "",
-    gia: "",
-    ibge: "",
-    localidade: "",
-    logradouro: "",
-    siafi: "",
-    uf: "",
-  });
+  const [address, setAddress] = useState({ bairro: "", cep: "", complemento: "", ddd: "", gia: "", ibge: "", localidade: "", logradouro: "", siafi: "", uf: "", });
 
   // products
   const orderProductFiltered = state.ordersProducts.filter(

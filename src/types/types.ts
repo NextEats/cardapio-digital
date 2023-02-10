@@ -54,6 +54,7 @@ export interface iOrder {
 export interface iOrders {
   data: Array<Database["public"]["Tables"]["orders"]["Row"]>;
 }
+
 export interface iOrderProduct {
   data: Database["public"]["Tables"]["orders_products"]["Row"];
 }
@@ -68,8 +69,50 @@ export interface iOrderStatus {
 export interface iOrdersStatus {
   data: Array<Database["public"]["Tables"]["order_status"]["Row"]>;
 }
+export interface iCashBox {
+  data: Database["public"]["Tables"]["cash_boxes"]["Row"];
+}
 
-//  INSERTS
+export interface iCashBoxes {
+  data: Array<Database["public"]["Tables"]["cash_boxes"]["Row"]>;
+}
+export interface iSelect {
+  data: Database["public"]["Tables"]["selects"]["Row"];
+}
+
+export interface iSelects {
+  data: Array<Database["public"]["Tables"]["selects"]["Row"]>;
+}
+export interface iProductSelect {
+  data: Database["public"]["Tables"]["product_selects"]["Row"];
+}
+
+export interface iProductSelects {
+  data: Array<Database["public"]["Tables"]["product_selects"]["Row"]>;
+}
+export interface iProductAdditional {
+  data: Database["public"]["Tables"]["product_additionals"]["Row"];
+}
+
+export interface iProductAdditionals {
+  data: Array<Database["public"]["Tables"]["product_additionals"]["Row"]>;
+}
+export interface iClient {
+  data: Database["public"]["Tables"]["clients"]["Row"];
+}
+
+export interface iClients {
+  data: Array<Database["public"]["Tables"]["clients"]["Row"]>;
+}
+export interface iContact {
+  data: Database["public"]["Tables"]["contacts"]["Row"];
+}
+
+export interface iContacts {
+  data: Array<Database["public"]["Tables"]["contacts"]["Row"]>;
+}
+
+// ==================   INSERTS  =====================
 export interface iInsertContact {
   data: Database["public"]["Tables"]["contacts"]["Insert"];
 }
@@ -197,7 +240,7 @@ export interface iProductOption {
 }
 
 export interface iProductOptions {
-  data: Array<iProduct>;
+  data: Array<Database["public"]["Tables"]["product_options"]["Row"]>;
 }
 
 export interface iCheckoutProduct {
@@ -226,4 +269,50 @@ export interface iCheckoutProduct {
     price: number;
     quantity: number;
   }>;
+}
+
+export interface iAddress {
+  data: Database["public"]["Tables"]["addresses"]["Row"];
+}
+export interface iAddresses {
+  data: Array<Database["public"]["Tables"]["addresses"]["Row"]>;
+}
+
+export interface iWeekdayOperatingTime {
+  data: Database["public"]["Tables"]["weekday_operating_time"]["Row"];
+}
+
+export interface iWeekday {
+  data: Database["public"]["Tables"]["weekdays"]["Row"];
+}
+
+export interface iPaymentMethod {
+  data: Database["public"]["Tables"]["payment_methods"]["Row"];
+}
+export interface iPaymentMethods {
+  data: Array<Database["public"]["Tables"]["payment_methods"]["Row"]>;
+}
+
+export interface iPaymentMethodsRestaurants {
+  data: Database["public"]["Tables"]["payment_methods_restaurants"]["Row"];
+}
+export interface iPaymentMethodsRestaurantss {
+  data: Array<
+    Database["public"]["Tables"]["payment_methods_restaurants"]["Row"]
+  >;
+}
+
+export type iRestaurantWithFKData = iRestaurant["data"] & {
+  addresses: iAddress["data"];
+  restaurant_types: iRestaurantType["data"];
+  weekday_operating_time: Array<
+    iWeekdayOperatingTime["data"] & {
+      weekdays: iWeekday["data"];
+    }
+  >;
+};
+
+export interface iDigitalMenuData {
+  restaurant: iRestaurantWithFKData;
+  groupedProducts: iGroupedProducts | undefined;
 }

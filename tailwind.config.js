@@ -52,11 +52,15 @@ module.exports = {
 
         "gray-red-400": "#574F4D",
 
-
         "green-300": "#1DC88A",
         "green-100": "#1FA262",
       },
     },
   },
-  plugins: [],
+  plugins: [
+    function ({ addVariant }) {
+      addVariant("child", "& > *");
+      addVariant("child-hover", "& > *:hover");
+    },
+  ],
 };

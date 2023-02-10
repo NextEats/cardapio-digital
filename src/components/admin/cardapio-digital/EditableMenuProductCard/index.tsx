@@ -4,19 +4,25 @@ import {
   setAddIngredientAction,
   setCategoryAction,
   setIsViewingAddingOrOpdatingProductAction,
-} from "../../../../reducers/aditableProduct/actions";
+} from "@/src/reducers/aditableProduct/actions";
 import {
   IEditableProductReducerData,
   iPayloadProduct,
-} from "../../../../reducers/aditableProduct/reducer";
-import { supabase } from "../../../../server/api";
+} from "@/src/reducers/aditableProduct/reducer";
+import {
+  createProduct,
+  createProductAdditionalsIfIsUpdatingProduct,
+  createProductSelectIfIsUpdatingProduct,
+  deleteProduct,
+  updateProduct,
+} from "@/src/server/api";
 import {
   iInsertAdditionals,
   iInsertProductCategories,
   iInsertProductOptions,
   iInsertSelects,
   iProduct,
-} from "../../../../types/types";
+} from "@/src/types/types";
 import { CardapioDigitalButton } from "../CardapioDigitalButton";
 import { Additional } from "./Additional";
 import HeadersCard from "./HeadersCard";
@@ -26,7 +32,6 @@ import { IoIosArrowDown } from "react-icons/io";
 import { BsArrowLeftCircle } from "react-icons/bs";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { supabaseError, supaBaseSuccess } from "../../../../helpers/toasts";
 
 interface iEditableMenuProductCardProps {
   state: IEditableProductReducerData;
@@ -34,6 +39,8 @@ interface iEditableMenuProductCardProps {
     type: string;
     payload: iPayloadProduct;
   }>;
+  productId: number | null;
+  restaurantId: number;
   setProductModal: Dispatch<SetStateAction<boolean>>;
   productModal: boolean;
   selects: iInsertSelects["data"];
@@ -47,10 +54,12 @@ export default function EditableMenuProductCard({
   dispatch,
   setProductModal,
   productModal,
+  productId,
   selects,
   productCategories,
   productOptions,
   additionals,
+  restaurantId,
 }: iEditableMenuProductCardProps) {
   function setIngredientSelected(selectId: number) {
     const selectFinded = selects.find(
@@ -81,110 +90,11 @@ export default function EditableMenuProductCard({
   }
 
   async function handleCreateProduct() {
-    const { data, status } = await supabase
-      .from("products")
-      .insert({
-        category_id: state.category.id!,
-        description: state.productInformation.description,
-        name: state.productInformation.name,
-        picture_url: state.picture_url,
-        price: Number(state.productInformation.price),
-      })
-      .select("*");
-
-    if (data === null) {
-      return;
-    }
-    // let additionalsStatus
-    postAdditionalToSupabase(data[0], status);
-
-    state.ingredients.forEach(async (ingredient) => {
-      if (ingredient?.name === "") {
-        return;
-      }
-      const productSelectaData = await supabase
-        .from("product_selects")
-        .insert({
-          select_id: ingredient?.id,
-          product_id: data[0].id,
-        })
-        .select("*");
-    });
-
-    postOptionToSupabase();
+    await createProduct(state, productOptions, additionals);
   }
 
-  async function postOptionToSupabase() {
-    let optionStatus;
-    state.options.forEach(async (option) => {
-      if (
-        option.name === "" ||
-        productOptions.some((op) => op.name === option.name)
-      ) {
-        return;
-      }
-      const optionData = await supabase
-        .from("product_options")
-        .insert({
-          name: option.name,
-          picture_url: option.picture_url,
-          select_id: option.select_id,
-        })
-        .select("*");
-      optionStatus = optionData.status;
-    });
-    return optionStatus;
-  }
-
-  async function postAdditionalToSupabase(
-    prodductData: iProduct["data"],
-    productStatus: number
-  ) {
-    if (state.additionals.length > 0) {
-      return;
-    }
-    let additionalStatus;
-    state.additionals.forEach(async (additional) => {
-      if (additional.name === "") {
-        return;
-      }
-      if (
-        additionals.some(
-          (additionalValidate) => additionalValidate.name === additional.name
-        )
-      ) {
-        const productAdditionalDada = await supabase
-          .from("product_additionals")
-          .insert({
-            additional_id: additional.id!,
-            product_id: prodductData.id,
-          })
-          .select("*");
-        additionalStatus = productAdditionalDada.status;
-      } else {
-        const additionalData = await supabase
-          .from("additionals")
-          .insert({
-            name: additional.name,
-            picture_url: additional.picture_url,
-            price: additional.price,
-          })
-          .select("*");
-        if (additionalData.status === 400 || additionalData.data === null) {
-          return;
-        }
-        const productAdditionalDada = await supabase
-          .from("product_additionals")
-          .insert({
-            additional_id: additionalData.data[0]?.id!,
-            product_id: prodductData.id,
-          })
-          .select("*");
-        additionalStatus = productAdditionalDada.status;
-      }
-    });
-
-    return additionalStatus;
+  function handleUpdateProduct() {
+    updateProduct(state, productId!, additionals);
   }
 
   return (
@@ -192,10 +102,8 @@ export default function EditableMenuProductCard({
       <div
         className={`fixed inset-0 bg-black w-screen h-screen opacity-60 z-20 cursor-pointer ${
           productModal ? "opacity-40" : "opacity-0 pointer-events-none"
-        } `}
-        onClick={() => {
-          setProductModal(false);
-        }}
+        }`}
+        onClick={() => setProductModal(false)}
       ></div>
       <div
         className={`w-[360px] md:w-[420px] 2xl:w-[468px] fixed ${
@@ -208,14 +116,23 @@ export default function EditableMenuProductCard({
             className="text-3xl text-gray-600 cursor-pointer hover:scale-110 hover:transition-all ease-in-out"
           />
           {state.isViewingUpdatingOrAdding === "VIEWING" ? (
-            <CardapioDigitalButton
-              name="Editar"
-              h="h-8"
-              w="w-28"
-              onClick={() =>
-                dispatch(setIsViewingAddingOrOpdatingProductAction("UPDATING"))
-              }
-            />
+            <div className="flex items-center gap-3">
+              <CardapioDigitalButton
+                name="Excluir"
+                h="h-8"
+                w="w-28"
+                onClick={() =>
+                  deleteProduct(productId!, state.productInformation.name)
+                }
+              />
+              {/* <CardapioDigitalButton
+                name="Editar"
+                h="h-8"
+                w="w-28"
+                onClick={() =>
+                  dispatch(setIsViewingAddingOrOpdatingProductAction("UPDATING"))
+                } /> */}
+            </div>
           ) : null}
         </div>
 
@@ -230,6 +147,9 @@ export default function EditableMenuProductCard({
                 </NavigationMenu.Trigger>
                 <NavigationMenu.Content className="flex flex-1 w-auto p-1 rounded-md flex-wrap absolut top-0 left-0 bg-white shadow-md">
                   {productCategories.map((category) => {
+                    if (state.category.id === category.id) {
+                      return;
+                    }
                     return (
                       <NavigationMenu.List
                         key={category.id}
@@ -245,14 +165,23 @@ export default function EditableMenuProductCard({
 
               <NavigationMenu.Item className="h-full flex flex-1 flex-col">
                 <NavigationMenu.Trigger className="h-full flex flex-1 gap-2 items-center justify-center rounded hover:bg-gray-200">
-                  Ingredients <IoIosArrowDown className="hover:rotate-180" />
+                  Ingredientes <IoIosArrowDown className="hover:rotate-180" />
                 </NavigationMenu.Trigger>
                 <NavigationMenu.Content className="flex flex-1 w-auto p-1 rounded-md flex-wrap absolut top-0 left-0 bg-white shadow-md">
                   {selects.map((select) => {
+                    if (state.ingredients.some((se) => se.id === select.id)) {
+                      return;
+                    }
                     return (
                       <NavigationMenu.List
                         title={select.name}
-                        onClick={() => setIngredientSelected(select.id!)}
+                        onClick={() => {
+                          createProductSelectIfIsUpdatingProduct(
+                            select.id!,
+                            productId!
+                          );
+                          setIngredientSelected(select.id!);
+                        }}
                         key={select.id}
                         className="px-2 py-1 cursor-pointer hover:bg-violet-200 rounded "
                       >
@@ -265,13 +194,24 @@ export default function EditableMenuProductCard({
 
               <NavigationMenu.Item className="h-full flex flex-1 flex-col">
                 <NavigationMenu.Trigger className="h-full flex flex-1 gap-2 items-center justify-center rounded hover:bg-gray-200">
-                  Adicinais <IoIosArrowDown className="hover:rotate-180" />
+                  Adicionais <IoIosArrowDown className="hover:rotate-180" />
                 </NavigationMenu.Trigger>
                 <NavigationMenu.Content className="flex flex-1 w-auto p-1 rounded-md flex-wrap absolut top-0 left-0 z-50 bg-white shadow-md">
                   {additionals.map((additional) => {
+                    if (
+                      state.additionals.some((add) => add.id === additional.id)
+                    ) {
+                      return;
+                    }
                     return (
                       <NavigationMenu.List
-                        onClick={() => setAdditionalSelected(additional.id!)}
+                        onClick={() => {
+                          createProductAdditionalsIfIsUpdatingProduct(
+                            additional.id!,
+                            productId!
+                          );
+                          setAdditionalSelected(additional.id!);
+                        }}
                         key={additional.id}
                         className="px-2 py-1 cursor-pointer hover:bg-violet-200 rounded "
                       >
@@ -299,9 +239,19 @@ export default function EditableMenuProductCard({
             : `${state.category.name}`}
         </h2>
 
-        <Igredient state={state} selects={selects} dispatch={dispatch} />
+        <Igredient
+          state={state}
+          selects={selects}
+          dispatch={dispatch}
+          productId={productId!}
+        />
 
-        <Additional state={state} dispatch={dispatch} />
+        <Additional
+          state={state}
+          dispatch={dispatch}
+          productId={productId!}
+          restaurantId={restaurantId}
+        />
 
         {state.isViewingUpdatingOrAdding === "ADDING" && (
           <CardapioDigitalButton
@@ -334,7 +284,7 @@ export default function EditableMenuProductCard({
               w="w-full"
             />
             <CardapioDigitalButton
-              onClick={() => console.log("Editar")}
+              onClick={() => handleUpdateProduct()}
               disabled={
                 !state.productInformation.name ||
                 !state.productInformation.description ||

@@ -17,10 +17,7 @@ export default function NewRequests({ state, dispatch }: iNewRequestProps) {
   async function moveToEmProduçãoCard(orderId: number) {
 
     const emProduçãoStatus = state.orderStatuss?.find(status => status.status_name === "em produção")
-    const ordersproductFiltered = state.ordersProducts?.filter(op => op.order_id === orderId)
-    ordersproductFiltered.forEach(async op => {
-      const ordersProductData = await supabase.from("orders_products").update({ order_status_id: emProduçãoStatus?.id }).eq("id", op.id).select("*")
-    })
+    const ordersProductData = await supabase.from("orders").update({ order_status_id: emProduçãoStatus?.id }).eq("id", orderId).select("*")
 
     dispatch(switchToProductioAction(orderId))
   }
@@ -30,19 +27,7 @@ export default function NewRequests({ state, dispatch }: iNewRequestProps) {
     dispatch(getModalDataAction(orderId))
   }
 
-
-  const [addressState, setAddressState] = useState<{
-    bairro: string,
-    cep: string,
-    complemento: string,
-    ddd: string,
-    gia: string,
-    ibge: string,
-    localidade: string,
-    logradouro: string,
-    siafi: string,
-    uf: string,
-  }>({
+  const [addressState, setAddressState] = useState({
     bairro: '',
     cep: '',
     complemento: '',
@@ -63,7 +48,10 @@ export default function NewRequests({ state, dispatch }: iNewRequestProps) {
           <tbody className="w-full border-collapse ">
             {
               state.emAnaliseOrders?.map(order => {
-                const ordersProductsFiltered = state.ordersProducts.filter(op => op.order_id === order.id!)
+                if (!order) {
+                  return
+                }
+                const ordersProductsFiltered = state.ordersProducts.filter(op => op.order_id === order.id)
                 const productsFiltered = ordersProductsFiltered.map(op => {
                   return state.products[state.products.findIndex(p => op.product_id === p.id)]
                 })

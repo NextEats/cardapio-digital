@@ -4,6 +4,7 @@ export enum EditableProductActions {
 
     IS_VIEWING_UPDATING_OR_ADDING = "IS_VIEWING_UPDATING_OR_ADDING",
     VIEW_PRODUCT = "VIEW_PRODUCT",
+    EDIT_PRODUCT = "EDIT_PRODUCT",
 
     SET_ADDING_PRDUCT = "SET_ADDING_PRDUCT",
 
@@ -11,9 +12,9 @@ export enum EditableProductActions {
     // PRODUCT INFORMATION
     IS_EDITING_INFORMATION = "IS_EDITING_INFORMATION",
     SET_PRODUCT_INFORMATION = "SET_PRODUCT_INFORMATION",
-    IS_EDITING_PICTURE = "IS_EDITING_PICTURE",
+    // IS_EDITING_PICTURE = "IS_EDITING_PICTURE",
+    SET_PICTURE_FILE = "SET_PICTURE_FILE",
     SET_PICTURE_URL = "SET_PICTURE_URL",
-
     // INGREDIENT
     // Add new ingredient
     ADD_NEW_INGREDIENT = "ADD_NEW_INGREDIENT",
@@ -60,7 +61,14 @@ export function setViewpProductAction(
     }
 }
 
+export function setProductPictureFileAction(file: File) {
+    return {
+        type: EditableProductActions.SET_PICTURE_FILE,
+        payload: { picture_file: file }
+    }
+}
 export function setProductPictureUrlAction(url: string) {
+    console.log(url)
     return {
         type: EditableProductActions.SET_PICTURE_URL,
         payload: { picture_url: url }
@@ -116,10 +124,10 @@ export function setCategoryAction(category: iInsertProductCategory["data"]) {
         payload: { category }
     }
 }
-export function setUpdateIngredient(name: string) {
+export function setUpdateIngredient(newIngredientName: string, oldIngredientName: string,) {
     return {
         type: EditableProductActions.UPDATE_INGREDIENT_NAME,
-        payload: { ingredientName: name }
+        payload: { newIngredientName, oldIngredientName }
     }
 }
 // export function setAddNewAdditional(name: string) {
@@ -134,3 +142,12 @@ export function setAddNewOption(optionName: string, optionPicture_url: string, i
         payload: { optionName, optionPicture_url, ingredientId }
     }
 }
+export function removeOptionFromIngredientAction(optionName: string, ingredientId: string) {
+    console.log("remove 1")
+    return {
+        type: EditableProductActions.REMOVE_OPTION_FROM_INGREDIENT,
+        payload: { optionName, ingredientId }
+    }
+}
+
+

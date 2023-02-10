@@ -3,7 +3,13 @@ import { GlobalValuesCard } from "../../../../components/admin/relatorios/Global
 
 import { LineChart } from "../../../../components/admin/relatorios/Charts/LineChart";
 import { GetServerSideProps } from "next";
-import { iOrders, iOrdersProducts, iOrdersStatus, iProductCategories, iProducts } from "../../../../types/types";
+import {
+  iOrders,
+  iOrdersProducts,
+  iOrdersStatus,
+  iProductCategories,
+  iProducts,
+} from "../../../../types/types";
 import { DoughnutChart } from "../../../../components/admin/relatorios/Charts/DoughnutChart";
 import { HorizontalGraphics } from "../../../../components/admin/relatorios/Charts/HorizontalGraphics";
 import { BarChart } from "../../../../components/admin/relatorios/Charts/BarChart";
@@ -30,13 +36,14 @@ interface iReportsProps {
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-
-  const restaurant = await getRestaurantBySlugFetch(context.query.slug)
-  const productCategories = await getProductsCategoriesByRestaurantIdFetch(restaurant[0].id)
-  const orders = await getOrdersByRestaurantIdFetch(restaurant[0].id)
-  const products = await getProductsByRestaurantIdFetch(restaurant[0].id)
-  const ordersStatus = await getOrderStatusFetch()
-  const ordersProducts = await getOrdersProductsFetch()
+  const restaurant: any = await getRestaurantBySlugFetch(context.query.slug);
+  const productCategories = await getProductsCategoriesByRestaurantIdFetch(
+    restaurant[0].id
+  );
+  const orders = await getOrdersByRestaurantIdFetch(restaurant[0].id);
+  const products = await getProductsByRestaurantIdFetch(restaurant[0].id);
+  const ordersStatus = await getOrderStatusFetch();
+  const ordersProducts = await getOrdersProductsFetch();
 
   return {
     props: {
@@ -56,7 +63,6 @@ export default function Reports({
   ordersProducts,
   ordersStatus,
 }: iReportsProps) {
-
   const [dailyRevenue, setDailyRevenue] = useState<DailyRevenue[]>([]);
 
   const [ordersDate, setOrdersDate] = useState<iOrders["data"]>([]);
@@ -65,7 +71,9 @@ export default function Reports({
   // const [productsDate, setProductsDate] = useState<iProducts["data"]>([]);
   // const [productCategoriesDate, setProductCategoriesDate] = useState<iProductCategories["data"]>([]);
 
-  const [startDate, setStartDate] = useState<Date | null>(new Date(Date.now() - 30 * 24 * 60 * 60 * 1000));
+  const [startDate, setStartDate] = useState<Date | null>(
+    new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
+  );
   const [endDate, setEndDate] = useState<Date | null>(new Date());
 
   const handleStartDateChange = (
@@ -114,10 +122,16 @@ export default function Reports({
     );
 
     if (startDate === null) {
-      return
+      return;
     }
 
-    setOrdersDate(orders.filter(o => new Date(o.created_at!) >= new Date(startDate) && new Date(o.created_at!) <= new Date(endDate!)))
+    setOrdersDate(
+      orders.filter(
+        (o) =>
+          new Date(o.created_at!) >= new Date(startDate) &&
+          new Date(o.created_at!) <= new Date(endDate!)
+      )
+    );
     // setStatusDate(ordersStatus.filter(os => new Date(os.created_at!) >= new Date(startDate) && new Date(os.created_at!) <= new Date(endDate!)))
     // setOrdersProductsDate(ordersProducts.filter(op => new Date(op.created_at!) >= new Date(startDate) && new Date(op.created_at!) <= new Date(endDate!)))
     // setProductsDate(products.filter(p => new Date(p.created_at!) >= new Date(startDate) && new Date(p.created_at!) <= new Date(endDate!)))
@@ -135,10 +149,10 @@ export default function Reports({
 
   useMemo(() => {
     function filter() {
-      handleFilterClick()
+      handleFilterClick();
     }
-    filter()
-  }, [])
+    filter();
+  }, []);
 
   const globalValuesData = {
     orders: ordersDate,
@@ -151,24 +165,40 @@ export default function Reports({
   return (
     <AdminWrapper>
       <div>
-        <p className="text-base font-medium mb-4 text-right"> {format(moment, 'HH')} {':'} {format(moment, 'mm')} {'-'} {format(moment, 'P')} </p>
+        <p className="text-base font-medium mb-4 text-right">
+          {" "}
+          {format(moment, "HH")} {":"} {format(moment, "mm")} {"-"}{" "}
+          {format(moment, "P")}{" "}
+        </p>
 
         <div className="flex items-center gap-3 mb-3">
-          <label className="text-gray-700 font-semibold" >
-            Start Date:
-          </label>
-          <input className="rounded shadow-sm text-base font-medium text-gray-700 cursor-pointer py-1 px-2" type="date" onChange={handleStartDateChange} />
-          <label className="text-gray-700 font-semibold" >
-            End Date:
-          </label>
-          <input className="rounded shadow-sm text-base font-medium text-gray-700 cursor-pointer py-1 px-2" type="date" onChange={handleEndDateChange} />
-          <CardapioDigitalButton onClick={() => handleFilterClick()} name="Filtrar" h="h-8" w="w-24" />
+          <label className="text-gray-700 font-semibold">Start Date:</label>
+          <input
+            className="rounded shadow-sm text-base font-medium text-gray-700 cursor-pointer py-1 px-2"
+            type="date"
+            onChange={handleStartDateChange}
+          />
+          <label className="text-gray-700 font-semibold">End Date:</label>
+          <input
+            className="rounded shadow-sm text-base font-medium text-gray-700 cursor-pointer py-1 px-2"
+            type="date"
+            onChange={handleEndDateChange}
+          />
+          <CardapioDigitalButton
+            onClick={() => handleFilterClick()}
+            name="Filtrar"
+            h="h-8"
+            w="w-24"
+          />
           {/* <button onClick={handleFilterClick}>Filter</button> */}
         </div>
         <GlobalValuesCard globalValuesData={globalValuesData} />
 
         <div className="xl:grid  xl:grid-cols-xlcharts xl:max-w-full gap-5 xl: mb-8">
-          <LineChart globalValuesData={globalValuesData} dailyRevenue={dailyRevenue} />
+          <LineChart
+            globalValuesData={globalValuesData}
+            dailyRevenue={dailyRevenue}
+          />
           <DoughnutChart globalValuesData={globalValuesData} />
           <BarChart globalValuesData={globalValuesData} />
         </div>

@@ -49,7 +49,7 @@ interface iCardapioDigitalProps {
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const restaurant = await getRestaurantBySlugFetch(context.query.slug);
+  const restaurant: any = await getRestaurantBySlugFetch(context.query.slug);
   const productCategories = await getProductsCategoriesByRestaurantIdFetch(
     restaurant[0].id
   );

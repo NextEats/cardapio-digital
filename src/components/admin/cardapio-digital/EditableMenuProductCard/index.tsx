@@ -4,19 +4,25 @@ import {
   setAddIngredientAction,
   setCategoryAction,
   setIsViewingAddingOrOpdatingProductAction,
-} from "../../../../reducers/aditableProduct/actions";
+} from "@/src/reducers/aditableProduct/actions";
 import {
   IEditableProductReducerData,
   iPayloadProduct,
-} from "../../../../reducers/aditableProduct/reducer";
-import { createProduct, createProductAdditionalsIfIsUpdatingProduct, createProductSelectIfIsUpdatingProduct, deleteProduct, supabase, updateProduct } from "../../../../server/api";
+} from "@/src/reducers/aditableProduct/reducer";
+import {
+  createProduct,
+  createProductAdditionalsIfIsUpdatingProduct,
+  createProductSelectIfIsUpdatingProduct,
+  deleteProduct,
+  updateProduct,
+} from "@/src/server/api";
 import {
   iInsertAdditionals,
   iInsertProductCategories,
   iInsertProductOptions,
   iInsertSelects,
   iProduct,
-} from "../../../../types/types";
+} from "@/src/types/types";
 import { CardapioDigitalButton } from "../CardapioDigitalButton";
 import { Additional } from "./Additional";
 import HeadersCard from "./HeadersCard";
@@ -33,8 +39,8 @@ interface iEditableMenuProductCardProps {
     type: string;
     payload: iPayloadProduct;
   }>;
-  productId: number | null,
-  restaurantId: number
+  productId: number | null;
+  restaurantId: number;
   setProductModal: Dispatch<SetStateAction<boolean>>;
   productModal: boolean;
   selects: iInsertSelects["data"];
@@ -66,7 +72,6 @@ export default function EditableMenuProductCard({
   }
 
   function setAdditionalSelected(additionalId: number) {
-
     const additional = additionals.find(
       (additional) => additional.id === additionalId
     );
@@ -85,22 +90,25 @@ export default function EditableMenuProductCard({
   }
 
   async function handleCreateProduct() {
-    await createProduct(state, productOptions, additionals)
+    await createProduct(state, productOptions, additionals);
   }
 
   function handleUpdateProduct() {
-    updateProduct(state, productId!, additionals)
+    updateProduct(state, productId!, additionals);
   }
 
   return (
     <>
       <div
-        className={`fixed inset-0 bg-black w-screen h-screen opacity-60 z-20 cursor-pointer ${productModal ? "opacity-40" : "opacity-0 pointer-events-none"}`}
+        className={`fixed inset-0 bg-black w-screen h-screen opacity-60 z-20 cursor-pointer ${
+          productModal ? "opacity-40" : "opacity-0 pointer-events-none"
+        }`}
         onClick={() => setProductModal(false)}
       ></div>
       <div
-        className={`w-[360px] md:w-[420px] 2xl:w-[468px] fixed ${productModal ? "right-0" : "right-[-700px]"
-          } transition-all ease-out z-30 top-16 bg-white shadow-md rounded-md h-[calc(100vh-64px)] overflow-auto p-4`}
+        className={`w-[360px] md:w-[420px] 2xl:w-[468px] fixed ${
+          productModal ? "right-0" : "right-[-700px]"
+        } transition-all ease-out z-30 top-16 bg-white shadow-md rounded-md h-[calc(100vh-64px)] overflow-auto p-4`}
       >
         <div className="flex flex-1 items-center justify-between pb-6">
           <BsArrowLeftCircle
@@ -113,7 +121,10 @@ export default function EditableMenuProductCard({
                 name="Excluir"
                 h="h-8"
                 w="w-28"
-                onClick={() => deleteProduct(productId!, state.productInformation.name)} />
+                onClick={() =>
+                  deleteProduct(productId!, state.productInformation.name)
+                }
+              />
               {/* <CardapioDigitalButton
                 name="Editar"
                 h="h-8"
@@ -122,7 +133,6 @@ export default function EditableMenuProductCard({
                   dispatch(setIsViewingAddingOrOpdatingProductAction("UPDATING"))
                 } /> */}
             </div>
-
           ) : null}
         </div>
 
@@ -138,7 +148,7 @@ export default function EditableMenuProductCard({
                 <NavigationMenu.Content className="flex flex-1 w-auto p-1 rounded-md flex-wrap absolut top-0 left-0 bg-white shadow-md">
                   {productCategories.map((category) => {
                     if (state.category.id === category.id) {
-                      return
+                      return;
                     }
                     return (
                       <NavigationMenu.List
@@ -159,15 +169,18 @@ export default function EditableMenuProductCard({
                 </NavigationMenu.Trigger>
                 <NavigationMenu.Content className="flex flex-1 w-auto p-1 rounded-md flex-wrap absolut top-0 left-0 bg-white shadow-md">
                   {selects.map((select) => {
-                    if (state.ingredients.some(se => se.id === select.id)) {
-                      return
+                    if (state.ingredients.some((se) => se.id === select.id)) {
+                      return;
                     }
                     return (
                       <NavigationMenu.List
                         title={select.name}
                         onClick={() => {
-                          createProductSelectIfIsUpdatingProduct(select.id!, productId!)
-                          setIngredientSelected(select.id!)
+                          createProductSelectIfIsUpdatingProduct(
+                            select.id!,
+                            productId!
+                          );
+                          setIngredientSelected(select.id!);
                         }}
                         key={select.id}
                         className="px-2 py-1 cursor-pointer hover:bg-violet-200 rounded "
@@ -185,14 +198,19 @@ export default function EditableMenuProductCard({
                 </NavigationMenu.Trigger>
                 <NavigationMenu.Content className="flex flex-1 w-auto p-1 rounded-md flex-wrap absolut top-0 left-0 z-50 bg-white shadow-md">
                   {additionals.map((additional) => {
-                    if (state.additionals.some(add => add.id === additional.id)) {
-                      return
+                    if (
+                      state.additionals.some((add) => add.id === additional.id)
+                    ) {
+                      return;
                     }
                     return (
                       <NavigationMenu.List
                         onClick={() => {
-                          createProductAdditionalsIfIsUpdatingProduct(additional.id!, productId!)
-                          setAdditionalSelected(additional.id!)
+                          createProductAdditionalsIfIsUpdatingProduct(
+                            additional.id!,
+                            productId!
+                          );
+                          setAdditionalSelected(additional.id!);
                         }}
                         key={additional.id}
                         className="px-2 py-1 cursor-pointer hover:bg-violet-200 rounded "
@@ -221,9 +239,19 @@ export default function EditableMenuProductCard({
             : `${state.category.name}`}
         </h2>
 
-        <Igredient state={state} selects={selects} dispatch={dispatch} productId={productId!} />
+        <Igredient
+          state={state}
+          selects={selects}
+          dispatch={dispatch}
+          productId={productId!}
+        />
 
-        <Additional state={state} dispatch={dispatch} productId={productId!} restaurantId={restaurantId} />
+        <Additional
+          state={state}
+          dispatch={dispatch}
+          productId={productId!}
+          restaurantId={restaurantId}
+        />
 
         {state.isViewingUpdatingOrAdding === "ADDING" && (
           <CardapioDigitalButton

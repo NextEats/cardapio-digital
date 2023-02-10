@@ -5,12 +5,15 @@ import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/router";
 
-import useWindowSize, { Size } from "../../../hooks/WindowResize";
-import { RestaurantContext, iRestaurantContext } from "../../../contexts/restaurantContext";
-import { supabase } from "../../../server/api";
+import useWindowSize, { Size } from "@/src/hooks/WindowResize";
+import {
+  RestaurantContext,
+  iRestaurantContext,
+} from "@/src/contexts/restaurantContext";
+import { supabase } from "@/src/server/api";
 
-import Navbar from "./Navbar"
-import Sidebar from "./Sidebar"
+import Navbar from "./Navbar";
+import Sidebar from "./Sidebar";
 
 async function getRestaurantData(slug: string) {
   const restaurants = await supabase
@@ -67,42 +70,44 @@ export default function AdminWrapper({ children }: { children: JSX.Element }) {
     }
   }, [windowSize]);
 
+  const [restaurant, setRestaurant] = useState<any>();
 
-  const [restaurant, setRestaurant] = useState<any>()
-
-  const router = useRouter()
+  const router = useRouter();
 
   useEffect(() => {
-    const { slug } = router.query
+    const { slug } = router.query;
 
     if (typeof slug === "string") {
       getRestaurantData(slug).then((res) => {
-        console.log(res)
+        console.log(res);
 
         if (!res) {
-          return <></>
+          return <></>;
         }
 
-        setRestaurant(res)
-      })
+        setRestaurant(res);
+      });
     }
-  }, [])
+  }, []);
 
   if (!restaurant) {
-    return <>Loading</>
+    return <>Loading</>;
   }
 
   return (
     <div className="fixed bg-white-200">
       <Navbar toogleSidebar={() => changeSidebarState(!isSidebarOpenState)} />
-      <Sidebar isSidebarOpen={isSidebarOpenState} restaurantSlug={restaurant.slug} />
+      <Sidebar
+        isSidebarOpen={isSidebarOpenState}
+        restaurantSlug={restaurant.slug}
+      />
       <div
-        className={`absolute transition-[left] h-[calc(100vh-64px)] overflow-auto duration-500 ease-in-out p-5 ${isSidebarOpenState ? "left-64 w-[calc(100vw-260px)]" : "left-0 w-full"
-          }`}
+        className={`absolute transition-[left] h-[calc(100vh-64px)] overflow-auto duration-500 ease-in-out p-5 ${
+          isSidebarOpenState ? "left-64 w-[calc(100vw-260px)]" : "left-0 w-full"
+        }`}
       >
         {children}
       </div>
     </div>
   );
 }
-

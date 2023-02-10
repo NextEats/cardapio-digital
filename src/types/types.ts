@@ -112,9 +112,6 @@ export interface iContacts {
   data: Array<Database["public"]["Tables"]["contacts"]["Row"]>;
 }
 
-
-
-
 // ==================   INSERTS  =====================
 export interface iInsertContact {
   data: Database["public"]["Tables"]["contacts"]["Insert"];
@@ -300,14 +297,22 @@ export interface iPaymentMethodsRestaurants {
   data: Database["public"]["Tables"]["payment_methods_restaurants"]["Row"];
 }
 export interface iPaymentMethodsRestaurantss {
-  data: Array<Database["public"]["Tables"]["payment_methods_restaurants"]["Row"]>;
+  data: Array<
+    Database["public"]["Tables"]["payment_methods_restaurants"]["Row"]
+  >;
 }
 
 export type iRestaurantWithFKData = iRestaurant["data"] & {
   addresses: iAddress["data"];
+  restaurant_types: iRestaurantType["data"];
   weekday_operating_time: Array<
     iWeekdayOperatingTime["data"] & {
       weekdays: iWeekday["data"];
     }
   >;
 };
+
+export interface iDigitalMenuData {
+  restaurant: iRestaurantWithFKData;
+  groupedProducts: iGroupedProducts | undefined;
+}

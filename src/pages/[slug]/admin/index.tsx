@@ -2,10 +2,10 @@ import { Card } from "../../../components/admin/Card";
 import NewRequests from "../../../components/admin/initialPage/NewRequests";
 import OrderStatusCard from "../../../components/admin/initialPage/OrderStatusCard";
 import AdminWrapper from "../../../components/admin/AdminWrapper";
-import { api } from "../../../server/api";
-import { iCashBoxes, iInsertAddresses, iInsertClients, iInsertContacts, iInsertOrders, iInsertOrdersProducts, iInsertOrderStatuss, iInsertProducts, iRestaurants } from "../../../types/types";
+import { api, supabase } from "../../../server/api";
+import { iCashBoxes, iInsertAddresses, iInsertClients, iInsertContacts, iInsertOrder, iInsertOrders, iInsertOrdersProducts, iInsertOrderStatuss, iInsertProducts, iOrders, iRestaurants } from "../../../types/types";
 import { GetServerSideProps } from "next";
-import { useState, useReducer } from "react";
+import { useState, useReducer, useEffect, useMemo } from "react";
 import { iStatusReducer, statusReducer } from "../../../reducers/statusReducer/reducer";
 import { OrderModal } from "../../../components/admin/initialPage/OrderModal";
 import { CardapioDigitalButton } from "../../../components/admin/cardapio-digital/CardapioDigitalButton";
@@ -21,6 +21,7 @@ import { getAddressesFetch } from "src/fetch/addresses/getAddresses";
 import { getCashBoxesByRestaurantIdFetch } from "src/fetch/cashBoxes/getCashBoxesByRestaurantId";
 
 import "react-toastify/dist/ReactToastify.css";
+import { addNewUnderReviewAtion } from "src/reducers/statusReducer/action";
 
 interface iAdminHomePageProps {
   ordersData: iInsertOrders["data"],
@@ -64,14 +65,17 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
 export default function AdminHomepage({ ordersData, orderStatuss, ordersProducts, products, contacts, addresses, clients, restaurant, cashBoxes }: iAdminHomePageProps) {
 
-  const cashBoxOpened = cashBoxes.find(cb => cb.is_open === true)
-  let orders = ordersData!
+  const [orders, setOrders] = useState<iInsertOrders["data"]>(ordersData)
 
-  if (cashBoxOpened === undefined) {
-    orders = []
-  } else {
-    orders = ordersData.filter(o => o.cash_box_id === cashBoxOpened.id!)
-  }
+  const cashBoxOpened = cashBoxes.find(cb => cb.is_open === true)
+  useEffect(() => {
+    if (cashBoxOpened === undefined) {
+      setOrders([])
+    } else {
+      const filterOrdersData = ordersData.filter(o => o.cash_box_id === cashBoxOpened!.id)
+      setOrders(filterOrdersData)
+    }
+  }, [ordersData, cashBoxOpened])
 
   const statusEmAnalise = orderStatuss.find(status => status.status_name === "em análise")
   const statusEmProdução = orderStatuss.find(status => status.status_name === "em produção")
@@ -133,6 +137,22 @@ export default function AdminHomepage({ ordersData, orderStatuss, ordersProducts
     })
     setOpenCashBoxState(false)
   }
+
+  useMemo(() => {
+    function newOrder(order: iInsertOrder["data"]) {
+      if (order.order_status_id === statusEmAnalise?.id) dispatch(addNewUnderReviewAtion(order))
+    }
+    const channel = supabase.channel('db-changes').on('postgres_changes',
+      {
+        event: 'INSERT',
+        schema: 'public',
+        table: "orders"
+      },
+      (payload: any) => {
+        newOrder(payload.new)
+      })
+      .subscribe()
+  }, [statusEmAnalise])
 
   return (
     <AdminWrapper>

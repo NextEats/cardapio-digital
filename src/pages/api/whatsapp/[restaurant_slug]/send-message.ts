@@ -1,5 +1,5 @@
+import { createClient } from "@/src/fetch/whatsapp/createClient";
 import { NextApiRequest, NextApiResponse } from "next";
-const { Client, LocalAuth } = require("whatsapp-web.js");
 
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
   const { restaurant_slug } = req.query;
@@ -7,12 +7,6 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
   if (typeof restaurant_slug !== "string") {
     res.send("Restaurant slug should be a string");
     return;
-  }
-
-  function createClient(name: string) {
-    return new Client({
-      authStrategy: new LocalAuth({ clientId: name }),
-    });
   }
 
   const client = createClient(restaurant_slug);
@@ -23,12 +17,14 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
     console.log("Cliente não encontrado, será criado no banco de dados.");
   }
 
-  client.on("qr", (qr: any) => {
-    console.log(qr);
-  });
-
-  client.on("ready", () => {
+  client.on("ready", async () => {
     console.log("Pronto para enviar mensagem");
+
+    const numberId = await client.getNumberId("5511941996397");
+
+    if (numberId) {
+      client.sendMessage(numberId._serialized, "Pedido finalizado");
+    }
   });
 
   client.initialize();

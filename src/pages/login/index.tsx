@@ -36,7 +36,7 @@ export default function LoginForm() {
         <input
           type="text"
           className={inputTextClasses}
-          placeholder="Login"
+          placeholder="E-mail"
           {...register("login")}
         />
         {errors.login?.message && <p>{errors.login.message}</p>}
@@ -44,7 +44,7 @@ export default function LoginForm() {
         <div className="w-full mt-1">
           <input
             type={showPassword ? "text" : "password"}
-            placeholder="Password"
+            placeholder="Senha"
             className={inputTextClasses}
             {...register("password")}
           />

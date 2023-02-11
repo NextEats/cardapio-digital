@@ -1,0 +1,4 @@
+2023/02/08-13:47:41.196 40f0 Creating DB D:\Projetos\cardapio-digital\.wwebjs_auth\RemoteAuth\Default\IndexedDB\https_web.whatsapp.com_0.indexeddb.leveldb since it was missing.
+2023/02/08-13:47:41.236 40f0 Reusing MANIFEST D:\Projetos\cardapio-digital\.wwebjs_auth\RemoteAuth\Default\IndexedDB\https_web.whatsapp.com_0.indexeddb.leveldb/MANIFEST-000001
+2023/02/08-13:47:41.236 40f0 Delete type=2 #114
+2023/02/08-13:47:41.335 40f0 Manual compaction at level-0 from '\x00\x01\x00\x00\x00' @ 72057594037927935 : 1 .. '\x00\x02\x00\x00\x00' @ 0 : 0; will stop at (end)

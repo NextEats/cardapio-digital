@@ -5,6 +5,7 @@ import { CardapioDigitalButton } from "../../cardapio-digital/CardapioDigitalBut
 import { Dispatch, useMemo, useState } from "react";
 import { showModalAction } from "../../../../reducers/statusReducer/action";
 import { api } from "../../../../server/api";
+import { DropdownMenuObservation } from "../DropDownMenuObservation";
 
 interface iOrderModalProps {
   state: iStatusReducer;
@@ -23,6 +24,7 @@ export function OrderModal({ state, dispatch }: iOrderModalProps) {
       return p.id === op?.product_id;
     });
   });
+  const thereAnyObservation = orderProductFiltered.some(op => op.observation !== null)
 
   // data client
   const descriptionsStyles =
@@ -101,7 +103,7 @@ export function OrderModal({ state, dispatch }: iOrderModalProps) {
               className="bg-black opacity-40 fixed inset-0 transition-all ease-in-out duration-300"
               onClick={() => dispatch(showModalAction())}
             />
-            <Dialog.Content className="bg-white shadow-bd w-[350px] fixed top-1/2 right-1/2 translate-x-1/2 -translate-y-1/2  rounded-md p-6">
+            <Dialog.Content className="bg-white shadow-bd w-[350px] md:w-[550px] fixed top-1/2 right-1/2 translate-x-1/2 -translate-y-1/2  rounded-md p-6">
               <Dialog.Title className="text-xl font-bold text-center">
                 Next Eats
               </Dialog.Title>
@@ -168,10 +170,14 @@ export function OrderModal({ state, dispatch }: iOrderModalProps) {
                     <td className={`${textStyles}`}> Qnt </td>
                     <td className={`${textStyles}`}> Item </td>
                     <td className={`${textStyles} w-24`}> Preço </td>
+                    {thereAnyObservation ? <td className={`${textStyles} w-24`}> Obs. </td> : null}
                   </tr>
                 </thead>
                 <tbody>
                   {result.map((product) => {
+
+                    const orderProductByProductId = orderProductFiltered.find((op) => op.product_id === product.id)
+
                     if (product === undefined) {
                       return;
                     }
@@ -189,6 +195,12 @@ export function OrderModal({ state, dispatch }: iOrderModalProps) {
                           &nbsp;
                           <strong> R$ {product.price} </strong>&nbsp;
                         </td>
+                        {orderProductByProductId?.observation ?
+                          <td className={`${textStyles}`}>
+                            &nbsp;
+                            <strong> <DropdownMenuObservation observation={orderProductByProductId.observation} />  </strong>&nbsp;
+                          </td> : null
+                        }
                       </tr>
                     );
                   })}

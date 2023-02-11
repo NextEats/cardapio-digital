@@ -151,12 +151,6 @@ interface iProductImagePros {
   dispatch: Dispatch<any>;
 }
 
-// const newPictureUrlFormValidationSchema = zod.object({
-//     picture_url: zod.object({ name: zod.string() })
-// });
-
-// type NewPirtureUrlFormData = zod.infer<typeof newPictureUrlFormValidationSchema>;
-
 function ProductImage({ state, dispatch }: iProductImagePros) {
   const [productPictureIsEditing, setProductPictureIsEditing] = useState(true);
   // const { register, handleSubmit, getValues, watch } = useForm<NewPirtureUrlFormData>({
@@ -195,46 +189,58 @@ function ProductImage({ state, dispatch }: iProductImagePros) {
     handleUploadFile();
   }, [file, dispatch]);
 
-  return (
-    <form className="w-full mb-4">
-      {!state.picture_url || productPictureIsEditing === true ? (
-        <>
-          <label
-            htmlFor="product_picture"
-            className="rounded-2xl w-full h-[400px] flex items-center justify-center border border-solid border-gray-400"
-          >
-            <HiOutlineUpload className="w-20 h-20" />
-          </label>
-          <input
-            type="file"
-            id="product_picture"
-            onChange={(e) => setFile(e.target.files![0])}
-            hidden
-          />
-        </>
-      ) : null}
+    const [productPictureIsEditing, setProductPictureIsEditing] = useState(true)
 
-      {state.picture_url && (
-        <div className="relative">
-          {state.isViewingUpdatingOrAdding !== "VIEWING" && (
-            <label htmlFor="product_picture" className={``}>
-              <BiPencil
-                className={`text-2xl text-blue-500 cursor-pointer hover:scale-125 hover:transition-all ease-in-out absolute top-3 right-3 z-10 ${
-                  productPictureIsEditing ? "hidden" : ""
-                }`}
-              />
-            </label>
-          )}
+    useEffect(() => {
+        if (state.isViewingUpdatingOrAdding === "VIEWING") setProductPictureIsEditing(false)
+    }, [state.isViewingUpdatingOrAdding])
 
-          <Image
-            className="rounded-2xl w-full"
-            src={state.picture_url}
-            alt=""
-            width={500}
-            height={500}
-          />
-        </div>
-      )}
-    </form>
-  );
+
+    const [file, setFile] = useState<File | undefined>();
+
+    useEffect(() => {
+        if (!file) {
+            return;
+        }
+        async function handleUploadFile() {
+            if (!file) {
+                return;
+            }
+            dispatch(setProductPictureFileAction(file))
+            dispatch(setProductPictureUrlAction(URL.createObjectURL(file)))
+            setProductPictureIsEditing(false)
+        }
+        handleUploadFile()
+    }, [file, dispatch]);
+
+    return (
+        <form className="w-full mb-4">
+            {!state.picture_url || productPictureIsEditing === true ?
+                <>
+                    <label htmlFor="product_picture" className="rounded-2xl w-full h-[400px] flex items-center justify-center border border-solid border-gray-400">
+                        <HiOutlineUpload className="w-20 h-20" />
+                    </label>
+                    <input type="file" id="product_picture" onChange={(e) => setFile(e.target.files![0])} hidden />
+                </>
+                : null}
+
+            {state.picture_url && <div className="relative">
+                {
+                    state.isViewingUpdatingOrAdding !== "VIEWING" &&
+                    <label htmlFor="product_picture" className={``}>
+                        <BiPencil className={`text-2xl text-blue-500 cursor-pointer hover:scale-125 hover:transition-all ease-in-out absolute top-3 right-3 z-10 ${productPictureIsEditing ? 'hidden' : ''}`} />
+                    </label>
+                }
+
+                <Image
+                    className="rounded-2xl w-full"
+                    src={state.picture_url}
+                    alt=""
+                    width={500}
+                    height={500}
+                />
+            </div>
+            }
+        </form>
+    )
 }

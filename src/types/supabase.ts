@@ -311,18 +311,21 @@ export interface Database {
         Row: {
           created_at: string | null
           id: number
+          observation: string | null
           order_id: number
           product_id: number
         }
         Insert: {
           created_at?: string | null
           id?: number
+          observation?: string | null
           order_id: number
           product_id: number
         }
         Update: {
           created_at?: string | null
           id?: number
+          observation?: string | null
           order_id?: number
           product_id?: number
         }
@@ -534,6 +537,23 @@ export interface Database {
           restaurant_id?: number | null
         }
       }
+      restaurant_actions: {
+        Row: {
+          created_at: string | null
+          id: number
+          name: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: number
+          name?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: number
+          name?: string | null
+        }
+      }
       restaurant_admin: {
         Row: {
           created_at: string | null
@@ -558,6 +578,29 @@ export interface Database {
           restaurant_id?: number | null
           role_id?: number | null
           whatsapp_number?: number | null
+        }
+      }
+      restaurant_logs: {
+        Row: {
+          created_at: string | null
+          id: number
+          restaurant_action_id: number | null
+          restaurant_admin_id: number | null
+          restaurant_id: number | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: number
+          restaurant_action_id?: number | null
+          restaurant_admin_id?: number | null
+          restaurant_id?: number | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: number
+          restaurant_action_id?: number | null
+          restaurant_admin_id?: number | null
+          restaurant_id?: number | null
         }
       }
       restaurant_role: {

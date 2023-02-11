@@ -54,6 +54,11 @@ export function statusReducer(state: iStatusReducer, action: any) {
             return { ...state, orderId: action.payload.orderId }
             break
 
+        case statusReducerAction.ADD_NEW_UNDER_REVIEW:
+            console.log(action.payload.order)
+            return { ...state, emAnaliseOrders: [...state.emAnaliseOrders, action.payload.order] }
+            break
+
         default:
             return state
     }

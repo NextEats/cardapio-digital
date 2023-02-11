@@ -2,28 +2,15 @@ import { Card } from "../../../components/admin/Card";
 import NewRequests from "../../../components/admin/initialPage/NewRequests";
 import OrderStatusCard from "../../../components/admin/initialPage/OrderStatusCard";
 import AdminWrapper from "../../../components/admin/AdminWrapper";
-import { api } from "../../../server/api";
-import {
-  iCashBoxes,
-  iInsertAddresses,
-  iInsertClients,
-  iInsertContacts,
-  iInsertOrders,
-  iInsertOrdersProducts,
-  iInsertOrderStatuss,
-  iInsertProducts,
-  iRestaurants,
-} from "../../../types/types";
+import { api, supabase } from "../../../server/api";
+import { iCashBoxes, iInsertAddresses, iInsertClients, iInsertContacts, iInsertOrder, iInsertOrders, iInsertOrdersProducts, iInsertOrderStatuss, iInsertProducts, iOrders, iRestaurants } from "../../../types/types";
 import { GetServerSideProps } from "next";
-import { useState, useReducer } from "react";
-import {
-  iStatusReducer,
-  statusReducer,
-} from "../../../reducers/statusReducer/reducer";
+import { useState, useReducer, useEffect, useMemo } from "react";
+import { iStatusReducer, statusReducer } from "../../../reducers/statusReducer/reducer";
+
 import { OrderModal } from "../../../components/admin/initialPage/OrderModal";
 import { CardapioDigitalButton } from "../../../components/admin/cardapio-digital/CardapioDigitalButton";
 
-import "react-toastify/dist/ReactToastify.css";
 import { getRestaurantBySlugFetch } from "../../../fetch/restaurant/getRestaurantBySlug";
 import { getOrdersByRestaurantIdFetch } from "../../../fetch/orders/getOrdersByRestaurantId";
 import { getProductsByRestaurantIdFetch } from "../../../fetch/products/getProductsByRestaurantId";
@@ -33,6 +20,9 @@ import { getclientsFetch } from "src/fetch/clients/getClients";
 import { getContactsFetch } from "src/fetch/contacts/getContacts";
 import { getAddressesFetch } from "src/fetch/addresses/getAddresses";
 import { getCashBoxesByRestaurantIdFetch } from "src/fetch/cashBoxes/getCashBoxesByRestaurantId";
+
+import "react-toastify/dist/ReactToastify.css";
+import { addNewUnderReviewAtion } from "src/reducers/statusReducer/action";
 
 interface iAdminHomePageProps {
   ordersData: iInsertOrders["data"];
@@ -72,25 +62,18 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   };
 };
 
-export default function AdminHomepage({
-  ordersData,
-  orderStatuss,
-  ordersProducts,
-  products,
-  contacts,
-  addresses,
-  clients,
-  restaurant,
-  cashBoxes,
-}: iAdminHomePageProps) {
-  const cashBoxOpened = cashBoxes.find((cb) => cb.is_open === true);
-  let orders = ordersData!;
+  const [orders, setOrders] = useState<iInsertOrders["data"]>(ordersData)
 
-  if (cashBoxOpened === undefined) {
-    orders = [];
-  } else {
-    orders = ordersData.filter((o) => o.cash_box_id === cashBoxOpened.id!);
-  }
+  const cashBoxOpened = cashBoxes.find(cb => cb.is_open === true)
+  useEffect(() => {
+    if (cashBoxOpened === undefined) {
+      setOrders([])
+    } else {
+      const filterOrdersData = ordersData.filter(o => o.cash_box_id === cashBoxOpened!.id)
+      setOrders(filterOrdersData)
+    }
+  }, [ordersData, cashBoxOpened])
+
 
   const statusEmAnalise = orderStatuss.find(
     (status) => status.status_name === "em análise"
@@ -158,29 +141,9 @@ export default function AdminHomepage({
     return selectedProduct.reduce((acc, product) => acc + product?.price!, 0);
   }
 
-  // useEffect(() => {
-  //   console.log(count >= billing())
-  //   const revenue = billing() - Math.floor(billing() * 0.9)
-  //   // setCount(revenue)
-  //   let intervalId = setInterval(() => {
-  //     if (count + revenue >= billing()) {
-  //       clearInterval(intervalId);
-  //       return
-  //     }
-  //     setCount(count + 1);
-  //   }, 5);
-
-  //   return () => clearInterval(intervalId);
-  // }, [count, orderStatuss, products, ordersProducts]);
-
-  const [openCashBoxState, setOpenCashBoxState] = useState(false);
+  const [openCashBoxState, setOpenCashBoxState] = useState(false)
 
   async function handleOpenCashBox() {
-    // const cashBox = await supabase.from("cash_boxes").insert({
-    //   is_open: true,
-    //   opened_at: new Date().toISOString(),
-    //   restaurant_id: restaurant[0].id
-    // }).select("*")
     const cashBox = await api.post("api/cash_boxes/open", {
       restaurant_id: restaurant[0].id,
     });
@@ -199,14 +162,27 @@ export default function AdminHomepage({
       return;
     }
     const cashBox = await api.post("api/cash_boxes/close", {
-      restaurant_id: restaurant[0].id,
-    });
-    // const cashBox = await supabase.from("cash_boxes").update({
-    //   is_open: false,
-    //   closed_at: new Date().toISOString(),
-    // }).eq("is_open", true).select("*")
-    setOpenCashBoxState(false);
+      restaurant_id: restaurant[0].id
+    })
+    setOpenCashBoxState(false)
+
   }
+
+  useMemo(() => {
+    function newOrder(order: iInsertOrder["data"]) {
+      if (order.order_status_id === statusEmAnalise?.id) dispatch(addNewUnderReviewAtion(order))
+    }
+    const channel = supabase.channel('db-changes').on('postgres_changes',
+      {
+        event: 'INSERT',
+        schema: 'public',
+        table: "orders"
+      },
+      (payload: any) => {
+        newOrder(payload.new)
+      })
+      .subscribe()
+  }, [statusEmAnalise])
 
   return (
     <AdminWrapper>

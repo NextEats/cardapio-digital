@@ -16,6 +16,7 @@ import {
   iInsertProductOptions,
   iInsertSelects,
   iProduct,
+  iRestaurant,
 } from "../../../../types/types";
 import { CardapioDigitalButton } from "../CardapioDigitalButton";
 import { Additional } from "./Additional";
@@ -34,7 +35,7 @@ interface iEditableMenuProductCardProps {
     payload: iPayloadProduct;
   }>;
   productId: number | null,
-  restaurantId: number
+  restaurant: iRestaurant["data"],
   setProductModal: Dispatch<SetStateAction<boolean>>;
   productModal: boolean;
   selects: iInsertSelects["data"];
@@ -53,7 +54,7 @@ export default function EditableMenuProductCard({
   productCategories,
   productOptions,
   additionals,
-  restaurantId,
+  restaurant,
 }: iEditableMenuProductCardProps) {
   function setIngredientSelected(selectId: number) {
     const selectFinded = selects.find(
@@ -85,7 +86,7 @@ export default function EditableMenuProductCard({
   }
 
   async function handleCreateProduct() {
-    await createProduct(state, productOptions, additionals)
+    await createProduct(state, productOptions, additionals, restaurant)
   }
 
   function handleUpdateProduct() {
@@ -113,7 +114,7 @@ export default function EditableMenuProductCard({
                 name="Excluir"
                 h="h-8"
                 w="w-28"
-                onClick={() => deleteProduct(productId!, state.productInformation.name)} />
+                onClick={() => deleteProduct(productId!, state.productInformation.name, restaurant.slug!)} />
               {/* <CardapioDigitalButton
                 name="Editar"
                 h="h-8"
@@ -223,7 +224,7 @@ export default function EditableMenuProductCard({
 
         <Igredient state={state} selects={selects} dispatch={dispatch} productId={productId!} />
 
-        <Additional state={state} dispatch={dispatch} productId={productId!} restaurantId={restaurantId} />
+        <Additional state={state} dispatch={dispatch} productId={productId!} restaurantData={restaurant} />
 
         {state.isViewingUpdatingOrAdding === "ADDING" && (
           <CardapioDigitalButton

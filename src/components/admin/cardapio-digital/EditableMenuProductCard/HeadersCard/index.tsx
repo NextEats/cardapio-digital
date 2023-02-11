@@ -125,33 +125,14 @@ interface iProductImagePros {
     dispatch: Dispatch<any>,
 }
 
-// const newPictureUrlFormValidationSchema = zod.object({
-//     picture_url: zod.object({ name: zod.string() })
-// });
-
-// type NewPirtureUrlFormData = zod.infer<typeof newPictureUrlFormValidationSchema>;
-
 function ProductImage({ state, dispatch }: iProductImagePros) {
 
     const [productPictureIsEditing, setProductPictureIsEditing] = useState(true)
-    // const { register, handleSubmit, getValues, watch } = useForm<NewPirtureUrlFormData>({
-    //     resolver: zodResolver(newPictureUrlFormValidationSchema),
-    //     defaultValues: { picture_url: { name: '' } },
-    // });
 
     useEffect(() => {
         if (state.isViewingUpdatingOrAdding === "VIEWING") setProductPictureIsEditing(false)
     }, [state.isViewingUpdatingOrAdding])
 
-
-    // function handleProductPicture_url(data: NewPirtureUrlFormData) {
-    //     if (!getValues("picture_url")) {
-    //         return
-    //     }
-    //     console.log(data.picture_url)
-
-    //     setProductPictureIsEditing(false)
-    // }
 
     const [file, setFile] = useState<File | undefined>();
 

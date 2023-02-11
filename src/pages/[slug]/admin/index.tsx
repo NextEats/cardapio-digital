@@ -10,7 +10,6 @@ import { iStatusReducer, statusReducer } from "../../../reducers/statusReducer/r
 import { OrderModal } from "../../../components/admin/initialPage/OrderModal";
 import { CardapioDigitalButton } from "../../../components/admin/cardapio-digital/CardapioDigitalButton";
 
-import "react-toastify/dist/ReactToastify.css";
 import { getRestaurantBySlugFetch } from "../../../fetch/restaurant/getRestaurantBySlug";
 import { getOrdersByRestaurantIdFetch } from "../../../fetch/orders/getOrdersByRestaurantId";
 import { getProductsByRestaurantIdFetch } from "../../../fetch/products/getProductsByRestaurantId";
@@ -20,6 +19,8 @@ import { getclientsFetch } from "src/fetch/clients/getClients";
 import { getContactsFetch } from "src/fetch/contacts/getContacts";
 import { getAddressesFetch } from "src/fetch/addresses/getAddresses";
 import { getCashBoxesByRestaurantIdFetch } from "src/fetch/cashBoxes/getCashBoxesByRestaurantId";
+
+import "react-toastify/dist/ReactToastify.css";
 
 interface iAdminHomePageProps {
   ordersData: iInsertOrders["data"],
@@ -113,29 +114,9 @@ export default function AdminHomepage({ ordersData, orderStatuss, ordersProducts
     return selectedProduct.reduce((acc, product) => acc + product?.price!, 0)
   }
 
-  // useEffect(() => {
-  //   console.log(count >= billing())
-  //   const revenue = billing() - Math.floor(billing() * 0.9)
-  //   // setCount(revenue)
-  //   let intervalId = setInterval(() => {
-  //     if (count + revenue >= billing()) {
-  //       clearInterval(intervalId);
-  //       return
-  //     }
-  //     setCount(count + 1);
-  //   }, 5);
-
-  //   return () => clearInterval(intervalId);
-  // }, [count, orderStatuss, products, ordersProducts]);
-
   const [openCashBoxState, setOpenCashBoxState] = useState(false)
 
   async function handleOpenCashBox() {
-    // const cashBox = await supabase.from("cash_boxes").insert({
-    //   is_open: true,
-    //   opened_at: new Date().toISOString(),
-    //   restaurant_id: restaurant[0].id
-    // }).select("*")
     const cashBox = await api.post("api/cash_boxes/open", {
       restaurant_id: restaurant[0].id
     })
@@ -150,10 +131,6 @@ export default function AdminHomepage({ ordersData, orderStatuss, ordersProducts
     const cashBox = await api.post("api/cash_boxes/close", {
       restaurant_id: restaurant[0].id
     })
-    // const cashBox = await supabase.from("cash_boxes").update({
-    //   is_open: false,
-    //   closed_at: new Date().toISOString(),
-    // }).eq("is_open", true).select("*")
     setOpenCashBoxState(false)
   }
 

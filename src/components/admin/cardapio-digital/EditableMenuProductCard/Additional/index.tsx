@@ -8,7 +8,7 @@ import { BiPencil } from "react-icons/bi";
 import { FiTrash2 } from "react-icons/fi";
 import { EditableProductActions } from "../../../../../reducers/aditableProduct/actions";
 import { IEditableProductReducerData, iPayloadProduct } from "../../../../../reducers/aditableProduct/reducer";
-import { iInsertAdditional, iRestaurants } from "../../../../../types/types";
+import { iInsertAdditional, iRestaurant, iRestaurants } from "../../../../../types/types";
 import { CardapioDigitalButton } from "../../CardapioDigitalButton";
 import { api, createAdditionalsAndIsertIntoProductAdditionalsIfIsUpdatingProduct, deleteProductAdditionalsIfIsUpdatingProduct, updateAdditional } from "../../../../../server/api";
 
@@ -19,7 +19,7 @@ interface IAdditionalProps {
         payload: iPayloadProduct
     }>,
     productId: number,
-    restaurantId: number,
+    restaurantData: iRestaurant["data"],
 }
 
 const newAdditionalFormValidationSchema = zod.object({
@@ -31,7 +31,7 @@ const newAdditionalFormValidationSchema = zod.object({
 
 type NewAdditionlFormData = zod.infer<typeof newAdditionalFormValidationSchema>;
 
-export function Additional({ state, dispatch, productId, restaurantId }: IAdditionalProps) {
+export function Additional({ state, dispatch, productId, restaurantData }: IAdditionalProps) {
     const [restaurant, setRestaurantId] = useState<iRestaurants["data"]>([])
 
     const [showAdditionalModal, setShowAdditionalModal] = useState<"UPDATE" | "ADD" | "">('')
@@ -63,7 +63,7 @@ export function Additional({ state, dispatch, productId, restaurantId }: IAdditi
         const additionalPicture_url = getValues("additionalPicture_url")
 
         if (state.isViewingUpdatingOrAdding === "UPDATING") {
-            createAdditionalsAndIsertIntoProductAdditionalsIfIsUpdatingProduct(additionalName, additionalPrice, additionalPicture_url, productId!)
+            createAdditionalsAndIsertIntoProductAdditionalsIfIsUpdatingProduct(additionalName, additionalPrice, productId!, restaurantData)
         }
 
         dispatch({
@@ -100,6 +100,7 @@ export function Additional({ state, dispatch, productId, restaurantId }: IAdditi
         setShowAdditionalModal('UPDATE')
     }
 
+
     async function setUpdateAdditional() {
         const additionalName = getValues("additionalName")
         const additionalPrice = Number(getValues("additionalPrice"))
@@ -113,7 +114,7 @@ export function Additional({ state, dispatch, productId, restaurantId }: IAdditi
             type: EditableProductActions.UPDATE_ADDITIONAL,
             payload: { additionalName, additionalPrice, additionalPicture_url, oldAdditionalId }
         })
-        // const additionalUpdated = await api.put(`api/additionals/${restaurantId}`, {
+        // const additionalUpdated = await api.put(`api/additionals/${restaurantData.id}`, {
         //     name: additionalName,
         //     price: additionalPrice,
         //     picture_url: additionalPicture_url,

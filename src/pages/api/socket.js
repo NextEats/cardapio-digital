@@ -29,6 +29,7 @@ export default async function handler(req, res) {
             authStrategy: new RemoteAuth({
               store: store,
               backupSyncIntervalMs: 300000,
+              clientId: "",
             }),
           });
 

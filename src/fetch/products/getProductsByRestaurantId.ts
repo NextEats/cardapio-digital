@@ -1,8 +1,13 @@
-import { supabase } from "../../server/api";
-import { iProducts } from "../../types/types";
+import { supabase } from "@/src/server/api";
+import { iProducts } from "@/src/types/types";
 
-export async function getProductsByRestaurantIdFetch(restaurant_id: number | undefined): Promise<iProducts["data"]> {
-    const { data } = await supabase.from("products").select().eq("restaurant_id", restaurant_id)
+export async function getProductsByRestaurantIdFetch(
+  restaurant_id: number | undefined
+): Promise<iProducts["data"]> {
+  const { data } = await supabase
+    .from("products")
+    .select()
+    .eq("restaurant_id", restaurant_id);
 
-    return data!
+  return data!;
 }

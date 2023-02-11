@@ -3,7 +3,13 @@ import axios from "axios";
 import { promiseAlert } from "../helpers/toasts";
 import { IEditableProductReducerData } from "../reducers/aditableProduct/reducer";
 import { Database } from "../types/supabase";
-import { iGroupedProducts, iInsertAdditionals, iInsertProductOptions, iProductCategory, iRestaurant, iRestaurantType, ProductWithCategory } from "../types/types";
+
+import {
+  iGroupedProducts,
+  iInsertAdditionals,
+  iInsertProductOptions,
+  ProductWithCategory,
+} from "../types/types";
 
 export const api = axios.create({
   baseURL: "http://localhost:3000",
@@ -14,7 +20,7 @@ export const supabase = createClient<Database>(
   process.env.NEXT_PUBLIC_SUPABASE_KEY!
 );
 
-export const getGroupedProducts = async (restaurantId: number) => {
+export const getProductsGroupedByCategories = async (restaurantId: number) => {
   // Cria um mapa para armazenar os nomes das categorias correspondentes a cada ID de categoria
   const categoryMap = new Map<number, string>();
   let groupedProducts;
@@ -66,8 +72,6 @@ export const getGroupedProducts = async (restaurantId: number) => {
     return groupedProducts;
   }
 };
-
-
 
 export async function createNewWhatsAppCode(
   whatsappNumber: string,
@@ -157,22 +161,27 @@ export async function updateProduct(
 ) {
   const { description, name, price } = state.productInformation;
 
-  const productData = await supabase.from("products").upsert({
-    id: productId,
-    name,
-    description,
-    price: Number(price),
-    picture_url: state.picture_url!,
-    category_id: state.category.id!,
-  }).select("*");
+  const productData = await supabase
+    .from("products")
+    .upsert({
+      id: productId,
+      name,
+      description,
+      price: Number(price),
+      picture_url: state.picture_url!,
+      category_id: state.category.id!,
+    })
+    .select("*");
 }
 
 export async function deleteProduct(productId: number, productName: string, restaurantSlug: string) {
   // await supabase.query(`DELETE FROM products   WHERE parent_id = ? ON DELETE CASCADE; `, [parent_id]);
-  await supabase.from("product_selects").delete().eq("product_id", productId)
+
+await supabase.from("product_selects").delete().eq("product_id", productId)
   await supabase.from("product_additionals").delete().eq("product_id", productId)
   const data = await supabase.from("products").delete().eq("id", productId)
   await supabase.storage.from(restaurantSlug).remove([productName])
+
   promiseAlert({
     pending: "Aguarde um momento.",
     success: "Produto deletado com sucesso!",
@@ -196,29 +205,60 @@ export async function createAdditionalsAndIsertIntoProductAdditionalsIfIsUpdatin
   //     additional_id: aditionalData.data![0].id!,
   //     product_id,
   //   }).select("*");
+
 }
-export async function deleteProductAdditionalsIfIsUpdatingProduct(additional_id: number, product_id: number) {
-  await supabase.from("product_additionals").delete().eq("additional_id", additional_id).eq("product_id", product_id)
+export async function deleteProductAdditionalsIfIsUpdatingProduct(
+  additional_id: number,
+  product_id: number
+) {
+  await supabase
+    .from("product_additionals")
+    .delete()
+    .eq("additional_id", additional_id)
+    .eq("product_id", product_id);
 }
 
-export async function createProductSelectIfIsUpdatingProduct(select_id: number, product_id: number) {
-  await supabase.from("product_selects").insert({ select_id, product_id, })
+export async function createProductSelectIfIsUpdatingProduct(
+  select_id: number,
+  product_id: number
+) {
+  await supabase.from("product_selects").insert({ select_id, product_id });
 }
 
-export async function createIngredientIfIsUpdatingProduct(name: string, product_id: number) {
-  const ingredientData = await supabase.from("selects").insert({ name }).select("*")
-  await supabase.from("product_selects").insert({ select_id: ingredientData.data![0].id, product_id, })
+export async function createIngredientIfIsUpdatingProduct(
+  name: string,
+  product_id: number
+) {
+  const ingredientData = await supabase
+    .from("selects")
+    .insert({ name })
+    .select("*");
+  await supabase
+    .from("product_selects")
+    .insert({ select_id: ingredientData.data![0].id, product_id });
 }
 
-export async function deleteIngredientIfIsUpdatingProduct(ingredient_id: number) {
-  await supabase.from("product_options").delete().eq("select_id", ingredient_id)
-  await supabase.from("product_selects").delete().eq("select_id", ingredient_id)
+export async function deleteIngredientIfIsUpdatingProduct(
+  ingredient_id: number
+) {
+  await supabase
+    .from("product_options")
+    .delete()
+    .eq("select_id", ingredient_id);
+  await supabase
+    .from("product_selects")
+    .delete()
+    .eq("select_id", ingredient_id);
 }
 
 export async function deleteProductOptionIfIsUpdatingProduct(id: number) {
-  await supabase.from("product_options").delete().eq("id", id)
+  await supabase.from("product_options").delete().eq("id", id);
 }
-export async function createProductOptionIfIsUpdatingProduct(additional_id: number, name: string, picture_url: string) {
+export async function createProductOptionIfIsUpdatingProduct(
+  additional_id: number,
+  name: string,
+  picture_url: string
+) {
   await supabase.from("product_options").insert({
     name,
     picture_url,
@@ -226,8 +266,13 @@ export async function createProductOptionIfIsUpdatingProduct(additional_id: numb
   });
 }
 
-export async function createProductAdditionalsIfIsUpdatingProduct(additional_id: number, product_id: number) {
-  await supabase.from("product_additionals").insert({ additional_id, product_id, });
+export async function createProductAdditionalsIfIsUpdatingProduct(
+  additional_id: number,
+  product_id: number
+) {
+  await supabase
+    .from("product_additionals")
+    .insert({ additional_id, product_id });
 }
 
 export async function createProduct(
@@ -293,7 +338,13 @@ async function postOptionToSupabase(
     ) {
       return;
     }
-    const optionData = await supabase.from("product_options").insert({ name: option.name, picture_url: option.picture_url, select_id: option.select_id, })
+    const optionData = await supabase
+      .from("product_options")
+      .insert({
+        name: option.name,
+        picture_url: option.picture_url,
+        select_id: option.select_id,
+      })
       .select("*");
     optionStatus = optionData.status;
   });
@@ -332,10 +383,17 @@ async function postAdditionalToSupabase(
       const additionalData = await supabase.from("additionals").insert({
         name: additional.name, picture_url: additional.picture_url, price: additional.price, restaurant_id: restaurant.id
       }).select("*");
+
       if (additionalData.status === 400 || additionalData.data === null) {
         return;
       }
-      const productAdditionalDada = await supabase.from("product_additionals").insert({ additional_id: additionalData.data[0]?.id!, product_id: productId, }).select("*");
+      const productAdditionalDada = await supabase
+        .from("product_additionals")
+        .insert({
+          additional_id: additionalData.data[0]?.id!,
+          product_id: productId,
+        })
+        .select("*");
       data = productAdditionalDada;
     }
   });

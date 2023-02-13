@@ -4,11 +4,10 @@ import { supabase } from "@/src/server/api";
 export default async function updateRestaurantWhatsAppQRCode(slug: string) {
   const restaurant = await getRestaurantBySlugFetch(slug);
 
-  if(restaurant.restaurant_whatsapp_id){
+  // if(restaurant.restaurant_whatsapp_id){
 
-  } else {
+  // } else {
 
-  }
-  
+  // }
+
 }
-    

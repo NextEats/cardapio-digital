@@ -8,6 +8,7 @@ import {
   iGroupedProducts,
   iInsertAdditionals,
   iInsertProductOptions,
+  iRestaurant,
   ProductWithCategory,
 } from "../types/types";
 

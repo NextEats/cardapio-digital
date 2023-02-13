@@ -22,6 +22,7 @@ import {
   iInsertProductOptions,
   iInsertSelects,
   iProduct,
+  iRestaurant,
 } from "@/src/types/types";
 
 import { CardapioDigitalButton } from "../CardapioDigitalButton";
@@ -101,15 +102,13 @@ export default function EditableMenuProductCard({
   return (
     <>
       <div
-        className={`fixed inset-0 bg-black w-screen h-screen opacity-60 z-20 cursor-pointer ${
-          productModal ? "opacity-40" : "opacity-0 pointer-events-none"
-        }`}
+        className={`fixed inset-0 bg-black w-screen h-screen opacity-60 z-20 cursor-pointer ${productModal ? "opacity-40" : "opacity-0 pointer-events-none"
+          }`}
         onClick={() => setProductModal(false)}
       ></div>
       <div
-        className={`w-[360px] md:w-[420px] 2xl:w-[468px] fixed ${
-          productModal ? "right-0" : "right-[-700px]"
-        } transition-all ease-out z-30 top-16 bg-white shadow-md rounded-md h-[calc(100vh-64px)] overflow-auto p-4`}
+        className={`w-[360px] md:w-[420px] 2xl:w-[468px] fixed ${productModal ? "right-0" : "right-[-700px]"
+          } transition-all ease-out z-30 top-16 bg-white shadow-md rounded-md h-[calc(100vh-64px)] overflow-auto p-4`}
       >
         <div className="flex flex-1 items-center justify-between pb-6">
           <BsArrowLeftCircle

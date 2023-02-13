@@ -1,6 +1,4 @@
 import { iCheckoutProduct, iPaymentMethod, iPaymentMethods, iRestaurant } from "../../types/types";
-import { SelectOrderType } from "./SelectOrderType";
-import InputMask from "react-input-mask";
 import { iOrderType } from "./index";
 import { useState, useMemo, useContext, useEffect } from "react";
 import { CEP } from "cep-promise";
@@ -8,7 +6,7 @@ import { FaMotorcycle, FaShoppingBag } from "react-icons/fa";
 import { MdRestaurant } from "react-icons/md";
 import { GetServerSideProps } from "next";
 import { api } from "../../server/api";
-
+import Push from "push.js";
 import { RestaurantContext } from "@/src/contexts/restaurantContext";
 
 interface iPayment {
@@ -47,13 +45,26 @@ export function Payment({
     getPaymentMethods()
   }, [restaurant])
 
+  // const [restaurant, setRestaurant] = useContext(RestaurantContext).restaurant;
+
   const backStep = () => {
     previousStepIndex();
   };
 
   const nextStep = () => {
+    Push.create("Pedido Feito ", {
+      body: "Seu pedido está em analise!",
+      icon: restaurant?.picture_url,
+      timeout: 4000,
+
+      onClick: function () {
+        window.focus();
+        close();
+      },
+    });
     nextStepIndex();
   };
+
 
   const inputClasses =
     "border-2 px-4 py-2 rounded-sm w-full mt-4 text-gray-500";

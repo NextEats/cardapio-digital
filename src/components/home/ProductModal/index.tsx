@@ -132,8 +132,8 @@ export default function ProductModal({
             <textarea
               name=""
               onBlur={(e) => setObservation(e.target.value)}
-              className=" scrollbar-custom w-full h-full resize-none rounded-md bg-slate-300 text-base outline-none p-2"
-              placeholder="Observação"
+              className=" scrollbar-custom w-full h-full resize-none rounded-sm bg-[#f6f6f6] shadow-sm text-base outline-none p-4"
+              placeholder="Observações"
             ></textarea>
           </form>
 

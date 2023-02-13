@@ -248,17 +248,17 @@ export interface Database {
         Row: {
           created_at: string | null
           id: number
-          status_name: string | null
+          status_name: string
         }
         Insert: {
           created_at?: string | null
           id?: number
-          status_name?: string | null
+          status_name: string
         }
         Update: {
           created_at?: string | null
           id?: number
-          status_name?: string | null
+          status_name?: string
         }
       }
       order_types: {
@@ -739,6 +739,26 @@ export interface Database {
           id?: number
           name?: string
           restaurant_id?: number | null
+        }
+      }
+      user_details: {
+        Row: {
+          created_at: string | null
+          id: number
+          restaurant_id: number
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: number
+          restaurant_id: number
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: number
+          restaurant_id?: number
+          user_id?: string
         }
       }
       weekday_operating_time: {

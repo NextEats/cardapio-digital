@@ -12,9 +12,11 @@ import DigitalMenuContent from "@/src/components/DigitalMenuContent/";
 import DigitalMenuModals from "@/src/components/DigitalMenuModals";
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
+  const restaurant = await getRestaurantBySlugFetch(context.query.slug);
+
   var data: iDigitalMenuData = {
-    restaurant: await getRestaurantBySlugFetch(context.query.slug),
-    groupedProducts: await getProductsGroupedByCategories(3),
+    restaurant: restaurant,
+    groupedProducts: await getProductsGroupedByCategories(restaurant.id),
   };
 
   return {
@@ -24,11 +26,10 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   };
 };
 
-
 export default function HomePage({ data }: { data: iDigitalMenuData }) {
   const { restaurant, groupedProducts } = data;
   const [restaurantContext, setRestaurantContext] = useState(restaurant);
-  
+
   const [showCheckoutModal, setShowCheckoutModal] = useState<boolean>(true);
   const [productModal, setProductModal] = useState<iProduct["data"]>();
   const [showWeekdayOperatingTimeModal, setShowWeekdayOperatingTimeModal] =
@@ -49,7 +50,6 @@ export default function HomePage({ data }: { data: iDigitalMenuData }) {
         <link href={restaurant.picture_url} rel="icon" sizes="any" />
       </Head>
       <DigitalMenuModals
-        restaurant={restaurant}
         products={products}
         showWeekdayOperatingTimeModal={showWeekdayOperatingTimeModal}
         setShowWeekdayOperatingTimeModal={setShowWeekdayOperatingTimeModal}

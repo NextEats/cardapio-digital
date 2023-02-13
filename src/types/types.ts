@@ -312,6 +312,22 @@ export type iRestaurantWithFKData = iRestaurant["data"] & {
   >;
 };
 
+export interface iOrderTypes {
+  data: Database["public"]["Tables"]["order_types"]["Row"];
+}
+
+export type iOrdersWithFKData = iOrder["data"] & {
+  payment_methods: iPaymentMethods["data"];
+  order_types: iOrderTypes["data"];
+  clients: {
+    id: number;
+    name: string;
+    contacts: iContact["data"];
+    addresses: iAddress["data"];
+  };
+  order_status: iOrderStatus["data"];
+};
+
 export interface iDigitalMenuData {
   restaurant: iRestaurantWithFKData;
   groupedProducts: iGroupedProducts | undefined;

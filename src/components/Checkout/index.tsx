@@ -112,9 +112,9 @@ export default function Checkout({
 
   return (
     <>
-      <div className="absolute h-screen w-screen flex items-center justify-center">
+      <div className="absolute h-screen w-[99vw] flex items-center justify-center">
         <div
-          className="fixed bg-black w-screen h-screen opacity-60 z-[100] cursor-pointer"
+          className="fixed bg-black w-[99vw] h-screen opacity-60 z-[100] cursor-pointer"
           onClick={closeModal}
         ></div>
         <div className="pb-9 px-4 bg-white rounded-lg z-[200] fixed overflow-auto shadow-2xl w-[95vw] max-w-[600px] ">

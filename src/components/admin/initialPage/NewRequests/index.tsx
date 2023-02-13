@@ -1,44 +1,77 @@
 import Image from "next/image";
-import { Dispatch, useMemo, useRef, useState } from "react";
+import { Dispatch, useEffect, useState } from "react";
 import { AiFillEye, AiOutlineCheck } from "react-icons/ai";
-import { getModalDataAction, showModalAction, switchToProductioAction } from "../../../../reducers/statusReducer/action";
+import {
+  getModalDataAction,
+  showModalAction,
+  switchToProductioAction,
+} from "../../../../reducers/statusReducer/action";
 import { iStatusReducer } from "../../../../reducers/statusReducer/reducer";
 import { api, supabase } from "../../../../server/api";
+import {
+  iOrdersWithFKData,
+  iInsertOrdersProducts,
+  iInsertProducts,
+} from "../../../../types/types";
 
+interface iAddressData {
+  bairro: string;
+  cep: string;
+  complemento: string;
+  ddd: string;
+  gia: string;
+  ibge: string;
+  localidade: string;
+  logradouro: string;
+  siafi: string;
+  uf: string;
+}
 interface iNewRequestProps {
-  state: iStatusReducer,
-  dispatch: Dispatch<any>,
+  ordersState: iStatusReducer;
+  dispatch: Dispatch<any>;
+  ordersGroupedByOrderStatus: { [key: string]: iOrdersWithFKData[] };
+  ordersProducts: iInsertOrdersProducts["data"];
+  products: iInsertProducts["data"];
 }
 
-export default function NewRequests({ state, dispatch }: iNewRequestProps) {
-
-  const tdStyle = "border-collapse border-l-2 px-2 border-gray-300 text-sm font-medium";
+export default function NewRequests({
+  ordersState,
+  dispatch,
+  ordersGroupedByOrderStatus,
+  ordersProducts,
+  products,
+}: iNewRequestProps) {
+  const tdStyle =
+    "border-collapse border-l-2 px-2 border-gray-300 text-sm font-medium";
 
   async function moveToEmProduçãoCard(orderId: number) {
+    // const emProduçãoStatus = state.orderStatuss?.find(status => status.status_name === "em produção")
+    // const ordersProductData = await supabase
+    //   .from("orders")
+    //   .update({ order_status_id: emProduçãoStatus?.id })
+    //   .eq("id", orderId)
+    //   .select("*");
 
-    const emProduçãoStatus = state.orderStatuss?.find(status => status.status_name === "em produção")
-    const ordersProductData = await supabase.from("orders").update({ order_status_id: emProduçãoStatus?.id }).eq("id", orderId).select("*")
-
-    dispatch(switchToProductioAction(orderId))
+    dispatch(switchToProductioAction(orderId));
   }
 
   function showModal(orderId: number) {
-    dispatch(showModalAction())
-    dispatch(getModalDataAction(orderId))
+    dispatch(showModalAction());
+    dispatch(getModalDataAction(orderId));
   }
 
   const [addressState, setAddressState] = useState({
-    bairro: '',
-    cep: '',
-    complemento: '',
-    ddd: '',
-    gia: '',
-    ibge: '',
-    localidade: '',
-    logradouro: '',
-    siafi: '',
-    uf: '',
-  })
+    bairro: "",
+    cep: "",
+    complemento: "",
+    ddd: "",
+    gia: "",
+    ibge: "",
+    localidade: "",
+    logradouro: "",
+    siafi: "",
+    uf: "",
+  });
 
   return (
     <div className="flex flex-1 flex-col min-h-[230px] bg-white w-auto shadow-sm px-6 pt-2 rounded-md ">
@@ -46,30 +79,48 @@ export default function NewRequests({ state, dispatch }: iNewRequestProps) {
       <div>
         <table className="w-full ">
           <tbody className="w-full border-collapse ">
-            {
-              state.emAnaliseOrders?.map(order => {
-                if (!order) {
-                  return
-                }
-                const ordersProductsFiltered = state.ordersProducts.filter(op => op.order_id === order.id)
-                const productsFiltered = ordersProductsFiltered.map(op => {
-                  return state.products[state.products.findIndex(p => op.product_id === p.id)]
-                })
-                const totalProductsPrice = productsFiltered.reduce((acc, p) => acc + p.price, 0)
-                const client = state.clients.find(cl => cl.id === order.client_id)
-                const contact = state.contacts.find(co => co.id === client?.contact_id)
-                const phone = contact?.phone?.toString()
+            {ordersGroupedByOrderStatus["em análise"]?.map((order) => {
+              // if (!order) {
+              //   return;
+              // }
+              const ordersProductsFiltered = ordersProducts.filter(
+                (op) => op.order_id === order.id
+              );
+              const productsFiltered = ordersProductsFiltered.map((op) => {
+                return products[
+                  products.findIndex((p) => op.product_id === p.id)
+                ];
+              });
+              const totalProductsPrice = productsFiltered.reduce(
+                (acc, p) => acc + p.price,
+                0
+              );
+              console.log(order.clients.addresses);
+              // const client = state.clients.find(
+              //   (cl) => cl.id === order.client_id
+              // );
+              // const contact = state.contacts.find(
+              //   (co) => co.id === client?.contact_id
+              // );
+              const phone = order.clients.contacts.phone?.toString();
 
-                const address = state.addresses.find(ad => ad.id === client?.address_id)
+              // const address = state.addresses.find(
+              //   (ad) => ad.id === client?.address_id
+              // );
+              // let address: iAddressData;
+              // const getAddress = async (): Promise<iAddressData> => {
+              //   const res = await api.get(
+              //     `https://viacep.com.br/ws/${order.clients.addresses?.cep}/json/`
+              //   );
+              //   address = res.data;
+              //   console.log(address);
+              //   return res.data;
+              // };
+              // // ;
+              // getAddress();
 
-
-                const getAddress = async () => {
-                  const res = await api.get(`https://viacep.com.br/ws/${address?.cep}/json/`)
-                  setAddressState(res.data)
-                }
-                getAddress()
-
-                return <tr key={order.id!} className="w-full h-4 text-center">
+              return (
+                <tr key={order.id!} className="w-full h-4 text-center">
                   <td>
                     <Image
                       src="https://i.ibb.co/d0MYCmv/Design-sem-nome.jpg"
@@ -80,37 +131,48 @@ export default function NewRequests({ state, dispatch }: iNewRequestProps) {
                     />
                   </td>
                   <td className="text-left h-4 text-sm font-medium p-2">
-                    {client?.name}
+                    {order.clients.name}
                   </td>
-                  <td className={`${tdStyle} w-16 hidden 3xs:table-cell`}> {productsFiltered.length} </td>
-                  <td className={`${tdStyle} hidden 3xs:table-cell`}>R$ {totalProductsPrice} </td>
+                  <td className={`${tdStyle} w-16 hidden 3xs:table-cell`}>
+                    {productsFiltered.length}
+                  </td>
+                  <td className={`${tdStyle} hidden 3xs:table-cell`}>
+                    R$ {totalProductsPrice}
+                  </td>
                   <td
                     className={`${tdStyle} w-auto text-ellipsis whitespace-nowrap overflow-hidden hidden sm:table-cell`}
                   >
-                    {'( ' + phone?.slice(0, 2) + ' ) ' + phone?.slice(2, 7) + '-' + phone?.slice(7, phone.length)}
+                    {"( " +
+                      phone?.slice(0, 2) +
+                      " ) " +
+                      phone?.slice(2, 7) +
+                      "-" +
+                      phone?.slice(7, phone.length)}
                   </td>
-                  <td
+                  {/* <td
                     className={`${tdStyle} w-auto text-ellipsis whitespace-nowrap overflow-hidden hidden lg:table-cell`}
                   >
-                    {addressState.logradouro}, {address?.number} ...
-                  </td>
+                    {address!.logradouro}, {order.clients.addresses?.number} ...
+                  </td> */}
                   <td className={`${tdStyle}`}>
                     <div className="flex items-center justify-center gap-2">
                       <button
                         onClick={() => showModal(order.id!)}
-                        className="rounded-full pl-[1px] w-8 h-6 bg-gray-400 cursor-pointer flex items-center justify-center">
+                        className="rounded-full pl-[1px] w-8 h-6 bg-gray-400 cursor-pointer flex items-center justify-center"
+                      >
                         <AiFillEye className="text-xl text-white" />
                       </button>
                       <button
                         onClick={() => moveToEmProduçãoCard(order.id!)}
-                        className=" w-10 h-6 pb-[1px] rounded-full  bg-green-400 text-white text-base font-bold flex items-center justify-center">
+                        className=" w-10 h-6 pb-[1px] rounded-full  bg-green-400 text-white text-base font-bold flex items-center justify-center"
+                      >
                         <AiOutlineCheck className="w-4 h-4 " />
                       </button>
                     </div>
                   </td>
                 </tr>
-              })
-            }
+              );
+            })}
           </tbody>
         </table>
       </div>

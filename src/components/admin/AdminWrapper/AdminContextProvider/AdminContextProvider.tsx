@@ -2,6 +2,7 @@ import { useState, useMemo } from "react";
 import { AdminContext } from "@/src/contexts/adminContext";
 import { iRestaurantWithFKData } from "@/src/types/types";
 import { useRouter } from "next/router";
+import { getRestaurantBySlugFetch } from "@/src/fetch/restaurant/getRestaurantBySlug";
 
 interface iAdminContextProvider {
   children: JSX.Element;
@@ -19,10 +20,13 @@ export default function AdminContextProvider({
 
   useMemo(() => {
     async function fetchRestaurantData() {
-      await fetch("/api/restaurants/" + slug).then(async (r) => {
-        const jsonResponse = await r.json();
-        setRestaurant(jsonResponse);
-      });
+      try {
+        const restaurantData = await fetch("/api/restaurants/" + slug + "/");
+        const jsonData = await restaurantData.json();
+        setRestaurant(jsonData);
+      } catch (err) {
+        console.log(err);
+      }
     }
 
     fetchRestaurantData();

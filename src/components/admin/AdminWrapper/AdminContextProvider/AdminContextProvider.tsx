@@ -19,8 +19,10 @@ export default function AdminContextProvider({
 
   useMemo(() => {
     async function fetchRestaurantData() {
-      const res = await fetch("/api/restaurants/" + slug).then((r) => r.json());
-      setRestaurant(res);
+      await fetch("/api/restaurants/" + slug).then(async (r) => {
+        const jsonResponse = await r.json();
+        setRestaurant(jsonResponse);
+      });
     }
 
     fetchRestaurantData();

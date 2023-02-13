@@ -38,14 +38,14 @@ export default function ConfigCategoriesMenu({
       >
         Taxas de Distâncias
       </div>
-      <div
+      {/* <div
         className={`${
           currentSection === "whatsapp" ? "border-b-blue-600" : "border-b-white"
         }`}
         onClick={() => setCurrentSection("whatsapp")}
       >
         WhatsApp
-      </div>
+      </div> */}
     </div>
   );
 }

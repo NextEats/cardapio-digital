@@ -47,7 +47,7 @@ export default function Sidebar({
           path={`/${restaurant?.slug}/admin/cardapio-digital`}
         />
         <SidebarListItem
-          name="Relatório"
+          name="Relatórios"
           icon={<FaChartBar className="mr-4 h-8 w-8" />}
           path={`/${restaurant?.slug}/admin/relatorios`}
         />

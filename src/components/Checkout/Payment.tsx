@@ -8,7 +8,7 @@ import { FaMotorcycle, FaShoppingBag } from "react-icons/fa";
 import { MdRestaurant } from "react-icons/md";
 import { GetServerSideProps } from "next";
 import { api } from "../../server/api";
-
+import Push  from "push.js";
 import { RestaurantContext } from "@/src/contexts/restaurantContext";
 
 interface iPayment {
@@ -34,15 +34,26 @@ export function Payment({
   setOrderType,
 }: iPayment) {
   const [restaurant, setRestaurant] = useContext(RestaurantContext).restaurant;
-
+  
   const backStep = () => {
     previousStepIndex();
   };
 
   const nextStep = () => {
+    Push.create("Pedido Feito ", {
+      body: "Seu pedido está em analise!",
+      icon:     restaurant?.picture_url  ,
+      timeout: 4000,
+      
+      onClick: function () {
+        window.focus();
+       close();
+      },
+    });
     nextStepIndex();
   };
 
+   
   const inputClasses =
     "border-2 px-4 py-2 rounded-sm w-full mt-4 text-gray-500";
   const cssSelectItemsText = "text-xl";

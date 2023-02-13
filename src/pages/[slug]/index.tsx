@@ -13,6 +13,7 @@ import DigitalMenuContent from "@/src/components/DigitalMenuContent/";
 import DigitalMenuModals from "@/src/components/DigitalMenuModals";
 import Push from "push.js";
 import Logo from "@/src/assets/nexteats_logo_orange.png";
+import { supabase } from "@/src/server/api";
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const restaurant = await getRestaurantBySlugFetch(context.query.slug);
 
@@ -30,7 +31,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
 
 export default function HomePage({ data }: { data: iDigitalMenuData }) {
-  const { restaurant, groupedProducts } = data;
+  const { restaurant, groupedProducts, } = data;
+ 
   const [restaurantContext, setRestaurantContext] = useState(restaurant);
 
   const [showCheckoutModal, setShowCheckoutModal] = useState<boolean>(true);
@@ -43,24 +45,8 @@ export default function HomePage({ data }: { data: iDigitalMenuData }) {
   if (!restaurant) {
     return <></>;
   }
-  function usePush() {
-    Push.create("Pedido Feito", {
-      body: "Seu pedido foi realizado com sucesso!",
-      icon:     'https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fmedia.gettyimages.com%2Fillustrations%2Fcompleted-stamp-illustration-id187179219%3Fs%3D170667a%26w%3D1007&f=1&nofb=1&ipt=c83026c18cea605cce94d8da357754c7d8e19ca23b94b07f7db26788b22aabf7&ipo=images'  ,
-      timeout: 4000,
-      
-      onClick: function () {
-        window.focus();
-       close();
-      },
-    });
-  }
-  // eslint-disable-next-line react-hooks/rules-of-hooks
-  useEffect(() => {
-  
-      usePush();
-    
-  }, [products]);
+
+
 
   return (
     <RestaurantContext.Provider

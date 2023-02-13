@@ -3,7 +3,6 @@ import ProductModal from "../home/ProductModal";
 import { WeekdayOperatingTime } from "../WeekdayOperatingTime";
 
 interface iDigitalMenuModals {
-  restaurant: any;
   products: any;
   showWeekdayOperatingTimeModal: any;
   setShowWeekdayOperatingTimeModal: any;
@@ -15,7 +14,6 @@ interface iDigitalMenuModals {
 }
 
 export default function DigitalMenuModals({
-  restaurant,
   products,
   showWeekdayOperatingTimeModal,
   setShowWeekdayOperatingTimeModal,
@@ -46,7 +44,6 @@ export default function DigitalMenuModals({
           onClose={() => setShowCheckoutModal(false)}
           products={products}
           productsDispatch={productsDispatch}
-          restaurant={restaurant}
         />
       )}
     </>

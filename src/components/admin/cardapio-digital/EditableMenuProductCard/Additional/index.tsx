@@ -6,19 +6,23 @@ import * as zod from "zod";
 
 import { BiPencil } from "react-icons/bi";
 import { FiTrash2 } from "react-icons/fi";
-import { EditableProductActions } from "@/src/reducers/aditableProduct/actions";
+import { EditableProductActions } from "../../../../../reducers/aditableProduct/actions";
 import {
   IEditableProductReducerData,
   iPayloadProduct,
-} from "@/src/reducers/aditableProduct/reducer";
-import { iInsertAdditional, iRestaurants } from "@/src/types/types";
+} from "../../../../../reducers/aditableProduct/reducer";
+import {
+  iInsertAdditional,
+  iRestaurant,
+  iRestaurants,
+} from "../../../../../types/types";
 import { CardapioDigitalButton } from "../../CardapioDigitalButton";
 import {
   api,
   createAdditionalsAndIsertIntoProductAdditionalsIfIsUpdatingProduct,
   deleteProductAdditionalsIfIsUpdatingProduct,
   updateAdditional,
-} from "@/src/server/api";
+} from "../../../../../server/api";
 
 interface IAdditionalProps {
   state: IEditableProductReducerData;
@@ -27,7 +31,7 @@ interface IAdditionalProps {
     payload: iPayloadProduct;
   }>;
   productId: number;
-  restaurantId: number;
+  restaurantData: iRestaurant["data"];
 }
 
 const newAdditionalFormValidationSchema = zod.object({
@@ -43,7 +47,7 @@ export function Additional({
   state,
   dispatch,
   productId,
-  restaurantId,
+  restaurantData,
 }: IAdditionalProps) {
   const [restaurant, setRestaurantId] = useState<iRestaurants["data"]>([]);
 
@@ -84,8 +88,8 @@ export function Additional({
       createAdditionalsAndIsertIntoProductAdditionalsIfIsUpdatingProduct(
         additionalName,
         additionalPrice,
-        additionalPicture_url,
-        productId!
+        productId!,
+        restaurantData
       );
     }
 
@@ -143,7 +147,7 @@ export function Additional({
         oldAdditionalId,
       },
     });
-    // const additionalUpdated = await api.put(`api/additionals/${restaurantId}`, {
+    // const additionalUpdated = await api.put(`api/additionals/${restaurantData.id}`, {
     //     name: additionalName,
     //     price: additionalPrice,
     //     picture_url: additionalPicture_url,

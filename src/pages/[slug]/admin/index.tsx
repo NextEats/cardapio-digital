@@ -2,239 +2,196 @@ import { Card } from "../../../components/admin/Card";
 import NewRequests from "../../../components/admin/initialPage/NewRequests";
 import OrderStatusCard from "../../../components/admin/initialPage/OrderStatusCard";
 import AdminWrapper from "../../../components/admin/AdminWrapper";
-import { api } from "../../../server/api";
 import {
+  iCashBox,
   iCashBoxes,
   iInsertAddresses,
   iInsertClients,
   iInsertContacts,
-  iInsertOrders,
+  iInsertOrder,
   iInsertOrdersProducts,
   iInsertOrderStatuss,
   iInsertProducts,
+  iOrdersWithFKData,
   iRestaurants,
+  iRestaurantWithFKData,
 } from "../../../types/types";
 import { GetServerSideProps } from "next";
-import { useState, useReducer } from "react";
+import { useEffect, useMemo, useReducer, useState } from "react";
 import {
   iStatusReducer,
   statusReducer,
 } from "../../../reducers/statusReducer/reducer";
-import { OrderModal } from "../../../components/admin/initialPage/OrderModal";
-import { CardapioDigitalButton } from "../../../components/admin/cardapio-digital/CardapioDigitalButton";
 
-import "react-toastify/dist/ReactToastify.css";
 import { getRestaurantBySlugFetch } from "../../../fetch/restaurant/getRestaurantBySlug";
 import { getOrdersByRestaurantIdFetch } from "../../../fetch/orders/getOrdersByRestaurantId";
 import { getProductsByRestaurantIdFetch } from "../../../fetch/products/getProductsByRestaurantId";
-import { getOrderStatusFetch } from "src/fetch/orderStatus/getOrdersStatus";
 import { getOrdersProductsFetch } from "src/fetch/ordersProducts/getOrdersProducts";
 import { getclientsFetch } from "src/fetch/clients/getClients";
 import { getContactsFetch } from "src/fetch/contacts/getContacts";
 import { getAddressesFetch } from "src/fetch/addresses/getAddresses";
 import { getCashBoxesByRestaurantIdFetch } from "src/fetch/cashBoxes/getCashBoxesByRestaurantId";
 
+import "react-toastify/dist/ReactToastify.css";
+import CashBoxButtons from "@/src/components/admin/initialPage/CashBoxButtons";
+import { OrderModal } from "@/src/components/admin/initialPage/OrderModal";
+import { api, supabase } from "@/src/server/api";
+
 interface iAdminHomePageProps {
-  ordersData: iInsertOrders["data"];
+  ordersData: iOrdersWithFKData[];
   orderStatuss: iInsertOrderStatuss["data"];
   ordersProducts: iInsertOrdersProducts["data"];
-  addresses: iInsertAddresses["data"];
   products: iInsertProducts["data"];
-  contacts: iInsertContacts["data"];
   clients: iInsertClients["data"];
-  restaurant: iRestaurants["data"];
+  contacts: iInsertContacts["data"];
+  addresses: iInsertAddresses["data"];
   cashBoxes: iCashBoxes["data"];
+  restaurant: iRestaurantWithFKData
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
+  // const restaurant = await getRestaurantBySlugFetch(context.query.slug);
   const restaurant: any = await getRestaurantBySlugFetch(context.query.slug);
-  const ordersData = await getOrdersByRestaurantIdFetch(restaurant[0].id);
-  const products = await getProductsByRestaurantIdFetch(restaurant[0].id);
-  const orderStatuss = await getOrderStatusFetch();
-  const ordersProducts = await getOrdersProductsFetch();
-  const clients = await getclientsFetch();
-  const contacts = await getContactsFetch();
-  const addresses = await getAddressesFetch();
-  const cashBoxes = await getCashBoxesByRestaurantIdFetch(restaurant![0].id);
-
   return {
     props: {
-      ordersData,
-      orderStatuss,
-      ordersProducts,
-      products,
-      clients,
-      contacts,
-      addresses,
+      ordersData: await getOrdersByRestaurantIdFetch(restaurant.id),
+      ordersProducts: await getOrdersProductsFetch(),
+      products: await getProductsByRestaurantIdFetch(restaurant.id),
+      clients: await getclientsFetch(),
+      contacts: await getContactsFetch(),
+      addresses: await getAddressesFetch(),
+      cashBoxes: await getCashBoxesByRestaurantIdFetch(restaurant.id),
       restaurant,
-      cashBoxes,
     },
   };
 };
 
 export default function AdminHomepage({
   ordersData,
-  orderStatuss,
   ordersProducts,
   products,
-  contacts,
-  addresses,
-  clients,
-  restaurant,
   cashBoxes,
+  restaurant,
 }: iAdminHomePageProps) {
+
+  const [orders, setOrders] = useState<iOrdersWithFKData[]>(ordersData)
   const cashBoxOpened = cashBoxes.find((cb) => cb.is_open === true);
-  let orders = ordersData!;
+  const [cashBoxState, setCashBoxState] = useState<iCashBox["data"] | undefined>(cashBoxOpened)
 
-  if (cashBoxOpened === undefined) {
-    orders = [];
-  } else {
-    orders = ordersData.filter((o) => o.cash_box_id === cashBoxOpened.id!);
-  }
+  useEffect(() => {
+    if (cashBoxState === undefined) {
+      setOrders([]);
+    } else {
+      const filterOrdersData = ordersData.filter((o) => o.cash_box_id === cashBoxState!.id);
+      setOrders(filterOrdersData);
+    }
+  }, [ordersData, cashBoxState]);
 
-  const statusEmAnalise = orderStatuss.find(
-    (status) => status.status_name === "em análise"
-  );
-  const statusEmProdução = orderStatuss.find(
-    (status) => status.status_name === "em produção"
-  );
-  const statusACaminho = orderStatuss.find(
-    (status) => status.status_name === "a caminho"
-  );
-  const statusEntregue = orderStatuss.find(
-    (status) => status.status_name === "entregue"
-  );
-
-  // EM ANÁLISE
-  const emAnaliseOrders = orders?.filter(
-    (or) => or.order_status_id === statusEmAnalise?.id
+  const ordersGroupedByOrderStatus = orders.reduce(
+    (acc: { [key: string]: iOrdersWithFKData[] }, obj) => {
+      const status_name = obj.order_status.status_name;
+      if (!acc[status_name]) {
+        acc[status_name] = [];
+      }
+      acc[status_name].push(obj);
+      return acc;
+    },
+    {}
   );
 
-  // EM PRODUÇÃO
-  const emProduçãoOrders = orders?.filter(
-    (or) => or.order_status_id === statusEmProdução?.id
-  );
 
-  // A CAMINHO
-  const aCaminhoOrders = orders?.filter(
-    (or) => or.order_status_id === statusACaminho?.id
-  );
-
-  // STATUS ENTREGUE
-  const entregueOrders = orders?.filter(
-    (or) => or.order_status_id === statusEntregue?.id
-  );
-
-  const [state, dispatch] = useReducer<
+  const [ordersState, ordersDispatch] = useReducer<
     (state: iStatusReducer, action: any) => iStatusReducer
   >(statusReducer, {
     orders: orders,
-    orderStatuss: orderStatuss,
-    ordersProducts: ordersProducts,
-    addresses: addresses,
-    products: products,
-    contacts: contacts,
-    clients: clients,
-
-    emAnaliseOrders,
-    emProduçãoOrders,
-    aCaminhoOrders,
-    entregueOrders,
     isOpenOrderModal: false,
     orderId: 0,
   });
 
-  const ordersProductFiltered = ordersProducts.filter((op) =>
-    entregueOrders.some((o) => o.id === op.order_id)
-  );
   function billing() {
-    const productIds = ordersProductFiltered.map(
-      (ordersProduct) => ordersProduct.product_id
-    );
-    const selectedProduct = productIds.map(
-      (productId) =>
-        products[products.findIndex((product) => productId === product.id)]
-    );
-    return selectedProduct.reduce((acc, product) => acc + product?.price!, 0);
-  }
+    let ordersProductFiltered
+    if (ordersGroupedByOrderStatus["entregue"]) {
+      ordersProductFiltered = ordersProducts.filter((op) => ordersGroupedByOrderStatus["entregue"].some((o) => o.id === op.order_id));
 
-  // useEffect(() => {
-  //   console.log(count >= billing())
-  //   const revenue = billing() - Math.floor(billing() * 0.9)
-  //   // setCount(revenue)
-  //   let intervalId = setInterval(() => {
-  //     if (count + revenue >= billing()) {
-  //       clearInterval(intervalId);
-  //       return
-  //     }
-  //     setCount(count + 1);
-  //   }, 5);
-
-  //   return () => clearInterval(intervalId);
-  // }, [count, orderStatuss, products, ordersProducts]);
-
-  const [openCashBoxState, setOpenCashBoxState] = useState(false);
-
-  async function handleOpenCashBox() {
-    // const cashBox = await supabase.from("cash_boxes").insert({
-    //   is_open: true,
-    //   opened_at: new Date().toISOString(),
-    //   restaurant_id: restaurant[0].id
-    // }).select("*")
-    const cashBox = await api.post("api/cash_boxes/open", {
-      restaurant_id: restaurant[0].id,
-    });
-    setOpenCashBoxState(true);
-  }
-
-  async function handleCloseCashBox() {
-    if (
-      state.emAnaliseOrders.length > 0 ||
-      state.aCaminhoOrders.length > 0 ||
-      state.emProduçãoOrders.length > 0
-    ) {
-      alert(
-        "Ei vagabundo, crie um toast para avisar para algum desorientado que só pode fechar o caixa se todos os pedidos forem entregue!"
+      const productIds = ordersProductFiltered.map(
+        (ordersProduct) => ordersProduct.product_id
       );
-      return;
+      const selectedProduct = productIds.map(
+        (productId) =>
+          products[products.findIndex((product) => productId === product.id)]
+      );
+      return selectedProduct.reduce((acc, product) => acc + product?.price!, 0);
+    } else {
+      return 0
     }
-    const cashBox = await api.post("api/cash_boxes/close", {
-      restaurant_id: restaurant[0].id,
-    });
-    // const cashBox = await supabase.from("cash_boxes").update({
-    //   is_open: false,
-    //   closed_at: new Date().toISOString(),
-    // }).eq("is_open", true).select("*")
-    setOpenCashBoxState(false);
   }
+
+  console.log(ordersGroupedByOrderStatus)
+  useMemo(() => {
+    async function newOrder() {
+      const getNewOrder = await api.get("/api/orders/" + restaurant.id)
+      console.log(getNewOrder.data)
+      setOrders(getNewOrder.data)
+      // if (order.order_status_id === ordersGroupedByOrderStatus['em análise'][0]?.id)
+      //   setOrders([])
+    }
+    const channel = supabase
+      .channel("db-changes")
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "orders",
+        },
+        (payload: any) => {
+          console.log("entrou")
+          newOrder();
+        }
+      )
+      .subscribe();
+  }, [restaurant]);
+  // useMemo(() => {
+  const channel = supabase
+    .channel("db-cash")
+    .on(
+      "postgres_changes",
+      {
+        event: "*",
+        schema: "public",
+        table: "cash_boxes",
+      },
+      (payload: any) => {
+        if (payload.eventType === "UPDATE") {
+          setOrders([])
+          setCashBoxState(undefined)
+          alert("Caixa fechado!")
+        }
+        if (payload.eventType === "INSERT") {
+          setCashBoxState(payload.new)
+          alert("Caixa aberto!")
+        }
+      }
+    )
+    .subscribe();
+  // }, []);
 
   return (
     <AdminWrapper>
       <div className="flex flex-col gap-8">
-        <div className="flex items-center gap-3">
-          <CardapioDigitalButton
-            name="Abrir caixa"
-            h="h-10"
-            w="w-40"
-            disabled={
-              openCashBoxState || cashBoxes.some((cb) => cb.is_open === true)
-            }
-            onClick={() => handleOpenCashBox()}
-          />
-          <CardapioDigitalButton
-            name="Fechar caixa"
-            h="h-10"
-            w="w-40"
-            disabled={!cashBoxes.some((cb) => cb.is_open === true)}
-            onClick={() => handleCloseCashBox()}
-          />
-        </div>
+        <CashBoxButtons
+          cashBoxState={cashBoxState}
+          restaurantId={restaurant.id}
+          ordersGroupedByOrderStatus={ordersGroupedByOrderStatus}
+          cashBoxes={cashBoxes}
+        />
+
         <div className="grid 2xs:grid-cols-2 lg:grid-cols-3 gap-3">
           <Card color="red" name="Faturamento" value={`R$ ${billing()}`} />
           <Card
             color="green"
             name="Pedidos"
-            value={`${entregueOrders.length}`}
+            value={ordersGroupedByOrderStatus["entregue"] ? `${ordersGroupedByOrderStatus["entregue"].length}` : "0"}
           />
           <Card
             color="yellow"
@@ -243,30 +200,47 @@ export default function AdminHomepage({
           />
         </div>
 
-        <NewRequests dispatch={dispatch} state={state} />
+        <NewRequests
+          dispatch={ordersDispatch}
+          ordersState={ordersState}
+          ordersGroupedByOrderStatus={ordersGroupedByOrderStatus}
+          ordersProducts={ordersProducts}
+          products={products}
+        />
+
         <div className=" md:columns-3 gap-4">
           <OrderStatusCard
             statusName="Em produção"
-            state={state}
-            dispatch={dispatch}
-            orders={state.emProduçãoOrders}
+            dispatch={ordersDispatch}
+            ordersState={ordersState}
+            ordersGroupedByOrderStatus={ordersGroupedByOrderStatus}
+            ordersProducts={ordersProducts}
+            products={products}
           />
           <OrderStatusCard
             statusName="A caminho"
-            state={state}
-            dispatch={dispatch}
-            orders={state.aCaminhoOrders}
+            dispatch={ordersDispatch}
+            ordersState={ordersState}
+            ordersGroupedByOrderStatus={ordersGroupedByOrderStatus}
+            ordersProducts={ordersProducts}
+            products={products}
           />
           <OrderStatusCard
             statusName="Entregue"
-            state={state}
-            dispatch={dispatch}
-            orders={state.entregueOrders}
+            dispatch={ordersDispatch}
+            ordersState={ordersState}
+            ordersGroupedByOrderStatus={ordersGroupedByOrderStatus}
+            ordersProducts={ordersProducts}
+            products={products}
           />
         </div>
 
-        {state.isOpenOrderModal ? (
-          <OrderModal state={state} dispatch={dispatch} />
+        {ordersState.isOpenOrderModal ? (
+          <OrderModal ordersState={ordersState}
+            restaurant={restaurant}
+            ordersProducts={ordersProducts}
+            products={products}
+            ordersDispatch={ordersDispatch} />
         ) : null}
       </div>
     </AdminWrapper>

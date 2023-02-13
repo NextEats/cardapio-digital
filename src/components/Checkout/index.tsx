@@ -1,20 +1,15 @@
 import { BsX } from "react-icons/bs";
-import { useEffect, useMemo, useState } from "react";
-import { iCheckoutProduct, iRestaurant } from "../../types/types";
-import { FaMinus, FaPlus } from "react-icons/fa";
+import { useState } from "react";
+import { iCheckoutProduct } from "../../types/types";
 
 import { ProductList } from "./ProductList";
-import { SelectOrderType } from "./SelectOrderType";
 
 import { TypeCEP } from "./TypeCEP";
 import { Address } from "./Address";
 import { Payment } from "./Payment";
-import { WhatsappNumberInput } from "./WhatsappNumberInput";
-import { WhatsappCodeInput } from "./WhatsappCodeInput";
 import { SuccessMessage } from "./SuccessMessage";
 
 export type iOrderType = "delivery" | "takeout" | "reserve";
-
 export interface iPaymentOption {
   id: number;
   name: string;
@@ -23,27 +18,15 @@ export interface iPaymentOption {
 export default function Checkout({
   products,
   onClose,
-  restaurant,
   productsDispatch,
 }: {
   products: Array<iCheckoutProduct> | null | undefined;
   onClose: () => void;
   productsDispatch: Function;
-  restaurant: iRestaurant["data"];
 }) {
   const [orderType, setOrderType] = useState<iOrderType>("delivery");
   const [cepState, setCepState] = useState<string>("");
   const [address, setAddress] = useState();
-  const [whatsappNumber, setWhatsappNumber] = useState<number | undefined>(
-    undefined
-  );
-
-  const [paymentOptions, setPaymentOptions] = useState<iPaymentOption[]>([
-    {
-      id: 1,
-      name: "Cartão de Crédito",
-    },
-  ]);
 
   function closeModal() {
     onClose();
@@ -81,18 +64,6 @@ export default function Checkout({
         />
       ),
     },
-    // {
-    //   name: "Tipo de Pedido",
-    //   component: (
-    //     <SelectOrderType
-    //       products={products}
-    //       orderType={orderType}
-    //       setOrderType={setOrderType}
-    //       nextStepIndex={nextStepIndex}
-    //       previousStepIndex={previousStepIndex}
-    //     />
-    //   ),
-    // },
     {
       name: "Digite seu CEP",
       component: (
@@ -122,7 +93,6 @@ export default function Checkout({
       component: (
         <Payment
           orderType={orderType}
-          restaurant={restaurant}
           products={products}
           setOrderType={setOrderType}
           nextStepIndex={nextStepIndex}
@@ -131,30 +101,8 @@ export default function Checkout({
       ),
     },
     {
-      name: "Digite seu Número de WhatsApp",
-      component: (
-        <WhatsappNumberInput
-          restaurant={restaurant}
-          whatsappNumber={whatsappNumber}
-          setWhatsappNumber={setWhatsappNumber}
-          nextStepIndex={nextStepIndex}
-          previousStepIndex={previousStepIndex}
-        />
-      ),
-    },
-    {
-      name: "Digite o Código",
-      component: (
-        <WhatsappCodeInput
-          whatsappNumber={whatsappNumber}
-          nextStepIndex={nextStepIndex}
-          previousStepIndex={previousStepIndex}
-        />
-      ),
-    },
-    {
       name: "Sucesso!!",
-      component: <SuccessMessage restaurant={restaurant} />,
+      component: <SuccessMessage />,
     },
   ];
 
@@ -164,9 +112,9 @@ export default function Checkout({
 
   return (
     <>
-      <div className="absolute h-screen w-screen flex items-center justify-center">
+      <div className="absolute h-screen w-[99vw] flex items-center justify-center">
         <div
-          className="fixed bg-black w-screen h-screen opacity-60 z-[100] cursor-pointer"
+          className="fixed bg-black w-[99vw] h-screen opacity-60 z-[100] cursor-pointer"
           onClick={closeModal}
         ></div>
         <div className="pb-9 px-4 bg-white rounded-lg z-[200] fixed overflow-auto shadow-2xl w-[95vw] max-w-[600px] ">

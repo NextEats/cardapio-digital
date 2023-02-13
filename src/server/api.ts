@@ -3,10 +3,12 @@ import axios from "axios";
 import { promiseAlert } from "../helpers/toasts";
 import { IEditableProductReducerData } from "../reducers/aditableProduct/reducer";
 import { Database } from "../types/supabase";
+
 import {
   iGroupedProducts,
   iInsertAdditionals,
   iInsertProductOptions,
+  iRestaurant,
   ProductWithCategory,
 } from "../types/types";
 
@@ -16,7 +18,7 @@ export const api = axios.create({
 
 export const supabase = createClient<Database>(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_KEY!
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 );
 
 export const getProductsGroupedByCategories = async (restaurantId: number) => {
@@ -173,15 +175,21 @@ export async function updateProduct(
     .select("*");
 }
 
-export async function deleteProduct(productId: number, productName: string) {
+export async function deleteProduct(
+  productId: number,
+  productName: string,
+  restaurantSlug: string
+) {
   // await supabase.query(`DELETE FROM products   WHERE parent_id = ? ON DELETE CASCADE; `, [parent_id]);
+
   await supabase.from("product_selects").delete().eq("product_id", productId);
   await supabase
     .from("product_additionals")
     .delete()
     .eq("product_id", productId);
   const data = await supabase.from("products").delete().eq("id", productId);
-  await supabase.storage.from("teste").remove([productName]);
+  await supabase.storage.from(restaurantSlug).remove([productName]);
+
   promiseAlert({
     pending: "Aguarde um momento.",
     success: "Produto deletado com sucesso!",
@@ -194,25 +202,21 @@ export async function deleteProduct(productId: number, productName: string) {
 export async function createAdditionalsAndIsertIntoProductAdditionalsIfIsUpdatingProduct(
   name: string,
   price: number,
-  picture_url: string,
-  product_id: number
+  product_id: number,
+  restaurantData: iRestaurant["data"]
 ) {
-  const aditionalData = await supabase
-    .from("additionals")
-    .insert({
-      name,
-      price,
-      picture_url,
-      restaurant_id: 7,
-    })
-    .select("*");
-  await supabase
-    .from("product_additionals")
-    .insert({
-      additional_id: aditionalData.data![0].id!,
-      product_id,
-    })
-    .select("*");
+  // const aditionalData = await supabase
+  //   .from("additionals").insert({
+  //     name,
+  //     price,
+  //     picture: getImageData.data.publicUrl!,
+  //     restaurant_id: restaurantData.id
+  //   }).select("*");
+  // await supabase
+  //   .from("product_additionals").insert({
+  //     additional_id: aditionalData.data![0].id!,
+  //     product_id,
+  //   }).select("*");
 }
 export async function deleteProductAdditionalsIfIsUpdatingProduct(
   additional_id: number,
@@ -285,14 +289,18 @@ export async function createProductAdditionalsIfIsUpdatingProduct(
 export async function createProduct(
   state: IEditableProductReducerData,
   productOptions: iInsertProductOptions["data"],
-  additionals: iInsertAdditionals["data"]
+  additionals: iInsertAdditionals["data"],
+  restaurant: iRestaurant["data"]
 ) {
   // await supabase.storage.from("teste").upload("teste_4", file)
+  if (!restaurant) {
+    return;
+  }
   const imageData = await supabase.storage
-    .from("teste")
+    .from(restaurant.slug!)
     .upload(state.productInformation.name, state.picture_file!);
-  const getImageData = supabase.storage
-    .from("teste")
+  const getImageData = await supabase.storage
+    .from(restaurant.slug!)
     .getPublicUrl(imageData.data?.path!);
   const data = await supabase
     .from("products")
@@ -300,8 +308,9 @@ export async function createProduct(
       category_id: state.category.id!,
       description: state.productInformation.description,
       name: state.productInformation.name,
-      picture_url: getImageData.data.publicUrl,
+      picture_url: getImageData.data.publicUrl!,
       price: Number(state.productInformation.price),
+      restaurant_id: restaurant.id,
     })
     .select("*");
 
@@ -309,7 +318,7 @@ export async function createProduct(
     return;
   }
   // let additionalsStatus
-  postAdditionalToSupabase(data.data[0].id, state, additionals);
+  postAdditionalToSupabase(data.data[0].id, state, additionals, restaurant);
 
   state.ingredients.forEach(async (ingredient) => {
     if (ingredient?.name === "") {
@@ -361,11 +370,12 @@ async function postOptionToSupabase(
 async function postAdditionalToSupabase(
   productId: number,
   state: IEditableProductReducerData,
-  additionals: iInsertAdditionals["data"]
+  additionals: iInsertAdditionals["data"],
+  restaurant: iRestaurant["data"]
 ) {
   let data: PostgrestResponse<any>;
   state.additionals.forEach(async (additional) => {
-    if (additional.name === "") {
+    if (additional.name! === "") {
       return;
     }
     if (
@@ -382,14 +392,18 @@ async function postAdditionalToSupabase(
         .select("*");
       data = productAdditionalDada;
     } else {
+      // const imageData = await supabase.storage.from(restaurant.slug!).upload(additional.name, state.additional_picture_file!, )
+      // const getImageData = await supabase.storage.from(restaurant.slug!).getPublicUrl(imageData.data?.path!)
       const additionalData = await supabase
         .from("additionals")
         .insert({
           name: additional.name,
           picture_url: additional.picture_url,
           price: additional.price,
+          restaurant_id: restaurant.id,
         })
         .select("*");
+
       if (additionalData.status === 400 || additionalData.data === null) {
         return;
       }

@@ -1,7 +1,7 @@
 import { BsArrowLeftCircle } from "react-icons/bs";
 import { MouseEvent, useEffect, useMemo, useState } from "react";
 import Image from "next/image";
-import { iCheckoutProduct, iProduct } from "../../../types/types";
+import { iProduct } from "../../../types/types";
 import Additionals from "./Additionals";
 import ProductOptions from "./ProductOptions";
 import SubmitButtons from "./SubmitButtons";
@@ -32,6 +32,7 @@ export default function ProductModal({
   const [selects, setSelects] = useState<iProductSelectsWithOptions[]>([]);
   const [selectedAdditionals, setSelectedAdditionals] = useState<any[]>([]);
   const [quantity, setQuantity] = useState<number>(1);
+  const [observation, setObservation] = useState<string | null>(null);
 
   useEffect(() => {
     setQuantity(1);
@@ -45,22 +46,10 @@ export default function ProductModal({
     getProductSelectWithOptions(productModal.id).then((response) => {
       setSelects(response as iProductSelectsWithOptions[]);
     });
-  }, [productModal]);
-
-  useMemo(() => {
-    if (!productModal) {
-      return;
-    }
 
     getProductAdditionals(productModal?.id).then((response) => {
       setAdditionals(response as iProductAdditional[]);
     });
-  }, [productModal]);
-
-  useMemo(() => {
-    if (!productModal) {
-      return;
-    }
 
     setPrice(productModal.price);
   }, [productModal]);
@@ -82,6 +71,7 @@ export default function ProductModal({
         picture_url: productModal?.picture_url,
         additionals: selectedAdditionals,
         options: selects,
+        observation,
       },
     });
 
@@ -137,6 +127,16 @@ export default function ProductModal({
               setSelectedAdditionals={setSelectedAdditionals}
             />
           )}
+
+          <form className="w-full h-24 mb-8">
+            <textarea
+              name=""
+              onBlur={(e) => setObservation(e.target.value)}
+              className=" scrollbar-custom w-full h-full resize-none rounded-sm bg-[#f6f6f6] shadow-sm text-base outline-none p-4"
+              placeholder="Observações"
+            ></textarea>
+          </form>
+
           <SubmitButtons
             productModal={productModal}
             price={price}

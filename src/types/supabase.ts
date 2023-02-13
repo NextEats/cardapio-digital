@@ -248,17 +248,17 @@ export interface Database {
         Row: {
           created_at: string | null
           id: number
-          status_name: string | null
+          status_name: string
         }
         Insert: {
           created_at?: string | null
           id?: number
-          status_name?: string | null
+          status_name: string
         }
         Update: {
           created_at?: string | null
           id?: number
-          status_name?: string | null
+          status_name?: string
         }
       }
       order_types: {
@@ -311,18 +311,21 @@ export interface Database {
         Row: {
           created_at: string | null
           id: number
+          observation: string | null
           order_id: number
           product_id: number
         }
         Insert: {
           created_at?: string | null
           id?: number
+          observation?: string | null
           order_id: number
           product_id: number
         }
         Update: {
           created_at?: string | null
           id?: number
+          observation?: string | null
           order_id?: number
           product_id?: number
         }
@@ -534,6 +537,49 @@ export interface Database {
           restaurant_id?: number | null
         }
       }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          full_name: string | null
+          id: string
+          updated_at: string | null
+          username: string | null
+          website: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          full_name?: string | null
+          id: string
+          updated_at?: string | null
+          username?: string | null
+          website?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          full_name?: string | null
+          id?: string
+          updated_at?: string | null
+          username?: string | null
+          website?: string | null
+        }
+      }
+      restaurant_actions: {
+        Row: {
+          created_at: string | null
+          id: number
+          name: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: number
+          name?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: number
+          name?: string | null
+        }
+      }
       restaurant_admin: {
         Row: {
           created_at: string | null
@@ -558,6 +604,29 @@ export interface Database {
           restaurant_id?: number | null
           role_id?: number | null
           whatsapp_number?: number | null
+        }
+      }
+      restaurant_logs: {
+        Row: {
+          created_at: string | null
+          id: number
+          restaurant_action_id: number | null
+          restaurant_admin_id: number | null
+          restaurant_id: number | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: number
+          restaurant_action_id?: number | null
+          restaurant_admin_id?: number | null
+          restaurant_id?: number | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: number
+          restaurant_action_id?: number | null
+          restaurant_admin_id?: number | null
+          restaurant_id?: number | null
         }
       }
       restaurant_role: {
@@ -594,6 +663,26 @@ export interface Database {
           name?: string
         }
       }
+      restaurant_whatsapp: {
+        Row: {
+          created_at: string | null
+          id: number
+          phone_number: string
+          qrcode: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: number
+          phone_number: string
+          qrcode?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: number
+          phone_number?: string
+          qrcode?: string | null
+        }
+      }
       restaurants: {
         Row: {
           address_id: number
@@ -603,7 +692,9 @@ export interface Database {
           name: string
           picture_url: string
           restaurant_type_id: number
-          slug: string | null
+          slug: string
+          whatsapp_number: string | null
+          whatsapp_qrcode: string | null
         }
         Insert: {
           address_id: number
@@ -613,7 +704,9 @@ export interface Database {
           name: string
           picture_url: string
           restaurant_type_id: number
-          slug?: string | null
+          slug: string
+          whatsapp_number?: string | null
+          whatsapp_qrcode?: string | null
         }
         Update: {
           address_id?: number
@@ -623,7 +716,9 @@ export interface Database {
           name?: string
           picture_url?: string
           restaurant_type_id?: number
-          slug?: string | null
+          slug?: string
+          whatsapp_number?: string | null
+          whatsapp_qrcode?: string | null
         }
       }
       selects: {
@@ -644,6 +739,26 @@ export interface Database {
           id?: number
           name?: string
           restaurant_id?: number | null
+        }
+      }
+      user_details: {
+        Row: {
+          created_at: string | null
+          id: number
+          restaurant_id: number
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: number
+          restaurant_id: number
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: number
+          restaurant_id?: number
+          user_id?: string
         }
       }
       weekday_operating_time: {
@@ -690,29 +805,6 @@ export interface Database {
           created_at?: string | null
           id?: number
           name?: string
-        }
-      }
-      whatsapp_code: {
-        Row: {
-          code: string
-          created_at: string | null
-          expiration_date: string
-          id: number
-          whatsapp_number: string
-        }
-        Insert: {
-          code: string
-          created_at?: string | null
-          expiration_date: string
-          id?: number
-          whatsapp_number: string
-        }
-        Update: {
-          code?: string
-          created_at?: string | null
-          expiration_date?: string
-          id?: number
-          whatsapp_number?: string
         }
       }
     }

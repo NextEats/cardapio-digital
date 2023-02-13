@@ -51,8 +51,8 @@ export function TypeCEP({
   };
 
   return (
-    <div className="mb-9">
-      <div className="text-gray-800 flex flex-col gap-y-2 min-h-[400px]">
+    <>
+      <div className="min-h-[400px] gap-y-2 flex flex-col">
         <div>
           <InputMask
             mask="99999-999"
@@ -81,6 +81,6 @@ export function TypeCEP({
       >
         CONTINUAR
       </button>
-    </div>
+    </>
   );
 }

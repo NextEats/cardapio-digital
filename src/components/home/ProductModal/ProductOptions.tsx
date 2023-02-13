@@ -50,7 +50,9 @@ export default function ProductOptions({
       {selects.map((select, index) => {
         return (
           <fieldset className="mb-10" key={index}>
-            <h2 className="mb-4 font-semibold text-sm">{select.name}</h2>
+            <h2 className="mb-4 font-bold  text-lg text-[#3a3a3a]">
+              {select.name}
+            </h2>
             <div className="flex flex-wrap gap-2">
               {select.options?.map((option) => {
                 return (

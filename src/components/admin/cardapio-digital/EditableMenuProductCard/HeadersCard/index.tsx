@@ -6,16 +6,17 @@ import * as zod from "zod";
 import { BiPencil } from "react-icons/bi";
 import { BsCheck2 } from "react-icons/bs";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { HiOutlineUpload } from "react-icons/hi";
+import { HiOutlineUpload, HiPlus } from "react-icons/hi";
 import {
   EditableProductActions,
   setProductPictureFileAction,
   setProductPictureUrlAction,
-} from "@/src/reducers/aditableProduct/actions";
+} from "../../../../../reducers/aditableProduct/actions";
 import {
   IEditableProductReducerData,
   iPayloadProduct,
-} from "@/src/reducers/aditableProduct/reducer";
+} from "../../../../../reducers/aditableProduct/reducer";
+import { supabase } from "../../../../../server/api";
 
 interface IHeadersCardProps {
   state: IEditableProductReducerData;
@@ -151,32 +152,13 @@ interface iProductImagePros {
   dispatch: Dispatch<any>;
 }
 
-// const newPictureUrlFormValidationSchema = zod.object({
-//     picture_url: zod.object({ name: zod.string() })
-// });
-
-// type NewPirtureUrlFormData = zod.infer<typeof newPictureUrlFormValidationSchema>;
-
 function ProductImage({ state, dispatch }: iProductImagePros) {
   const [productPictureIsEditing, setProductPictureIsEditing] = useState(true);
-  // const { register, handleSubmit, getValues, watch } = useForm<NewPirtureUrlFormData>({
-  //     resolver: zodResolver(newPictureUrlFormValidationSchema),
-  //     defaultValues: { picture_url: { name: '' } },
-  // });
 
   useEffect(() => {
     if (state.isViewingUpdatingOrAdding === "VIEWING")
       setProductPictureIsEditing(false);
   }, [state.isViewingUpdatingOrAdding]);
-
-  // function handleProductPicture_url(data: NewPirtureUrlFormData) {
-  //     if (!getValues("picture_url")) {
-  //         return
-  //     }
-  //     console.log(data.picture_url)
-
-  //     setProductPictureIsEditing(false)
-  // }
 
   const [file, setFile] = useState<File | undefined>();
 

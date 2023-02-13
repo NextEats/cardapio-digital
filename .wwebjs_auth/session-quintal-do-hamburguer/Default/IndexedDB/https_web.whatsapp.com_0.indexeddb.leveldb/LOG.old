@@ -1,3 +1,0 @@
-2023/02/10-15:55:03.651 ad8 Creating DB D:\Projetos\cardapio-digital\.wwebjs_auth\session-quintal-do-hamburguer\Default\IndexedDB\https_web.whatsapp.com_0.indexeddb.leveldb since it was missing.
-2023/02/10-15:55:03.705 ad8 Reusing MANIFEST D:\Projetos\cardapio-digital\.wwebjs_auth\session-quintal-do-hamburguer\Default\IndexedDB\https_web.whatsapp.com_0.indexeddb.leveldb/MANIFEST-000001
-2023/02/10-15:55:03.915 ad8 Manual compaction at level-0 from '\x00\x01\x00\x00\x00' @ 72057594037927935 : 1 .. '\x00\x02\x00\x00\x00' @ 0 : 0; will stop at (end)

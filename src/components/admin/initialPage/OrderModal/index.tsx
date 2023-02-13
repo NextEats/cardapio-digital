@@ -5,24 +5,32 @@ import { CardapioDigitalButton } from "../../cardapio-digital/CardapioDigitalBut
 import { Dispatch, useMemo, useState } from "react";
 import { showModalAction } from "../../../../reducers/statusReducer/action";
 import { api } from "../../../../server/api";
+import { DropdownMenuObservation } from "../DropDownMenuObservation";
+import { iInsertOrdersProducts, iInsertProducts, iRestaurantWithFKData } from "@/src/types/types";
+import { format } from "date-fns";
+import { ptBR } from 'date-fns/locale'
 
 interface iOrderModalProps {
-  state: iStatusReducer;
-  dispatch: Dispatch<any>;
+  ordersState: iStatusReducer;
+  ordersDispatch: Dispatch<any>;
+  restaurant: iRestaurantWithFKData;
+  ordersProducts: iInsertOrdersProducts["data"];
+  products: iInsertProducts["data"];
 }
 
-export function OrderModal({ state, dispatch }: iOrderModalProps) {
+export function OrderModal({ ordersDispatch, ordersProducts, ordersState, products, restaurant }: iOrderModalProps) {
   const [address, setAddress] = useState({ bairro: "", cep: "", complemento: "", ddd: "", gia: "", ibge: "", localidade: "", logradouro: "", siafi: "", uf: "", });
 
   // products
-  const orderProductFiltered = state.ordersProducts.filter(
-    (op) => op.order_id === state.orderId
+  const orderProductFiltered = ordersProducts.filter(
+    (op) => op.order_id === ordersState.orderId
   );
   const productsFiltered = orderProductFiltered.map((op) => {
-    return state.products.find((p) => {
+    return products.find((p) => {
       return p.id === op?.product_id;
     });
   });
+  const thereAnyObservation = orderProductFiltered.some(op => op.observation !== null)
 
   // data client
   const descriptionsStyles =
@@ -30,27 +38,17 @@ export function OrderModal({ state, dispatch }: iOrderModalProps) {
   const textStyles =
     "text-sm font-semibold text-gray-red-400 text-left leading-6";
 
-  const orderFound = state.orders.find((order) => order.id === state.orderId);
-  const clientFuound = state.clients.find(
-    (client) => client.id === orderFound?.client_id
-  );
-
-  const contact = state.contacts.find(
-    (contact) => contact.id === clientFuound?.contact_id
-  );
-  const addressFound = state.addresses?.find(
-    (address) => address.id === clientFuound?.address_id
-  );
+  const orderFound = ordersState.orders.find((order) => order.id === ordersState.orderId);
 
   useMemo(() => {
     const getAddress = async () => {
       const res = await api.get(
-        `https://viacep.com.br/ws/${addressFound?.cep}/json/`
+        `https://viacep.com.br/ws/${orderFound?.clients.addresses.cep}/json/`
       );
       setAddress(res.data);
     };
     getAddress();
-  }, [addressFound]);
+  }, [orderFound]);
 
   let countProducts: {
     [key: string]: {
@@ -92,16 +90,17 @@ export function OrderModal({ state, dispatch }: iOrderModalProps) {
   );
   const deliveryPrice = 10;
 
+  const orderDateFormated = format(new Date(`${orderFound?.created_at}`), "P", { locale: ptBR })
   return (
     <>
       <div>
-        <Dialog.Root open={state.isOpenOrderModal}>
+        <Dialog.Root open={ordersState.isOpenOrderModal}>
           <Dialog.Portal>
             <Dialog.Overlay
               className="bg-black opacity-40 fixed inset-0 transition-all ease-in-out duration-300"
-              onClick={() => dispatch(showModalAction())}
+              onClick={() => ordersDispatch(showModalAction())}
             />
-            <Dialog.Content className="bg-white shadow-bd w-[350px] fixed top-1/2 right-1/2 translate-x-1/2 -translate-y-1/2  rounded-md p-6">
+            <Dialog.Content className="bg-white shadow-bd w-[350px] md:w-[550px] fixed top-1/2 right-1/2 translate-x-1/2 -translate-y-1/2  rounded-md p-6">
               <Dialog.Title className="text-xl font-bold text-center">
                 Next Eats
               </Dialog.Title>
@@ -112,14 +111,17 @@ export function OrderModal({ state, dispatch }: iOrderModalProps) {
 
               <div>
                 <p className={`${textStyles} text`}>
-                  &nbsp; Restaurante: <strong>Quintal do Hambúrguer</strong>
+                  &nbsp; Restaurante: <strong>{restaurant!.name}</strong>
                   &nbsp;
                 </p>
                 <p className={`${textStyles}`}>
-                  &nbsp; Nº do pedido: <strong> 45452124 </strong>&nbsp;
+                  &nbsp; Nº do pedido: <strong> {orderFound?.id} </strong>&nbsp;
                 </p>
                 <p className={`${textStyles}`}>
-                  &nbsp; Data: <strong> 29/03/2023 </strong>&nbsp;
+                  Data:
+                  <strong>
+                    {orderDateFormated}
+                  </strong>
                 </p>
               </div>
 
@@ -129,19 +131,19 @@ export function OrderModal({ state, dispatch }: iOrderModalProps) {
 
               <div>
                 <p className={`${textStyles}`}>
-                  &nbsp; Nome: <strong> {clientFuound?.name} </strong>&nbsp;
+                  &nbsp; Nome: <strong> {orderFound?.clients?.name} </strong>&nbsp;
                 </p>
                 <p className={`${textStyles}`}>
-                  &nbsp; Telefone: <strong> {contact?.phone} </strong>&nbsp;
+                  &nbsp; Telefone: <strong> {orderFound?.clients.contacts?.phone} </strong>&nbsp;
                 </p>
                 <p className={`${textStyles}`}>
-                  &nbsp; Email: <strong> {contact?.email} </strong>&nbsp;
+                  &nbsp; Email: <strong> {orderFound?.clients.contacts?.email} </strong>&nbsp;
                 </p>
                 <p className={`${textStyles}`}>
                   &nbsp; Endereço:&nbsp;
                   <strong>
                     &nbsp;
-                    {address.logradouro}, {addressFound?.number}&nbsp;
+                    {address.logradouro}, {orderFound?.clients.addresses?.number}&nbsp;
                   </strong>
                   &nbsp;
                 </p>
@@ -168,27 +170,33 @@ export function OrderModal({ state, dispatch }: iOrderModalProps) {
                     <td className={`${textStyles}`}> Qnt </td>
                     <td className={`${textStyles}`}> Item </td>
                     <td className={`${textStyles} w-24`}> Preço </td>
+                    {thereAnyObservation ? <td className={`${textStyles} w-24`}> Obs. </td> : null}
                   </tr>
                 </thead>
                 <tbody>
                   {result.map((product) => {
+
+                    const orderProductByProductId = orderProductFiltered.find((op) => op.product_id === product.id)
+
                     if (product === undefined) {
                       return;
                     }
                     return (
                       <tr key={product.id}>
                         <td className={`${textStyles}`}>
-                          &nbsp;
-                          <strong> {product.count} </strong>&nbsp;
+                          <strong> {product.count} </strong>
                         </td>
                         <td className={`${textStyles}`}>
-                          &nbsp;
-                          <strong> {product.name} </strong>&nbsp;
+                          <strong> {product.name} </strong>
                         </td>
                         <td className={`${textStyles}`}>
-                          &nbsp;
-                          <strong> R$ {product.price} </strong>&nbsp;
+                          <strong> R$ {product.price} </strong>
                         </td>
+                        {orderProductByProductId?.observation ?
+                          <td className={`${textStyles}`}>
+                            <strong> <DropdownMenuObservation observation={orderProductByProductId.observation} />  </strong>&nbsp;
+                          </td> : null
+                        }
                       </tr>
                     );
                   })}
@@ -199,25 +207,19 @@ export function OrderModal({ state, dispatch }: iOrderModalProps) {
                 <p className="grid grid-cols-2 items-center gap-20">
                   <span className={`${textStyles}`}>sub-total:</span>
                   <span className={`${textStyles}`}>
-                    &nbsp;
-                    <strong> R$ {totalPriceOfProducts} </strong>&nbsp;
+                    <strong> R$ {totalPriceOfProducts} </strong>
                   </span>
                 </p>
                 <p className="grid grid-cols-2 items-center gap-20">
                   <span className={`${textStyles} `}>Taxa de entrega:</span>
                   <span className={`${textStyles}`}>
-                    &nbsp;
-                    <strong> R$ {deliveryPrice} </strong>&nbsp;
+                    <strong> R$ {deliveryPrice} </strong>
                   </span>
                 </p>
                 <p className="grid grid-cols-2 items-center gap-20">
                   <span className={`${textStyles}`}>Total a pagar: </span>
                   <span className={`${textStyles} w-`}>
-                    &nbsp;
-                    <strong>
-                      &nbsp; R$ {totalPriceOfProducts + deliveryPrice}&nbsp;
-                    </strong>
-                    &nbsp;
+                    <strong> R$ {totalPriceOfProducts + deliveryPrice} </strong>
                   </span>
                 </p>
               </div>
@@ -226,7 +228,7 @@ export function OrderModal({ state, dispatch }: iOrderModalProps) {
                 <CardapioDigitalButton name="Imprimir" w="w-28" h="h-8" />
               </div>
 
-              <Dialog.Close asChild onClick={() => dispatch(showModalAction())}>
+              <Dialog.Close asChild onClick={() => ordersDispatch(showModalAction())}>
                 <button className="absolute top-3 right-3" aria-label="Close">
                   <FiX className="w-6 h-6" />
                 </button>

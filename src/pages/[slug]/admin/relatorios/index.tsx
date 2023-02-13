@@ -7,6 +7,7 @@ import {
   iOrders,
   iOrdersProducts,
   iOrdersStatus,
+  iOrdersWithFKData,
   iProductCategories,
   iProducts,
 } from "../../../../types/types";
@@ -22,13 +23,15 @@ import { getOrderStatusFetch } from "src/fetch/orderStatus/getOrdersStatus";
 import { getProductsByRestaurantIdFetch } from "src/fetch/products/getProductsByRestaurantId";
 import { getRestaurantBySlugFetch } from "src/fetch/restaurant/getRestaurantBySlug";
 import { getProductsCategoriesByRestaurantIdFetch } from "src/fetch/productsCategories/getProductsCategoriesByRestaurantId";
+import { ptBR } from 'date-fns/locale';
+
 interface DailyRevenue {
   date: Date;
   revenue: number;
 }
 
 interface iReportsProps {
-  orders: iOrders["data"];
+  orders: iOrdersWithFKData[];
   products: iProducts["data"];
   productCategories: iProductCategories["data"];
   ordersProducts: iOrdersProducts["data"];
@@ -38,10 +41,10 @@ interface iReportsProps {
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const restaurant: any = await getRestaurantBySlugFetch(context.query.slug);
   const productCategories = await getProductsCategoriesByRestaurantIdFetch(
-    restaurant[0].id
+    restaurant.id
   );
-  const orders = await getOrdersByRestaurantIdFetch(restaurant[0].id);
-  const products = await getProductsByRestaurantIdFetch(restaurant[0].id);
+  const orders = await getOrdersByRestaurantIdFetch(restaurant.id);
+  const products = await getProductsByRestaurantIdFetch(restaurant.id);
   const ordersStatus = await getOrderStatusFetch();
   const ordersProducts = await getOrdersProductsFetch();
 
@@ -63,13 +66,24 @@ export default function Reports({
   ordersProducts,
   ordersStatus,
 }: iReportsProps) {
+
+
+  const ordersGroupedByOrderStatus = orders.reduce(
+    (acc: { [key: string]: iOrdersWithFKData[] }, obj) => {
+      const status_name = obj.order_status.status_name;
+      if (!acc[status_name]) {
+        acc[status_name] = [];
+      }
+      acc[status_name].push(obj);
+      return acc;
+    },
+    {}
+  );
+
   const [dailyRevenue, setDailyRevenue] = useState<DailyRevenue[]>([]);
 
-  const [ordersDate, setOrdersDate] = useState<iOrders["data"]>([]);
-  // const [statusDate, setStatusDate] = useState<iOrdersStatus["data"]>([]);
-  // // const [ordersProductsDate, setOrdersProductsDate] = useState<iOrdersProducts["data"]>([]);
-  // const [productsDate, setProductsDate] = useState<iProducts["data"]>([]);
-  // const [productCategoriesDate, setProductCategoriesDate] = useState<iProductCategories["data"]>([]);
+  const [ordersFilteredByDate, setOrdersFilteredByDate] = useState<iOrdersWithFKData[]>([]);
+
 
   const [startDate, setStartDate] = useState<Date | null>(
     new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
@@ -125,17 +139,12 @@ export default function Reports({
       return;
     }
 
-    setOrdersDate(
-      orders.filter(
-        (o) =>
-          new Date(o.created_at!) >= new Date(startDate) &&
-          new Date(o.created_at!) <= new Date(endDate!)
+    setOrdersFilteredByDate(
+      orders.filter((o) =>
+        new Date(o.created_at!) >= new Date(startDate) &&
+        new Date(o.created_at!) <= new Date(endDate!)
       )
     );
-    // setStatusDate(ordersStatus.filter(os => new Date(os.created_at!) >= new Date(startDate) && new Date(os.created_at!) <= new Date(endDate!)))
-    // setOrdersProductsDate(ordersProducts.filter(op => new Date(op.created_at!) >= new Date(startDate) && new Date(op.created_at!) <= new Date(endDate!)))
-    // setProductsDate(products.filter(p => new Date(p.created_at!) >= new Date(startDate) && new Date(p.created_at!) <= new Date(endDate!)))
-    // setProductCategoriesDate(productCategories.filter(pc => new Date(pc.created_at!) >= new Date(startDate) && new Date(pc.created_at!) <= new Date(endDate!)))
 
     setDailyRevenue(
       Object.entries(dailyRevenue).map(([date, revenue]) => ({
@@ -144,8 +153,7 @@ export default function Reports({
       }))
     );
   };
-  // }, [startDate, endDate, productCategories, products, ordersProducts, ordersStatus, orders]);
-  const moment = new Date();
+
 
   useMemo(() => {
     function filter() {
@@ -154,8 +162,11 @@ export default function Reports({
     filter();
   }, []);
 
+  const moment = new Date();
+
   const globalValuesData = {
-    orders: ordersDate,
+    ordersGroupedByOrderStatus,
+    orders: ordersFilteredByDate,
     productCategories: productCategories,
     products: products,
     ordersProducts: ordersProducts,
@@ -166,9 +177,8 @@ export default function Reports({
     <AdminWrapper>
       <div>
         <p className="text-base font-medium mb-4 text-right">
-          {" "}
           {format(moment, "HH")} {":"} {format(moment, "mm")} {"-"}{" "}
-          {format(moment, "P")}{" "}
+          {format(moment, "P", { locale: ptBR })}{" "}
         </p>
 
         <div className="flex items-center gap-3 mb-3">
@@ -195,10 +205,10 @@ export default function Reports({
         <GlobalValuesCard globalValuesData={globalValuesData} />
 
         <div className="xl:grid  xl:grid-cols-xlcharts xl:max-w-full gap-5 xl: mb-8">
-          <LineChart
+          {/* <LineChart
             globalValuesData={globalValuesData}
             dailyRevenue={dailyRevenue}
-          />
+          /> */}
           <DoughnutChart globalValuesData={globalValuesData} />
           <BarChart globalValuesData={globalValuesData} />
         </div>

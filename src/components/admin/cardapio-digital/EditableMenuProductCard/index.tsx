@@ -22,7 +22,9 @@ import {
   iInsertProductOptions,
   iInsertSelects,
   iProduct,
+  iRestaurant,
 } from "@/src/types/types";
+
 import { CardapioDigitalButton } from "../CardapioDigitalButton";
 import { Additional } from "./Additional";
 import HeadersCard from "./HeadersCard";
@@ -39,8 +41,8 @@ interface iEditableMenuProductCardProps {
     type: string;
     payload: iPayloadProduct;
   }>;
-  productId: number | null;
-  restaurantId: number;
+  productId: number | null,
+  restaurant: iRestaurant["data"],
   setProductModal: Dispatch<SetStateAction<boolean>>;
   productModal: boolean;
   selects: iInsertSelects["data"];
@@ -59,7 +61,7 @@ export default function EditableMenuProductCard({
   productCategories,
   productOptions,
   additionals,
-  restaurantId,
+  restaurant,
 }: iEditableMenuProductCardProps) {
   function setIngredientSelected(selectId: number) {
     const selectFinded = selects.find(
@@ -90,7 +92,7 @@ export default function EditableMenuProductCard({
   }
 
   async function handleCreateProduct() {
-    await createProduct(state, productOptions, additionals);
+    await createProduct(state, productOptions, additionals, restaurant)
   }
 
   function handleUpdateProduct() {
@@ -100,15 +102,13 @@ export default function EditableMenuProductCard({
   return (
     <>
       <div
-        className={`fixed inset-0 bg-black w-screen h-screen opacity-60 z-20 cursor-pointer ${
-          productModal ? "opacity-40" : "opacity-0 pointer-events-none"
-        }`}
+        className={`fixed inset-0 bg-black w-screen h-screen opacity-60 z-20 cursor-pointer ${productModal ? "opacity-40" : "opacity-0 pointer-events-none"
+          }`}
         onClick={() => setProductModal(false)}
       ></div>
       <div
-        className={`w-[360px] md:w-[420px] 2xl:w-[468px] fixed ${
-          productModal ? "right-0" : "right-[-700px]"
-        } transition-all ease-out z-30 top-16 bg-white shadow-md rounded-md h-[calc(100vh-64px)] overflow-auto p-4`}
+        className={`w-[360px] md:w-[420px] 2xl:w-[468px] fixed ${productModal ? "right-0" : "right-[-700px]"
+          } transition-all ease-out z-30 top-16 bg-white shadow-md rounded-md h-[calc(100vh-64px)] overflow-auto p-4`}
       >
         <div className="flex flex-1 items-center justify-between pb-6">
           <BsArrowLeftCircle
@@ -121,10 +121,7 @@ export default function EditableMenuProductCard({
                 name="Excluir"
                 h="h-8"
                 w="w-28"
-                onClick={() =>
-                  deleteProduct(productId!, state.productInformation.name)
-                }
-              />
+                onClick={() => deleteProduct(productId!, state.productInformation.name, restaurant.slug!)} />
               {/* <CardapioDigitalButton
                 name="Editar"
                 h="h-8"
@@ -246,12 +243,7 @@ export default function EditableMenuProductCard({
           productId={productId!}
         />
 
-        <Additional
-          state={state}
-          dispatch={dispatch}
-          productId={productId!}
-          restaurantId={restaurantId}
-        />
+        <Additional state={state} dispatch={dispatch} productId={productId!} restaurantData={restaurant} />
 
         {state.isViewingUpdatingOrAdding === "ADDING" && (
           <CardapioDigitalButton

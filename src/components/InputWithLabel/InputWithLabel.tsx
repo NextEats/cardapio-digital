@@ -3,8 +3,8 @@ import { SetStateAction } from "react";
 interface iInputWithLabel {
   label: string;
   placeholder?: string;
-  state: string;
-  setState: React.Dispatch<SetStateAction<string>>;
+  state: string | undefined;
+  setState?: React.Dispatch<SetStateAction<string>>;
 }
 
 export default function InputWithLabel({
@@ -20,7 +20,9 @@ export default function InputWithLabel({
         className="mt-2 w-full focus:outline-none border border-[#d1d1d1] rounded-sm py-2 pl-4"
         type="text"
         placeholder={placeholder}
-        onChange={(e) => setState(e.target.value)}
+        onChange={
+          setState ? (e) => setState(e.target.value) : (e) => e.preventDefault()
+        }
         value={state}
       />
     </label>

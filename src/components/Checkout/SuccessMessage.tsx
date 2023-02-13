@@ -1,9 +1,6 @@
 import { iRestaurant } from "../../types/types";
 
-interface iSuccessMessage {
-  restaurant: iRestaurant["data"];
-}
-export function SuccessMessage({ restaurant }: iSuccessMessage) {
+export function SuccessMessage() {
   return (
     <div className="mb-9">
       <div className="text-gray-800 flex flex-col gap-y-2 min-h-[400px] p-2">

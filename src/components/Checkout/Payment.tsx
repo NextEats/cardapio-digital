@@ -2,25 +2,24 @@ import { iCheckoutProduct, iRestaurant } from "../../types/types";
 import { SelectOrderType } from "./SelectOrderType";
 import InputMask from "react-input-mask";
 import { iOrderType } from "./index";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useContext } from "react";
 import { CEP } from "cep-promise";
 import { FaMotorcycle, FaShoppingBag } from "react-icons/fa";
 import { MdRestaurant } from "react-icons/md";
 import { GetServerSideProps } from "next";
 import { api } from "../../server/api";
 
+import { RestaurantContext } from "@/src/contexts/restaurantContext";
+
 interface iPayment {
   products: Array<iCheckoutProduct> | null | undefined;
   orderType: iOrderType;
-  restaurant: iRestaurant["data"];
   setOrderType: Function;
   nextStepIndex: Function;
   previousStepIndex: Function;
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  // FETCH DATA FROM DATABASE;
-
   // PASS DATA TO PAGE
   return {
     props: {
@@ -33,10 +32,9 @@ export function Payment({
   nextStepIndex,
   previousStepIndex,
   setOrderType,
-  orderType,
-  products,
-  restaurant,
 }: iPayment) {
+  const [restaurant, setRestaurant] = useContext(RestaurantContext).restaurant;
+
   const backStep = () => {
     previousStepIndex();
   };
@@ -57,19 +55,9 @@ export function Payment({
     }
   };
 
-  // let paymentMethod;
-  // useMemo(() => {
-  //   async function getPaymentMethod() {
-  //     const { data } = await api.get("api/payment_method")
-  //   }
-  //   async function getPaymentMethodRestaurant() {
-  //     const { data } = await api.get(`api/payment_method_restaurant/${restaurant.id}`)
-  //   }
-  // }, [restaurant]);
-
   return (
-    <div className="mb-9">
-      <div className="text-gray-800 flex flex-col gap-y-2 min-h-[400px]">
+    <>
+      <div className="min-h-[400px] gap-y-2 flex flex-col">
         <div className="text-gray-800 flex flex-col gap-y-2 min-h-[400px]">
           <div
             className={returnClassName("delivery")}
@@ -112,6 +100,6 @@ export function Payment({
       >
         CONTINUAR
       </button>
-    </div>
+    </>
   );
 }

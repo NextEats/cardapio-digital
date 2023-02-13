@@ -38,10 +38,10 @@ interface iReportsProps {
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const restaurant: any = await getRestaurantBySlugFetch(context.query.slug);
   const productCategories = await getProductsCategoriesByRestaurantIdFetch(
-    restaurant[0].id
+    restaurant.id
   );
-  const orders = await getOrdersByRestaurantIdFetch(restaurant[0].id);
-  const products = await getProductsByRestaurantIdFetch(restaurant[0].id);
+  const orders = await getOrdersByRestaurantIdFetch(restaurant.id);
+  const products = await getProductsByRestaurantIdFetch(restaurant.id);
   const ordersStatus = await getOrderStatusFetch();
   const ordersProducts = await getOrdersProductsFetch();
 

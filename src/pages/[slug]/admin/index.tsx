@@ -3,11 +3,24 @@ import NewRequests from "../../../components/admin/initialPage/NewRequests";
 import OrderStatusCard from "../../../components/admin/initialPage/OrderStatusCard";
 import AdminWrapper from "../../../components/admin/AdminWrapper";
 import { api, supabase } from "../../../server/api";
-import { iCashBoxes, iInsertAddresses, iInsertClients, iInsertContacts, iInsertOrder, iInsertOrders, iInsertOrdersProducts, iInsertOrderStatuss, iInsertProducts, iOrders, iRestaurants } from "../../../types/types";
+import {
+  iCashBoxes,
+  iInsertAddresses,
+  iInsertClients,
+  iInsertContacts,
+  iInsertOrder,
+  iInsertOrders,
+  iInsertOrdersProducts,
+  iInsertOrderStatuss,
+  iInsertProducts,
+  iRestaurants,
+} from "../../../types/types";
 import { GetServerSideProps } from "next";
 import { useState, useReducer, useEffect, useMemo } from "react";
-import { iStatusReducer, statusReducer } from "../../../reducers/statusReducer/reducer";
-
+import {
+  iStatusReducer,
+  statusReducer,
+} from "../../../reducers/statusReducer/reducer";
 import { OrderModal } from "../../../components/admin/initialPage/OrderModal";
 import { CardapioDigitalButton } from "../../../components/admin/cardapio-digital/CardapioDigitalButton";
 
@@ -37,15 +50,15 @@ interface iAdminHomePageProps {
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const restaurant: any = await getRestaurantBySlugFetch(context.query.slug);
-  const ordersData = await getOrdersByRestaurantIdFetch(restaurant[0].id);
-  const products = await getProductsByRestaurantIdFetch(restaurant[0].id);
+  const restaurant = await getRestaurantBySlugFetch(context.query.slug);
+  const ordersData = await getOrdersByRestaurantIdFetch(restaurant.id);
+  const products = await getProductsByRestaurantIdFetch(restaurant.id);
   const orderStatuss = await getOrderStatusFetch();
   const ordersProducts = await getOrdersProductsFetch();
   const clients = await getclientsFetch();
   const contacts = await getContactsFetch();
   const addresses = await getAddressesFetch();
-  const cashBoxes = await getCashBoxesByRestaurantIdFetch(restaurant![0].id);
+  const cashBoxes = await getCashBoxesByRestaurantIdFetch(restaurant.id);
 
   return {
     props: {
@@ -62,18 +75,30 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   };
 };
 
-  const [orders, setOrders] = useState<iInsertOrders["data"]>(ordersData)
+export default function AdminHomepage({
+  ordersData,
+  orderStatuss,
+  ordersProducts,
+  products,
+  contacts,
+  addresses,
+  clients,
+  restaurant,
+  cashBoxes,
+}: iAdminHomePageProps) {
+  const [orders, setOrders] = useState<iInsertOrders["data"]>(ordersData);
 
-  const cashBoxOpened = cashBoxes.find(cb => cb.is_open === true)
+  const cashBoxOpened = cashBoxes.find((cb) => cb.is_open === true);
   useEffect(() => {
     if (cashBoxOpened === undefined) {
-      setOrders([])
+      setOrders([]);
     } else {
-      const filterOrdersData = ordersData.filter(o => o.cash_box_id === cashBoxOpened!.id)
-      setOrders(filterOrdersData)
+      const filterOrdersData = ordersData.filter(
+        (o) => o.cash_box_id === cashBoxOpened!.id
+      );
+      setOrders(filterOrdersData);
     }
-  }, [ordersData, cashBoxOpened])
-
+  }, [ordersData, cashBoxOpened]);
 
   const statusEmAnalise = orderStatuss.find(
     (status) => status.status_name === "em análise"
@@ -141,12 +166,12 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     return selectedProduct.reduce((acc, product) => acc + product?.price!, 0);
   }
 
-  const [openCashBoxState, setOpenCashBoxState] = useState(false)
+  const [openCashBoxState, setOpenCashBoxState] = useState(false);
 
   async function handleOpenCashBox() {
-    const cashBox = await api.post("api/cash_boxes/open", {
-      restaurant_id: restaurant[0].id,
-    });
+    // const cashBox = await api.post("api/cash_boxes/open", {
+    //   restaurant_id: restaurant.id,
+    // });
     setOpenCashBoxState(true);
   }
 
@@ -161,28 +186,32 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       );
       return;
     }
-    const cashBox = await api.post("api/cash_boxes/close", {
-      restaurant_id: restaurant[0].id
-    })
-    setOpenCashBoxState(false)
-
+    // const cashBox = await api.post("api/cash_boxes/close", {
+    //   restaurant_id: restaurant.id,
+    // });
+    setOpenCashBoxState(false);
   }
 
   useMemo(() => {
     function newOrder(order: iInsertOrder["data"]) {
-      if (order.order_status_id === statusEmAnalise?.id) dispatch(addNewUnderReviewAtion(order))
+      if (order.order_status_id === statusEmAnalise?.id)
+        dispatch(addNewUnderReviewAtion(order));
     }
-    const channel = supabase.channel('db-changes').on('postgres_changes',
-      {
-        event: 'INSERT',
-        schema: 'public',
-        table: "orders"
-      },
-      (payload: any) => {
-        newOrder(payload.new)
-      })
-      .subscribe()
-  }, [statusEmAnalise])
+    const channel = supabase
+      .channel("db-changes")
+      .on(
+        "postgres_changes",
+        {
+          event: "INSERT",
+          schema: "public",
+          table: "orders",
+        },
+        (payload: any) => {
+          newOrder(payload.new);
+        }
+      )
+      .subscribe();
+  }, [statusEmAnalise]);
 
   return (
     <AdminWrapper>

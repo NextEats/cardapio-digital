@@ -537,6 +537,32 @@ export interface Database {
           restaurant_id?: number | null
         }
       }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          full_name: string | null
+          id: string
+          updated_at: string | null
+          username: string | null
+          website: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          full_name?: string | null
+          id: string
+          updated_at?: string | null
+          username?: string | null
+          website?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          full_name?: string | null
+          id?: string
+          updated_at?: string | null
+          username?: string | null
+          website?: string | null
+        }
+      }
       restaurant_actions: {
         Row: {
           created_at: string | null
@@ -637,6 +663,26 @@ export interface Database {
           name?: string
         }
       }
+      restaurant_whatsapp: {
+        Row: {
+          created_at: string | null
+          id: number
+          phone_number: string
+          qrcode: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: number
+          phone_number: string
+          qrcode?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: number
+          phone_number?: string
+          qrcode?: string | null
+        }
+      }
       restaurants: {
         Row: {
           address_id: number
@@ -646,7 +692,9 @@ export interface Database {
           name: string
           picture_url: string
           restaurant_type_id: number
-          slug: string | null
+          slug: string
+          whatsapp_number: string | null
+          whatsapp_qrcode: string | null
         }
         Insert: {
           address_id: number
@@ -656,7 +704,9 @@ export interface Database {
           name: string
           picture_url: string
           restaurant_type_id: number
-          slug?: string | null
+          slug: string
+          whatsapp_number?: string | null
+          whatsapp_qrcode?: string | null
         }
         Update: {
           address_id?: number
@@ -666,7 +716,9 @@ export interface Database {
           name?: string
           picture_url?: string
           restaurant_type_id?: number
-          slug?: string | null
+          slug?: string
+          whatsapp_number?: string | null
+          whatsapp_qrcode?: string | null
         }
       }
       selects: {
@@ -733,29 +785,6 @@ export interface Database {
           created_at?: string | null
           id?: number
           name?: string
-        }
-      }
-      whatsapp_code: {
-        Row: {
-          code: string
-          created_at: string | null
-          expiration_date: string
-          id: number
-          whatsapp_number: string
-        }
-        Insert: {
-          code: string
-          created_at?: string | null
-          expiration_date: string
-          id?: number
-          whatsapp_number: string
-        }
-        Update: {
-          code?: string
-          created_at?: string | null
-          expiration_date?: string
-          id?: number
-          whatsapp_number?: string
         }
       }
     }

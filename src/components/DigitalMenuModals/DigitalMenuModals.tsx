@@ -46,7 +46,6 @@ export default function DigitalMenuModals({
           onClose={() => setShowCheckoutModal(false)}
           products={products}
           productsDispatch={productsDispatch}
-          restaurant={restaurant}
         />
       )}
     </>

@@ -18,7 +18,7 @@ export default function Additionals({
   if (data) {
     return (
       <div className="mb-24">
-        <h2 className="mb-5 font-light text-xl text-gray-500">Adicionais</h2>
+        <h2 className="mb-5 font-bold  text-lg text-[#3a3a3a]">Adicionais</h2>
         {data.map(({ additionals }) => {
           return (
             <div key={additionals.id} className="flex flex-col mb-3">
@@ -31,7 +31,7 @@ export default function Additionals({
                     height={200}
                   />
                   <div className="">
-                    <p className="font-extrabold text-black text-sm ">
+                    <p className="font-semibold text-black text-sm ">
                       {additionals.name}
                     </p>
                     <p className="font-semibold text-xs text-black">

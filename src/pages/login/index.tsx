@@ -2,9 +2,10 @@ import React, { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 
-import Link from "next/link";
 import Image from "next/image";
 import NextEatsLogo from "@/src/assets/nexteats_logo_orange.png";
+import { supabase } from "@/src/server/api";
+import { useRouter } from "next/router";
 
 interface iFormData {
   login: string;
@@ -18,9 +19,24 @@ export default function LoginForm() {
     formState: { errors },
   } = useForm<iFormData>();
 
+  const router = useRouter();
+
   const [showPassword, setShowPassword] = useState(false);
 
-  const onSubmit: SubmitHandler<iFormData> = (data) => console.log(data);
+  const onSubmit: SubmitHandler<iFormData> = (data) => {
+    supabase.auth
+      .signInWithPassword({
+        email: data.login,
+        password: data.password,
+      })
+      .then((res) => {
+        if (res.data.user) {
+          router.reload();
+        } else {
+          return;
+        }
+      });
+  };
 
   const inputTextClasses =
     "text-md py-2 focus:outline-none border w-full pl-3 rounded-sm";
@@ -60,14 +76,12 @@ export default function LoginForm() {
             {showPassword ? <AiFillEyeInvisible /> : <AiFillEye />}
           </button>
         </div>
-        <Link href="/login/ok">
-          <button
-            className="mt-6 rounded-md w-full bg-[#FF6D00] py-2 text-md font-semibold text-[white] uppercase"
-            type="submit"
-          >
-            LOGIN
-          </button>
-        </Link>
+        <button
+          className="mt-6 rounded-md w-full bg-[#FF6D00] py-2 text-md font-semibold text-[white] uppercase"
+          type="submit"
+        >
+          LOGIN
+        </button>
       </form>
     </div>
   );

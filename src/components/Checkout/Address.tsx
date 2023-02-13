@@ -38,8 +38,8 @@ export function Address({
     "border-2 px-4 py-2 rounded-sm w-full mt-4 text-gray-500";
 
   return (
-    <div className="mb-9">
-      <div className="text-gray-800 flex flex-col gap-y-2 min-h-[400px]">
+    <>
+      <div className="min-h-[400px] gap-y-2 flex flex-col">
         <div className="flex flex-col">
           <div className="flex flex-row gap-x-3">
             <InputMask
@@ -101,6 +101,6 @@ export function Address({
       >
         CONTINUAR
       </button>
-    </div>
+    </>
   );
 }

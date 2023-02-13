@@ -27,8 +27,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
 export default function HomePage({ data }: { data: iDigitalMenuData }) {
   const { restaurant, groupedProducts } = data;
-
   const [restaurantContext, setRestaurantContext] = useState(restaurant);
+  
   const [showCheckoutModal, setShowCheckoutModal] = useState<boolean>(true);
   const [productModal, setProductModal] = useState<iProduct["data"]>();
   const [showWeekdayOperatingTimeModal, setShowWeekdayOperatingTimeModal] =

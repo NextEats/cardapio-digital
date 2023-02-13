@@ -1,24 +1,23 @@
 import InputMask from "react-input-mask";
-import { useState } from "react";
-import { iRestaurant } from "../../types/types";
-import { createNewWhatsAppCode } from "../../server/api";
+import { useContext, useState } from "react";
 import { returnTreatedNumber } from "../../helpers/returnTreatedNumber";
+
+import { RestaurantContext } from "@/src/contexts/restaurantContext";
 
 interface iWhatsappNumberInput {
   whatsappNumber: number | undefined;
   setWhatsappNumber: Function;
   nextStepIndex: Function;
   previousStepIndex: Function;
-  restaurant: iRestaurant["data"];
 }
 export function WhatsappNumberInput({
   whatsappNumber,
   setWhatsappNumber,
   nextStepIndex,
   previousStepIndex,
-  restaurant,
 }: iWhatsappNumberInput) {
   const [hasError, setHasError] = useState<boolean>(false);
+  const [restaurant, setRestaurant] = useContext(RestaurantContext).restaurant;
 
   const backStep = () => {
     previousStepIndex();
@@ -32,7 +31,7 @@ export function WhatsappNumberInput({
 
     let treatedNumber = returnTreatedNumber("55" + whatsappNumber.toString());
 
-    await createNewWhatsAppCode(treatedNumber, restaurant.name);
+    // await createNewWhatsAppCode(treatedNumber, restaurant.name);
 
     nextStepIndex();
   };

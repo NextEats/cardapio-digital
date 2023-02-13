@@ -46,22 +46,10 @@ export default function ProductModal({
     getProductSelectWithOptions(productModal.id).then((response) => {
       setSelects(response as iProductSelectsWithOptions[]);
     });
-  }, [productModal]);
-
-  useMemo(() => {
-    if (!productModal) {
-      return;
-    }
 
     getProductAdditionals(productModal?.id).then((response) => {
       setAdditionals(response as iProductAdditional[]);
     });
-  }, [productModal]);
-
-  useMemo(() => {
-    if (!productModal) {
-      return;
-    }
 
     setPrice(productModal.price);
   }, [productModal]);
@@ -132,11 +120,21 @@ export default function ProductModal({
           )}
 
           {additionals?.length != 0 && additionals && (
-            <Additionals data={additionals} setPrice={setPrice} selectedAdditionals={selectedAdditionals} setSelectedAdditionals={setSelectedAdditionals} />
+            <Additionals
+              data={additionals}
+              setPrice={setPrice}
+              selectedAdditionals={selectedAdditionals}
+              setSelectedAdditionals={setSelectedAdditionals}
+            />
           )}
 
           <form className="w-full h-24 mb-8">
-            <textarea name="" onBlur={(e) => setObservation(e.target.value)} className=" scrollbar-custom w-full h-full resize-none rounded-md bg-slate-300 text-base outline-none p-2" placeholder="Observação"></textarea>
+            <textarea
+              name=""
+              onBlur={(e) => setObservation(e.target.value)}
+              className=" scrollbar-custom w-full h-full resize-none rounded-md bg-slate-300 text-base outline-none p-2"
+              placeholder="Observação"
+            ></textarea>
           </form>
 
           <SubmitButtons

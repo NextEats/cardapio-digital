@@ -5,13 +5,9 @@ import Link from "next/link";
 import { FaClock, FaStar, FaStarHalf } from "react-icons/fa";
 import { MdExpandMore, MdLocationOn } from "react-icons/md";
 
-import {
-  iRestaurant,
-  iRestaurantType,
-  iRestaurantWithFKData,
-} from "./../../../types/types";
+import { iRestaurantType } from "./../../../types/types";
 
-import { RestaurantContext } from "./../../../contexts/restaurantContext";
+import { RestaurantContext } from "@/src/contexts/restaurantContext";
 
 import cep from "cep-promise";
 interface iRestaurantHeader {
@@ -58,7 +54,7 @@ export default function RestaurantHeader({
           height={130}
           className="rounded-md"
         />
-        <div className="ml-5 h-100 flex items-center">
+        <div className="ml-5 h-100 flex mt-7 flex-col">
           <h1 className="text-2xl font-semibold text-[#3e3e3e]">
             {restaurant.name}
           </h1>

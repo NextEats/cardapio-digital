@@ -7,24 +7,31 @@ import * as zod from "zod";
 import { BiPencil } from "react-icons/bi";
 import { FiTrash2 } from "react-icons/fi";
 import { EditableProductActions } from "../../../../../reducers/aditableProduct/actions";
-import { IEditableProductReducerData, iPayloadProduct } from "../../../../../reducers/aditableProduct/reducer";
-import { iInsertAdditional, iRestaurant, iRestaurants } from "../../../../../types/types";
+import {
+  IEditableProductReducerData,
+  iPayloadProduct,
+} from "../../../../../reducers/aditableProduct/reducer";
+import {
+  iInsertAdditional,
+  iRestaurant,
+  iRestaurants,
+} from "../../../../../types/types";
 import { CardapioDigitalButton } from "../../CardapioDigitalButton";
 import {
   api,
   createAdditionalsAndIsertIntoProductAdditionalsIfIsUpdatingProduct,
   deleteProductAdditionalsIfIsUpdatingProduct,
   updateAdditional,
-} from "@/src/server/api";
+} from "../../../../../server/api";
 
 interface IAdditionalProps {
-    state: IEditableProductReducerData,
-    dispatch: Dispatch<{
-        type: string,
-        payload: iPayloadProduct
-    }>,
-    productId: number,
-    restaurantData: iRestaurant["data"],
+  state: IEditableProductReducerData;
+  dispatch: Dispatch<{
+    type: string;
+    payload: iPayloadProduct;
+  }>;
+  productId: number;
+  restaurantData: iRestaurant["data"];
 }
 
 const newAdditionalFormValidationSchema = zod.object({
@@ -36,8 +43,13 @@ const newAdditionalFormValidationSchema = zod.object({
 
 type NewAdditionlFormData = zod.infer<typeof newAdditionalFormValidationSchema>;
 
-export function Additional({ state, dispatch, productId, restaurantData }: IAdditionalProps) {
-    const [restaurant, setRestaurantId] = useState<iRestaurants["data"]>([])
+export function Additional({
+  state,
+  dispatch,
+  productId,
+  restaurantData,
+}: IAdditionalProps) {
+  const [restaurant, setRestaurantId] = useState<iRestaurants["data"]>([]);
 
   const [showAdditionalModal, setShowAdditionalModal] = useState<
     "UPDATE" | "ADD" | ""
@@ -56,39 +68,16 @@ export function Additional({ state, dispatch, productId, restaurantData }: IAddi
       },
     });
 
-    // function hadleModalToUpdateNewAdditional(closeModal: "UPDATE" | "ADD" | "" ) {
-    //     reset()
-    //     setShowAdditionalModal(closeModal)
-    //     dispatch({
-    //         type: EditableProductActions.SHOW_MODAL_TO_UPDADE_THE_ADDITIONAL,
-    //         payload: {
-    //             showModalToUpdadeAdditional: false
-    //         }
-    //     })
-    // }
-
-    function handleNewAdditionl() {
-        const additionalName = getValues("additionalName")
-        const additionalPrice = Number(getValues("additionalPrice"))
-        const additionalPicture_url = getValues("additionalPicture_url")
-
-        if (state.isViewingUpdatingOrAdding === "UPDATING") {
-            createAdditionalsAndIsertIntoProductAdditionalsIfIsUpdatingProduct(additionalName, additionalPrice, productId!, restaurantData)
-        }
-
-        dispatch({
-            type: EditableProductActions.ADD_NEW_ADDITIONAL,
-            payload: {
-                additional: {
-                    name: additionalName,
-                    price: Number(additionalPrice),
-                    picture_url: additionalPicture_url,
-                }
-            }
-        })
-        reset()
-        setShowAdditionalModal('')
-    }
+  // function hadleModalToUpdateNewAdditional(closeModal: "UPDATE" | "ADD" | "" ) {
+  //     reset()
+  //     setShowAdditionalModal(closeModal)
+  //     dispatch({
+  //         type: EditableProductActions.SHOW_MODAL_TO_UPDADE_THE_ADDITIONAL,
+  //         payload: {
+  //             showModalToUpdadeAdditional: false
+  //         }
+  //     })
+  // }
 
   function handleNewAdditionl() {
     const additionalName = getValues("additionalName");
@@ -99,8 +88,8 @@ export function Additional({ state, dispatch, productId, restaurantData }: IAddi
       createAdditionalsAndIsertIntoProductAdditionalsIfIsUpdatingProduct(
         additionalName,
         additionalPrice,
-        additionalPicture_url,
-        productId!
+        productId!,
+        restaurantData
       );
     }
 
@@ -130,30 +119,23 @@ export function Additional({ state, dispatch, productId, restaurantData }: IAddi
     });
   }
 
+  function showModalToUpdateAdditional(additional: iInsertAdditional["data"]) {
+    setValue("additionalName", additional.name);
+    setValue("additionalPrice", additional.price.toString());
+    setValue("additionalPicture_url", additional.picture_url);
+    setOldAdditionalId(additional.id);
+    setShowAdditionalModal("UPDATE");
+  }
 
-    async function setUpdateAdditional() {
-        const additionalName = getValues("additionalName")
-        const additionalPrice = Number(getValues("additionalPrice"))
-        const additionalPicture_url = getValues("additionalPicture_url")
+  async function setUpdateAdditional() {
+    const additionalName = getValues("additionalName");
+    const additionalPrice = Number(getValues("additionalPrice"));
+    const additionalPicture_url = getValues("additionalPicture_url");
 
-        if (state.additionals.some(additional => additional.name === additionalName)) {
-            return
-        }
-
-        dispatch({
-            type: EditableProductActions.UPDATE_ADDITIONAL,
-            payload: { additionalName, additionalPrice, additionalPicture_url, oldAdditionalId }
-        })
-        // const additionalUpdated = await api.put(`api/additionals/${restaurantData.id}`, {
-        //     name: additionalName,
-        //     price: additionalPrice,
-        //     picture_url: additionalPicture_url,
-        //     id: oldAdditionalId
-        // })
-        updateAdditional(oldAdditionalId!, additionalPicture_url, additionalPrice, additionalName)
-        setShowAdditionalModal('')
-        reset()
-
+    if (
+      state.additionals.some((additional) => additional.name === additionalName)
+    ) {
+      return;
     }
 
     dispatch({
@@ -165,7 +147,7 @@ export function Additional({ state, dispatch, productId, restaurantData }: IAddi
         oldAdditionalId,
       },
     });
-    // const additionalUpdated = await api.put(`api/additionals/${restaurantId}`, {
+    // const additionalUpdated = await api.put(`api/additionals/${restaurantData.id}`, {
     //     name: additionalName,
     //     price: additionalPrice,
     //     picture_url: additionalPicture_url,

@@ -1,5 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { Sender } from "@/src/fetch/whatsapp/Sender";
+
+const client = require("./clients");
 
 export default async function handler(
   req: NextApiRequest,
@@ -7,9 +8,7 @@ export default async function handler(
 ) {
   const { restaurant_slug } = req.query;
 
-  if (typeof restaurant_slug === "string") {
-    const sender = new Sender(restaurant_slug);
+  client.addClient("test");
 
-    res.send({ sender });
-  }
+  res.send(client);
 }

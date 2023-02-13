@@ -1,8 +1,8 @@
-import { iCheckoutProduct, iRestaurant } from "../../types/types";
+import { iCheckoutProduct, iPaymentMethod, iPaymentMethods, iRestaurant } from "../../types/types";
 import { SelectOrderType } from "./SelectOrderType";
 import InputMask from "react-input-mask";
 import { iOrderType } from "./index";
-import { useState, useMemo, useContext } from "react";
+import { useState, useMemo, useContext, useEffect } from "react";
 import { CEP } from "cep-promise";
 import { FaMotorcycle, FaShoppingBag } from "react-icons/fa";
 import { MdRestaurant } from "react-icons/md";
@@ -33,7 +33,19 @@ export function Payment({
   previousStepIndex,
   setOrderType,
 }: iPayment) {
-  const [restaurant, setRestaurant] = useContext(RestaurantContext).restaurant;
+  const restaurant: any = useContext(RestaurantContext).restaurant;
+  const [paymentMethods, setPaymentMethods] = useState<iPaymentMethods["data"]>([]);
+
+  useEffect(() => {
+
+    const getPaymentMethods = async () => {
+      const pay = await api.get("api/payment_methods_restaurants/" + restaurant.id)
+      const paysM = await api.get("api/payment_method")
+      console.log(pay, paysM)
+      // setPaymentMethod()
+    }
+    getPaymentMethods()
+  }, [restaurant])
 
   const backStep = () => {
     previousStepIndex();

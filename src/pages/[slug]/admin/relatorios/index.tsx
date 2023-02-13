@@ -7,6 +7,7 @@ import {
   iOrders,
   iOrdersProducts,
   iOrdersStatus,
+  iOrdersWithFKData,
   iProductCategories,
   iProducts,
 } from "../../../../types/types";
@@ -30,7 +31,7 @@ interface DailyRevenue {
 }
 
 interface iReportsProps {
-  orders: iOrders["data"];
+  orders: iOrdersWithFKData[];
   products: iProducts["data"];
   productCategories: iProductCategories["data"];
   ordersProducts: iOrdersProducts["data"];
@@ -65,13 +66,24 @@ export default function Reports({
   ordersProducts,
   ordersStatus,
 }: iReportsProps) {
+
+
+  const ordersGroupedByOrderStatus = orders.reduce(
+    (acc: { [key: string]: iOrdersWithFKData[] }, obj) => {
+      const status_name = obj.order_status.status_name;
+      if (!acc[status_name]) {
+        acc[status_name] = [];
+      }
+      acc[status_name].push(obj);
+      return acc;
+    },
+    {}
+  );
+
   const [dailyRevenue, setDailyRevenue] = useState<DailyRevenue[]>([]);
 
-  const [ordersDate, setOrdersDate] = useState<iOrders["data"]>([]);
-  // const [statusDate, setStatusDate] = useState<iOrdersStatus["data"]>([]);
-  // // const [ordersProductsDate, setOrdersProductsDate] = useState<iOrdersProducts["data"]>([]);
-  // const [productsDate, setProductsDate] = useState<iProducts["data"]>([]);
-  // const [productCategoriesDate, setProductCategoriesDate] = useState<iProductCategories["data"]>([]);
+  const [ordersFilteredByDate, setOrdersFilteredByDate] = useState<iOrdersWithFKData[]>([]);
+
 
   const [startDate, setStartDate] = useState<Date | null>(
     new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
@@ -127,17 +139,12 @@ export default function Reports({
       return;
     }
 
-    setOrdersDate(
-      orders.filter(
-        (o) =>
-          new Date(o.created_at!) >= new Date(startDate) &&
-          new Date(o.created_at!) <= new Date(endDate!)
+    setOrdersFilteredByDate(
+      orders.filter((o) =>
+        new Date(o.created_at!) >= new Date(startDate) &&
+        new Date(o.created_at!) <= new Date(endDate!)
       )
     );
-    // setStatusDate(ordersStatus.filter(os => new Date(os.created_at!) >= new Date(startDate) && new Date(os.created_at!) <= new Date(endDate!)))
-    // setOrdersProductsDate(ordersProducts.filter(op => new Date(op.created_at!) >= new Date(startDate) && new Date(op.created_at!) <= new Date(endDate!)))
-    // setProductsDate(products.filter(p => new Date(p.created_at!) >= new Date(startDate) && new Date(p.created_at!) <= new Date(endDate!)))
-    // setProductCategoriesDate(productCategories.filter(pc => new Date(pc.created_at!) >= new Date(startDate) && new Date(pc.created_at!) <= new Date(endDate!)))
 
     setDailyRevenue(
       Object.entries(dailyRevenue).map(([date, revenue]) => ({
@@ -146,8 +153,7 @@ export default function Reports({
       }))
     );
   };
-  // }, [startDate, endDate, productCategories, products, ordersProducts, ordersStatus, orders]);
-  const moment = new Date();
+
 
   useMemo(() => {
     function filter() {
@@ -156,8 +162,11 @@ export default function Reports({
     filter();
   }, []);
 
+  const moment = new Date();
+
   const globalValuesData = {
-    orders: ordersDate,
+    ordersGroupedByOrderStatus,
+    orders: ordersFilteredByDate,
     productCategories: productCategories,
     products: products,
     ordersProducts: ordersProducts,
@@ -168,7 +177,6 @@ export default function Reports({
     <AdminWrapper>
       <div>
         <p className="text-base font-medium mb-4 text-right">
-          {" "}
           {format(moment, "HH")} {":"} {format(moment, "mm")} {"-"}{" "}
           {format(moment, "P", { locale: ptBR })}{" "}
         </p>
@@ -197,10 +205,10 @@ export default function Reports({
         <GlobalValuesCard globalValuesData={globalValuesData} />
 
         <div className="xl:grid  xl:grid-cols-xlcharts xl:max-w-full gap-5 xl: mb-8">
-          <LineChart
+          {/* <LineChart
             globalValuesData={globalValuesData}
             dailyRevenue={dailyRevenue}
-          />
+          /> */}
           <DoughnutChart globalValuesData={globalValuesData} />
           <BarChart globalValuesData={globalValuesData} />
         </div>

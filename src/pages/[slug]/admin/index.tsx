@@ -126,10 +126,10 @@ export default function AdminHomepage({
     }
   }
 
+  console.log(ordersGroupedByOrderStatus)
   useMemo(() => {
     async function newOrder() {
       const getNewOrder = await api.get("/api/orders/" + restaurant.id)
-      console.log("entrou")
       console.log(getNewOrder.data)
       setOrders(getNewOrder.data)
       // if (order.order_status_id === ordersGroupedByOrderStatus['em análise'][0]?.id)
@@ -145,33 +145,36 @@ export default function AdminHomepage({
           table: "orders",
         },
         (payload: any) => {
+          console.log("entrou")
           newOrder();
         }
       )
       .subscribe();
   }, [restaurant]);
-  useMemo(() => {
-    const channel = supabase
-      .channel("db-changes")
-      .on(
-        "postgres_changes",
-        {
-          event: "*",
-          schema: "public",
-          table: "cash_boxes",
-        },
-        (payload: any) => {
-          if (payload.eventType === "UPDATE") {
-            setOrders([])
-            setCashBoxState(undefined)
-          }
-          if (payload.eventType === "INSERT") {
-            setCashBoxState(payload.new)
-          }
+  // useMemo(() => {
+  const channel = supabase
+    .channel("db-cash")
+    .on(
+      "postgres_changes",
+      {
+        event: "*",
+        schema: "public",
+        table: "cash_boxes",
+      },
+      (payload: any) => {
+        if (payload.eventType === "UPDATE") {
+          setOrders([])
+          setCashBoxState(undefined)
+          alert("Caixa fechado!")
         }
-      )
-      .subscribe();
-  }, []);
+        if (payload.eventType === "INSERT") {
+          setCashBoxState(payload.new)
+          alert("Caixa aberto!")
+        }
+      }
+    )
+    .subscribe();
+  // }, []);
 
   return (
     <AdminWrapper>

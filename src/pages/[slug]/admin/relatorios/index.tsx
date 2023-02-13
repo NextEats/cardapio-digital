@@ -22,6 +22,8 @@ import { getOrderStatusFetch } from "src/fetch/orderStatus/getOrdersStatus";
 import { getProductsByRestaurantIdFetch } from "src/fetch/products/getProductsByRestaurantId";
 import { getRestaurantBySlugFetch } from "src/fetch/restaurant/getRestaurantBySlug";
 import { getProductsCategoriesByRestaurantIdFetch } from "src/fetch/productsCategories/getProductsCategoriesByRestaurantId";
+import { ptBR } from 'date-fns/locale';
+
 interface DailyRevenue {
   date: Date;
   revenue: number;
@@ -168,7 +170,7 @@ export default function Reports({
         <p className="text-base font-medium mb-4 text-right">
           {" "}
           {format(moment, "HH")} {":"} {format(moment, "mm")} {"-"}{" "}
-          {format(moment, "P")}{" "}
+          {format(moment, "P", { locale: ptBR })}{" "}
         </p>
 
         <div className="flex items-center gap-3 mb-3">

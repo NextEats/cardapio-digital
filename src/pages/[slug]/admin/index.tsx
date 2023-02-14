@@ -187,7 +187,7 @@ export default function AdminHomepage({
 
         <NewRequests
           dispatch={ordersDispatch}
-          state={ordersState}
+          ordersState={ordersState}
           ordersGroupedByOrderStatus={ordersGroupedByOrderStatus}
           ordersProducts={ordersProducts}
           products={products}
@@ -197,7 +197,7 @@ export default function AdminHomepage({
           <OrderStatusCard
             statusName="Em produção"
             dispatch={ordersDispatch}
-            state={ordersState}
+            ordersState={ordersState}
             ordersGroupedByOrderStatus={ordersGroupedByOrderStatus}
             ordersProducts={ordersProducts}
             products={products}
@@ -205,7 +205,7 @@ export default function AdminHomepage({
           <OrderStatusCard
             statusName="A caminho"
             dispatch={ordersDispatch}
-            state={ordersState}
+            ordersState={ordersState}
             ordersGroupedByOrderStatus={ordersGroupedByOrderStatus}
             ordersProducts={ordersProducts}
             products={products}
@@ -213,7 +213,7 @@ export default function AdminHomepage({
           <OrderStatusCard
             statusName="Entregue"
             dispatch={ordersDispatch}
-            state={ordersState}
+            ordersState={ordersState}
             ordersGroupedByOrderStatus={ordersGroupedByOrderStatus}
             ordersProducts={ordersProducts}
             products={products}

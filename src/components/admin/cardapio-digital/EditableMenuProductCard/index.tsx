@@ -22,6 +22,7 @@ import {
   iInsertProductOptions,
   iInsertSelects,
   iProduct,
+  iRestaurant,
 } from "@/src/types/types";
 
 import { CardapioDigitalButton } from "../CardapioDigitalButton";
@@ -40,8 +41,8 @@ interface iEditableMenuProductCardProps {
     type: string;
     payload: iPayloadProduct;
   }>;
-  productId: number | null,
-  restaurant: iRestaurant["data"],
+  productId: number | null;
+  restaurant: iRestaurant["data"];
   setProductModal: Dispatch<SetStateAction<boolean>>;
   productModal: boolean;
   selects: iInsertSelects["data"];
@@ -91,7 +92,7 @@ export default function EditableMenuProductCard({
   }
 
   async function handleCreateProduct() {
-    await createProduct(state, productOptions, additionals, restaurant)
+    await createProduct(state, productOptions, additionals, restaurant);
   }
 
   function handleUpdateProduct() {
@@ -122,7 +123,14 @@ export default function EditableMenuProductCard({
                 name="Excluir"
                 h="h-8"
                 w="w-28"
-                onClick={() => deleteProduct(productId!, state.productInformation.name, restaurant.slug!)} />
+                onClick={() =>
+                  deleteProduct(
+                    productId!,
+                    state.productInformation.name,
+                    restaurant.slug!
+                  )
+                }
+              />
               {/* <CardapioDigitalButton
                 name="Editar"
                 h="h-8"
@@ -244,7 +252,12 @@ export default function EditableMenuProductCard({
           productId={productId!}
         />
 
-        <Additional state={state} dispatch={dispatch} productId={productId!} restaurantData={restaurant} />
+        <Additional
+          state={state}
+          dispatch={dispatch}
+          productId={productId!}
+          restaurantData={restaurant}
+        />
 
         {state.isViewingUpdatingOrAdding === "ADDING" && (
           <CardapioDigitalButton

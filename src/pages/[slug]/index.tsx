@@ -29,10 +29,9 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   };
 };
 
-
 export default function HomePage({ data }: { data: iDigitalMenuData }) {
-  const { restaurant, groupedProducts, } = data;
- 
+  const { restaurant, groupedProducts } = data;
+
   const [restaurantContext, setRestaurantContext] = useState(restaurant);
 
   const [showCheckoutModal, setShowCheckoutModal] = useState<boolean>(true);
@@ -45,8 +44,6 @@ export default function HomePage({ data }: { data: iDigitalMenuData }) {
   if (!restaurant) {
     return <></>;
   }
-
-
 
   return (
     <RestaurantContext.Provider

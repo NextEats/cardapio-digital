@@ -11,9 +11,10 @@ import {
   iRestaurant,
   ProductWithCategory,
 } from "../types/types";
-
+const dev = process.env.NODE_ENV !== 'production';
+export const serverURL = dev ? "http://localhost:3000" : "https://www.nexteats.com.br/"
 export const api = axios.create({
-  baseURL: "http://localhost:3000",
+  baseURL: serverURL
 });
 
 export const supabase = createClient<Database>(

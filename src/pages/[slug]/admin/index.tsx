@@ -129,7 +129,7 @@ export default function AdminHomepage({
   console.log(ordersGroupedByOrderStatus)
   useMemo(() => {
     async function newOrder() {
-      const getNewOrder = await api.get("/api/orders/" + restaurant.id)
+      const getNewOrder = await api.get(`/api/orders/${restaurant.id}`)
       console.log(getNewOrder.data)
       setOrders(getNewOrder.data)
       // if (order.order_status_id === ordersGroupedByOrderStatus['em análise'][0]?.id)

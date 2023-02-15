@@ -78,7 +78,7 @@ export default function Checkout({
     const clientData: iClients = await api.post("api/clients", {
       address_id: addressData.data[0]!.id,
       name: 'José',
-      contact_id: 1,
+      contact_id: 2,
     })
 
     if (!clientData) {
@@ -86,11 +86,10 @@ export default function Checkout({
       return
     }
 
-
     const orderData: iOrders = await api.post("api/orders/" + restaurant!.id, {
       order_type_id: 1,
       cash_box_id: cashBoxOpened.id,
-      client_id: clientData.data[0].id,
+      client_id: clientData.data[0]!.id,
       order_status_id: 2,
       payment_method_id: paymentMethodSelected!.id,
     })
@@ -98,7 +97,7 @@ export default function Checkout({
       products!.forEach(async p => {
         const orderProductData = await api.post("api/orders_products/", {
           product_id: p.id,
-          order_id: orderData.data[0].id,
+          order_id: orderData.data[0]!.id,
           observation: p.observation,
         })
       });

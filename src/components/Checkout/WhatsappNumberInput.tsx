@@ -24,15 +24,6 @@ export function WhatsappNumberInput({
   };
 
   const nextStep = async () => {
-    if (!whatsappNumber) {
-      setHasError(true);
-      return;
-    }
-
-    let treatedNumber = returnTreatedNumber("55" + whatsappNumber.toString());
-
-    // await createNewWhatsAppCode(treatedNumber, restaurant.name);
-
     nextStepIndex();
   };
 

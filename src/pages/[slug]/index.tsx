@@ -1,4 +1,5 @@
-import { useState, useReducer } from "react";
+/* eslint-disable react-hooks/rules-of-hooks */
+import { useState, useReducer, useEffect } from "react";
 import { GetServerSideProps } from "next";
 
 import Head from "next/head";
@@ -10,7 +11,9 @@ import { getRestaurantBySlugFetch } from "@/src/fetch/restaurant/getRestaurantBy
 import { productsReducer } from "@/src/reducers/productsReducer";
 import DigitalMenuContent from "@/src/components/DigitalMenuContent/";
 import DigitalMenuModals from "@/src/components/DigitalMenuModals";
-
+import Push from "push.js";
+import Logo from "@/src/assets/nexteats_logo_orange.png";
+import { supabase } from "@/src/server/api";
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const restaurant = await getRestaurantBySlugFetch(context.query.slug);
 
@@ -28,6 +31,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
 export default function HomePage({ data }: { data: iDigitalMenuData }) {
   const { restaurant, groupedProducts } = data;
+
   const [restaurantContext, setRestaurantContext] = useState(restaurant);
 
   const [showCheckoutModal, setShowCheckoutModal] = useState<boolean>(true);
@@ -45,6 +49,7 @@ export default function HomePage({ data }: { data: iDigitalMenuData }) {
     <RestaurantContext.Provider
       value={{ restaurant: [restaurantContext, setRestaurantContext] }}
     >
+      {/* <h1 onClick={usePush}>TESTE</h1> */}
       <Head>
         <title>{restaurant.name}</title>
         <link href={restaurant.picture_url} rel="icon" sizes="any" />

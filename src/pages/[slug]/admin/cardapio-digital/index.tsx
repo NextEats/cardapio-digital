@@ -49,7 +49,7 @@ interface iCardapioDigitalProps {
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const restaurant: any = await getRestaurantBySlugFetch(context.query.slug);
+  const restaurant = await getRestaurantBySlugFetch(context.query.slug);
   const productCategories = await getProductsCategoriesByRestaurantIdFetch(
     restaurant.id
   );
@@ -305,7 +305,7 @@ export default function CardapioDigital({
           <EditableMenuProductCard
             state={state}
             dispatch={dispatch}
-            restaurant={restaurant}
+            restaurant={restaurant[0]}
             productModal={productModal}
             productId={productId}
             productOptions={productOptions}

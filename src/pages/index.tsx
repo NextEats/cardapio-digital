@@ -43,7 +43,7 @@ export default function LoginForm({ data }: any) {
 
   const onSubmit: SubmitHandler<iFormData> = (data) => {
     supabase.auth
-      .signInWithPassword({
+      .signUp({
         email: data.login,
         password: data.password,
       })

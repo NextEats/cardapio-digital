@@ -1,1 +1,0 @@
-export const erroBuild = "Fiz isso pra resulver o error de build"

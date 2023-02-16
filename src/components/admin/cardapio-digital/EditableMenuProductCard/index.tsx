@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useRef, useState } from "react";
+import { Dispatch, SetStateAction, } from "react";
 import {
   setAddAdditionalAction,
   setAddIngredientAction,
@@ -21,8 +21,9 @@ import {
   iInsertProductCategories,
   iInsertProductOptions,
   iInsertSelects,
-  iProduct,
+  iProducts,
   iRestaurant,
+  iRestaurantWithFKData,
 } from "@/src/types/types";
 
 import { CardapioDigitalButton } from "../CardapioDigitalButton";
@@ -42,13 +43,14 @@ interface iEditableMenuProductCardProps {
     payload: iPayloadProduct;
   }>;
   productId: number | null;
-  restaurant: iRestaurant["data"];
+  restaurant: iRestaurantWithFKData;
   setProductModal: Dispatch<SetStateAction<boolean>>;
   productModal: boolean;
   selects: iInsertSelects["data"];
   productOptions: iInsertProductOptions["data"];
   additionals: iInsertAdditionals["data"];
   productCategories: iInsertProductCategories["data"];
+  products: iProducts["data"]
 }
 
 export default function EditableMenuProductCard({
@@ -62,6 +64,7 @@ export default function EditableMenuProductCard({
   productOptions,
   additionals,
   restaurant,
+  products,
 }: iEditableMenuProductCardProps) {
   function setIngredientSelected(selectId: number) {
     const selectFinded = selects.find(
@@ -92,6 +95,10 @@ export default function EditableMenuProductCard({
   }
 
   async function handleCreateProduct() {
+    if (products.some(p => p.name === state.productInformation.name)) {
+      alert("Já existe um propduto com esse nome")
+      return
+    }
     await createProduct(state, productOptions, additionals, restaurant);
   }
 

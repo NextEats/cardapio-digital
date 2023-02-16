@@ -17,7 +17,7 @@ import {
   iRestaurantWithFKData,
 } from "../../../types/types";
 import { GetServerSideProps } from "next";
-import { useEffect, useMemo, useReducer, useState } from "react";
+import { useEffect, useMemo, useReducer, useRef, useState } from "react";
 import {
   iStatusReducer,
   statusReducer,
@@ -175,7 +175,7 @@ export default function AdminHomepage({
     )
     .subscribe();
   // }, []);
-
+  const printComponent = useRef<HTMLDivElement>(null)
   return (
     <AdminWrapper>
       <div className="flex flex-col gap-8">
@@ -206,6 +206,7 @@ export default function AdminHomepage({
           ordersGroupedByOrderStatus={ordersGroupedByOrderStatus}
           ordersProducts={ordersProducts}
           products={products}
+          printComponent={printComponent}
         />
 
         <div className=" md:columns-3 gap-4">
@@ -236,7 +237,9 @@ export default function AdminHomepage({
         </div>
 
         {ordersState.isOpenOrderModal ? (
-          <OrderModal ordersState={ordersState}
+          <OrderModal
+            printComponent={printComponent}
+            ordersState={ordersState}
             restaurant={restaurant}
             ordersProducts={ordersProducts}
             products={products}

@@ -1,6 +1,7 @@
 import Image from "next/image";
-import { Dispatch, useEffect, useState } from "react";
+import { Dispatch, RefObject, useEffect, useState } from "react";
 import { AiFillEye, AiOutlineCheck } from "react-icons/ai";
+import ReactToPrint from "react-to-print";
 import {
   getModalDataAction,
   showModalAction,
@@ -31,9 +32,10 @@ interface iNewRequestProps {
   ordersGroupedByOrderStatus: { [key: string]: iOrdersWithFKData[] };
   ordersProducts: iInsertOrdersProducts["data"];
   products: iInsertProducts["data"];
+  printComponent: RefObject<HTMLDivElement>
 }
 
-export default function NewRequests({ dispatch, ordersGroupedByOrderStatus, ordersProducts, products }: iNewRequestProps) {
+export default function NewRequests({ dispatch, ordersGroupedByOrderStatus, ordersProducts, products, printComponent }: iNewRequestProps) {
   const tdStyle =
     "border-collapse border-l-2 px-2 border-gray-300 text-sm font-medium";
 

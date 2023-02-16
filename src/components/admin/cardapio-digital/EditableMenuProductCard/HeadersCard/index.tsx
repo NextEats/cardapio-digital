@@ -84,7 +84,7 @@ export default function HeadersCard({ state, dispatch }: IHeadersCardProps) {
             </h1>
             <input
               type="text"
-              placeholder="Pesquisar"
+              placeholder="Nome do produto"
               hidden={!state.isEditingInfo}
               {...register("name", { required: true })}
               className="h-7 bg-red-50 pb-1 felx flex-1 px-2 text-gray-600 text-sm font-semibold
@@ -201,9 +201,8 @@ function ProductImage({ state, dispatch }: iProductImagePros) {
           {state.isViewingUpdatingOrAdding !== "VIEWING" && (
             <label htmlFor="product_picture" className={``}>
               <BiPencil
-                className={`text-2xl text-blue-500 cursor-pointer hover:scale-125 hover:transition-all ease-in-out absolute top-3 right-3 z-10 ${
-                  productPictureIsEditing ? "hidden" : ""
-                }`}
+                className={`text-2xl text-blue-500 cursor-pointer hover:scale-125 hover:transition-all ease-in-out absolute top-3 right-3 z-10 ${productPictureIsEditing ? "hidden" : ""
+                  }`}
               />
             </label>
           )}

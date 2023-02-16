@@ -36,3 +36,10 @@
   @apply: bg-green-400;
   background-color: #68d391;
 }
+
+@media print {
+
+.hideButtonToPrint {
+  display: none;
+}
+ }

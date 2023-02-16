@@ -19,6 +19,7 @@ import {
   iInsertSelects,
   iInsertProductSelects,
   iRestaurants,
+  iRestaurantWithFKData,
 } from "@/src/types/types";
 import { CategoryModal } from "@/src/components/admin/cardapio-digital/CategoryModal";
 import EditableMenuProductCard from "@/src/components/admin/cardapio-digital/EditableMenuProductCard";
@@ -45,11 +46,11 @@ interface iCardapioDigitalProps {
   productOptions: iInsertProductOptions["data"];
   productAdditionals: iInsertProductAdditionals["data"];
   additionals: iInsertAdditionals["data"];
-  restaurant: iRestaurants["data"];
+  restaurant: iRestaurantWithFKData;
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const restaurant: any = await getRestaurantBySlugFetch(context.query.slug);
+  const restaurant: iRestaurantWithFKData = await getRestaurantBySlugFetch(context.query.slug);
   const productCategories = await getProductsCategoriesByRestaurantIdFetch(
     restaurant.id
   );
@@ -59,7 +60,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const productSelects = await getProductSelectsFetch();
   const productOptions = await getProductOptionsFetch();
   const productAdditionals = await getProductAdditionalsFetch();
-
   return {
     props: {
       products,
@@ -238,6 +238,7 @@ export default function CardapioDigital({
               editCategory={editCategory}
               setEditCategory={setEditCategory}
               setModalIsOpen={setModalIsOpen}
+              restaurant={restaurant}
             />
             <Categories
               productCategories={productCategories}
@@ -305,7 +306,7 @@ export default function CardapioDigital({
           <EditableMenuProductCard
             state={state}
             dispatch={dispatch}
-            restaurant={restaurant[0]}
+            restaurant={restaurant}
             productModal={productModal}
             productId={productId}
             productOptions={productOptions}
@@ -313,6 +314,7 @@ export default function CardapioDigital({
             setProductModal={setProductModal}
             additionals={additionals}
             productCategories={productCategories}
+            products={products}
           />
         </div>
       </>

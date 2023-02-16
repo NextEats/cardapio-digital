@@ -12,6 +12,7 @@ export function productsReducer(state: any, action: any) {
             picture_url: action.payload.picture_url,
             additionals: action.payload.additionals,
             options: action.payload.options,
+            observation: action.payload.observation,
           },
         ];
       } else {
@@ -24,6 +25,7 @@ export function productsReducer(state: any, action: any) {
             picture_url: action.payload.picture_url,
             additionals: action.payload.additionals,
             options: action.payload.options,
+            observation: action.payload.observation,
           },
         ];
       }

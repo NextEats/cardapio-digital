@@ -147,19 +147,16 @@ export function Additional({
         oldAdditionalId,
       },
     });
-    // const additionalUpdated = await api.put(`api/additionals/${restaurantData.id}`, {
-    //     name: additionalName,
-    //     price: additionalPrice,
-    //     picture_url: additionalPicture_url,
-    //     id: oldAdditionalId
-    // })
+
     updateAdditional(
       oldAdditionalId!,
       additionalPicture_url,
       additionalPrice,
       additionalName
     );
+
     setShowAdditionalModal("");
+
     reset();
   }
 

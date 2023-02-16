@@ -2,7 +2,7 @@ import { iStatusReducer } from "../../../../reducers/statusReducer/reducer";
 import * as Dialog from "@radix-ui/react-dialog";
 import { FiX } from "react-icons/fi";
 import { CardapioDigitalButton } from "../../cardapio-digital/CardapioDigitalButton";
-import { Dispatch, useMemo, useState } from "react";
+import { Dispatch, RefObject, useMemo, useState } from "react";
 import { showModalAction } from "../../../../reducers/statusReducer/action";
 import { api } from "../../../../server/api";
 import { DropdownMenuObservation } from "../DropDownMenuObservation";
@@ -10,15 +10,18 @@ import { iInsertOrdersProducts, iInsertProducts, iRestaurantWithFKData } from "@
 import { format } from "date-fns";
 import { ptBR } from 'date-fns/locale'
 
+import ReactToPrint from 'react-to-print';
+
 interface iOrderModalProps {
   ordersState: iStatusReducer;
   ordersDispatch: Dispatch<any>;
   restaurant: iRestaurantWithFKData;
   ordersProducts: iInsertOrdersProducts["data"];
   products: iInsertProducts["data"];
+  printComponent: RefObject<HTMLDivElement>
 }
 
-export function OrderModal({ ordersDispatch, ordersProducts, ordersState, products, restaurant }: iOrderModalProps) {
+export function OrderModal({ ordersDispatch, ordersProducts, ordersState, products, restaurant, printComponent }: iOrderModalProps) {
   const [address, setAddress] = useState({ bairro: "", cep: "", complemento: "", ddd: "", gia: "", ibge: "", localidade: "", logradouro: "", siafi: "", uf: "", });
 
   // products
@@ -50,14 +53,7 @@ export function OrderModal({ ordersDispatch, ordersProducts, ordersState, produc
     getAddress();
   }, [orderFound]);
 
-  let countProducts: {
-    [key: string]: {
-      id: number | undefined;
-      count: number;
-      name: string;
-      price: number;
-    };
-  } = {};
+  let countProducts: { [key: string]: { id: number | undefined; count: number; name: string; price: number; }; } = {};
   for (let i = 0; i < productsFiltered.length; i++) {
     if (productsFiltered[i] === undefined) {
       return <></>;
@@ -76,31 +72,22 @@ export function OrderModal({ ordersDispatch, ordersProducts, ordersState, produc
       productsFiltered[i]!.price;
   }
 
-  const result = Object.entries(countProducts).map(
-    ([name, { id, count, price }]) => ({
-      id,
-      name,
-      count,
-      price,
-    })
-  );
-  const totalPriceOfProducts = result.reduce(
-    (acc, product) => acc + product.price,
-    0
-  );
+  const result = Object.entries(countProducts).map(([name, { id, count, price }]) => ({ id, name, count, price, }));
+  const totalPriceOfProducts = result.reduce((acc, product) => acc + product.price, 0);
   const deliveryPrice = 10;
 
   const orderDateFormated = format(new Date(`${orderFound?.created_at}`), "P", { locale: ptBR })
+
   return (
     <>
       <div>
-        <Dialog.Root open={ordersState.isOpenOrderModal}>
+        <Dialog.Root open={ordersState.isOpenOrderModal} >
           <Dialog.Portal>
             <Dialog.Overlay
               className="bg-black opacity-40 fixed inset-0 transition-all ease-in-out duration-300"
               onClick={() => ordersDispatch(showModalAction())}
             />
-            <Dialog.Content className="bg-white shadow-bd w-[350px] md:w-[550px] fixed top-1/2 right-1/2 translate-x-1/2 -translate-y-1/2  rounded-md p-6">
+            <Dialog.Content ref={printComponent} className="bg-white shadow-bd w-[350px] md:w-[550px] fixed top-1/2 right-1/2 translate-x-1/2 -translate-y-1/2  rounded-md p-6">
               <Dialog.Title className="text-xl font-bold text-center">
                 Next Eats
               </Dialog.Title>
@@ -170,7 +157,7 @@ export function OrderModal({ ordersDispatch, ordersProducts, ordersState, produc
                     <td className={`${textStyles}`}> Qnt </td>
                     <td className={`${textStyles}`}> Item </td>
                     <td className={`${textStyles} w-24`}> Preço </td>
-                    {thereAnyObservation ? <td className={`${textStyles} w-24`}> Obs. </td> : null}
+                    {thereAnyObservation ? <td className={`${textStyles} w-24 hideButtonToPrint`}> Obs. </td> : null}
                   </tr>
                 </thead>
                 <tbody>
@@ -193,7 +180,7 @@ export function OrderModal({ ordersDispatch, ordersProducts, ordersState, produc
                           <strong> R$ {product.price} </strong>
                         </td>
                         {orderProductByProductId?.observation ?
-                          <td className={`${textStyles}`}>
+                          <td className={`${textStyles} hideButtonToPrint`}>
                             <strong> <DropdownMenuObservation observation={orderProductByProductId.observation} />  </strong>&nbsp;
                           </td> : null
                         }
@@ -224,12 +211,18 @@ export function OrderModal({ ordersDispatch, ordersProducts, ordersState, produc
                 </p>
               </div>
 
-              <div className="flex flex-1 items-center justify-end mt-5">
-                <CardapioDigitalButton name="Imprimir" w="w-28" h="h-8" />
+              <div className="flex flex-1 items-center justify-end mt-5 hideButtonToPrint">
+                <ReactToPrint
+                  copyStyles={true}
+                  content={() => printComponent.current}
+                  trigger={() => {
+                    return <CardapioDigitalButton name="Imprimir" w="w-28" h="h-8" />
+                  }}
+                />
               </div>
 
               <Dialog.Close asChild onClick={() => ordersDispatch(showModalAction())}>
-                <button className="absolute top-3 right-3" aria-label="Close">
+                <button className={`absolute top-3 right-3 hideButtonToPrint`} aria-label="Close">
                   <FiX className="w-6 h-6" />
                 </button>
               </Dialog.Close>

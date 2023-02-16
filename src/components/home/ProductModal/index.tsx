@@ -20,28 +20,10 @@ export default function ProductModal({
   productModal,
   setProductModal,
   productsDispatch,
-  // setObservation,
-  // setQuantity,
-  // quantity,
-  // setPrice,
-  // setSelectedAdditionals,
-  // setSelects,
-  // selects,
-  // price,
-  // selectedAdditionals,
 }: {
   productModal: iProduct["data"] | undefined | null;
   setProductModal: Function;
   productsDispatch: Function;
-  // setSelects: Dispatch<SetStateAction<iProductSelectsWithOptions[]>>;
-  // setPrice: Dispatch<SetStateAction<number>>;
-  // setSelectedAdditionals: Dispatch<SetStateAction<any[]>>
-  // selects: iProductSelectsWithOptions[];
-  // quantity: number;
-  // price: number;
-  // setObservation: Dispatch<SetStateAction<string | null>>;
-  // setQuantity: Dispatch<SetStateAction<number>>
-  // selectedAdditionals: any[]
 }) {
   // Preencher primeiras informações sobre o produto no objeto checkout
 

@@ -103,8 +103,8 @@ export default function Checkout({
       });
     }
     await createOrdersProdducts()
-    // const orderProductData =
   }
+
 
   const steps = [
     {

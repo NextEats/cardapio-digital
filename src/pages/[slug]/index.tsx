@@ -11,9 +11,6 @@ import { getRestaurantBySlugFetch } from "@/src/fetch/restaurant/getRestaurantBy
 import { productsReducer } from "@/src/reducers/productsReducer";
 import DigitalMenuContent from "@/src/components/DigitalMenuContent/";
 import DigitalMenuModals from "@/src/components/DigitalMenuModals";
-import Push from "push.js";
-import Logo from "@/src/assets/nexteats_logo_orange.png";
-import { supabase } from "@/src/server/api";
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const restaurant = await getRestaurantBySlugFetch(context.query.slug);
 

@@ -4,8 +4,8 @@ import { getPaymentMethodsRestaurantsByRestaurantIdFetch } from "src/fetch/payme
 
 export default async function paymentMethodsRestaurants(req: NextApiRequest, res: NextApiResponse) {
     const { method, query } = req
-    const restaurant_id = Number(query.restaurant_id)
-
+    const restaurant_id = Number(query.restuarant_id)
+    console.log("id",)
     switch (method) {
         case 'GET':
             try {

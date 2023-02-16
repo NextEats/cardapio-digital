@@ -246,6 +246,7 @@ export interface iProductOptions {
 export interface iCheckoutProduct {
   category_id: number;
   description: string;
+  observation: string;
   id: number;
   name: string;
   picture_url: string;

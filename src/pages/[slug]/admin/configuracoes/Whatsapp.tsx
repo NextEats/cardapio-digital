@@ -3,7 +3,7 @@ import { AdminContext } from "@/src/contexts/adminContext";
 
 import io from "socket.io-client";
 import QRCode from "react-qr-code";
-import { supabase } from "@/src/server/api";
+import { serverURL, supabase } from "@/src/server/api";
 
 export default function Whatsapp() {
   const [successMessage, setSuccessMessage] = useState("");
@@ -17,7 +17,7 @@ export default function Whatsapp() {
     }
 
     async function fetchSocketIo() {
-      await fetch(`/api/whatsapp/${restaurant?.slug}/socket-qrcode`);
+      await fetch(`${serverURL}/api/whatsapp/${restaurant?.slug}/socket-qrcode`);
 
       var socket = io({ transports: ["websocket"], forceNew: true });
 

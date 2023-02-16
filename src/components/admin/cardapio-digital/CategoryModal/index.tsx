@@ -12,7 +12,7 @@ import { useForm } from "react-hook-form";
 import { FiX } from "react-icons/fi";
 import * as zod from "zod";
 import { supabase } from "@/src/server/api";
-import { iInsertProductCategory, iProducts } from "@/src/types/types";
+import { iInsertProductCategory, iProducts, iRestaurantWithFKData } from "@/src/types/types";
 
 const newCategoryFormValidationSchema = zod.object({
   productCategory: zod.string(),
@@ -46,6 +46,7 @@ interface iCategoryModalProps {
       categoryName: string;
     }>
   >;
+  restaurant: iRestaurantWithFKData
 }
 
 export function CategoryModal({
@@ -56,6 +57,7 @@ export function CategoryModal({
   products,
   viewCategory,
   setViewCategory,
+  restaurant,
 }: iCategoryModalProps) {
   const { register, reset, getValues, setValue } = useForm<NewCategoryFormData>(
     {
@@ -70,7 +72,7 @@ export function CategoryModal({
     const productCategory = getValues("productCategory");
     await supabase.from("product_categories").insert({
       name: productCategory,
-      restaurant_id: 3,
+      restaurant_id: restaurant.id,
     });
     reset();
     setModalIsOpen(false);
@@ -82,7 +84,7 @@ export function CategoryModal({
       .from("product_categories")
       .update({
         name: productCategory,
-        restaurant_id: 3,
+        restaurant_id: restaurant.id,
       })
       .eq("id", editCategory.categoryData.id);
     reset();
@@ -114,20 +116,18 @@ export function CategoryModal({
         <>
           <div
             className={`w-screen h-screen flex items-center justify-center bg-black fixed inset-0 z-10
-                    ${
-                      modalIsOpen || editCategory.isEditing
-                        ? "opacity-40 transition-all duration-300 ease-in-out"
-                        : " opacity-0 pointer-events-none duration-[0s]"
-                    }
+                    ${modalIsOpen || editCategory.isEditing
+                ? "opacity-40 transition-all duration-300 ease-in-out"
+                : " opacity-0 pointer-events-none duration-[0s]"
+              }
                     `}
           ></div>
           <div
             className={`fixed top-1/3 right-1/2 z-20 translate-x-1/2 rounded-lg w-[350px] sm:w-[500px] h-[] bg-white shadow-md p-6
-                    ${
-                      modalIsOpen || editCategory.isEditing
-                        ? "opacity-100 transition-all duration-300 ease-in-out"
-                        : " opacity-0 pointer-events-none duration-[0s]"
-                    }
+                    ${modalIsOpen || editCategory.isEditing
+                ? "opacity-100 transition-all duration-300 ease-in-out"
+                : " opacity-0 pointer-events-none duration-[0s]"
+              }
                     `}
           >
             <form className="w-full">
@@ -157,11 +157,10 @@ export function CategoryModal({
                   }
                   className={`h-9 flex flex-1 items-center justify-center
                             text-white font-semibold cursor-pointer duration-300 rounded transition-all ease-in-out
-                            ${
-                              editCategory.isEditing
-                                ? "hover:bg-blue-700 bg-blue-500"
-                                : " hover:bg-green-600 bg-green-300"
-                            }
+                            ${editCategory.isEditing
+                      ? "hover:bg-blue-700 bg-blue-500"
+                      : " hover:bg-green-600 bg-green-300"
+                    }
                             `}
                 >
                   {editCategory.isEditing
@@ -217,21 +216,19 @@ function CategoryView({
           setViewCategory({ isViewing: false, categoryId: 0, categoryName: "" })
         }
         className={`w-screen h-screen flex items-center justify-center bg-black fixed inset-0 z-10
-                ${
-                  viewCategory.isViewing
-                    ? "opacity-40 transition-all duration-300 ease-in-out"
-                    : " opacity-0 pointer-events-none duration-[0s]"
-                }
+                ${viewCategory.isViewing
+            ? "opacity-40 transition-all duration-300 ease-in-out"
+            : " opacity-0 pointer-events-none duration-[0s]"
+          }
                 `}
       ></div>
       <div
         className={`fixed top-1/5 right-1/2 z-20 translate-x-1/2 rounded-lg w-[350px] 2xs:w-[400px] sm:w-[600px] lg:w-[900px] max-h-[500px] 
             overflow-auto bg-white shadow-md p-3 2xs:p-6
-                ${
-                  viewCategory.isViewing
-                    ? "opacity-100 transition-all duration-00 ease-in-out"
-                    : " opacity-0 pointer-events-none duration-[0s]"
-                }
+                ${viewCategory.isViewing
+            ? "opacity-100 transition-all duration-00 ease-in-out"
+            : " opacity-0 pointer-events-none duration-[0s]"
+          }
                 `}
       >
         <div className="w-full flex items-center justify-between mb-4">

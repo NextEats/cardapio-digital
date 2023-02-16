@@ -4,10 +4,9 @@ import { AiFillEye, AiOutlineCheck } from "react-icons/ai";
 import {
   getModalDataAction,
   showModalAction,
-  switchToProductioAction,
 } from "../../../../reducers/statusReducer/action";
 import { iStatusReducer } from "../../../../reducers/statusReducer/reducer";
-import { api, supabase } from "../../../../server/api";
+import { supabase } from "../../../../server/api";
 import {
   iOrdersWithFKData,
   iInsertOrdersProducts,
@@ -34,25 +33,12 @@ interface iNewRequestProps {
   products: iInsertProducts["data"];
 }
 
-export default function NewRequests({
-  ordersState,
-  dispatch,
-  ordersGroupedByOrderStatus,
-  ordersProducts,
-  products,
-}: iNewRequestProps) {
+export default function NewRequests({ dispatch, ordersGroupedByOrderStatus, ordersProducts, products }: iNewRequestProps) {
   const tdStyle =
     "border-collapse border-l-2 px-2 border-gray-300 text-sm font-medium";
 
   async function moveToEmProduçãoCard(orderId: number) {
-    // const emProduçãoStatus = state.orderStatuss?.find(status => status.status_name === "em produção")
-    // const ordersProductData = await supabase
-    //   .from("orders")
-    //   .update({ order_status_id: emProduçãoStatus?.id })
-    //   .eq("id", orderId)
-    //   .select("*");
-
-    dispatch(switchToProductioAction(orderId));
+    await supabase.from("orders").update({ order_status_id: 3 }).eq("id", orderId)
   }
 
   function showModal(orderId: number) {
@@ -95,7 +81,6 @@ export default function NewRequests({
                 (acc, p) => acc + p.price,
                 0
               );
-              console.log(order.clients.addresses);
               // const client = state.clients.find(
               //   (cl) => cl.id === order.client_id
               // );
@@ -113,7 +98,7 @@ export default function NewRequests({
               //     `https://viacep.com.br/ws/${order.clients.addresses?.cep}/json/`
               //   );
               //   address = res.data;
-              //   console.log(address);
+
               //   return res.data;
               // };
               // // ;

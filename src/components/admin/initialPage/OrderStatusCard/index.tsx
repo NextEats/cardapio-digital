@@ -1,15 +1,8 @@
 import Image from "next/image";
-import { Dispatch, useState } from "react";
+import { Dispatch } from "react";
 import { AiFillEye } from "react-icons/ai";
 import { BiArrowFromLeft } from "react-icons/bi";
-import {
-  getModalDataAction,
-  showModalAction,
-  switchToDeliveredAction,
-  switchToTheWayAction,
-} from "../../../../reducers/statusReducer/action";
 import { iStatusReducer } from "../../../../reducers/statusReducer/reducer";
-import { api, supabase } from "../../../../server/api";
 import {
   iOrdersWithFKData,
   iInsertOrdersProducts,

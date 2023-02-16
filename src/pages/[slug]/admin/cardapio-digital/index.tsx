@@ -306,7 +306,7 @@ export default function CardapioDigital({
           <EditableMenuProductCard
             state={state}
             dispatch={dispatch}
-            restaurant={restaurant}
+            restaurant={restaurant[0]}
             productModal={productModal}
             productId={productId}
             productOptions={productOptions}

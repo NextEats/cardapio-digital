@@ -1,3 +1,8 @@
+import {
+  getModalDataAction,
+  showModalAction,
+} from "@/src/reducers/statusReducer/action";
+import { supabase } from "@/src/server/api";
 import Image from "next/image";
 import { Dispatch } from "react";
 import { AiFillEye } from "react-icons/ai";
@@ -47,12 +52,15 @@ export default function OrderStatusCard({
 
   async function switchStatus(orderId: number) {
     if (statusName === "Em produção") {
-
-      await supabase.from("orders").update({ order_status_id: 4 }).eq("id", orderId)
-
+      await supabase
+        .from("orders")
+        .update({ order_status_id: 4 })
+        .eq("id", orderId);
     } else if (statusName === "A caminho") {
-
-      await supabase.from("orders").update({ order_status_id: 1 }).eq("id", orderId)
+      await supabase
+        .from("orders")
+        .update({ order_status_id: 1 })
+        .eq("id", orderId);
     }
   }
 

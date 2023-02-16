@@ -16,24 +16,24 @@ export function ProductList({
   nextStepIndex,
   previousStepIndex,
 }: iProductList) {
-  const deleteProduct = (id: number) => {
+  const deleteProduct = (index: number) => {
     productsDispatch({
       type: "deleteProduct",
-      payload: { id: id },
+      payload: { index: index },
     });
   };
 
-  const addQuantityToProduct = (id: number) => {
+  const addQuantityToProduct = (index: number) => {
     productsDispatch({
       type: "addQuantity",
-      payload: { id: id },
+      payload: { index: index },
     });
   };
 
-  const subtractQuantityToProduct = (id: number) => {
+  const subtractQuantityToProduct = (index: number) => {
     productsDispatch({
       type: "subtractQuantity",
-      payload: { id: id },
+      payload: { index: index },
     });
   };
 
@@ -62,9 +62,9 @@ export function ProductList({
             </div>
             <QuantitySelector
               value={item.quantity}
-              deleteValue={() => deleteProduct(item.id)}
-              addValue={() => addQuantityToProduct(item.id)}
-              subtractValue={() => subtractQuantityToProduct(item.id)}
+              deleteValue={() => deleteProduct(index)}
+              addValue={() => addQuantityToProduct(index)}
+              subtractValue={() => subtractQuantityToProduct(index)}
             />
           </div>
         ))}

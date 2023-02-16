@@ -1,15 +1,16 @@
 import Image from "next/image";
 import * as HoverCard from '@radix-ui/react-hover-card';
 
-import { iOrders, iProducts, iProductCategories, iOrdersProducts, iOrdersStatus, iProduct } from "../../../../../types/types";
+import { iOrders, iProducts, iProductCategories, iOrdersProducts, iOrdersStatus, iProduct, iOrdersWithFKData } from "../../../../../types/types";
 
 interface iBarCgart {
     globalValuesData: {
-        orders: iOrders["data"],
+        orders: iOrdersWithFKData[],
         products: iProducts["data"],
         productCategories: iProductCategories["data"],
         ordersProducts: iOrdersProducts["data"],
         ordersStatus: iOrdersStatus["data"],
+        ordersGroupedByOrderStatus: { [key: string]: iOrdersWithFKData[] },
     }
 }
 
@@ -31,12 +32,14 @@ const colors = [
 
 export function BarChart({ globalValuesData }: iBarCgart) {
 
-    const { ordersProducts, products, ordersStatus, orders } = globalValuesData
+    const { ordersProducts, products, ordersStatus, orders, ordersGroupedByOrderStatus } = globalValuesData
 
-    const statusEnTregue = ordersStatus.find(status => status.status_name === "entregue")
-
-    const ordersWithStatusEntregue = orders.filter(o => o.order_status_id === statusEnTregue!.id)
-    const ordersProductWithStatusEntrega = ordersProducts.filter(orderProduct => ordersWithStatusEntregue.some(o => o.id === orderProduct.order_id))
+    const ordersProductWithStatusEntrega = ordersProducts.filter(orderProduct => {
+        if (!ordersGroupedByOrderStatus["entregue"]) {
+            return []
+        }
+        return ordersGroupedByOrderStatus["entregue"].some(o => o.id === orderProduct.order_id)
+    })
 
     let productsThatHaveBeenDelivered: { [key: string]: { product: iProduct["data"], numberOfProductsPurchased: number } } = {}
     for (let i = 0; i < ordersProductWithStatusEntrega.length; i++) {

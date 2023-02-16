@@ -1,35 +1,36 @@
-import { iCashBoxes } from "@/src/types/types";
+import { api } from "@/src/server/api";
+import { iCashBox, iCashBoxes, iOrdersWithFKData } from "@/src/types/types";
 import { useState } from "react";
 import { CardapioDigitalButton } from "../../cardapio-digital/CardapioDigitalButton";
 
 interface iCashBoxButtons {
   cashBoxes: iCashBoxes["data"];
+  ordersGroupedByOrderStatus: { [key: string]: iOrdersWithFKData[] };
+  restaurantId: number
+  cashBoxState: iCashBox["data"] | undefined
 }
 
-export default function CashBoxButtons({ cashBoxes }: iCashBoxButtons) {
+export default function CashBoxButtons({ cashBoxes, ordersGroupedByOrderStatus, restaurantId, cashBoxState }: iCashBoxButtons) {
   const [openCashBoxState, setOpenCashBoxState] = useState(false);
 
   async function handleOpenCashBox() {
-    // const cashBox = await api.post("api/cash_boxes/open", {
-    //   restaurant_id: restaurant.id,
-    // });
+    const cashBox = await api.post("api/cash_boxes/open", {
+      restaurant_id: restaurantId,
+    });
     setOpenCashBoxState(true);
   }
 
   async function handleCloseCashBox() {
-    // if (
-    //   state.emAnaliseOrders.length > 0 ||
-    //   state.aCaminhoOrders.length > 0 ||
-    //   state.emProduçãoOrders.length > 0
-    // ) {
-    //   alert(
-    //     "Ei vagabundo, crie um toast para avisar para algum desorientado que só pode fechar o caixa se todos os pedidos forem entregue!"
-    //   );
-    //   return;
-    // }
-    // const cashBox = await api.post("api/cash_boxes/close", {
-    //   restaurant_id: restaurant.id,
-    // });
+    if (ordersGroupedByOrderStatus["em análise"] || ordersGroupedByOrderStatus["em produção"] || ordersGroupedByOrderStatus["a caminho"]
+    ) {
+      alert(
+        "Para fechar o caixa, todos os pedidos precisam ser entregues."
+      );
+      return;
+    }
+    const cashBox = await api.post("api/cash_boxes/close", {
+      restaurant_id: restaurantId,
+    });
     setOpenCashBoxState(false);
   }
 
@@ -40,7 +41,8 @@ export default function CashBoxButtons({ cashBoxes }: iCashBoxButtons) {
         h="h-10"
         w="w-40"
         disabled={
-          openCashBoxState || cashBoxes.some((cb) => cb.is_open === true)
+          cashBoxState !== undefined
+          // openCashBoxState || cashBoxState.some((cb) => cb.is_open === true)
         }
         onClick={() => handleOpenCashBox()}
       />
@@ -48,7 +50,10 @@ export default function CashBoxButtons({ cashBoxes }: iCashBoxButtons) {
         name="Fechar caixa"
         h="h-10"
         w="w-40"
-        disabled={!cashBoxes.some((cb) => cb.is_open === true)}
+        disabled={
+          cashBoxState === undefined
+          // !cashBoxes.some((cb) => cb.is_open === true)
+        }
         onClick={() => handleCloseCashBox()}
       />
     </div>

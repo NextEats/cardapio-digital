@@ -1,5 +1,4 @@
 import { Whatsapp } from "venom-bot";
-import Sender from "./Sender";
 
 class SenderManager {
   public clients = new Map<string, any>();

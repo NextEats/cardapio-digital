@@ -1,15 +1,6 @@
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  ArcElement,
-  Title,
-  Tooltip,
-  Legend,
-} from "chart.js";
-import { Doughnut } from "react-chartjs-2";
-import { iOrders, iOrdersStatus } from "../../../../../types/types";
+import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, ArcElement, Title, Tooltip, Legend } from 'chart.js';
+import { Doughnut } from 'react-chartjs-2';
+import { iOrders, iProducts, iProductCategories, iOrdersProducts, iOrdersStatus, iOrdersWithFKData } from '../../../../../types/types';
 
 ChartJS.register(
   CategoryScale,
@@ -36,25 +27,30 @@ export const options = {
 
 interface iDoughnuCgart {
   globalValuesData: {
-    orders: iOrders["data"];
-    ordersStatus: iOrdersStatus["data"];
-  };
+    orders: iOrdersWithFKData[],
+    ordersStatus: iOrdersStatus["data"],
+    ordersGroupedByOrderStatus: { [key: string]: iOrdersWithFKData[] },
+  }
 }
 
 export function DoughnutChart({ globalValuesData }: iDoughnuCgart) {
-  const { orders, ordersStatus } = globalValuesData;
-  const dataFormattedForChart = ordersStatus.reduce(
-    (acc: { labels: string[]; data: number[] }, status) => {
-      const ordersFilteredByStatus = orders.filter(
-        (o) => o.order_status_id === status.id
-      );
-      return {
-        labels: [...acc.labels, status.status_name!],
-        data: [...acc.data, ordersFilteredByStatus.length],
-      };
-    },
-    { labels: [], data: [] }
-  );
+
+  const { orders, ordersStatus, ordersGroupedByOrderStatus } = globalValuesData
+  // const dataFormattedForChart = ordersStatus.reduce((acc: { labels: string[], data: number[] }, status) => {
+  //   const ordersFilteredByStatus = orders.filter(o => o.order_status_id === status.id)
+  //   return { labels: [...acc.labels, status.status_name!], data: [...acc.data, ordersFilteredByStatus.length] }
+  // }, { labels: [], data: [] })
+
+  const dataFormattedForChart = {
+    labels: ['Em análise', 'Em produção', 'A caminho', 'Emtregue', 'Cancelado'],
+    data: [
+      ordersGroupedByOrderStatus["em análise"] ? ordersGroupedByOrderStatus["em análise"].length : 0,
+      ordersGroupedByOrderStatus["em produção"] ? ordersGroupedByOrderStatus["em produção"].length : 0,
+      ordersGroupedByOrderStatus["a caminho"] ? ordersGroupedByOrderStatus["a caminho"].length : 0,
+      ordersGroupedByOrderStatus["entregue"] ? ordersGroupedByOrderStatus["entregue"].length : 0,
+      ordersGroupedByOrderStatus["cancelado"] ? ordersGroupedByOrderStatus["cancelado"].length : 0,
+    ]
+  }
 
   const data = {
     labels: dataFormattedForChart.labels,

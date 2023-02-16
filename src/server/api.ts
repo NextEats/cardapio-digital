@@ -8,11 +8,14 @@ import {
   iGroupedProducts,
   iInsertAdditionals,
   iInsertProductOptions,
+  iRestaurant,
+  iRestaurantWithFKData,
   ProductWithCategory,
 } from "../types/types";
-
+const dev = process.env.NODE_ENV !== 'production';
+export const serverURL = dev ? "http://localhost:3000" : "https://www.nexteats.com.br/"
 export const api = axios.create({
-  baseURL: "http://localhost:3000",
+  baseURL: serverURL
 });
 
 export const supabase = createClient<Database>(
@@ -289,18 +292,30 @@ export async function createProduct(
   state: IEditableProductReducerData,
   productOptions: iInsertProductOptions["data"],
   additionals: iInsertAdditionals["data"],
-  restaurant: iRestaurant["data"]
+  restaurant: iRestaurantWithFKData
 ) {
   // await supabase.storage.from("teste").upload("teste_4", file)
   if (!restaurant) {
     return;
   }
+  console.log(
+    state.productInformation.name,
+  )
+
   const imageData = await supabase.storage
     .from(restaurant.slug!)
-    .upload(state.productInformation.name, state.picture_file!);
-  const getImageData = await supabase.storage
+    .upload(state.productInformation.name.toLocaleLowerCase(), state.picture_file!);
+  const getImageData = supabase.storage
     .from(restaurant.slug!)
     .getPublicUrl(imageData.data?.path!);
+  // console.log(
+  //   state.category.id!,
+  //   state.productInformation.description,
+  //   state.productInformation.name,
+  //   getImageData.data.publicUrl!,
+  //   Number(state.productInformation.price),
+  //   restaurant.id,
+  // )
   const data = await supabase
     .from("products")
     .insert({

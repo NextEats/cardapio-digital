@@ -31,9 +31,8 @@ export default function Sidebar({
 
   return (
     <div
-      className={`select-none bg-gray-800 w-60 h-screen absolute transition-[left] duration-500 ease-in-out ${
-        isSidebarOpen ? "left-0" : "-left-64"
-      }`}
+      className={`select-none bg-gray-800 w-60 h-screen absolute transition-[left] duration-500 ease-in-out ${isSidebarOpen ? "left-0" : "-left-64"
+        }`}
     >
       <ul className="flex flex-col mt-5">
         <SidebarListItem
@@ -42,7 +41,7 @@ export default function Sidebar({
           path={`/${restaurant?.slug}/admin`}
         />
         <SidebarListItem
-          name="Cardápio Digital"
+          name="Produtos"
           icon={<FaUtensils className="mr-4 h-8 w-8" />}
           path={`/${restaurant?.slug}/admin/cardapio-digital`}
         />

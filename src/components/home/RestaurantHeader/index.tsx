@@ -61,7 +61,7 @@ export default function RestaurantHeader({
           <span className="text-md text-[#676767]">{restaurantType?.name}</span>
         </div>
       </div>
-      <div className="flex flex-row gap-2 mt-2 ml-3 pb-3">
+      <div className="flex flex-col 3xs:flex-row gap-2 mt-2 ml-3 pb-3 pr-2">
         {restaurant.addresses.google_maps_link && (
           <Link href={restaurant.addresses.google_maps_link} target="_blank">
             <div className="flex items-center justify-center bg-gray-800 px-5 py-2 rounded-md cursor-pointer transition-all ease-in-out duration-300 hover:bg-gray-600">

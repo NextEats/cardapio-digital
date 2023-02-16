@@ -20,7 +20,7 @@ interface IOrderStatusCardProps {
 
 export default function OrderStatusCard({
   statusName,
-  ordersState,
+  dispatch,
   ordersGroupedByOrderStatus,
   ordersProducts,
   products,
@@ -44,42 +44,22 @@ export default function OrderStatusCard({
 
   const tdStyle =
     "border-collapse border-l-2 px-2 border-gray-300 text-sm font-medium";
+
   async function switchStatus(orderId: number) {
     if (statusName === "Em produção") {
-      // const aCaminhoStatus = state.orderStatuss?.find(
-      //   (status) => status.status_name === "a caminho"
-      // );
-      // const orderFound = orders.find(o => )
-      // const ordersproductFiltered = state.ordersProducts?.filter(op => op.order_id === orderId)
-      // const ordersProductData = await supabase
-      //   .from("orders")
-      //   .update({ order_status_id: aCaminhoStatus?.id })
-      //   .eq("id", orderId)
-      //   .select("*");
-      // dispatch(switchToTheWayAction(orderId));
+
+      await supabase.from("orders").update({ order_status_id: 4 }).eq("id", orderId)
+
     } else if (statusName === "A caminho") {
-      // const entregueStatus = state.orderStatuss?.find(
-      //   (status) => status.status_name === "entregue"
-      // );
-      // const ordersProductData = await supabase
-      //   .from("orders")
-      //   .update({ order_status_id: entregueStatus?.id })
-      //   .eq("id", orderId)
-      //   .select("*");
-      //   const ordersproductFiltered = state.ordersProducts?.filter(op => op.order_id === orderId)
-      // ordersproductFiltered.forEach(async op => {
-      //   const ordersProductData = await supabase.from("orders_products").update({ order_status_id: entregueStatus?.id }).eq("id", op.id).select("*")
-      // })
-      // dispatch(switchToDeliveredAction(orderId));
-    } else {
+
+      await supabase.from("orders").update({ order_status_id: 1 }).eq("id", orderId)
     }
   }
 
   function showModal(orderId: number) {
-    // dispatch(showModalAction());
-    // dispatch(getModalDataAction(orderId));
+    dispatch(showModalAction());
+    dispatch(getModalDataAction(orderId));
   }
-  console.log(orders);
 
   return (
     <div className="flex flex-1 min-h-[240px]  lg:w-full flex-col shadow-sm px-4 pt-2 pb-4 scrollbar-custom">

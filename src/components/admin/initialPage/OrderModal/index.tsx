@@ -228,7 +228,6 @@ export function OrderModal({ ordersDispatch, ordersProducts, ordersState, produc
                   copyStyles={true}
                   content={() => printComponent.current}
                   onAfterPrint={() => moveToEmProduçãoCard(orderFound?.id!)}
-                  // onAfterPrint={handleAfterPrint}
                   trigger={() => {
                     return <CardapioDigitalButton name="Imprimir e aceitar o pedido" w="w-80" h="h-8" />
                   }}
@@ -237,6 +236,7 @@ export function OrderModal({ ordersDispatch, ordersProducts, ordersState, produc
                 <ReactToPrint
                   copyStyles={true}
                   content={() => printComponent.current}
+                  // onAfterPrint={() => handleAfterPrint}
                   trigger={() => {
                     return <CardapioDigitalButton name="Imprimir" w="flex-1" h="h-8" />
                   }}

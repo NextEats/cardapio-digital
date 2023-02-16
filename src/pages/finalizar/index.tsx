@@ -1,12 +1,11 @@
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import { BsArrowLeftCircle } from "react-icons/bs";
-import { AiOutlinePlus, AiOutlinePlusCircle } from "react-icons/ai";
+import { AiOutlinePlusCircle } from "react-icons/ai";
 import { MdAttachMoney } from "react-icons/md";
-import Modal from "../../components/cart/modal";
-import ModalChatGPT from "../../components/cart/ModalChatGPT";
+
 
 interface IChosenItems {
   picture_url: string;
@@ -65,13 +64,6 @@ export default function Product() {
           );
         })}
       </div>
-
-      {isModalOpen && (
-        <ModalChatGPT
-          isModalOpen={isModalOpen}
-          setIsModalOpen={setIsModalOpen}
-        />
-      )}
 
       <div className="w-full absolute bottom-0 left-0 px-4 pb-8 pt-4 bg-white ">
         <p className="text-base font-medium text-black mb-6">Total: R$ 35,00</p>

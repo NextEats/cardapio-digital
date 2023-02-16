@@ -1,6 +1,6 @@
 import InputMask from "react-input-mask";
 import { useContext, useState } from "react";
-import { returnTreatedNumber } from "../../helpers/returnTreatedNumber";
+import { returnTreatedNumber } from "../../../helpers/returnTreatedNumber";
 
 import { RestaurantContext } from "@/src/contexts/restaurantContext";
 

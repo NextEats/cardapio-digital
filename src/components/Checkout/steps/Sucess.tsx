@@ -1,24 +1,18 @@
-import InputMask from "react-input-mask";
-import { useState } from "react";
-import { iRestaurant } from "../../types/types";
-import { createNewWhatsAppCode, isWhatsappCodeValid } from "../../server/api";
+import { iRestaurant } from '../../../types/types';
 
-const axios = require("axios").default;
+const axios = require('axios').default;
 
 function returnTreatedNumber(value: string): string {
-  return value.replace(/\D/g, "").replace(/\s/g, "");
+    return value.replace(/\D/g, '').replace(/\s/g, '');
 }
 
 interface SuccessMessage {
-  restaurant: iRestaurant["data"];
+    restaurant: iRestaurant['data'];
 }
-export function WhatsappCodeInput({
-  restaurant,
-}: SuccessMessage) {
-
-  return (
-    <div className="mb-9">
-      {/* <div className="text-gray-800 flex flex-col gap-y-2 min-h-[400px]">
+export function WhatsappCodeInput({ restaurant }: SuccessMessage) {
+    return (
+        <div className="mb-9">
+            {/* <div className="text-gray-800 flex flex-col gap-y-2 min-h-[400px]">
         <div>
           <InputMask
             mask="999999"
@@ -47,6 +41,6 @@ export function WhatsappCodeInput({
       >
         CONTINUAR
       </button> */}
-    </div>
-  );
+        </div>
+    );
 }

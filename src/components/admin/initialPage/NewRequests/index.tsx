@@ -149,17 +149,12 @@ export default function NewRequests({ dispatch, ordersGroupedByOrderStatus, orde
                       >
                         <AiFillEye className="text-xl text-white" />
                       </button>
-                      <ReactToPrint
-                        copyStyles={true}
-                        content={() => printComponent.current}
-                        trigger={() => {
-                          return (<button
-                            onClick={() => moveToEmProduçãoCard(order.id!)}
-                            className=" w-10 h-6 pb-[1px] rounded-full  bg-green-400 text-white text-base font-bold flex items-center justify-center"
-                          >
-                            <AiOutlineCheck className="w-4 h-4 " />
-                          </button>)
-                        }} />
+                      <button
+                        onClick={() => moveToEmProduçãoCard(order.id!)}
+                        className=" w-10 h-6 pb-[1px] rounded-full  bg-green-400 text-white text-base font-bold flex items-center justify-center"
+                      >
+                        <AiOutlineCheck className="w-4 h-4 " />
+                      </button>
                     </div>
                   </td>
                 </tr>

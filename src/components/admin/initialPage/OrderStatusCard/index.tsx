@@ -1,3 +1,5 @@
+import { getModalDataAction, showModalAction } from "@/src/reducers/statusReducer/action";
+import { supabase } from "@/src/server/api";
 import Image from "next/image";
 import { Dispatch } from "react";
 import { AiFillEye } from "react-icons/ai";

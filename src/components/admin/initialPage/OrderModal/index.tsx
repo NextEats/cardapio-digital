@@ -4,7 +4,7 @@ import { FiX } from "react-icons/fi";
 import { CardapioDigitalButton } from "../../cardapio-digital/CardapioDigitalButton";
 import { Dispatch, RefObject, useMemo, useState } from "react";
 import { showModalAction } from "../../../../reducers/statusReducer/action";
-import { api } from "../../../../server/api";
+import { api, supabase } from "../../../../server/api";
 import { DropdownMenuObservation } from "../DropDownMenuObservation";
 import { iInsertOrdersProducts, iInsertProducts, iRestaurantWithFKData } from "@/src/types/types";
 import { format } from "date-fns";
@@ -78,6 +78,18 @@ export function OrderModal({ ordersDispatch, ordersProducts, ordersState, produc
 
   const orderDateFormated = format(new Date(`${orderFound?.created_at}`), "P", { locale: ptBR })
 
+  async function moveToEmProduçãoCard(orderId: number) {
+    await supabase.from("orders").update({ order_status_id: 3 }).eq("id", orderId)
+    ordersDispatch(showModalAction())
+  }
+
+  function handleAfterPrint(event: { wasCancelled: boolean }) {
+    if (event.wasCancelled) {
+      console.log('A impressão foi cancelada');
+    } else {
+      console.log('A impressão foi concluída com sucesso');
+    }
+  }
   return (
     <>
       <div>
@@ -211,12 +223,22 @@ export function OrderModal({ ordersDispatch, ordersProducts, ordersState, produc
                 </p>
               </div>
 
-              <div className="flex flex-1 items-center justify-end mt-5 hideButtonToPrint">
+              <div className="flex flex-1 items-center justify-end gap-3 mt-5 hideButtonToPrint">
+                {orderFound?.order_status.status_name === 'em análise' ? <ReactToPrint
+                  copyStyles={true}
+                  content={() => printComponent.current}
+                  onAfterPrint={() => moveToEmProduçãoCard(orderFound?.id!)}
+                  // onAfterPrint={handleAfterPrint}
+                  trigger={() => {
+                    return <CardapioDigitalButton name="Imprimir e aceitar o pedido" w="w-80" h="h-8" />
+                  }}
+                /> : null
+                }
                 <ReactToPrint
                   copyStyles={true}
                   content={() => printComponent.current}
                   trigger={() => {
-                    return <CardapioDigitalButton name="Imprimir" w="w-28" h="h-8" />
+                    return <CardapioDigitalButton name="Imprimir" w="flex-1" h="h-8" />
                   }}
                 />
               </div>

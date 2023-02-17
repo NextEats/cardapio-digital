@@ -1,34 +1,37 @@
-import "../styles/globals.css";
+import '@/src/styles/globals.css';
 
-import { useEffect, useState } from "react";
-import { Session } from "@supabase/auth-helpers-react";
-import { AppProps } from "next/app";
-import { AuthContext } from "../contexts/authContext";
-import { supabase } from "../server/api";
+import { AppProps } from 'next/app';
+import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
+import LoadingSpinner from '../components/LoadingSpinner';
 
-async function returnSession() {
-  const { data, error } = await supabase.auth.getSession();
-  return data;
-}
+export default function App({ Component, pageProps }: AppProps) {
+    const [loading, setLoading] = useState(false);
+    const router = useRouter();
 
-export default function App({
-  Component,
-  pageProps,
-}: AppProps<{
-  initialSession: Session;
-}>) {
-  const [session, setSession] = useState<any>(undefined);
+    useEffect(() => {
+        const startLoading = () => setLoading(true);
+        const stopLoading = () => setLoading(false);
 
-  useEffect(() => {
-    const sessionData = returnSession();
-    sessionData.then((res) => {
-      setSession(res);
-    });
-  }, []);
+        router.events.on('routeChangeStart', startLoading);
+        router.events.on('routeChangeComplete', stopLoading);
+        router.events.on('routeChangeError', stopLoading);
 
-  return (
-    <AuthContext.Provider value={session}>
-      <Component {...pageProps} />
-    </AuthContext.Provider>
-  );
+        return () => {
+            router.events.off('routeChangeStart', startLoading);
+            router.events.off('routeChangeComplete', stopLoading);
+            router.events.off('routeChangeError', stopLoading);
+        };
+    }, [router]);
+
+    return (
+        <>
+            {loading && (
+                <div className="w-screen h-screen justify-center items-center flex">
+                    <LoadingSpinner />
+                </div>
+            )}
+            {!loading && <Component {...pageProps} />}
+        </>
+    );
 }

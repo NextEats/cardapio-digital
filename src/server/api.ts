@@ -438,7 +438,9 @@ async function postAdditionalToSupabase(
 }
 
 export async function getPaymentMethodsAvailable() {
-    const paymentMethods = await supabase.from('payment_methods').select('*');
+    const { data: paymentMethods } = await supabase
+        .from('payment_methods')
+        .select('*');
     return paymentMethods;
 }
 

@@ -1,4 +1,4 @@
-import '@/src/styles/globals.css';
+import '../styles/globals.css';
 
 import { AppProps } from 'next/app';
 import { useRouter } from 'next/router';
@@ -27,7 +27,7 @@ export default function App({ Component, pageProps }: AppProps) {
     return (
         <>
             {loading && (
-                <div className="w-screen h-screen justify-center items-center flex">
+                <div className="w-screen h-screen flex justify-center items-center">
                     <LoadingSpinner />
                 </div>
             )}

@@ -116,7 +116,6 @@ export default function CardapioDigital({
         async function setProtoduct() {
             const product = products.find((p) => p.id === productId);
 
-            // filtering the ingredinets ones
             const productSelectsByProdctId = productSelects.filter(
                 (select) => select.product_id === product?.id
             );
@@ -140,19 +139,16 @@ export default function CardapioDigital({
                 ];
             }
 
-            // finding the category
             const categoryFound = productCategories.find(
                 (c) => c.id === product?.category_id
             );
 
-            // filtering the options ones
             const productOptiosBySelectId = productOptions.filter((option) => {
                 return selectsByProductSelect.map(
                     (select) => select?.id === option.select_id && option
                 );
             });
 
-            // filtering the additional ones
             const productAdditionalsByProductId = productAdditionals.filter(
                 (productAdditional) =>
                     productAdditional.product_id === productId
@@ -210,26 +206,13 @@ export default function CardapioDigital({
                 <div className="flex gap-10">
                     <div className="flex flex-col flex-1 ">
                         <h2 className="text-xl font-bold text-gray-700">
-                            {' '}
-                            5 itens mais vendidos{' '}
+                            5 itens mais vendidos
                         </h2>
 
                         <div className="flex items-center justify-between mb-5 mt-7">
                             <h2 className="text-xl font-bold text-gray-700 ">
-                                {' '}
-                                Categorias{' '}
+                                Categorias
                             </h2>
-                            {/* <input type="text" placeholder="Pesquisar"
-                className="mx-8 h-6 pb-1 max-w-64 px-2 text-gray-600 font-semibold placeholder:text-gray-500 rounded outline-none border border-solid border-gray-400" /> */}
-                            {/* <select name="" id=""
-                  onChange={(e) => filterProductCategories(e.target.value)}
-                  className="mx-8 h-6 pb-1 max-w-64 px-2 text-gray-600 font-semibold placeholder:text-gray-500 rounded outline-none border border-solid border-gray-400" >
-                  <option value="Selecione">Selecione</option>
-                  {productCateriesData.map(category => {
-                    return <option key={category.id} value={category.id}>{category.name}</option>
-              })
-              }
-            </select> */}
                             <CardapioDigitalButton
                                 onClick={() => setModalIsOpen(true)}
                                 name="Novo"
@@ -322,7 +305,7 @@ export default function CardapioDigital({
                     <EditableMenuProductCard
                         state={state}
                         dispatch={dispatch}
-                        restaurant={restaurant[0]}
+                        restaurant={restaurant}
                         productModal={productModal}
                         productId={productId}
                         productOptions={productOptions}

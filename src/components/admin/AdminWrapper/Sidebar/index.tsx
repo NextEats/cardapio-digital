@@ -1,5 +1,5 @@
 import { SetStateAction, useContext } from "react";
-import { FaChartBar, FaCog, FaHome, FaUtensils } from "react-icons/fa";
+import { FaChartBar, FaCog, FaHamburger, FaHome, FaUtensils } from "react-icons/fa";
 
 import { AdminContext } from "@/src/contexts/adminContext";
 import useWindowSize, { Size } from "@/src/hooks/WindowResize";
@@ -42,7 +42,7 @@ export default function Sidebar({
         />
         <SidebarListItem
           name="Produtos"
-          icon={<FaUtensils className="mr-4 h-8 w-8" />}
+          icon={<FaHamburger className="mr-4 h-8 w-8" />}
           path={`/${restaurant?.slug}/admin/cardapio-digital`}
         />
         <SidebarListItem
@@ -54,6 +54,12 @@ export default function Sidebar({
           name="Configurações"
           icon={<FaCog className="mr-4 h-8 w-8" />}
           path={`/${restaurant?.slug}/admin/configuracoes`}
+        />
+        <SidebarListItem
+          name="Configurações"
+          icon={<FaUtensils className="mr-4 h-8 w-8" />}
+          // icon={<FaCog className="mr-4 h-8 w-8" />}
+          path={`/${restaurant?.slug}/admin/table-control`}
         />
       </ul>
     </div>

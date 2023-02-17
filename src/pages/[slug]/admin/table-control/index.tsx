@@ -1,13 +1,11 @@
 import AdminWrapper from "@/src/components/admin/AdminWrapper";
 import Tables from "@/src/components/admin/Tables/";
-import TableContextProvider from "@/src/contexts/tableControl";
+import TableContextProvider from "@/src/contexts/TableControlContext";
 import { getRestaurantBySlugFetch } from "@/src/fetch/restaurant/getRestaurantBySlug";
 import { iRestaurantWithFKData } from "@/src/types/types";
 import { GetServerSideProps } from "next";
-import { useRef } from "react";
 
 interface iAdminHomePageProps {
-
     restaurant: iRestaurantWithFKData
 }
 
@@ -27,10 +25,11 @@ export default function TableControl({
 
     return (
         <AdminWrapper>
-            <TableContextProvider>
-
+            <TableContextProvider restaurant={restaurant}>
                 <div className="flex flex-col gap-8">
+
                     <Tables />
+
                 </div>
             </TableContextProvider>
         </AdminWrapper>

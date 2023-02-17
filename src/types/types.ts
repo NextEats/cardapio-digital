@@ -111,8 +111,22 @@ export interface iContact {
 export interface iContacts {
   data: Array<Database["public"]["Tables"]["contacts"]["Row"]>;
 }
+export interface iTable {
+  data: Database["public"]["Tables"]["tables"]["Row"];
+}
+
+export interface iTables {
+  data: Array<Database["public"]["Tables"]["tables"]["Row"]>;
+}
 
 // ==================   INSERTS  =====================
+export interface iInsertTable {
+  data: Database["public"]["Tables"]["tables"]["Insert"];
+}
+
+export interface iInsertTables {
+  data: Array<Database["public"]["Tables"]["tables"]["Insert"]>;
+}
 export interface iInsertContact {
   data: Database["public"]["Tables"]["contacts"]["Insert"];
 }

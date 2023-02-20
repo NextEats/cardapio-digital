@@ -1,6 +1,8 @@
 import { iTable } from "@/src/types/types";
+import { useState } from "react";
 import { BsPeople } from "react-icons/bs";
 import { FaHome } from "react-icons/fa";
+import CreateTableModal from "./CreateTableModal";
 
 interface iTableProps {
     table: iTable["data"]
@@ -12,6 +14,8 @@ export default function Table({ table }: iTableProps) {
             table.is_reserved ? 'text-red-400' : 'text-gray-400'
         }
     `
+
+    const [newTableModal, setNewTableModal] = useState(false)
 
     return (
         <div className="flex flex-1 flex-col border-l-8 border-gray-400 rounded-md bg-white shadow-md py-2 pr-3 pl-4">
@@ -31,6 +35,8 @@ export default function Table({ table }: iTableProps) {
                         table.is_reserved ? 'Reservada' : 'Livre'
                 }
             </span>
+
+
         </div>
     )
 }

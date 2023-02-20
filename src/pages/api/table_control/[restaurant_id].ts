@@ -10,7 +10,7 @@ import { getProductsByRestaurantIdFetch } from "../../../fetch/products/getProdu
 export default async function tables(req: NextApiRequest, res: NextApiResponse) {
     const { method, query, body } = req
     const restaurant_id = Number(query.restaurant_id)
-    const { chair_ammount } = body
+    const chair_ammount = 3
 
     switch (method) {
         case 'GET':

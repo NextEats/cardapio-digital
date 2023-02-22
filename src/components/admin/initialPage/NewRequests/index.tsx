@@ -32,10 +32,9 @@ interface iNewRequestProps {
   ordersGroupedByOrderStatus: { [key: string]: iOrdersWithFKData[] };
   ordersProducts: iInsertOrdersProducts["data"];
   products: iInsertProducts["data"];
-  printComponent: RefObject<HTMLDivElement>
 }
 
-export default function NewRequests({ dispatch, ordersGroupedByOrderStatus, ordersProducts, products, printComponent }: iNewRequestProps) {
+export default function NewRequests({ dispatch, ordersGroupedByOrderStatus, ordersProducts, products }: iNewRequestProps) {
   const tdStyle =
     "border-collapse border-l-2 px-2 border-gray-300 text-sm font-medium";
 

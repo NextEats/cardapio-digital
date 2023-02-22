@@ -1,7 +1,5 @@
-import { useState } from "react";
 import Checkout from "../Checkout";
 import ProductModal from "../home/ProductModal";
-import { iProductSelectsWithOptions } from "../home/ProductModal/getProductSelectWithOptions";
 import { WeekdayOperatingTime } from "../WeekdayOperatingTime";
 
 interface iDigitalMenuModals {
@@ -25,7 +23,6 @@ export default function DigitalMenuModals({
   showCheckoutModal,
   setShowCheckoutModal,
 }: iDigitalMenuModals) {
-
   return (
     <>
       {showWeekdayOperatingTimeModal && (

@@ -30,32 +30,21 @@ export function productsReducer(state: any, action: any) {
         ];
       }
     case "deleteProduct":
-      return state.reduce((acc: any, current: any) => {
-        console.log(action.payload.id, current.id);
-        if (current.id !== action.payload.id) {
-          acc.push(current);
-        }
-        return acc;
-      }, []);
+      const index = action.payload.index;
+      return [...state.slice(0, index), ...state.slice(index + 1)];
     case "addQuantity":
-      return state.reduce((acc: any, current: any) => {
-        if (current.id == action.payload.id) {
-          current.quantity += 1;
-          acc.push(current);
-        } else {
-          acc.push(current);
+      return state.map((product: any, index: number) => {
+        if (index === action.payload.index) {
+          return { ...product, quantity: product.quantity + 1 };
         }
-        return acc;
-      }, []);
+        return product;
+      });
     case "subtractQuantity":
-      return state.reduce((acc: any, current: any) => {
-        if (current.id == action.payload.id) {
-          current.quantity -= 1;
-          acc.push(current);
-        } else {
-          acc.push(current);
+      return state.map((product: any, index: number) => {
+        if (index === action.payload.index) {
+          return { ...product, quantity: product.quantity - 1 };
         }
-        return acc;
-      }, []);
+        return product;
+      });
   }
 }

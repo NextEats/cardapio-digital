@@ -1,62 +1,83 @@
-import { useEffect, useState } from "react";
+import { AdminContext } from '@/src/contexts/adminContext';
+import { useContext, useEffect, useState } from 'react';
+import { iPaymentMethod } from '../../../../types/types';
 import {
-  getPaymentMethodsAvailable,
-  getPaymentMethodsForThisRestaurant,
-} from "./../../../../server/api";
-import { iPaymentMethod } from "../../../../types/types";
+    getPaymentMethodsAvailable,
+    getPaymentMethodsForThisRestaurant,
+} from './../../../../server/api';
 
 export default function Payment() {
-  const [paymentMethodsAvailable, setPaymentMethodsAvailable] = useState<
-    Array<iPaymentMethod["data"]> | undefined
-  >(undefined);
+    const restaurant = useContext(AdminContext).restaurant;
 
-  const [paymentMethods, setPaymentMethods] = useState<any>();
+    const [paymentMethodsAvailable, setPaymentMethodsAvailable] =
+        useState<iPaymentMethod['data'][]>();
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const result = await getPaymentMethodsAvailable();
-      if (!result.data) {
-        return [];
-      }
-      const data = result.data as unknown as Array<iPaymentMethod["data"]>;
-      setPaymentMethodsAvailable(data);
+    const [
+        paymentMethodsForThisRestaurant,
+        setPaymentMethodsForThisRestaurant,
+    ] = useState<any>();
 
-      const paymentMethodsForThisRestaurant =
-        await getPaymentMethodsForThisRestaurant(3);
-      setPaymentMethods(paymentMethodsForThisRestaurant);
-    };
+    useEffect(() => {
+        async function getData() {
+            await getPaymentMethodsAvailable().then((data) => {
+                if (data) {
+                    setPaymentMethodsAvailable(data);
+                }
+            });
+        }
 
-    fetchData();
-  }, []);
+        getData();
+    }, []);
 
-  return (
-    <div>
-      <h3 className="mb-4 font-semibold">Métodos de Pagamento Ativos</h3>
-      {paymentMethods && (
-        <div className="flex flex-col gap-y-3">
-          {paymentMethods.data.map((paymentMethod: any, index: number) => {
-            return (
-              <div key={index}>
-                <div className="ml-4 relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
-                  <input
-                    type="checkbox"
-                    name={paymentMethod.payment_methods.name}
-                    id={paymentMethod.payment_methods.name}
-                    className="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer"
-                  />
-                  <label
-                    htmlFor={paymentMethod.payment_methods.name}
-                    className="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"
-                  ></label>
-                </div>
-                <span className="uppercase">
-                  {paymentMethod.payment_methods.name}
-                </span>
-              </div>
+    useEffect(() => {
+        async function getData() {
+            await getPaymentMethodsForThisRestaurant(restaurant!.id).then(
+                (data) => {
+                    if (data) {
+                        setPaymentMethodsForThisRestaurant(data.data);
+                        console.log(data.data);
+                    }
+                }
             );
-          })}
+        }
+
+        getData();
+    }, []);
+
+    return (
+        <div>
+            <h3 className="mb-4 font-semibold">Métodos de Pagamento Ativos</h3>
+            {paymentMethodsAvailable && (
+                <div className="flex flex-col gap-y-3">
+                    {paymentMethodsAvailable.map(
+                        (
+                            paymentMethod: iPaymentMethod['data'],
+                            index: number
+                        ) => {
+                            return (
+                                <div key={index}>
+                                    <div className="ml-4 relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
+                                        <input
+                                            type="checkbox"
+                                            name={paymentMethod.name}
+                                            id={paymentMethod.name}
+                                            className="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer"
+                                            defaultValue={paymentMethod.name}
+                                        />
+                                        <label
+                                            htmlFor={paymentMethod.name}
+                                            className="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"
+                                        ></label>
+                                    </div>
+                                    <span className="uppercase">
+                                        {paymentMethod.name}
+                                    </span>
+                                </div>
+                            );
+                        }
+                    )}
+                </div>
+            )}
         </div>
-      )}
-    </div>
-  );
+    );
 }

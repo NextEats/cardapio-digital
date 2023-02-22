@@ -1,6 +1,6 @@
 import { createContext, Dispatch, ReactNode, SetStateAction, useEffect, useState } from "react";
 import { api } from "../server/api";
-import { iRestaurant, iTable, iTables } from "../types/types";
+import { iOrdersWithFKData, iProductCategories, iProducts, iRestaurant, iTable, iTables } from "../types/types";
 
 interface iTableContextProps {
     tables: iTables["data"];
@@ -8,17 +8,20 @@ interface iTableContextProps {
     openedTableModal: iTable["data"] | null;
     setIsOpenedProductTableModal: Dispatch<SetStateAction<boolean>>
     isOpenedProductTableModal: boolean
+    products: iProducts["data"]
+    categories: iProductCategories["data"]
     createNewtable: (cheirAmount: string) => Promise<void>;
 }
 interface iTableContextProviderProps {
     children: ReactNode
     restaurant: iRestaurant["data"]
-
+    products: iProducts["data"]
+    categories: iProductCategories["data"]
 }
 
 export const TableContext = createContext({} as iTableContextProps)
 
-export default function TableContextProvider({ children, restaurant }: iTableContextProviderProps) {
+export default function TableContextProvider({ children, restaurant, products, categories }: iTableContextProviderProps) {
     const [tables, setTables] = useState<iTables["data"]>([])
 
     const [openedTableModal, setOpenedTableModal] = useState<iTable["data"] | null>(null)
@@ -48,6 +51,8 @@ export default function TableContextProvider({ children, restaurant }: iTableCon
                 setIsOpenedProductTableModal,
                 isOpenedProductTableModal,
                 createNewtable,
+                products,
+                categories,
             }}
         >
             {children}

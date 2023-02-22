@@ -42,16 +42,13 @@ export default function MenuProduct({
             <div className="w-full flex items-center justify-between px-2">
                 <div className="flex flex-col items-start justify-start gap-1 overflow-hidden">
                     <span className="text-base font-bold text-gray-600 ">
-                        {' '}
-                        {product.name}{' '}
+                        {product.name}
                     </span>
                     <p className="text-sm font-medium text-gray-500 leading-3 ">
-                        {' '}
-                        {product.description}{' '}
+                        {product.description}
                     </p>
                     <span className="text-xs font-semibold text-green-500 ">
-                        {' '}
-                        R$ {product.price}{' '}
+                        R$ {product.price}
                     </span>
                 </div>
             </div>

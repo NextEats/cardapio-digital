@@ -16,7 +16,6 @@ export default function CreateTableModal({ isOpenedCreateTableModal, setIsOpened
 
     const { createNewtable } = useContext(TableContext)
     const [cheirAmount, setCheirAmount] = useState('')
-    console.log(cheirAmount)
 
     return (
         <>

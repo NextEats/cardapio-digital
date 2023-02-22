@@ -5,7 +5,7 @@ interface iInputWithLabel {
     label: string;
     placeholder?: string;
     type?: string;
-    state: string | undefined;
+    state?: string | undefined;
     setState?: React.Dispatch<SetStateAction<string>>;
     mask?: string;
 }

@@ -6,6 +6,8 @@ interface iTableContextProps {
     tables: iTables["data"];
     setOpenedTableModal: Dispatch<SetStateAction<iTable["data"] | null>>;
     openedTableModal: iTable["data"] | null;
+    setIsOpenedProductTableModal: Dispatch<SetStateAction<boolean>>
+    isOpenedProductTableModal: boolean
     createNewtable: (cheirAmount: string) => Promise<void>;
 }
 interface iTableContextProviderProps {
@@ -20,6 +22,7 @@ export default function TableContextProvider({ children, restaurant }: iTableCon
     const [tables, setTables] = useState<iTables["data"]>([])
 
     const [openedTableModal, setOpenedTableModal] = useState<iTable["data"] | null>(null)
+    const [isOpenedProductTableModal, setIsOpenedProductTableModal] = useState(false)
 
     useEffect(() => {
         const getTables = async () => {
@@ -42,6 +45,8 @@ export default function TableContextProvider({ children, restaurant }: iTableCon
                 tables,
                 setOpenedTableModal,
                 openedTableModal,
+                setIsOpenedProductTableModal,
+                isOpenedProductTableModal,
                 createNewtable,
             }}
         >

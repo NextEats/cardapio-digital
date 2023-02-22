@@ -4,7 +4,7 @@ interface iButtonProps {
     Icon?: ReactNode,
     name?: "Criar nova categoria" | "Abrir caixa" | "Fechar caixa" | "Novo" | "Filtrar"
     | "Excluir" | "Cancelar" | "Editar" | "Adicionar" | "Adicionar novo item" | "Imprimir"
-    | "Imprimir e aceitar o pedido" | "Nova Mesa",
+    | "Imprimir e aceitar o pedido" | "Nova Mesa" | "Pedir",
     h?: string,
     w?: string,
     disabled?: boolean,
@@ -23,6 +23,7 @@ export function CardapioDigitalButton({ name = 'Adicionar', onClick, h, w, Icon,
         ${name === "Criar nova categoria" ||
                     name === "Imprimir" || name === "Editar" ||
                     name === "Filtrar" ||
+                    name === "Pedir" ||
                     name === "Imprimir e aceitar o pedido"
                     ? 'hover:bg-blue-700 bg-blue-500' : ''}
         ${name === "Cancelar" || name === "Fechar caixa" ? 'hover:bg-yellow-500 bg-yellow-400' : ''}

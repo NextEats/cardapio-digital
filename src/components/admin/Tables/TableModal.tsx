@@ -4,6 +4,7 @@ import { useContext, useState } from "react";
 import { BsGear } from "react-icons/bs";
 import { FaHome } from "react-icons/fa";
 import { FiX } from "react-icons/fi";
+import { CardapioDigitalButton } from "../cardapio-digital/CardapioDigitalButton";
 import CustomerAtTheTable from "./CustomerAtTheTable";
 import ProductTableModal from "./ProductTableModal";
 interface iTableModalProps {
@@ -36,6 +37,10 @@ export default function TableModal({ }: iTableModalProps) {
                         <div className=" flex flex-col lg:grid lg:grid-cols-2 gap-4 ">
                             <CustomerAtTheTable />
                         </div>
+                        <div className="w-full flex items-center justify-end">
+                            <CardapioDigitalButton name="Adicionar cliente" h="h-9" w="w-44" />
+                        </div>
+
                         <Dialog.Close className="fixed top-3 right-3 text-gray-600" onClick={() => setOpenedTableModal(null)}>
                             <FiX size={22} />
                         </Dialog.Close>

@@ -2,8 +2,9 @@ import { TableContext } from '@/src/contexts/TableControlContext';
 import { iProducts } from '@/src/types/types';
 import * as Dialog from '@radix-ui/react-dialog';
 import Image from 'next/image';
-import { ChangeEvent, useContext, useState } from 'react';
+import { ChangeEvent, useContext, useEffect, useState } from 'react';
 import { FiX } from 'react-icons/fi';
+import { CardapioDigitalButton } from '../cardapio-digital/CardapioDigitalButton';
 
 interface iProductTableModalProps {
 
@@ -14,7 +15,7 @@ export default function ProductTableModal({ }: iProductTableModalProps) {
     const { isOpenedProductTableModal, setIsOpenedProductTableModal, products, categories } = useContext(TableContext)
     const [filter, setFilter] = useState<{ name: string | null, category: number | null }>({
         name: null,
-        category: null
+        category: 0
     })
     // const [filteredProductsState, setFiletredProductsState] = useState<iProducts["data"]>()
     const [categoryId, setCategoryId] = useState(0)
@@ -79,7 +80,7 @@ export default function ProductTableModal({ }: iProductTableModalProps) {
                                     </div>
                                 })}
                             </div>
-                            <div className='flex flex-col lg:grid lg:grid-cols-2 gap-2 h-[386px] overflow-auto scrollbar-custom p-1'>
+                            <div className='flex flex-col lg:grid lg:grid-cols-2 gap-2 h-[342px] overflow-auto scrollbar-custom p-1 mb-3'>
 
                                 {filteredProducts.map(product => {
                                     return (
@@ -96,6 +97,10 @@ export default function ProductTableModal({ }: iProductTableModalProps) {
                                     )
                                 })}
 
+                            </div>
+                            <div className="w-full flex items-center justify-end gap-3">
+                                <CardapioDigitalButton name="Cancelar" h="h-9" w="w-44" onClick={() => setIsOpenedProductTableModal(false)} />
+                                <CardapioDigitalButton name="Confirmar" h="h-9" w="w-44" />
                             </div>
                         </div>
                         <Dialog.Close className="fixed top-3 right-3 text-gray-600" onClick={() => setIsOpenedProductTableModal(false)}>

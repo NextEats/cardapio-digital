@@ -9,9 +9,7 @@ import CustomerAtTheTable from "./CustomerAtTheTable";
 import ProductsTableModal from "./ProductsTableModal";
 import TableConfigModal from "./TableConfigModal";
 interface iTableModalProps {
-    // setIsOpenedTableModal?: Dispatch<SetStateAction<boolean>>;
-    // isOpenedTableModal?: boolean;
-    // table: iTable["data"]
+
 }
 
 export default function TableModal({ }: iTableModalProps) {
@@ -36,12 +34,11 @@ export default function TableModal({ }: iTableModalProps) {
                             </div>
                             <BsGear size={24} className="cursor-pointer" onClick={() => setIsOpenedTableConfigModal(true)} />
                         </Dialog.Title>
-                        <div className=" flex flex-col lg:grid lg:grid-cols-2 gap-4 ">
-                            {
 
-                            }
+                        <div className=" flex flex-col lg:grid lg:grid-cols-2 gap-4 ">
                             <CustomerAtTheTable />
                         </div>
+
                         <div className="w-full flex items-center justify-end">
                             <CardapioDigitalButton name="Pedir" h="h-8" w="w-40" onClick={() => setIsOpenedProductTableModal(true)} />
                         </div>

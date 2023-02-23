@@ -1,4 +1,5 @@
-import { createContext, Dispatch, ReactNode, SetStateAction, useEffect, useReducer, useState } from "react";
+import { createContext, Dispatch, ReactNode, SetStateAction, useEffect, useMemo, useReducer, useState } from "react";
+import ordersProduct from "../pages/api/orders_products";
 import { iTableReducer, tableReducer, tableReducerDefaultValues } from "../reducers/tableReducer/reducer";
 import { api } from "../server/api";
 import { iAdditionals, iOrdersProducts, iOrdersTablesWithFkData, iProduct, iProductCategories, iProductOptions, iProducts, iRestaurant, iSelects, iTable, iTables } from "../types/types";
@@ -64,6 +65,19 @@ export default function TableContextProvider({ children, restaurant, products, o
         }
         getTables()
     }, [restaurant])
+
+    // useMemo(() => {
+    //     if(openedTableModal === null) return
+    //     const ordersTableFiltered = ordersTables.filter(ot => ot.tables.id === openedTableModal.id)
+
+    //     let ordersProductsFiltered
+    //     let tableProducts 
+    //     for(let i = 0; i < ordersTableFiltered.length; i) {
+    //         if(ordersTableFiltered[i].orders.order_status.status_name === 'entregue' && ordersTableFiltered[i].orders.order_status.status_name === 'cancelado') return
+    //         ordersProductsFiltered = ordersProducts.filter( op => op.order_id === ordersTableFiltered[i].orders.id)
+    //     }
+
+    // }, [openedTableModal, ordersTables, ordersProducts])
 
     async function createNewtable(cheirAmount: string, tableName: string) {
         if (tableName === '') {

@@ -1,17 +1,17 @@
-import { iAdditional, iInsertOrder, iProductOption, iSelect } from "src/types/types"
+import { iAdditional, iInsertOrder, iProduct, iProductOption, iSelect } from "src/types/types"
 
 
 export enum tableReducerAction {
-    OPTIONS = "OPTIONS",
+    PRODUCT = "PRODUCT",
     ADDITIONALS = "ADDITIONALS",
     CHANGEADDITIONALQUANTITY = "CHANGEADDITIONALQUANTITY",
 }
 
 
-export function selectOptionAction(option: iProductOption["data"], select: iSelect["data"]) {
+export function selectProductAction(product: iProduct["data"] | null) {
     return {
-        type: tableReducerAction.OPTIONS,
-        payload: { option, select, }
+        type: tableReducerAction.PRODUCT,
+        payload: { product }
     }
 }
 export function selectAdditionalAction(additional: iAdditional["data"]) {

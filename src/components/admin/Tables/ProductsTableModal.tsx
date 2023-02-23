@@ -1,4 +1,5 @@
 import { TableContext } from '@/src/contexts/TableControlContext';
+import { selectProductAction } from '@/src/reducers/tableReducer/action';
 import * as Dialog from '@radix-ui/react-dialog';
 import Image from 'next/image';
 import { ChangeEvent, useContext, useState } from 'react';
@@ -13,7 +14,7 @@ interface iProductTableModalProps {
 export default function ProductsTableModal({ }: iProductTableModalProps) {
 
     const {
-        viewProduct, isOpenedProductTableModal,
+        viewProduct, isOpenedProductTableModal, tableDispatch,
         setIsOpenedProductTableModal, products, categories, setViewProduct
     } = useContext(TableContext)
     const [filter, setFilter] = useState<{ name: string | null, category: number | null }>({
@@ -87,7 +88,10 @@ export default function ProductsTableModal({ }: iProductTableModalProps) {
 
                                 {filteredProducts.map(product => {
                                     return (
-                                        <div key={product.id} onClick={() => setViewProduct(product)} className="bg-white shadow-sm max-h-24 sm:h-24 flex flex-1 items-center rounded-md p-2 hover:shadow-md hover:transition-all ease-in-out cursor-pointer relative">
+                                        <div key={product.id} onClick={() => {
+                                            setViewProduct(product)
+                                            tableDispatch(selectProductAction(product))
+                                        }} className="bg-white shadow-sm max-h-24 sm:h-24 flex flex-1 items-center rounded-md p-2 hover:shadow-md hover:transition-all ease-in-out cursor-pointer relative">
                                             <Image className="rounded-md h-full" src={product.picture_url} alt="" width={85} height={40} />
                                             <div className="flex flex-col h-full items-start justify-start gap-1 overflow-hidden px-3 pt-4">
 

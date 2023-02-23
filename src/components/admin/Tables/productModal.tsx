@@ -1,11 +1,10 @@
 import { TableContext } from '@/src/contexts/TableControlContext';
-import { selectOptionAction } from '@/src/reducers/tableReducer/action';
-import { iProductOption, iProducts, iSelect } from '@/src/types/types';
+import useProductSelectsWithOptions from '@/src/hooks/useProductSelectsWithOptions';
 import * as Dialog from '@radix-ui/react-dialog';
 import Image from 'next/image';
-import { ChangeEvent, useContext, useEffect, useState } from 'react';
-import { BiPencil } from 'react-icons/bi';
-import { FiTrash2, FiX } from 'react-icons/fi';
+import { useContext } from 'react';
+import { FiX } from 'react-icons/fi';
+import SelectComponent from '../../home/ProductModal/SelectComponent';
 import { CardapioDigitalButton } from '../cardapio-digital/CardapioDigitalButton';
 import TableAdditionals from './TableAdditionals';
 
@@ -15,19 +14,8 @@ interface iProductModalProps {
 
 export default function ProductModal({ }: iProductModalProps) {
 
-    const { viewProduct, setViewProduct, selects, productOptions, additionals, tableState, tableDispatch } = useContext(TableContext)
-
-    function handleSelectOption(option: iProductOption["data"], select: iSelect["data"]) {
-        if (tableState.optionsSelected.some(o => o.id !== option.id)) {
-            if (tableState.optionsSelected.length >= select.max_selected_options) {
-                alert("Selecione no máximo duas opções")
-                return
-            }
-            tableDispatch(selectOptionAction(option, select))
-            return
-        }
-        tableDispatch(selectOptionAction(option, select))
-    }
+    const { viewProduct, setViewProduct, tableState, tableDispatch } = useContext(TableContext)
+    const { productSelects, selectOption } = useProductSelectsWithOptions(viewProduct?.id!)
 
     return (
         <div>
@@ -55,29 +43,20 @@ export default function ProductModal({ }: iProductModalProps) {
                                 </div>
 
                                 <div className='flex flex-col gap-3 '>
-                                    {selects!.map(select => {
-                                        return <div key={select.id} className="mb-3">
-                                            <span> {select.name} </span>
 
-                                            <div className='grid grid-cols-4 gap-2'>
-                                                {productOptions.map(option => {
-                                                    if (option.select_id !== select.id) return
-                                                    const selectedStyles = tableState.optionsSelected.some(o => o.id === option.id) ? 'bg-red-400' : ''
-                                                    return <div key={option.id} className='relative' onClick={() => handleSelectOption(option, select)}>
-                                                        <Image
-                                                            className="rounded-md h-full" alt="" width={200} height={200}
-                                                            src={option.picture_url}
-                                                        />
-                                                        <div className={`absolute inset-0 w-full h-full ${selectedStyles}`}></div>
-                                                        <div className="w-full h-full absolute inset-0 rounded-md z-10 bg-gradient-to-t from-[#000000ff] via-[#00000010] to-[#00000000]"></div>
-                                                        <span className="absolute bottom-1 left-1 z-20 text-white-300 text-sm font-medium ">
-                                                            {option.name}
-                                                        </span>
-                                                    </div>
-                                                })}
-                                            </div>
-                                        </div>
-                                    })}
+                                    <div>
+                                        {productSelects.map((select, selectIndex) => (
+                                            <SelectComponent
+                                                select={select}
+                                                key={selectIndex}
+                                                index={selectIndex}
+                                                handleOptionClick={(optionIndex: number) => {
+                                                    selectOption(selectIndex, optionIndex);
+                                                    console.log(productSelects);
+                                                }}
+                                            />
+                                        ))}
+                                    </div>
 
                                     <h2> Adicionais </h2>
 
@@ -89,7 +68,8 @@ export default function ProductModal({ }: iProductModalProps) {
                             </div>
                         </div>
                         <div className="w-full flex items-center justify-end gap-3">
-                            <CardapioDigitalButton name="Cancelar" h="h-9" w="w-44" onClick={() => setViewProduct(null)} />
+                            {/* <CardapioDigitalButton name="Cancelar" h="h-9" w="w-44" onClick={() => setViewProduct(null)} /> */}
+                            <span className='text-lg font-semibold text-green-500'> R$ {tableState.totalPrice.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} </span>
                             <CardapioDigitalButton name="Confirmar" h="h-9" w="w-44" />
                         </div>
                         <Dialog.Close className="fixed top-3 right-3 text-gray-600" onClick={() => setViewProduct(null)}>

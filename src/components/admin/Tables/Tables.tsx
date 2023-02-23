@@ -11,8 +11,6 @@ import TableModal from "./TableModal"
 export default function Tables() {
     const { tables, setOpenedTableModal, openedTableModal, setIsOpenedCreateTableModal } = useContext(TableContext)
 
-    // useEffect(() => setIsOpenedCreateTableModal(false), [])
-
     const moment = new Date();
 
     return (

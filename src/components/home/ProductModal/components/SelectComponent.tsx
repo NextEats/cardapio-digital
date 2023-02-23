@@ -1,11 +1,11 @@
-import { tSelectWithOptions } from '@/src/fetch/productSelects/getProductSelectWithOptions'
-import Image from 'next/image'
-import stringToNormalForm from '../../../helpers/stringToNormalForm'
+import { tSelectWithOptions } from '@/src/fetch/productSelects/getProductSelectWithOptions';
+import Image from 'next/image';
+import stringToNormalForm from '../../../../helpers/stringToNormalForm';
 
 interface iSelectComponentProps {
-    select: tSelectWithOptions
-    index: number
-    handleOptionClick: Function
+    select: tSelectWithOptions;
+    index: number;
+    handleOptionClick: Function;
 }
 
 export default function SelectComponent({
@@ -36,7 +36,7 @@ export default function SelectComponent({
                         <div
                             key={option.id}
                             onClick={() => {
-                                handleOptionClick(optionIndex)
+                                handleOptionClick(optionIndex);
                             }}
                         >
                             <label
@@ -79,9 +79,9 @@ export default function SelectComponent({
                                 style={{ display: 'none' }}
                             />
                         </div>
-                    )
+                    );
                 })}
             </div>
         </fieldset>
-    )
+    );
 }

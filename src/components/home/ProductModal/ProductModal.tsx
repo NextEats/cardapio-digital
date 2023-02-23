@@ -1,76 +1,87 @@
-import { BsArrowLeftCircle } from 'react-icons/bs'
-import { MouseEvent, useEffect, useState } from 'react'
-import Image from 'next/image'
-import { iProduct } from '../../../types/types'
-import Additionals from './Additionals'
-import ProductOptions from './ProductOptions'
-import SubmitButtons from './SubmitButtons'
-
 import {
-    getProductAdditionals,
-    iProductAdditional,
-} from './getProductAdditionals'
+    iProductModalReducer,
+    ProductModalReducer,
+    tProductModalReducer,
+} from '@/src/reducers/ProductModalReducer/reducer';
+import Image from 'next/image';
+import { MouseEvent, useEffect, useReducer } from 'react';
+import { BsArrowLeftCircle } from 'react-icons/bs';
+import { iProduct } from '../../../types/types';
 
 export default function ProductModal({
     productModal,
     setProductModal,
     productsDispatch,
 }: {
-    productModal: iProduct['data'] | undefined | null
-    setProductModal: Function
-    productsDispatch: Function
+    productModal: iProduct['data'] | undefined | null;
+    setProductModal: Function;
+    productsDispatch: Function;
 }) {
-    const [additionals, setAdditionals] = useState<iProductAdditional[]>()
-    const [price, setPrice] = useState<number>(0)
-    const [selectedAdditionals, setSelectedAdditionals] = useState<any[]>([])
-    const [quantity, setQuantity] = useState<number>(1)
-    const [observation, setObservation] = useState<string | null>(null)
+    // const [additionals, setAdditionals] = useState<iProductAdditional[]>();
+    // const [price, setPrice] = useState<number>(0);
+    // const [selectedAdditionals, setSelectedAdditionals] = useState<any[]>([]);
+    // const [quantity, setQuantity] = useState<number>(1);
+    // const [observation, setObservation] = useState<string | null>(null);
 
-    const body = document.querySelector('body')
-    body?.classList.add('overflow-hidden')
+    const initialState: iProductModalReducer = {
+        additionals: [],
+        price: 0,
+        quantity: 1,
+        observation: null,
+    };
+
+    const [state, dispatch] = useReducer<tProductModalReducer>(
+        ProductModalReducer,
+        initialState
+    );
+
+    useEffect(() => {}, [productModal]);
+
+    const body = document.querySelector('body');
+    body?.classList.add('overflow-hidden');
 
     function closeModal() {
-        setProductModal(null)
-        body?.classList.remove('overflow-hidden')
+        setProductModal(null);
+        body?.classList.remove('overflow-hidden');
     }
 
-    useEffect(() => {
-        setQuantity(1)
-    }, [])
+    // useEffect(() => {
+    //     setQuantity(1);
+    // }, []);
 
-    useEffect(() => {
-        if (!productModal) {
-            return
-        }
+    // useEffect(() => {
+    //     if (!productModal) {
+    //         return;
+    //     }
 
-        getProductAdditionals(productModal?.id).then((response) => {
-            setAdditionals(response as iProductAdditional[])
-        })
+    //     getProductAdditionals(productModal?.id).then((response) => {
+    //         setAdditionals(response as iProductAdditional[]);
+    //     });
 
-        setPrice(productModal.price)
-    }, [productModal])
+    //     setPrice(productModal.price);
+    // }, [productModal]);
 
     if (!productModal) {
-        return <div>Carregando</div>
+        return <div>Carregando</div>;
     }
 
     function handleSubmit(e: MouseEvent) {
-        e.preventDefault()
+        e.preventDefault();
 
-        productsDispatch({
-            type: 'add',
-            payload: {
-                id: productModal?.id,
-                name: productModal?.name,
-                price: productModal?.price,
-                quantity: quantity,
-                picture_url: productModal?.picture_url,
-                additionals: selectedAdditionals,
-                observation,
-            },
-        })
+        // productsDispatch({
+        //     type: 'add',
+        //     payload: {
+        //         id: productModal?.id,
+        //         name: productModal?.name,
+        //         price: productModal?.price,
+        //         quantity: quantity,
+        //         picture_url: productModal?.picture_url,
+        //         additionals: selectedAdditionals,
+        //         observation,
+        //     },
+        // });
 
-        closeModal()
+        closeModal();
     }
 
     return (
@@ -78,7 +89,7 @@ export default function ProductModal({
             <div
                 className="fixed bg-black w-screen h-screen opacity-60 z-[100] cursor-pointer"
                 onClick={() => {
-                    closeModal()
+                    closeModal();
                 }}
             ></div>
             <div
@@ -89,7 +100,7 @@ export default function ProductModal({
                         className="my-8 cursor-pointer"
                         size={30}
                         onClick={() => {
-                            closeModal()
+                            closeModal();
                         }}
                     />
                     <div className="flex items-center justify-center mb-9">
@@ -110,7 +121,7 @@ export default function ProductModal({
                         </p>
                     </div>
 
-                    <ProductOptions product_id={productModal.id} />
+                    {/* <ProductOptions product_id={productModal.id} />
 
                     {additionals?.length != 0 && additionals && (
                         <Additionals
@@ -119,27 +130,26 @@ export default function ProductModal({
                             selectedAdditionals={selectedAdditionals}
                             setSelectedAdditionals={setSelectedAdditionals}
                         />
-                    )}
+                    )} */}
 
-                    <form className="w-full h-24 mb-8">
+                    {/* <form className="w-full h-24 mb-8">
                         <textarea
                             name=""
                             onBlur={(e) => setObservation(e.target.value)}
                             className=" scrollbar-custom w-full h-full resize-none rounded-sm bg-[#f6f6f6] shadow-sm text-base outline-none p-4"
                             placeholder="Observações"
                         ></textarea>
-                    </form>
+                    </form> */}
 
-                    <SubmitButtons
+                    {/* <SubmitButtons
                         productModal={productModal}
                         price={price}
                         quantity={quantity}
                         setQuantity={setQuantity}
                         setPrice={setPrice}
-                        submitFunction={(e: MouseEvent) => handleSubmit(e)}
-                    />
+                    /> */}
                 </div>
             </div>
         </>
-    )
+    );
 }

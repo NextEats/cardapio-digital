@@ -246,25 +246,31 @@ export interface Database {
       }
       clients: {
         Row: {
-          address_id: number
+          address_id: number | null
           contact_id: number
           created_at: string | null
           id: number
+          is_delivery: boolean | null
           name: string
+          table_id: number | null
         }
         Insert: {
-          address_id: number
+          address_id?: number | null
           contact_id: number
           created_at?: string | null
           id?: number
+          is_delivery?: boolean | null
           name: string
+          table_id?: number | null
         }
         Update: {
-          address_id?: number
+          address_id?: number | null
           contact_id?: number
           created_at?: string | null
           id?: number
+          is_delivery?: boolean | null
           name?: string
+          table_id?: number | null
         }
       }
       colors: {
@@ -457,6 +463,26 @@ export interface Database {
           observation?: string | null
           order_id?: number
           product_id?: number
+        }
+      }
+      orders_tables: {
+        Row: {
+          created_at: string | null
+          id: number
+          order_id: number | null
+          table_id: number | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: number
+          order_id?: number | null
+          table_id?: number | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: number
+          order_id?: number | null
+          table_id?: number | null
         }
       }
       payment_methods: {
@@ -873,22 +899,57 @@ export interface Database {
           restaurant_id?: number | null
         }
       }
+      tables: {
+        Row: {
+          chair_ammount: number | null
+          created_at: string | null
+          id: number
+          is_active: boolean | null
+          is_occupied: boolean | null
+          is_reserved: boolean | null
+          name: string | null
+          restaurant_id: number | null
+        }
+        Insert: {
+          chair_ammount?: number | null
+          created_at?: string | null
+          id?: number
+          is_active?: boolean | null
+          is_occupied?: boolean | null
+          is_reserved?: boolean | null
+          name?: string | null
+          restaurant_id?: number | null
+        }
+        Update: {
+          chair_ammount?: number | null
+          created_at?: string | null
+          id?: number
+          is_active?: boolean | null
+          is_occupied?: boolean | null
+          is_reserved?: boolean | null
+          name?: string | null
+          restaurant_id?: number | null
+        }
+      }
       user_details: {
         Row: {
           created_at: string | null
           id: number
+          is_waiter: boolean
           restaurant_id: number
           user_id: string
         }
         Insert: {
           created_at?: string | null
           id?: number
+          is_waiter?: boolean
           restaurant_id: number
           user_id: string
         }
         Update: {
           created_at?: string | null
           id?: number
+          is_waiter?: boolean
           restaurant_id?: number
           user_id?: string
         }
@@ -937,6 +998,32 @@ export interface Database {
           created_at?: string | null
           id?: number
           name?: string
+        }
+      }
+      workers: {
+        Row: {
+          created_at: string | null
+          email: string | null
+          id: number
+          name: string | null
+          password: string | null
+          restaurant_id: number | null
+        }
+        Insert: {
+          created_at?: string | null
+          email?: string | null
+          id?: number
+          name?: string | null
+          password?: string | null
+          restaurant_id?: number | null
+        }
+        Update: {
+          created_at?: string | null
+          email?: string | null
+          id?: number
+          name?: string | null
+          password?: string | null
+          restaurant_id?: number | null
         }
       }
     }

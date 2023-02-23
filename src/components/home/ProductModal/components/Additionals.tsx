@@ -1,7 +1,7 @@
-import { iProductAdditional } from './getProductAdditionals'
-import Image from 'next/image'
-import { BsFillPlusCircleFill } from 'react-icons/bs'
-import { FaMinus, FaPlus } from 'react-icons/fa'
+import Image from 'next/image';
+import { BsFillPlusCircleFill } from 'react-icons/bs';
+import { FaMinus, FaPlus } from 'react-icons/fa';
+import { iProductAdditional } from '../helpers/getProductAdditionals';
 
 export default function Additionals({
     data,
@@ -9,14 +9,14 @@ export default function Additionals({
     selectedAdditionals,
     setSelectedAdditionals,
 }: {
-    data: iProductAdditional[]
-    setPrice: Function
-    selectedAdditionals: any[]
-    setSelectedAdditionals: Function
+    data: iProductAdditional[];
+    setPrice: Function;
+    selectedAdditionals: any[];
+    setSelectedAdditionals: Function;
 }) {
     if (data) {
         return (
-            <div className="mb-24">
+            <div className="mb-12">
                 <h2 className="mb-5 font-bold  text-lg text-[#3a3a3a]">
                     Adicionais
                 </h2>
@@ -51,23 +51,23 @@ export default function Additionals({
                                         <button
                                             className="w-6 text-md flex items-center justify-center"
                                             onClick={(e) => {
-                                                e.preventDefault()
+                                                e.preventDefault();
 
                                                 setPrice(
                                                     (prev: any) =>
                                                         (prev -=
                                                             additionals.price)
-                                                )
+                                                );
 
                                                 let varSelectedAdditionals =
-                                                    selectedAdditionals
+                                                    selectedAdditionals;
 
                                                 let x =
                                                     varSelectedAdditionals.findIndex(
                                                         (add) =>
                                                             add.id ==
                                                             additionals.id
-                                                    )
+                                                    );
 
                                                 if (
                                                     varSelectedAdditionals[x]
@@ -80,14 +80,14 @@ export default function Additionals({
                                                             (elem, index) =>
                                                                 index !== x
                                                         ),
-                                                    ])
+                                                    ]);
                                                 } else {
                                                     varSelectedAdditionals[
                                                         x
-                                                    ].quantity -= 1
+                                                    ].quantity -= 1;
                                                     setSelectedAdditionals([
                                                         ...varSelectedAdditionals,
-                                                    ])
+                                                    ]);
                                                 }
                                             }}
                                         >
@@ -104,31 +104,31 @@ export default function Additionals({
                                         <button
                                             className="w-6 text-md flex items-center justify-center"
                                             onClick={(e) => {
-                                                e.preventDefault()
+                                                e.preventDefault();
 
                                                 setPrice(
                                                     (prev: any) =>
                                                         (prev +=
                                                             additionals.price)
-                                                )
+                                                );
 
                                                 let varSelectedAdditionals =
-                                                    selectedAdditionals
+                                                    selectedAdditionals;
 
                                                 let x =
                                                     varSelectedAdditionals.findIndex(
                                                         (add) =>
                                                             add.id ==
                                                             additionals.id
-                                                    )
+                                                    );
 
                                                 varSelectedAdditionals[
                                                     x
-                                                ].quantity += 1
+                                                ].quantity += 1;
 
                                                 setSelectedAdditionals([
                                                     ...varSelectedAdditionals,
-                                                ])
+                                                ]);
                                             }}
                                         >
                                             <FaPlus />
@@ -143,7 +143,7 @@ export default function Additionals({
                                             setPrice(
                                                 (prev: any) =>
                                                     (prev += additionals.price)
-                                            )
+                                            );
                                             setSelectedAdditionals(
                                                 (prev: any) => {
                                                     return [
@@ -152,19 +152,19 @@ export default function Additionals({
                                                             id: additionals.id,
                                                             quantity: 1,
                                                         },
-                                                    ]
+                                                    ];
                                                 }
-                                            )
+                                            );
                                         }}
                                     />
                                 )}
                             </div>
                         </div>
-                    )
+                    );
                 })}
             </div>
-        )
+        );
     } else {
-        return <>Carregando...</>
+        return <>Carregando...</>;
     }
 }

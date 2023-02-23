@@ -1,18 +1,18 @@
-import { tSelectWithOptions } from '@/src/fetch/productSelects/getProductSelectWithOptions'
-import useProductSelectsWithOptions from '@/src/hooks/useProductSelectsWithOptions'
-import SelectComponent from './SelectComponent'
+import { tSelectWithOptions } from '@/src/fetch/productSelects/getProductSelectWithOptions';
+import useProductSelectsWithOptions from '@/src/hooks/useProductSelectsWithOptions';
+import SelectComponent from './SelectComponent';
 
 type tState = {
-    productSelects: tSelectWithOptions[]
-}
+    productSelects: tSelectWithOptions[];
+};
 
 interface iProductOptions {
-    product_id: number
+    product_id: number;
 }
 
 export default function ProductOptions({ product_id }: iProductOptions) {
     const { productSelects, selectOption } =
-        useProductSelectsWithOptions(product_id)
+        useProductSelectsWithOptions(product_id);
 
     return (
         <div>
@@ -22,11 +22,11 @@ export default function ProductOptions({ product_id }: iProductOptions) {
                     key={selectIndex}
                     index={selectIndex}
                     handleOptionClick={(optionIndex: number) => {
-                        selectOption(selectIndex, optionIndex)
-                        console.log(productSelects)
+                        selectOption(selectIndex, optionIndex);
+                        console.log(productSelects);
                     }}
                 />
             ))}
         </div>
-    )
+    );
 }

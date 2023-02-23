@@ -53,27 +53,14 @@ export default function Additionals({
                                             onClick={(e) => {
                                                 e.preventDefault()
 
-                                                setPrice(
-                                                    (prev: any) =>
-                                                        (prev -=
-                                                            additionals.price)
-                                                )
+                                                setPrice((prev: any) => (prev -= additionals.price))
 
-                                                let varSelectedAdditionals =
-                                                    selectedAdditionals
+                                                let varSelectedAdditionals = selectedAdditionals
 
-                                                let x =
-                                                    varSelectedAdditionals.findIndex(
-                                                        (add) =>
-                                                            add.id ==
-                                                            additionals.id
-                                                    )
+                                                let x = varSelectedAdditionals.findIndex((add) => add.id == additionals.id)
 
                                                 if (
-                                                    varSelectedAdditionals[x]
-                                                        .quantity -
-                                                        1 ===
-                                                    0
+                                                    varSelectedAdditionals[x].quantity - 1 === 0
                                                 ) {
                                                     setSelectedAdditionals([
                                                         ...varSelectedAdditionals.filter(
@@ -108,8 +95,8 @@ export default function Additionals({
 
                                                 setPrice(
                                                     (prev: any) =>
-                                                        (prev +=
-                                                            additionals.price)
+                                                    (prev +=
+                                                        additionals.price)
                                                 )
 
                                                 let varSelectedAdditionals =

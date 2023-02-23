@@ -1,18 +1,21 @@
 import { TableContext } from '@/src/contexts/TableControlContext';
-import { iProducts } from '@/src/types/types';
 import * as Dialog from '@radix-ui/react-dialog';
 import Image from 'next/image';
-import { ChangeEvent, useContext, useEffect, useState } from 'react';
+import { ChangeEvent, useContext, useState } from 'react';
 import { FiX } from 'react-icons/fi';
 import { CardapioDigitalButton } from '../cardapio-digital/CardapioDigitalButton';
+import ProductModal from './productModal';
 
 interface iProductTableModalProps {
 
 }
 
-export default function ProductTableModal({ }: iProductTableModalProps) {
+export default function ProductsTableModal({ }: iProductTableModalProps) {
 
-    const { isOpenedProductTableModal, setIsOpenedProductTableModal, products, categories } = useContext(TableContext)
+    const {
+        viewProduct, isOpenedProductTableModal,
+        setIsOpenedProductTableModal, products, categories, setViewProduct
+    } = useContext(TableContext)
     const [filter, setFilter] = useState<{ name: string | null, category: number | null }>({
         name: null,
         category: 0
@@ -38,10 +41,9 @@ export default function ProductTableModal({ }: iProductTableModalProps) {
             name,
             category: null
         })
-        // setFiletredProductsState(filteredProducts)
     }
+
     function handleFilterByCategory(categoryId: number) {
-        // products.filter(p => p.category_id == categoryId!)
         setFilter({
             name: null,
             category: categoryId
@@ -51,6 +53,7 @@ export default function ProductTableModal({ }: iProductTableModalProps) {
 
     return (
         <div>
+            {viewProduct ? <ProductModal /> : null}
             <Dialog.Root open={isOpenedProductTableModal} >
                 <Dialog.Trigger>
                 </Dialog.Trigger>
@@ -84,7 +87,7 @@ export default function ProductTableModal({ }: iProductTableModalProps) {
 
                                 {filteredProducts.map(product => {
                                     return (
-                                        <div key={product.id} className="bg-white shadow-sm max-h-24 sm:h-24 flex flex-1 items-center rounded-md p-2 hover:shadow-md hover:transition-all ease-in-out cursor-pointer relative">
+                                        <div key={product.id} onClick={() => setViewProduct(product)} className="bg-white shadow-sm max-h-24 sm:h-24 flex flex-1 items-center rounded-md p-2 hover:shadow-md hover:transition-all ease-in-out cursor-pointer relative">
                                             <Image className="rounded-md h-full" src={product.picture_url} alt="" width={85} height={40} />
                                             <div className="flex flex-col h-full items-start justify-start gap-1 overflow-hidden px-3 pt-4">
 

@@ -4,7 +4,7 @@ import { useContext, useState } from "react";
 import { BsGear } from "react-icons/bs";
 import { FaHome } from "react-icons/fa";
 import { FiX } from "react-icons/fi";
-import ProductTableModal from "./ProductTableModal";
+import ProductsTableModal from "./ProductsTableModal";
 import * as RadioGroup from '@radix-ui/react-radio-group';
 import RadioGroupItem from "./RadioGroupItem";
 import { CardapioDigitalButton } from "../cardapio-digital/CardapioDigitalButton";
@@ -40,7 +40,7 @@ export default function TableConfigModal({ }: iTableConfigModalProps) {
 
     return (
         <>
-            <ProductTableModal />
+            <ProductsTableModal />
             <Dialog.Root open={isOpenedTableConfigModal}>
                 <Dialog.Trigger>
                 </Dialog.Trigger>

@@ -6,7 +6,7 @@ import { FaHome } from "react-icons/fa";
 import { FiX } from "react-icons/fi";
 import { CardapioDigitalButton } from "../cardapio-digital/CardapioDigitalButton";
 import CustomerAtTheTable from "./CustomerAtTheTable";
-import ProductTableModal from "./ProductTableModal";
+import ProductsTableModal from "./ProductsTableModal";
 import TableConfigModal from "./TableConfigModal";
 interface iTableModalProps {
     // setIsOpenedTableModal?: Dispatch<SetStateAction<boolean>>;
@@ -21,7 +21,7 @@ export default function TableModal({ }: iTableModalProps) {
     return (
         <>
             {isOpenedTableConfigModal ? <TableConfigModal /> : null}
-            {isOpenedProductTableModal ? <ProductTableModal /> : null}
+            {isOpenedProductTableModal ? <ProductsTableModal /> : null}
 
             <Dialog.Root open={openedTableModal !== null}>
                 <Dialog.Trigger>
@@ -37,6 +37,9 @@ export default function TableModal({ }: iTableModalProps) {
                             <BsGear size={24} className="cursor-pointer" onClick={() => setIsOpenedTableConfigModal(true)} />
                         </Dialog.Title>
                         <div className=" flex flex-col lg:grid lg:grid-cols-2 gap-4 ">
+                            {
+
+                            }
                             <CustomerAtTheTable />
                         </div>
                         <div className="w-full flex items-center justify-end">

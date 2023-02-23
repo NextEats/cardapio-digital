@@ -213,7 +213,7 @@ export function Igredient({
                     <div key={ingredient?.id} className="mb-6 relative">
                         <div className="mb-4">
                             {isUpdatingIngradientNameState ===
-                            ingredient?.name ? (
+                                ingredient?.name ? (
                                 <div className="flex items-center gap-3">
                                     <form
                                         onSubmit={handleSubmit(
@@ -261,7 +261,7 @@ export function Igredient({
                                         <span className="text-xs font-normal text-red-500">
                                             {' '}
                                             {error ===
-                                            'Esse Ingrediente já existe'
+                                                'Esse Ingrediente já existe'
                                                 ? error
                                                 : null}{' '}
                                         </span>
@@ -271,7 +271,7 @@ export function Igredient({
                                 <div className="w-full flex items-center justify-between">
                                     <h3> {ingredient?.name} </h3>
                                     {state.isViewingUpdatingOrAdding !==
-                                    'VIEWING' ? (
+                                        'VIEWING' ? (
                                         <div className="flex items-center gap-2">
                                             <BiPencil
                                                 onClick={() => {
@@ -359,14 +359,10 @@ export function Igredient({
                                         className="rounded-lg w-[100px] h-24 flex items-center relative justify-center"
                                     >
                                         {state.isViewingUpdatingOrAdding !==
-                                        'VIEWING' ? (
+                                            'VIEWING' ? (
                                             <FiTrash2
                                                 onClick={() =>
-                                                    removeOptionFromIngredient(
-                                                        ingredient.id!,
-                                                        option.name!,
-                                                        option.id!
-                                                    )
+                                                    removeOptionFromIngredient(ingredient.id!, option.name!, option.id!)
                                                 }
                                                 className="text-xl text-red-500 cursor-pointer hover:scale-125 hover:transition-all ease-in-out
                                                         absolute top-2 right-2 z-30"

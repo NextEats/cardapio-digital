@@ -1,6 +1,7 @@
-import { createContext, Dispatch, ReactNode, SetStateAction, useEffect, useState } from "react";
+import { createContext, Dispatch, ReactNode, SetStateAction, useEffect, useReducer, useState } from "react";
+import { iTableReducer, tableReducer, tableReducerDefaultValues } from "../reducers/tableReducer/reducer";
 import { api } from "../server/api";
-import { iOrdersTablesWithFkData, iProductCategories, iProducts, iRestaurant, iTable, iTables } from "../types/types";
+import { iAdditionals, iOrdersProducts, iOrdersTablesWithFkData, iProduct, iProductCategories, iProductOptions, iProducts, iRestaurant, iSelects, iTable, iTables } from "../types/types";
 
 interface iTableContextProps {
     tables: iTables["data"];
@@ -12,10 +13,18 @@ interface iTableContextProps {
     isOpenedTableConfigModal: boolean
     setIsOpenedCreateTableModal: Dispatch<SetStateAction<boolean>>
     isOpenedCreateTableModal: boolean;
+    setViewProduct: Dispatch<SetStateAction<iProduct["data"] | null>>
+    viewProduct: iProduct["data"] | null
     products: iProducts["data"]
+    additionals: iAdditionals["data"]
+    productOptions: iProductOptions["data"]
+    selects: iSelects["data"]
+    ordersProducts: iOrdersProducts["data"]
     categories: iProductCategories["data"]
     ordersTables: iOrdersTablesWithFkData[]
     restaurant: iRestaurant["data"]
+    tableDispatch: Dispatch<any>
+    tableState: iTableReducer
     updateTable: (is_active: boolean, is_occupied: boolean, table_id: number) => Promise<void>;
     createNewtable: (cheirAmount: string, tableName: string) => Promise<void>;
     deleteTable: () => Promise<void>;
@@ -23,17 +32,27 @@ interface iTableContextProps {
 interface iTableContextProviderProps {
     children: ReactNode
     restaurant: iRestaurant["data"]
+    additionals: iAdditionals["data"]
+    productOptions: iProductOptions["data"]
+    selects: iSelects["data"]
     products: iProducts["data"]
+    ordersProducts: iOrdersProducts["data"]
     categories: iProductCategories["data"]
     ordersTables: iOrdersTablesWithFkData[]
 }
 
 export const TableContext = createContext({} as iTableContextProps)
 
-export default function TableContextProvider({ children, restaurant, products, categories, ordersTables }: iTableContextProviderProps) {
+export default function TableContextProvider({ children, restaurant, products, ordersProducts, additionals, productOptions, selects, categories, ordersTables }: iTableContextProviderProps) {
+
+    const [tableState, tableDispatch] = useReducer(tableReducer, tableReducerDefaultValues)
+
     const [tables, setTables] = useState<iTables["data"]>([])
 
+    const [viewProduct, setViewProduct] = useState<iProduct["data"] | null>(null)
+
     const [openedTableModal, setOpenedTableModal] = useState<iTable["data"] | null>(null)
+    // const [isOpenedProductModal, setIsOpenedProductModal] = useState(false)
     const [isOpenedProductTableModal, setIsOpenedProductTableModal] = useState(false)
     const [isOpenedTableConfigModal, setIsOpenedTableConfigModal] = useState(false)
     const [isOpenedCreateTableModal, setIsOpenedCreateTableModal] = useState(false)
@@ -71,6 +90,7 @@ export default function TableContextProvider({ children, restaurant, products, c
         },)
         setIsOpenedTableConfigModal(false)
     }
+
     async function deleteTable() {
         const table_id = openedTableModal?.id!
         await api.delete(`api/table_control/${restaurant.id!}`, { data: { table_id } })
@@ -96,10 +116,18 @@ export default function TableContextProvider({ children, restaurant, products, c
                 isOpenedTableConfigModal,
                 setIsOpenedCreateTableModal,
                 isOpenedCreateTableModal,
+                setViewProduct,
+                viewProduct,
                 products,
+                additionals,
+                productOptions,
+                selects,
+                ordersProducts,
                 categories,
                 ordersTables,
                 restaurant,
+                tableDispatch,
+                tableState,
                 createNewtable,
                 updateTable,
                 deleteTable,

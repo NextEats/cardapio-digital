@@ -118,8 +118,22 @@ export interface iTable {
 export interface iTables {
   data: Array<Database["public"]["Tables"]["tables"]["Row"]>;
 }
+export interface iOrdersTable {
+  data: Database["public"]["Tables"]["tables"]["Row"];
+}
+
+export interface iOrdersTables {
+  data: Array<Database["public"]["Tables"]["orders_tables"]["Row"]>;
+}
 
 // ==================   INSERTS  =====================
+export interface iInsertOrdersTable {
+  data: Database["public"]["Tables"]["orders_tables"]["Insert"];
+}
+
+export interface iInsertOrdersTables {
+  data: Array<Database["public"]["Tables"]["orders_tables"]["Insert"]>;
+}
 export interface iInsertTable {
   data: Database["public"]["Tables"]["tables"]["Insert"];
 }
@@ -343,6 +357,13 @@ export type iOrdersWithFKData = iOrder["data"] & {
   order_status: iOrderStatus["data"];
 };
 
+export type iOrdersTablesWithFkData = iOrdersTable["data"] & {
+  orders: {
+    id: number;
+    order_status: iOrderStatus["data"]
+  }
+  tables: iTable["data"]
+};
 export interface iDigitalMenuData {
   restaurant: iRestaurantWithFKData;
   groupedProducts: iGroupedProducts | undefined;

@@ -7,6 +7,7 @@ import { FiX } from "react-icons/fi";
 import { CardapioDigitalButton } from "../cardapio-digital/CardapioDigitalButton";
 import CustomerAtTheTable from "./CustomerAtTheTable";
 import ProductTableModal from "./ProductTableModal";
+import TableConfigModal from "./TableConfigModal";
 interface iTableModalProps {
     // setIsOpenedTableModal?: Dispatch<SetStateAction<boolean>>;
     // isOpenedTableModal?: boolean;
@@ -15,13 +16,13 @@ interface iTableModalProps {
 
 export default function TableModal({ }: iTableModalProps) {
 
-    const { createNewtable } = useContext(TableContext)
-    const [cheirAmount, setCheirAmount] = useState('')
-    const { tables, openedTableModal, setOpenedTableModal } = useContext(TableContext)
+    const { openedTableModal, setOpenedTableModal, isOpenedTableConfigModal, isOpenedProductTableModal, setIsOpenedTableConfigModal, setIsOpenedProductTableModal } = useContext(TableContext)
 
     return (
         <>
-            <ProductTableModal />
+            {isOpenedTableConfigModal ? <TableConfigModal /> : null}
+            {isOpenedProductTableModal ? <ProductTableModal /> : null}
+
             <Dialog.Root open={openedTableModal !== null}>
                 <Dialog.Trigger>
                 </Dialog.Trigger>
@@ -30,15 +31,16 @@ export default function TableModal({ }: iTableModalProps) {
                     <Dialog.Content className="fixed top-1/3 right-1/2 z-20 translate-x-1/2 rounded-lg w-[350px] sm:w-[600px] lg:w-[900px] h-[] bg-white shadow-md p-6" >
                         <Dialog.Title className="flex items-center justify-between text-base w-full text-center font-semibold mb-6 mt-3">
                             <div className="flex items-center justify-start gap-3">
-                                <FaHome className="text-gray-350" size={32} /> <span className="text-lg font-bold "> Mesa {openedTableModal?.id} </span>
+                                <FaHome className="text-gray-350" size={32} />
+                                <span className="text-lg font-bold "> Mesa {openedTableModal?.id} </span>
                             </div>
-                            <BsGear size={24} className="cursor-pointer" />
+                            <BsGear size={24} className="cursor-pointer" onClick={() => setIsOpenedTableConfigModal(true)} />
                         </Dialog.Title>
                         <div className=" flex flex-col lg:grid lg:grid-cols-2 gap-4 ">
                             <CustomerAtTheTable />
                         </div>
                         <div className="w-full flex items-center justify-end">
-                            <CardapioDigitalButton name="Adicionar cliente" h="h-9" w="w-44" />
+                            <CardapioDigitalButton name="Pedir" h="h-8" w="w-40" onClick={() => setIsOpenedProductTableModal(true)} />
                         </div>
 
                         <Dialog.Close className="fixed top-3 right-3 text-gray-600" onClick={() => setOpenedTableModal(null)}>

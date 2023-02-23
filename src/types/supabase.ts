@@ -246,25 +246,31 @@ export interface Database {
       }
       clients: {
         Row: {
-          address_id: number
+          address_id: number | null
           contact_id: number
           created_at: string | null
           id: number
+          is_delivery: boolean | null
           name: string
+          table_id: number | null
         }
         Insert: {
-          address_id: number
+          address_id?: number | null
           contact_id: number
           created_at?: string | null
           id?: number
+          is_delivery?: boolean | null
           name: string
+          table_id?: number | null
         }
         Update: {
-          address_id?: number
+          address_id?: number | null
           contact_id?: number
           created_at?: string | null
           id?: number
+          is_delivery?: boolean | null
           name?: string
+          table_id?: number | null
         }
       }
       colors: {
@@ -457,6 +463,26 @@ export interface Database {
           observation?: string | null
           order_id?: number
           product_id?: number
+        }
+      }
+      orders_tables: {
+        Row: {
+          created_at: string | null
+          id: number
+          order_id: number | null
+          table_id: number | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: number
+          order_id?: number | null
+          table_id?: number | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: number
+          order_id?: number | null
+          table_id?: number | null
         }
       }
       payment_methods: {
@@ -881,6 +907,7 @@ export interface Database {
           is_active: boolean | null
           is_occupied: boolean | null
           is_reserved: boolean | null
+          name: string | null
           restaurant_id: number | null
         }
         Insert: {
@@ -890,6 +917,7 @@ export interface Database {
           is_active?: boolean | null
           is_occupied?: boolean | null
           is_reserved?: boolean | null
+          name?: string | null
           restaurant_id?: number | null
         }
         Update: {
@@ -899,6 +927,7 @@ export interface Database {
           is_active?: boolean | null
           is_occupied?: boolean | null
           is_reserved?: boolean | null
+          name?: string | null
           restaurant_id?: number | null
         }
       }

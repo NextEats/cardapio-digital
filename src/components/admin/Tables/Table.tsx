@@ -22,7 +22,7 @@ export default function Table({ table }: iTableProps) {
             <div className="flex flex-1 gap-3 mb-4">
                 <FaHome className="text-gray-350" size={32} />
                 <div className="flex flex-col gap-4" >
-                    <span className="text-lg font-bold ">Mesa {table.id}</span>
+                    <span className="text-lg font-bold text-start">{table.name}</span>
                     <span className="text-sm font-medium "> Aguadando cliente </span>
                 </div>
             </div>

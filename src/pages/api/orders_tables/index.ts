@@ -1,9 +1,8 @@
-import { postAddressFetch } from "@/src/fetch/addresses/postAddress";
 import { postClientFetch } from "@/src/fetch/clients/postClient";
+import { getOrdersTablesFetch } from "@/src/fetch/ordersTables/getOrdersTables";
 import { NextApiRequest, NextApiResponse } from "next";
 
-
-export default async function clients(req: NextApiRequest, res: NextApiResponse) {
+export default async function ordersTables(req: NextApiRequest, res: NextApiResponse) {
     const { method, query, body } = req
     const restaurant_id = Number(query.restaurant_id)
     const {
@@ -15,20 +14,20 @@ export default async function clients(req: NextApiRequest, res: NextApiResponse)
     switch (method) {
         case 'GET':
             try {
-                // const additionals = await 
-                res.status(200).send("additionals")
+                const ordersTables = await getOrdersTablesFetch()
+                res.status(200).send(ordersTables)
             } catch {
                 res.status(404).end();
             }
             break
         case 'POST':
             try {
-                const clients = await postClientFetch(
-                    address_id,
-                    name,
-                    contact_id,
-                )
-                res.status(200).send(clients)
+                // const ordersTable = await postClientFetch(
+                //     address_id,
+                //     name,
+                //     contact_id,
+                // )
+                res.status(200).send("ordersTable")
             } catch {
                 res.status(404).end();
             }

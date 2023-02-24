@@ -12,7 +12,6 @@ import {
     createProduct,
     createProductAdditionalsIfIsUpdatingProduct,
     createProductSelectIfIsUpdatingProduct,
-    // deleteProduct,
     updateProduct,
 } from '@/src/server/api';
 import {
@@ -112,15 +111,17 @@ export default function EditableMenuProductCard({
     return (
         <>
             <div
-                className={`fixed inset-0 bg-black w-screen h-screen opacity-60 z-20 cursor-pointer ${productModal
-                    ? 'opacity-40'
-                    : 'opacity-0 pointer-events-none'
-                    }`}
+                className={`fixed inset-0 bg-black w-screen h-screen opacity-60 z-20 cursor-pointer ${
+                    productModal
+                        ? 'opacity-40'
+                        : 'opacity-0 pointer-events-none'
+                }`}
                 onClick={() => setProductModal(false)}
             ></div>
             <div
-                className={`w-[360px] md:w-[420px] 2xl:w-[468px] fixed ${productModal ? 'right-0' : 'right-[-700px]'
-                    } transition-all ease-out z-30 top-16 bg-white shadow-md rounded-md h-[calc(100vh-64px)] overflow-auto p-4`}
+                className={`w-[360px] md:w-[420px] 2xl:w-[468px] fixed ${
+                    productModal ? 'right-0' : 'right-[-700px]'
+                } transition-all ease-out z-30 top-16 bg-white shadow-md rounded-md h-[calc(100vh-64px)] overflow-auto p-4`}
             >
                 <div className="flex flex-1 items-center justify-between pb-6">
                     <BsArrowLeftCircle
@@ -133,21 +134,14 @@ export default function EditableMenuProductCard({
                                 name="Excluir"
                                 h="h-8"
                                 w="w-28"
-                            // onClick={() =>
-                            // deleteProduct(
-                            //     productId!,
-                            //     state.productInformation.name,
-                            //     restaurant.slug!
-                            // )
-                            // }
+                                // onClick={() =>
+                                // deleteProduct(
+                                //     productId!,
+                                //     state.productInformation.name,
+                                //     restaurant.slug!
+                                // )
+                                // }
                             />
-                            {/* <CardapioDigitalButton
-                name="Editar"
-                h="h-8"
-                w="w-28"
-                onClick={() =>
-                  dispatch(setIsViewingAddingOrOpdatingProductAction("UPDATING"))
-                } /> */}
                         </div>
                     ) : null}
                 </div>
@@ -227,7 +221,13 @@ export default function EditableMenuProductCard({
                                 </NavigationMenu.Trigger>
                                 <NavigationMenu.Content className="flex flex-1 w-auto p-1 rounded-md flex-wrap absolut top-0 left-0 z-50 bg-white shadow-md">
                                     {additionals.map((additional) => {
-                                        if (state.additionals.some((add) => add.id === additional.id)) return;
+                                        if (
+                                            state.additionals.some(
+                                                (add) =>
+                                                    add.id === additional.id
+                                            )
+                                        )
+                                            return;
                                         return (
                                             <NavigationMenu.List
                                                 onClick={() => {

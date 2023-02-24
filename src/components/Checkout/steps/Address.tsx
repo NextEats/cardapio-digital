@@ -18,7 +18,6 @@ export function Address({ address, setAddress }: iAddress) {
                 prev.number = parseInt(number);
                 return prev;
             });
-            // nextStepIndex();
         }
     };
 

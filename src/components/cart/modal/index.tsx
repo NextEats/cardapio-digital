@@ -105,14 +105,7 @@ export default function Modal({ setShowModal, showModal }: IModalProps) {
   }
 
   async function finalizeOrder() {
-    // {
-    //   address: {
-    //     cep,
-    //     number,
-    //     complement,
-    //   },
-    //   selectedPaymentValue,
-    // }
+
   }
 
   function Name() {

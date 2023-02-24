@@ -234,14 +234,6 @@ export async function createProduct(
     const getImageData = supabase.storage
         .from(restaurant.slug!)
         .getPublicUrl(imageData.data?.path!);
-    // console.log(
-    //   state.category.id!,
-    //   state.productInformation.description,
-    //   state.productInformation.name,
-    //   getImageData.data.publicUrl!,
-    //   Number(state.productInformation.price),
-    //   restaurant.id,
-    // )
     const data = await supabase
         .from('products')
         .insert({

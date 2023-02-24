@@ -67,17 +67,6 @@ export function Additional({
             },
         });
 
-    // function hadleModalToUpdateNewAdditional(closeModal: "UPDATE" | "ADD" | "" ) {
-    //     reset()
-    //     setShowAdditionalModal(closeModal)
-    //     dispatch({
-    //         type: EditableProductActions.SHOW_MODAL_TO_UPDADE_THE_ADDITIONAL,
-    //         payload: {
-    //             showModalToUpdadeAdditional: false
-    //         }
-    //     })
-    // }
-
     function handleNewAdditionl() {
         const additionalName = getValues('additionalName');
         const additionalPrice = Number(getValues('additionalPrice'));
@@ -230,7 +219,6 @@ export function Additional({
                         );
                     })}
                 </div>
-                {/*        =========   DIALOG TO ADD NEW ADDITIONAL   ==============        */}
                 {showAdditionalModal === 'ADD' ||
                 showAdditionalModal === 'UPDATE' ? (
                     <div className="w-72 h-auto p-4 absolute z-50 bottom-0 right-1/2 translate-x-1/2 rounded-md bg-white shadow-md">
@@ -286,9 +274,6 @@ export function Additional({
                         </div>
                     </div>
                 ) : null}
-                {/* ========================================================================= */}
-
-                {/*                       Add new additional button                             */}
             </div>
             {state.isViewingUpdatingOrAdding !== 'VIEWING' ? (
                 <div className="w-full flex items-center justify-end mt-6">

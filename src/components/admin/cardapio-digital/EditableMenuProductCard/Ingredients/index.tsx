@@ -76,8 +76,6 @@ export function Igredient({
                 optionPicture_url: '',
             },
         });
-
-    // INGREDIENT
     function setIsAddingNewIngradient(isAddingNewIngradient: boolean) {
         setError('');
         reset();
@@ -134,13 +132,7 @@ export function Igredient({
         });
     }
 
-    //   //////////////   /////////////    //////////      /////////
-
     function handleUpdateIngredientName(data: NewIngredientFormData) {
-        // const ingredientName = getValues('editIngredientName')
-
-        // const findIngredient = state.ingredients.find(ingredient => ingredient.name.toLowerCase() === data.updateIngredientName.toLowerCase())
-
         if (
             state.ingredients.some(
                 (ingredient) =>
@@ -152,22 +144,10 @@ export function Igredient({
             return;
         }
 
-        console.log(data.ingredientId);
-
-        // updateIngredientName(data.ingredientId, data.updateIngredientName)
-
-        // dispatch(setUpdateIngredient(data.updateIngredientName, isUpdatingIngradientNameState))
         setError('');
         setIsUpdatingIngradientNameState('');
     }
 
-    // function setIngredientIdToAddNewOption(ingredientIdToShowModalAddNewOption: string) {
-    //     dispatch({
-    //         type: EditableProductActions.IS_ADDING_NEW_OPTION_TO_INGREDIENT,
-    //         payload: { ingredientIdToShowModalAddNewOption }
-    //     })
-
-    // }
     function handleAddNewOptionToIngredient(ingredientId: number) {
         const optionName = getValues('optionName');
         const optionPicture_url = getValues('optionPicture_url');
@@ -213,7 +193,7 @@ export function Igredient({
                     <div key={ingredient?.id} className="mb-6 relative">
                         <div className="mb-4">
                             {isUpdatingIngradientNameState ===
-                                ingredient?.name ? (
+                            ingredient?.name ? (
                                 <div className="flex items-center gap-3">
                                     <form
                                         onSubmit={handleSubmit(
@@ -261,7 +241,7 @@ export function Igredient({
                                         <span className="text-xs font-normal text-red-500">
                                             {' '}
                                             {error ===
-                                                'Esse Ingrediente já existe'
+                                            'Esse Ingrediente já existe'
                                                 ? error
                                                 : null}{' '}
                                         </span>
@@ -271,7 +251,7 @@ export function Igredient({
                                 <div className="w-full flex items-center justify-between">
                                     <h3> {ingredient?.name} </h3>
                                     {state.isViewingUpdatingOrAdding !==
-                                        'VIEWING' ? (
+                                    'VIEWING' ? (
                                         <div className="flex items-center gap-2">
                                             <BiPencil
                                                 onClick={() => {
@@ -301,7 +281,6 @@ export function Igredient({
                         </div>
 
                         <div className="flex flex-wrap gap-3">
-                            {/*        =========   DIALOG TO ADD NEW OPTION   ==============        */}
                             {showModalOption === ingredient?.name && (
                                 <div className="w-56 h-60 p-4 absolute z-50 top-0 right-1/2 translate-x-1/2 rounded-md bg-white shadow-md">
                                     <input
@@ -340,8 +319,6 @@ export function Igredient({
                                     </div>
                                 </div>
                             )}
-                            {/* ========================================================================= */}
-
                             {state.options.map((option) => {
                                 if (
                                     option.name === '' ||
@@ -359,10 +336,14 @@ export function Igredient({
                                         className="rounded-lg w-[100px] h-24 flex items-center relative justify-center"
                                     >
                                         {state.isViewingUpdatingOrAdding !==
-                                            'VIEWING' ? (
+                                        'VIEWING' ? (
                                             <FiTrash2
                                                 onClick={() =>
-                                                    removeOptionFromIngredient(ingredient.id!, option.name!, option.id!)
+                                                    removeOptionFromIngredient(
+                                                        ingredient.id!,
+                                                        option.name!,
+                                                        option.id!
+                                                    )
                                                 }
                                                 className="text-xl text-red-500 cursor-pointer hover:scale-125 hover:transition-all ease-in-out
                                                         absolute top-2 right-2 z-30"
@@ -399,8 +380,6 @@ export function Igredient({
                     </div>
                 );
             })}
-
-            {/*                       Add new ingredient button                             */}
             {isAddingNewIngradientState ? (
                 <form
                     onSubmit={handleSubmit(handleAddNewIngredient)}
@@ -432,8 +411,6 @@ export function Igredient({
                     </span>
                 </form>
             ) : null}
-
-            {/*                       Add new ingredient button                             */}
             {state.isViewingUpdatingOrAdding !== 'VIEWING' ? (
                 <div className="w-full flex items-center justify-end mt-6">
                     <CardapioDigitalButton

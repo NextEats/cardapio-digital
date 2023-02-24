@@ -112,38 +112,34 @@ export interface iContacts {
     data: Array<Database['public']['Tables']['contacts']['Row']>;
 }
 export interface iTable {
-    data: Database["public"]["Tables"]["tables"]["Row"];
+    data: Database['public']['Tables']['tables']['Row'];
 }
 
 export interface iTables {
-    data: Array<Database["public"]["Tables"]["tables"]["Row"]>;
+    data: Array<Database['public']['Tables']['tables']['Row']>;
 }
 export interface iOrdersTable {
-    data: Database["public"]["Tables"]["orders_tables"]["Row"];
+    data: Database['public']['Tables']['orders_tables']['Row'];
 }
 
 export interface iOrdersTables {
-    data: Array<Database["public"]["Tables"]["orders_tables"]["Row"]>;
+    data: Array<Database['public']['Tables']['orders_tables']['Row']>;
 }
-
-
-
-
 
 // ==================   INSERTS  =====================
 export interface iInsertOrdersTable {
-    data: Database["public"]["Tables"]["orders_tables"]["Insert"];
+    data: Database['public']['Tables']['orders_tables']['Insert'];
 }
 
 export interface iInsertOrdersTables {
-    data: Array<Database["public"]["Tables"]["orders_tables"]["Insert"]>;
+    data: Array<Database['public']['Tables']['orders_tables']['Insert']>;
 }
 export interface iInsertTable {
-    data: Database["public"]["Tables"]["tables"]["Insert"];
+    data: Database['public']['Tables']['tables']['Insert'];
 }
 
 export interface iInsertTables {
-    data: Array<Database["public"]["Tables"]["tables"]["Insert"]>;
+    data: Array<Database['public']['Tables']['tables']['Insert']>;
 }
 export interface iInsertContact {
     data: Database['public']['Tables']['contacts']['Insert'];
@@ -249,13 +245,7 @@ export interface iInsertProductOption {
 export interface iInsertProductOptions {
     data: Array<Database['public']['Tables']['product_options']['Insert']>;
 }
-// ====
-// export interface iInsertIngredinetOption {
-//   data: Database["public"]["Tables"]["ingredient_options"]["Insert"];
-// }
-// export interface iInsertIngredinetOptions {
-//   data: Array<Database["public"]["Tables"]["ingredient_options"]["Insert"]>;
-// }
+
 export interface iGroupedProducts {
     [key: number]: {
         category_name: string | '';
@@ -278,7 +268,7 @@ export interface IAdditionalsData {
     additionals_data: {
         quantity: number;
         additional_id: number;
-    }[]
+    }[];
 }
 
 export interface iCheckoutProduct {
@@ -367,12 +357,12 @@ export type iOrdersWithFKData = iOrder['data'] & {
     order_status: iOrderStatus['data'];
 };
 
-export type iOrdersTablesWithFkData = iOrdersTable["data"] & {
+export type iOrdersTablesWithFkData = iOrdersTable['data'] & {
     orders: {
         id: number;
-        order_status: iOrderStatus["data"]
-    }
-    tables: iTable["data"]
+        order_status: iOrderStatus['data'];
+    };
+    tables: iTable['data'];
 };
 export interface iDigitalMenuData {
     restaurant: iRestaurantWithFKData;

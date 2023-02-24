@@ -8,6 +8,7 @@ import {
     iStatusReducer,
     statusReducer,
 } from '../../../reducers/statusReducer/reducer';
+
 import {
     iCashBox,
     iCashBoxes,
@@ -34,6 +35,7 @@ import CashBoxButtons from '@/src/components/admin/initialPage/CashBoxButtons';
 import { OrderModal } from '@/src/components/admin/initialPage/OrderModal';
 import LoadingSpinner from '@/src/components/LoadingSpinner';
 import { api, supabase } from '@/src/server/api';
+import { createServerSupabaseClient } from '@supabase/auth-helpers-nextjs';
 import 'react-toastify/dist/ReactToastify.css';
 
 interface iAdminHomePageProps {
@@ -49,6 +51,53 @@ interface iAdminHomePageProps {
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
+    const supabaseServer = createServerSupabaseClient(context);
+
+    const {
+        data: { session },
+    } = await supabaseServer.auth.getSession();
+
+    if (!session) {
+        return {
+            redirect: {
+                destination: '/login',
+                permanent: false,
+            },
+        };
+    } else {
+        const { data: userDetailsData } = await supabase
+            .from('user_details')
+            .select(
+                `
+                    id,
+                    restaurant_id,
+                    user_id,
+                    restaurants (
+                        id,
+                        name,
+                        slug
+                    )
+            `
+            )
+            .eq('user_id', session.user.id);
+        if (userDetailsData) {
+            const userDetailsTypedData = userDetailsData[0] as unknown as {
+                id: number;
+                restaurant_id: number;
+                user_id: string;
+                restaurants: {
+                    id: number;
+                    name: string;
+                    slug: string;
+                };
+            };
+
+            console.log(userDetailsTypedData.restaurants.slug);
+        }
+
+        console.log(session);
+    }
+
     // const restaurant = await getRestaurantBySlugFetch(context.query.slug);
     const restaurant: any = await getRestaurantBySlugFetch(context.query.slug);
     return {

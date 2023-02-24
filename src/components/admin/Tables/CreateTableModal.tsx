@@ -32,7 +32,7 @@ export default function CreateTableModal({ }: iCreateTableModalProps) {
 
                         <form className="w-full flex flex-col gap-6" onSubmit={() => createNewtable(cheirAmount, tableName)}>
                             <InputWithLabel label="Nome da mesa" type="text" placeholder="Ex.: Mesa 12" setState={setTableName} />
-                            <InputWithLabel label="Quandidade de lugares" type="number" placeholder="ex.: 4" setState={setCheirAmount} />
+                            <InputWithLabel defaultValue={4} label="Quandidade de lugares" type="number" placeholder="ex.: 4" setState={setCheirAmount} />
                             <div className="flex flex-1 items-center justify-end">
                                 <CardapioDigitalButton h="h-9" w="w-32" />
                             </div>

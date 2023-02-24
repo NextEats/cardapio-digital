@@ -5,17 +5,17 @@ import { IEditableProductReducerData } from '../reducers/EditableProductReducer/
 import { Database } from '../types/supabase';
 
 import {
-    iGroupedProducts,
     iInsertAdditionals,
     iInsertProductOptions,
     iRestaurant,
     iRestaurantWithFKData,
-    ProductWithCategory,
 } from '../types/types';
 const dev = process.env.NODE_ENV !== 'production';
+
 export const serverURL = dev
     ? 'http://localhost:3000'
     : 'https://www.nexteats.com.br/';
+
 export const api = axios.create({
     baseURL: serverURL,
 });
@@ -24,59 +24,6 @@ export const supabase = createClient<Database>(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 );
-
-export const getProductsGroupedByCategories = async (restaurantId: number) => {
-    // Cria um mapa para armazenar os nomes das categorias correspondentes a cada ID de categoria
-    const categoryMap = new Map<number, string>();
-    let groupedProducts;
-    try {
-        // Faz uma requisição para a tabela de categorias de produtos
-        const res = await supabase
-            .from('product_categories')
-            .select('id, name')
-            .eq('restaurant_id', restaurantId);
-        if (!res.data) {
-            return;
-        }
-        // Percorre os dados da resposta e adiciona os nomes das categorias ao mapa, usando o ID da categoria como chave
-        for (const category of res.data) {
-            categoryMap.set(category.id, category.name);
-        }
-        // Faz uma requisição para a tabela de produtos
-        const resProduct = await supabase
-            .from('products')
-            .select('*')
-            .eq('restaurant_id', restaurantId);
-        if (!resProduct.data) {
-            return;
-        }
-        // Armazena os dados da resposta em uma variável
-        const products = resProduct.data;
-        // Utiliza a função reduce para agrupar os produtos por categoria e adicionar o nome da categoria a cada produto agrupado
-        groupedProducts = products.reduce((acc: iGroupedProducts, product) => {
-            // Verifica se ja existe uma entrada para essa categoria no objeto agrupado
-            if (!acc[product.category_id]) {
-                acc[product.category_id] = {
-                    // Se não existir, adiciona uma nova entrada para essa categoria e coloca o nome da categoria recuperado do mapa
-                    category_name: categoryMap.get(product.category_id) || '',
-                    products: [],
-                };
-            }
-            // Cria um objeto "productWithCategory" com as propriedades do produto e a categoria_name
-            const productWithCategory: ProductWithCategory = {
-                ...product,
-                category_name: acc[product.category_id].category_name,
-            };
-            // Adiciona o objeto "productWithCategory" ao array de produtos da categoria
-            acc[product.category_id].products.push(productWithCategory);
-            return acc;
-        }, {});
-    } catch (error) {
-    } finally {
-        // retorna a variavel groupedProducts
-        return groupedProducts;
-    }
-};
 
 export async function createNewWhatsAppCode(
     whatsappNumber: string,
@@ -177,30 +124,6 @@ export async function updateProduct(
             category_id: state.category.id!,
         })
         .select('*');
-}
-
-export async function deleteProduct(
-    productId: number,
-    productName: string,
-    restaurantSlug: string
-) {
-    // await supabase.query(`DELETE FROM products   WHERE parent_id = ? ON DELETE CASCADE; `, [parent_id]);
-
-    await supabase.from('product_selects').delete().eq('product_id', productId);
-    await supabase
-        .from('product_additionals')
-        .delete()
-        .eq('product_id', productId);
-    const data = await supabase.from('products').delete().eq('id', productId);
-    await supabase.storage.from(restaurantSlug).remove([productName]);
-
-    promiseAlert({
-        pending: 'Aguarde um momento.',
-        success: 'Produto deletado com sucesso!',
-        error: 'Desculpe, Não foi possivel deletar esse produto!',
-        data,
-    });
-    window.location.reload();
 }
 
 export async function createAdditionalsAndIsertIntoProductAdditionalsIfIsUpdatingProduct(

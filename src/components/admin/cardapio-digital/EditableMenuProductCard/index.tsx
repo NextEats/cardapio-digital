@@ -12,7 +12,7 @@ import {
     createProduct,
     createProductAdditionalsIfIsUpdatingProduct,
     createProductSelectIfIsUpdatingProduct,
-    deleteProduct,
+    // deleteProduct,
     updateProduct,
 } from '@/src/server/api';
 import {
@@ -113,8 +113,8 @@ export default function EditableMenuProductCard({
         <>
             <div
                 className={`fixed inset-0 bg-black w-screen h-screen opacity-60 z-20 cursor-pointer ${productModal
-                        ? 'opacity-40'
-                        : 'opacity-0 pointer-events-none'
+                    ? 'opacity-40'
+                    : 'opacity-0 pointer-events-none'
                     }`}
                 onClick={() => setProductModal(false)}
             ></div>
@@ -133,13 +133,13 @@ export default function EditableMenuProductCard({
                                 name="Excluir"
                                 h="h-8"
                                 w="w-28"
-                                onClick={() =>
-                                    deleteProduct(
-                                        productId!,
-                                        state.productInformation.name,
-                                        restaurant.slug!
-                                    )
-                                }
+                            // onClick={() =>
+                            // deleteProduct(
+                            //     productId!,
+                            //     state.productInformation.name,
+                            //     restaurant.slug!
+                            // )
+                            // }
                             />
                             {/* <CardapioDigitalButton
                 name="Editar"

@@ -8,6 +8,8 @@ interface iInputWithLabel {
     state?: string | undefined;
     setState?: React.Dispatch<SetStateAction<string>>;
     mask?: string;
+    name?: string;
+    defaultValue?: string | number;
 }
 
 export default function InputWithLabel({
@@ -17,6 +19,8 @@ export default function InputWithLabel({
     type = 'text',
     setState,
     mask,
+    name,
+    defaultValue,
 }: iInputWithLabel) {
     return (
         <label className="w-full">
@@ -35,6 +39,7 @@ export default function InputWithLabel({
                     type={type}
                     className="mt-2 w-full focus:outline-none border border-[#d1d1d1] rounded-sm py-2 pl-4"
                     placeholder={placeholder}
+                    defaultValue={defaultValue}
                 />
             )}
             {!mask && (
@@ -42,6 +47,8 @@ export default function InputWithLabel({
                     className="mt-2 w-full focus:outline-none border border-[#d1d1d1] rounded-sm py-2 pl-4"
                     placeholder={placeholder}
                     type={type}
+                    name={name ? name : ''}
+                    defaultValue={defaultValue}
                     onChange={
                         setState
                             ? (e) => setState(e.target.value)

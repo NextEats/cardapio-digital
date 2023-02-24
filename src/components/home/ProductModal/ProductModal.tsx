@@ -1,76 +1,41 @@
-import { BsArrowLeftCircle } from 'react-icons/bs'
-import { MouseEvent, useEffect, useState } from 'react'
-import Image from 'next/image'
-import { iProduct } from '../../../types/types'
-import Additionals from './Additionals'
-import ProductOptions from './ProductOptions'
-import SubmitButtons from './SubmitButtons'
+import { DigitalMenuContext } from '@/src/contexts/DigitalMenuContext';
+import Image from 'next/image';
+import { MouseEvent, useContext, useEffect, useState } from 'react';
+import { BsArrowLeftCircle } from 'react-icons/bs';
 
-import {
-    getProductAdditionals,
-    iProductAdditional,
-} from './getProductAdditionals'
+import { getProductWithFKData } from '@/src/fetch/products/getProductWithFKData';
+import ProductOptions from './components/ProductOptions';
 
-export default function ProductModal({
-    productModal,
-    setProductModal,
-    productsDispatch,
-}: {
-    productModal: iProduct['data'] | undefined | null
-    setProductModal: Function
-    productsDispatch: Function
-}) {
-    const [additionals, setAdditionals] = useState<iProductAdditional[]>()
-    const [price, setPrice] = useState<number>(0)
-    const [selectedAdditionals, setSelectedAdditionals] = useState<any[]>([])
-    const [quantity, setQuantity] = useState<number>(1)
-    const [observation, setObservation] = useState<string | null>(null)
+export default function ProductModal() {
+    const selectedProduct = useContext(DigitalMenuContext).selectedProduct;
 
-    const body = document.querySelector('body')
-    body?.classList.add('overflow-hidden')
+    const [productData, setProductData] = useState<any>(undefined);
 
-    function closeModal() {
-        setProductModal(null)
-        body?.classList.remove('overflow-hidden')
+    console.log(productData);
+
+    useEffect(() => {
+        if (selectedProduct?.state) {
+            getProductWithFKData(selectedProduct).then((result) => {
+                setProductData(result);
+            });
+        }
+    }, [selectedProduct?.state, selectedProduct]);
+
+    if (!productData || !selectedProduct?.state) {
+        return <></>;
     }
 
-    useEffect(() => {
-        setQuantity(1)
-    }, [])
+    const body = document.querySelector('body');
+    body?.classList.add('overflow-hidden');
 
-    useEffect(() => {
-        if (!productModal) {
-            return
-        }
-
-        getProductAdditionals(productModal?.id).then((response) => {
-            setAdditionals(response as iProductAdditional[])
-        })
-
-        setPrice(productModal.price)
-    }, [productModal])
-
-    if (!productModal) {
-        return <div>Carregando</div>
+    function closeModal() {
+        setProductData(undefined);
+        selectedProduct?.set(undefined);
+        body?.classList.remove('overflow-hidden');
     }
 
     function handleSubmit(e: MouseEvent) {
-        e.preventDefault()
-
-        productsDispatch({
-            type: 'add',
-            payload: {
-                id: productModal?.id,
-                name: productModal?.name,
-                price: productModal?.price,
-                quantity: quantity,
-                picture_url: productModal?.picture_url,
-                additionals: selectedAdditionals,
-                observation,
-            },
-        })
-
-        closeModal()
+        e.preventDefault();
     }
 
     return (
@@ -78,24 +43,24 @@ export default function ProductModal({
             <div
                 className="fixed bg-black w-screen h-screen opacity-60 z-[100] cursor-pointer"
                 onClick={() => {
-                    closeModal()
+                    closeModal();
                 }}
             ></div>
             <div
-                className={`max-w-[645px] pb-9 px-4 bg-white top-0 right-0 z-[200] fixed overflow-auto shadow-2xl h-screen`}
+                className={`max-w-[645px] pb-9 px-8 bg-white top-0 right-0 z-[200] fixed overflow-auto shadow-2xl h-screen`}
             >
                 <div className="sticky">
                     <BsArrowLeftCircle
                         className="my-8 cursor-pointer"
                         size={30}
                         onClick={() => {
-                            closeModal()
+                            closeModal();
                         }}
                     />
                     <div className="flex items-center justify-center mb-9">
                         <Image
                             className="rounded-3xl"
-                            src={productModal.picture_url}
+                            src={productData.picture_url}
                             alt="backgfroundheader"
                             width={500}
                             height={500}
@@ -103,43 +68,34 @@ export default function ProductModal({
                     </div>
                     <div className="mb-9">
                         <h1 className="font-extrabold text-xl text-gray-800 ">
-                            {productModal.name}
+                            {productData.name}
                         </h1>
                         <p className="font-normal text-md text-gray-800 mt-3">
-                            {productModal.description}
+                            {productData.description}
                         </p>
                     </div>
 
-                    <ProductOptions product_id={productModal.id} />
-
-                    {additionals?.length != 0 && additionals && (
-                        <Additionals
-                            data={additionals}
-                            setPrice={setPrice}
-                            selectedAdditionals={selectedAdditionals}
-                            setSelectedAdditionals={setSelectedAdditionals}
-                        />
-                    )}
+                    <ProductOptions product_id={selectedProduct.state} />
+                    {/* <Additionals product_id={selectedProduct.state} /> */}
 
                     <form className="w-full h-24 mb-8">
                         <textarea
                             name=""
-                            onBlur={(e) => setObservation(e.target.value)}
+                            // onBlur={(e) => setObservation(e.target.value)}
                             className=" scrollbar-custom w-full h-full resize-none rounded-sm bg-[#f6f6f6] shadow-sm text-base outline-none p-4"
                             placeholder="Observações"
                         ></textarea>
                     </form>
 
-                    <SubmitButtons
+                    {/* <SubmitButtons
                         productModal={productModal}
                         price={price}
                         quantity={quantity}
                         setQuantity={setQuantity}
                         setPrice={setPrice}
-                        submitFunction={(e: MouseEvent) => handleSubmit(e)}
-                    />
+                    /> */}
                 </div>
             </div>
         </>
-    )
+    );
 }

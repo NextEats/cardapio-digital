@@ -5,7 +5,8 @@ import * as Dialog from '@radix-ui/react-dialog';
 import Image from 'next/image';
 import { useContext } from 'react';
 import { FiX } from 'react-icons/fi';
-import SelectComponent from '../../home/ProductModal/SelectComponent';
+import SelectComponent from '../../home/ProductModal/components/SelectComponent';
+// import SelectComponent from '../../home/ProductModal/SelectComponent';
 import { CardapioDigitalButton } from '../cardapio-digital/CardapioDigitalButton';
 import TableAdditionals from './TableAdditionals';
 
@@ -16,7 +17,7 @@ interface iProductModalProps {
 export default function ProductModal({ }: iProductModalProps) {
 
     const { viewProduct, setViewProduct, tableState, tableDispatch } = useContext(TableContext)
-    const { productSelects, selectOption } = useProductSelectsWithOptions(viewProduct?.id!)
+    const { productSelects, selectOption } = useProductSelectsWithOptions(viewProduct ? viewProduct?.id!.toString() : '')
 
     return (
         <div>

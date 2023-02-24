@@ -1,63 +1,94 @@
-import { iProductAdditional } from './getProductAdditionals'
-import Image from 'next/image'
-import { BsFillPlusCircleFill } from 'react-icons/bs'
-import { FaMinus, FaPlus } from 'react-icons/fa'
+import { QuantitySelector } from '@/src/components/QuantitySelector';
+import Image from 'next/image';
+import { IoMdAddCircle } from 'react-icons/io';
 
 export default function Additionals({
     data,
-    setPrice,
-    selectedAdditionals,
-    setSelectedAdditionals,
+    setProductData,
 }: {
-    data: iProductAdditional[]
-    setPrice: Function
-    selectedAdditionals: any[]
-    setSelectedAdditionals: Function
+    data: any;
+    setProductData: any;
 }) {
     if (data) {
         return (
-            <div className="mb-24">
+            <div className="mb-12">
                 <h2 className="mb-5 font-bold  text-lg text-[#3a3a3a]">
                     Adicionais
                 </h2>
-                {data.map(({ additionals }) => {
+                {data.map((additional: any, index: number) => {
                     return (
-                        <div
-                            key={additionals.id}
-                            className="flex flex-col mb-3"
-                        >
+                        <div key={additional.id} className="flex flex-col mb-3">
                             <div className="flex flex-1 items-center justify-between pr-4 rounded-md bg-white-300">
                                 <div className="flex items-center gap-3">
                                     <Image
-                                        src={additionals.picture_url}
+                                        src={additional.picture_url}
                                         alt="backgfroundheader"
                                         width={91}
                                         height={200}
                                     />
                                     <div className="">
                                         <p className="font-semibold text-black text-sm ">
-                                            {additionals.name}
+                                            {additional.name}
                                         </p>
                                         <p className="font-semibold text-xs text-black">
-                                            R$ {additionals.price}
+                                            R$ {additional.price}
                                         </p>
                                     </div>
                                 </div>
 
-                                {selectedAdditionals.find(
+                                {additional.quantity === 0 ? (
+                                    <div className="flex justify-center items-center">
+                                        <button
+                                            type="button"
+                                            className={`text-[30px] rounded-full text-[#00000090]`}
+                                            onClick={(e) => {
+                                                e.preventDefault();
+
+                                                setProductData((prev: any) => {
+                                                    prev.additionals[
+                                                        index
+                                                    ].quantity += 1;
+
+                                                    return prev;
+                                                });
+                                            }}
+                                        >
+                                            <IoMdAddCircle />
+                                        </button>
+                                    </div>
+                                ) : (
+                                    <QuantitySelector
+                                        value={0}
+                                        addValue={() => { }}
+                                        subtractValue={() => { }}
+                                        deleteValue={() => { }}
+                                    />
+                                )}
+
+                                {/* {selectedAdditionals.find(
                                     (add) => add.id == additionals.id
                                 ) ? (
                                     <div className="bg-slate-900 text-white w-24 flex flex-row justify-between p-1">
                                         <button
                                             className="w-6 text-md flex items-center justify-center"
                                             onClick={(e) => {
-                                                e.preventDefault()
+                                                e.preventDefault();
 
-                                                setPrice((prev: any) => (prev -= additionals.price))
+                                                setPrice(
+                                                    (prev: any) =>
+                                                        (prev -=
+                                                            additionals.price)
+                                                );
 
-                                                let varSelectedAdditionals = selectedAdditionals
+                                                let varSelectedAdditionals =
+                                                    selectedAdditionals;
 
-                                                let x = varSelectedAdditionals.findIndex((add) => add.id == additionals.id)
+                                                let x =
+                                                    varSelectedAdditionals.findIndex(
+                                                        (add) =>
+                                                            add.id ==
+                                                            additionals.id
+                                                    );
 
                                                 if (
                                                     varSelectedAdditionals[x].quantity - 1 === 0
@@ -67,14 +98,14 @@ export default function Additionals({
                                                             (elem, index) =>
                                                                 index !== x
                                                         ),
-                                                    ])
+                                                    ]);
                                                 } else {
                                                     varSelectedAdditionals[
                                                         x
-                                                    ].quantity -= 1
+                                                    ].quantity -= 1;
                                                     setSelectedAdditionals([
                                                         ...varSelectedAdditionals,
-                                                    ])
+                                                    ]);
                                                 }
                                             }}
                                         >
@@ -91,31 +122,31 @@ export default function Additionals({
                                         <button
                                             className="w-6 text-md flex items-center justify-center"
                                             onClick={(e) => {
-                                                e.preventDefault()
+                                                e.preventDefault();
 
                                                 setPrice(
                                                     (prev: any) =>
-                                                    (prev +=
-                                                        additionals.price)
-                                                )
+                                                        (prev +=
+                                                            additionals.price)
+                                                );
 
                                                 let varSelectedAdditionals =
-                                                    selectedAdditionals
+                                                    selectedAdditionals;
 
                                                 let x =
                                                     varSelectedAdditionals.findIndex(
                                                         (add) =>
                                                             add.id ==
                                                             additionals.id
-                                                    )
+                                                    );
 
                                                 varSelectedAdditionals[
                                                     x
-                                                ].quantity += 1
+                                                ].quantity += 1;
 
                                                 setSelectedAdditionals([
                                                     ...varSelectedAdditionals,
-                                                ])
+                                                ]);
                                             }}
                                         >
                                             <FaPlus />
@@ -130,7 +161,7 @@ export default function Additionals({
                                             setPrice(
                                                 (prev: any) =>
                                                     (prev += additionals.price)
-                                            )
+                                            );
                                             setSelectedAdditionals(
                                                 (prev: any) => {
                                                     return [
@@ -139,19 +170,19 @@ export default function Additionals({
                                                             id: additionals.id,
                                                             quantity: 1,
                                                         },
-                                                    ]
+                                                    ];
                                                 }
-                                            )
+                                            );
                                         }}
                                     />
-                                )}
+                                )} */}
                             </div>
                         </div>
-                    )
+                    );
                 })}
             </div>
-        )
+        );
     } else {
-        return <>Carregando...</>
+        return <>Carregando...</>;
     }
 }

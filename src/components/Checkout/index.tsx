@@ -4,7 +4,7 @@ import { iCheckoutProduct, iPaymentMethod } from '../../types/types';
 
 import { ProductList } from './steps/ProductList';
 
-import { RestaurantContext } from '@/src/contexts/restaurantContext';
+import { DigitalMenuContext } from '@/src/contexts/DigitalMenuContext';
 import { Address } from './steps/Address';
 import ContactInfo from './steps/ContactInfo';
 import { Payment } from './steps/Payment';
@@ -38,8 +38,7 @@ export default function Checkout({
     onClose: () => void;
     productsDispatch: Function;
 }) {
-    const [restaurant, setRestaurant] =
-        useContext(RestaurantContext).restaurant;
+    const { restaurant } = useContext(DigitalMenuContext);
     const [paymentMethodSelected, setPaymentMethodSelected] = useState<
         iPaymentMethod['data'] | null
     >(null);

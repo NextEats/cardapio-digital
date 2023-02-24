@@ -1,3 +1,4 @@
+import { tSelectWithOptions } from '@/src/fetch/productSelects/getProductSelectWithOptions';
 import { iAdditional, iProduct } from 'src/types/types';
 
 export enum tableReducerAction {
@@ -29,10 +30,13 @@ export function changeAdditionalQuantityAction(
         payload: { isIncrement, additionalId },
     };
 }
-export function addProductAction(product: iProduct['data']) {
+export function addProductAction(
+    product: iProduct['data'],
+    productSelects: tSelectWithOptions[]
+) {
     return {
         type: tableReducerAction.PRODUCTSSELECTED,
-        payload: { product },
+        payload: { product, productSelects },
     };
 }
 export function removeProductAction(productId: number) {

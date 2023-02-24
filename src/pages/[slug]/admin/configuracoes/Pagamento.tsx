@@ -17,21 +17,6 @@ export default function Payment() {
         togglePaymentMethod(restaurant.id, paymentMethodId);
     };
 
-    const handleCheckboxInitialValue = async (paymentMethodId: number) => {
-        let checked = false;
-
-        const res = await checkIfPaymentMethodsIsActive(
-            restaurant.id,
-            paymentMethodId
-        );
-
-        if (res?.length !== 0) {
-            checked = true;
-        }
-
-        return checked;
-    };
-
     return (
         <div>
             <h3 className="mb-4 font-semibold">Métodos de Pagamento Ativos</h3>
@@ -50,9 +35,6 @@ export default function Payment() {
                                             name={paymentMethod.name}
                                             id={paymentMethod.name}
                                             className="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer"
-                                            defaultChecked={handleCheckboxInitialValue(
-                                                paymentMethod.id
-                                            )}
                                             onChange={() =>
                                                 handleCheckboxChange(
                                                     paymentMethod.id

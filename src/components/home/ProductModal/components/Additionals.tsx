@@ -1,17 +1,23 @@
-import useAdditionals from '@/src/hooks/useAdditionals';
+import { tState } from '@/src/reducers/AdditionalsReducer/reducer';
 import { iAdditional } from '@/src/types/types';
 import Image from 'next/image';
+import { Dispatch } from 'react';
 import { BsPlusCircleFill } from 'react-icons/bs';
 import { FaMinus, FaPlus } from 'react-icons/fa';
 import { changeAdditionalQuantityAction } from '../../../../reducers/AdditionalsReducer/actions/changeQuantityAction';
 import { selectNewAdditionalAction } from '../../../../reducers/AdditionalsReducer/actions/selectNewAdditional';
 interface iAdditionalsProps {
     product_id: string;
+    state: tState;
+    dispatch: Dispatch<any>;
 }
 
-export default function Additionals({ product_id }: iAdditionalsProps) {
+export default function Additionals({
+    product_id,
+    state,
+    dispatch,
+}: iAdditionalsProps) {
     // Import hook here to fetch data
-    const { dispatch, state } = useAdditionals(product_id);
 
     function handleSelectAdditional(additional: iAdditional['data']) {
         dispatch(selectNewAdditionalAction(additional));

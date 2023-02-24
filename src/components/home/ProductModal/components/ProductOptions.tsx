@@ -19,11 +19,6 @@ export default function ProductOptions({ product_id }: iProductOptions) {
 
     const { selects } = useContext(DigitalMenuContext);
 
-    selects?.set(productSelects);
-    console.log(
-        filterOptionsSelected({ productsOptionsSelected: productSelects })
-    );
-
     return (
         <div>
             {productSelects.map((select, selectIndex) => (
@@ -33,6 +28,12 @@ export default function ProductOptions({ product_id }: iProductOptions) {
                     index={selectIndex}
                     handleOptionClick={(optionIndex: number) => {
                         selectOption(selectIndex, optionIndex);
+
+                        selects?.set(
+                            filterOptionsSelected({
+                                productsOptionsSelected: productSelects,
+                            })
+                        );
                     }}
                 />
             ))}

@@ -10,8 +10,7 @@ export default function DigitalMenuModals() {
         <>
             {modals?.state.operatingTime && <WeekdayOperatingTime />}
             {selectedProduct && <ProductModal />}
-            {/* 
-            {showCheckoutModal && (
+            {/* {showCheckoutModal && (
                 <Checkout
                     onClose={() => setShowCheckoutModal(false)}
                     products={products}

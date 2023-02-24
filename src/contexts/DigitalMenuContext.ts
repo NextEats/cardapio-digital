@@ -1,7 +1,6 @@
-import { createContext } from 'react';
+import { createContext, Dispatch } from 'react';
 import { tSelectWithOptions } from '../fetch/productSelects/getProductSelectWithOptions';
 import { iRestaurantWithFKData } from '../types/types';
-
 export interface iShowModalsState {
     checkout: boolean;
     operatingTime: boolean;
@@ -22,6 +21,10 @@ export interface iDigitalMenuContext {
     selects?: {
         state: tSelectWithOptions[];
         set: React.Dispatch<React.SetStateAction<tSelectWithOptions[]>>;
+    };
+    productReducer?: {
+        state: any;
+        dispatch: Dispatch<any>;
     };
 }
 

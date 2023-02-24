@@ -13,8 +13,6 @@ export default function Tables() {
         setIsOpenedCreateTableModal,
     } = useContext(TableContext);
 
-    const moment = new Date();
-
     return (
         <div>
             {openedTableModal ? <TableModal /> : null}

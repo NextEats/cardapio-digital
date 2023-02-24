@@ -8,12 +8,12 @@ export function filterOptionsSelected({
     productsOptionsSelected,
 }: iFilterOptionsSelctedProps) {
     const productsSelected = productsOptionsSelected.reduce(
-        (acc: tSelectWithOptions[], item) => {
+        (acc: any, item) => {
             if (item.options.some((op) => op.selected === true)) {
                 return (acc = [
                     ...acc,
                     {
-                        ...item,
+                        id: item.id,
                         options: item.options.filter(
                             (op) => op.selected === true
                         ),

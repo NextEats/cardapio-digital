@@ -4,8 +4,8 @@ import { api } from '@/src/server/api';
 import * as Dialog from '@radix-ui/react-dialog';
 import { useContext } from 'react';
 import { BsGear } from 'react-icons/bs';
-import { FaHome } from 'react-icons/fa';
 import { FiX } from 'react-icons/fi';
+import { GiTable } from 'react-icons/gi';
 import { CardapioDigitalButton } from '../cardapio-digital/CardapioDigitalButton';
 import CustomerAtTheTable from './CustomerAtTheTable';
 import ProductsTableModal from './ProductsTableModal';
@@ -23,6 +23,7 @@ export default function TableModal() {
         setIsOpenedProductTableModal,
         tableProducts,
         tableState,
+        updateTable,
     } = useContext(TableContext);
 
     async function handleFinishOrder() {
@@ -51,8 +52,11 @@ export default function TableModal() {
                 []
             );
             const selects_data = filterOptionsSelected({
-                productsOptionsSelected: ps.productSelects,
+                productsOptionsSelected: ps.productSelects
+                    ? ps.productSelects
+                    : [],
             });
+
             const ordersProductsData = await api.post(`api/orders_products/`, {
                 order_id: orderData.data.id,
                 table_id: openedTableModal?.id,
@@ -65,6 +69,10 @@ export default function TableModal() {
             order_id: orderData.data.id,
             table_id: openedTableModal?.id,
         });
+
+        if (openedTableModal?.is_occupied === false) {
+            await updateTable(false, true, openedTableModal?.id!);
+        }
     }
 
     return (
@@ -82,7 +90,7 @@ export default function TableModal() {
                     <Dialog.Content className="fixed top-1/3 right-1/2 z-20 translate-x-1/2 rounded-lg w-[350px] sm:w-[600px] lg:w-[900px] h-[] bg-white shadow-md p-6">
                         <Dialog.Title className="flex items-center justify-between text-base w-full text-center font-semibold mb-6 mt-3">
                             <div className="flex items-center justify-start gap-3">
-                                <FaHome className="text-gray-350" size={32} />
+                                <GiTable className="text-gray-350" size={32} />
                                 <span className="text-lg font-bold ">
                                     {' '}
                                     {openedTableModal?.name}{' '}
@@ -123,24 +131,26 @@ export default function TableModal() {
                                 : null}
                         </div>
 
-                        <div className="w-full flex items-center justify-end gap-3">
-                            <CardapioDigitalButton
-                                name="Pedir"
-                                h="h-8"
-                                w="w-40"
-                                onClick={() =>
-                                    setIsOpenedProductTableModal(true)
-                                }
-                            />
-                            {tableState.productsSelected.length > 0 ? (
+                        {openedTableModal?.is_active === true ? (
+                            <div className="w-full flex items-center justify-end gap-3">
                                 <CardapioDigitalButton
-                                    name="Confirmar"
+                                    name="Pedir"
                                     h="h-8"
                                     w="w-40"
-                                    onClick={() => handleFinishOrder()}
+                                    onClick={() =>
+                                        setIsOpenedProductTableModal(true)
+                                    }
                                 />
-                            ) : null}
-                        </div>
+                                {tableState.productsSelected.length > 0 ? (
+                                    <CardapioDigitalButton
+                                        name="Confirmar"
+                                        h="h-8"
+                                        w="w-40"
+                                        onClick={() => handleFinishOrder()}
+                                    />
+                                ) : null}
+                            </div>
+                        ) : null}
 
                         <Dialog.Close
                             className="fixed top-3 right-3 text-gray-600"

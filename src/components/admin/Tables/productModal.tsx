@@ -76,7 +76,7 @@ export default function ProductModal() {
                         </div>
                         <div className="w-full flex items-center justify-end gap-3">
                             <span className="text-lg font-semibold text-green-500">
-                                R${' '}
+                                R$
                                 {tableState.totalPrice.toLocaleString('pt-BR', {
                                     minimumFractionDigits: 2,
                                     maximumFractionDigits: 2,
@@ -88,7 +88,10 @@ export default function ProductModal() {
                                 w="w-44"
                                 onClick={() =>
                                     tableDispatch(
-                                        addProductAction(viewProduct!)
+                                        addProductAction(
+                                            viewProduct!,
+                                            productSelects
+                                        )
                                     )
                                 }
                             />

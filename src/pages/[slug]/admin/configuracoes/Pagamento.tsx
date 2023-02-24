@@ -1,55 +1,43 @@
 import { AdminContext } from '@/src/contexts/adminContext';
-import { useContext, useEffect, useState } from 'react';
+import useAllPaymentMethods from '@/src/hooks/useAllPaymentMethods';
+import { supabase } from '@/src/server/api';
+import { useContext } from 'react';
 import { iPaymentMethod } from '../../../../types/types';
-import {
-    getPaymentMethodsAvailable,
-    getPaymentMethodsForThisRestaurant,
-} from './../../../../server/api';
 
 export default function Payment() {
     const restaurant = useContext(AdminContext).restaurant;
 
-    const [paymentMethodsAvailable, setPaymentMethodsAvailable] =
-        useState<iPaymentMethod['data'][]>();
+    const allPaymentMethods = useAllPaymentMethods();
 
-    const [
-        paymentMethodsForThisRestaurant,
-        setPaymentMethodsForThisRestaurant,
-    ] = useState<any>();
+    if (!restaurant) {
+        return null;
+    }
 
-    useEffect(() => {
-        async function getData() {
-            await getPaymentMethodsAvailable().then((data) => {
-                if (data) {
-                    setPaymentMethodsAvailable(data);
-                }
-            });
+    const handleCheckboxChange = (paymentMethodId: number) => {
+        togglePaymentMethod(restaurant.id, paymentMethodId);
+    };
+
+    const handleCheckboxInitialValue = async (paymentMethodId: number) => {
+        let checked = false;
+
+        const res = await checkIfPaymentMethodsIsActive(
+            restaurant.id,
+            paymentMethodId
+        );
+
+        if (res?.length !== 0) {
+            checked = true;
         }
 
-        getData();
-    }, []);
-
-    useEffect(() => {
-        async function getData() {
-            await getPaymentMethodsForThisRestaurant(restaurant!.id).then(
-                (data) => {
-                    if (data) {
-                        setPaymentMethodsForThisRestaurant(data.data);
-                        console.log(data.data);
-                    }
-                }
-            );
-        }
-
-        getData();
-    }, []);
+        return checked;
+    };
 
     return (
         <div>
             <h3 className="mb-4 font-semibold">Métodos de Pagamento Ativos</h3>
-            {paymentMethodsAvailable && (
+            {allPaymentMethods && (
                 <div className="flex flex-col gap-y-3">
-                    {paymentMethodsAvailable.map(
+                    {allPaymentMethods.map(
                         (
                             paymentMethod: iPaymentMethod['data'],
                             index: number
@@ -62,7 +50,14 @@ export default function Payment() {
                                             name={paymentMethod.name}
                                             id={paymentMethod.name}
                                             className="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer"
-                                            defaultValue={paymentMethod.name}
+                                            defaultChecked={handleCheckboxInitialValue(
+                                                paymentMethod.id
+                                            )}
+                                            onChange={() =>
+                                                handleCheckboxChange(
+                                                    paymentMethod.id
+                                                )
+                                            }
                                         />
                                         <label
                                             htmlFor={paymentMethod.name}
@@ -80,4 +75,62 @@ export default function Payment() {
             )}
         </div>
     );
+}
+
+async function checkIfPaymentMethodsIsActive(
+    restaurant_id: number,
+    payment_method_id: number
+) {
+    try {
+        const { data: foundPaymentMethod } = await supabase
+            .from('payment_methods_restaurants')
+            .select()
+            .eq('payment_method_id', payment_method_id)
+            .eq('restaurant_id', restaurant_id);
+
+        if (!foundPaymentMethod) {
+            return;
+        }
+
+        return foundPaymentMethod;
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+async function togglePaymentMethod(
+    restaurant_id: number,
+    payment_method_id: number
+) {
+    const foundPaymentMethod = await checkIfPaymentMethodsIsActive(
+        restaurant_id,
+        payment_method_id
+    );
+
+    if (!foundPaymentMethod) {
+        return;
+    }
+
+    if (foundPaymentMethod?.length > 0) {
+        console.log('deletar');
+        try {
+            await supabase
+                .from('payment_methods_restaurants')
+                .delete()
+                .eq('payment_method_id', payment_method_id)
+                .eq('restaurant_id', restaurant_id);
+        } catch (error) {
+            console.log(error);
+        }
+    } else {
+        console.log('criar');
+        try {
+            await supabase.from('payment_methods_restaurants').insert({
+                payment_method_id: payment_method_id,
+                restaurant_id: restaurant_id,
+            });
+        } catch (error) {
+            console.log(error);
+        }
+    }
 }

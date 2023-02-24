@@ -76,6 +76,9 @@ export async function handleFinishOrder({
                 product_id: p.id,
                 order_id: orderData.data[0]!.id,
                 observation: p.observation,
+                selects_data: [],
+
+                // additionals_data,
             });
         });
     };

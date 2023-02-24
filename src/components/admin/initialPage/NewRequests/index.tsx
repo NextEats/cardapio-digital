@@ -94,7 +94,7 @@ export default function NewRequests({
                                     );
 
                                 const phone =
-                                    order.clients.contacts.phone?.toString();
+                                    order.clients?.contacts.phone?.toString();
 
                                 return (
                                     <tr
@@ -111,7 +111,7 @@ export default function NewRequests({
                                             />
                                         </td>
                                         <td className="text-left h-4 text-sm font-medium p-2">
-                                            {order.clients.name}
+                                            {order.clients?.name}
                                         </td>
                                         <td
                                             className={`${tdStyle} w-16 hidden 3xs:table-cell`}

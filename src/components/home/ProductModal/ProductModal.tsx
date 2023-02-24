@@ -4,14 +4,13 @@ import { MouseEvent, useContext, useEffect, useState } from 'react';
 import { BsArrowLeftCircle } from 'react-icons/bs';
 
 import { getProductWithFKData } from '@/src/fetch/products/getProductWithFKData';
+import Additionals from './components/Additionals';
 import ProductOptions from './components/ProductOptions';
 
 export default function ProductModal() {
     const selectedProduct = useContext(DigitalMenuContext).selectedProduct;
 
     const [productData, setProductData] = useState<any>(undefined);
-
-    console.log(productData);
 
     useEffect(() => {
         if (selectedProduct?.state) {
@@ -76,7 +75,9 @@ export default function ProductModal() {
                     </div>
 
                     <ProductOptions product_id={selectedProduct.state} />
-                    {/* <Additionals product_id={selectedProduct.state} /> */}
+                    <div className="flex flex-col gap-3">
+                        <Additionals product_id={selectedProduct.state} />
+                    </div>
 
                     <form className="w-full h-24 mb-8">
                         <textarea

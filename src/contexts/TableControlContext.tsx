@@ -20,6 +20,7 @@ import {
     iOrdersProducts,
     iOrdersTablesWithFkData,
     iProduct,
+    iProductAdditionals,
     iProductCategories,
     iProductOptions,
     iProducts,
@@ -46,6 +47,7 @@ interface iTableContextProps {
     additionals: iAdditionals['data'];
     productOptions: iProductOptions['data'];
     selects: iSelects['data'];
+    productAdditionals: iProductAdditionals['data'];
     cashBoxes: iCashBoxes['data'];
     ordersProducts: iOrdersProducts['data'];
     categories: iProductCategories['data'];
@@ -68,6 +70,7 @@ interface iTableContextProviderProps {
     productOptions: iProductOptions['data'];
     selects: iSelects['data'];
     products: iProducts['data'];
+    productAdditionals: iProductAdditionals['data'];
     ordersProducts: iOrdersProducts['data'];
     categories: iProductCategories['data'];
     ordersTables: iOrdersTablesWithFkData[];
@@ -80,6 +83,7 @@ export default function TableContextProvider({
     children,
     restaurant,
     products,
+    productAdditionals,
     ordersProducts,
     additionals,
     productOptions,
@@ -207,6 +211,7 @@ export default function TableContextProvider({
                 setViewProduct,
                 viewProduct,
                 products,
+                productAdditionals,
                 tableProducts,
                 additionals,
                 productOptions,

@@ -11,6 +11,7 @@ import { useState } from 'react';
 import DigitalMenuContent from '@/src/components/DigitalMenuContent';
 import DigitalMenuModals from '@/src/components/DigitalMenuModals';
 import { getProductsGroupedByCategories } from '@/src/fetch/products/getProductsGroupedByCategories';
+import { tSelectWithOptions } from '@/src/fetch/productSelects/getProductSelectWithOptions';
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
     const restaurant = await getRestaurantBySlugFetch(context.query.slug);
@@ -42,6 +43,8 @@ export default function CardapioDigital({ data }: { data: iDigitalMenuData }) {
         string | undefined
     >(undefined);
 
+    const [selects, setSelects] = useState<tSelectWithOptions[]>([]);
+
     if (!restaurant || !groupedProducts) {
         return <>Restaurante não encontrado, ou está sem produtos</>;
     }
@@ -55,6 +58,7 @@ export default function CardapioDigital({ data }: { data: iDigitalMenuData }) {
                     state: selectedProductId,
                     set: setSelectedProductId,
                 },
+                selects: { state: selects, set: setSelects },
                 products: groupedProducts,
             }}
         >

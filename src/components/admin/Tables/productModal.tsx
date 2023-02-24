@@ -62,10 +62,6 @@ export default function ProductModal() {
                                                             selectIndex,
                                                             optionIndex
                                                         );
-                                                        console.log(
-                                                            productSelects,
-                                                            selectOption
-                                                        );
                                                     }}
                                                 />
                                             )
@@ -80,12 +76,11 @@ export default function ProductModal() {
                         </div>
                         <div className="w-full flex items-center justify-end gap-3">
                             <span className="text-lg font-semibold text-green-500">
-                                {' '}
                                 R${' '}
                                 {tableState.totalPrice.toLocaleString('pt-BR', {
                                     minimumFractionDigits: 2,
                                     maximumFractionDigits: 2,
-                                })}{' '}
+                                })}
                             </span>
                             <CardapioDigitalButton
                                 name="Confirmar"

@@ -8,6 +8,8 @@ export default async function ordersProduct(req: NextApiRequest, res: NextApiRes
         product_id,
         order_id,
         observation,
+        additionals_data,
+        selects_data,
     } = body
 
     switch (method) {
@@ -25,6 +27,8 @@ export default async function ordersProduct(req: NextApiRequest, res: NextApiRes
                     product_id,
                     order_id,
                     observation,
+                    selects_data,
+                    additionals_data,
                 )
                 res.status(200).send(ordersProducts)
             } catch {

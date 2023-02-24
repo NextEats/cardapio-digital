@@ -1,5 +1,5 @@
 import { supabase } from "../../server/api";
-import { iCashBoxes, iOrders } from "../../types/types";
+import { iCashBoxes, iOrder } from "../../types/types";
 
 export async function postOrderFetch(
     restaurant_id: number,
@@ -8,7 +8,7 @@ export async function postOrderFetch(
     client_id: number,
     order_status_id: number,
     payment_method_id: number,
-): Promise<iOrders["data"]> {
+): Promise<iOrder["data"]> {
 
     const { data } = await supabase.from("orders").insert({
         order_type_id,
@@ -19,5 +19,5 @@ export async function postOrderFetch(
         restaurant_id
     }).select("*")
 
-    return data!
+    return data![0] as unknown as iOrder["data"];
 }

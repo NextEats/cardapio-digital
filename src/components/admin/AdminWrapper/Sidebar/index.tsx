@@ -1,5 +1,6 @@
 import { SetStateAction, useContext } from "react";
 import { FaChartBar, FaCog, FaHamburger, FaHome, FaUtensils } from "react-icons/fa";
+import { GiTable } from "react-icons/gi";
 
 import { AdminContext } from "@/src/contexts/adminContext";
 import useWindowSize, { Size } from "@/src/hooks/WindowResize";
@@ -51,15 +52,14 @@ export default function Sidebar({
           path={`/${restaurant?.slug}/admin/relatorios`}
         />
         <SidebarListItem
-          name="Configurações"
-          icon={<FaCog className="mr-4 h-8 w-8" />}
-          path={`/${restaurant?.slug}/admin/configuracoes`}
+          name="Controle de Mesas"
+          icon={<GiTable className="mr-4 h-8 w-8" />}
+          path={`/${restaurant?.slug}/admin/table-control`}
         />
         <SidebarListItem
           name="Configurações"
-          icon={<FaUtensils className="mr-4 h-8 w-8" />}
-          // icon={<FaCog className="mr-4 h-8 w-8" />}
-          path={`/${restaurant?.slug}/admin/table-control`}
+          icon={<FaCog className="mr-4 h-8 w-8" />}
+          path={`/${restaurant?.slug}/admin/configuracoes`}
         />
       </ul>
     </div>

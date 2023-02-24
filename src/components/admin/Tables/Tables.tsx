@@ -17,10 +17,6 @@ export default function Tables() {
         <div>
             {openedTableModal ? <TableModal /> : null}
             <div className="flex flex-1 items-center justify-between mb-4">
-                <p className="text-base font-medium mb-4">
-                    {format(moment, "HH")} {":"} {format(moment, "mm")} {"-"}{" "}
-                    {format(moment, "P", { locale: ptBR })}{" "}
-                </p>
 
                 <CreateTableModal />
                 <CardapioDigitalButton name="Nova Mesa" h="h-9" w="w-36" onClick={() => setIsOpenedCreateTableModal(true)} />
@@ -28,9 +24,9 @@ export default function Tables() {
             </div>
             <div className="flex flex-col  sm:grid sm:grid-cols-2 xl:grid-cols-3 1280px gap-5">
                 {
-                    tables.map(t => {
+                    tables.map((t, index) => {
                         return (
-                            <button key={t.id} onClick={() => setOpenedTableModal(t)}>
+                            <button key={index} onClick={() => setOpenedTableModal(t)}>
                                 <Table table={t} />
                             </button>
                         )

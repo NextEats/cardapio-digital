@@ -32,13 +32,6 @@ export default async function orders(req: NextApiRequest, res: NextApiResponse) 
                     Number(order_status_id),
                     Number(payment_method_id),
                 )
-                console.log(
-                    order_type_id,
-                    cash_box_id,
-                    client_id,
-                    order_status_id,
-                    payment_method_id,
-                )
                 res.status(200).send(order)
             } catch (err) {
                 console.log(err)

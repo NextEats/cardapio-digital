@@ -143,7 +143,6 @@ export default function AdminHomepage({
     useMemo(() => {
         async function newOrder() {
             const getNewOrder = await api.get(`/api/orders/${restaurant.id}`);
-            console.log(getNewOrder.data);
             setOrders(getNewOrder.data);
         }
         const channel = supabase

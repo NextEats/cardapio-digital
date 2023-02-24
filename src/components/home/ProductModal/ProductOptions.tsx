@@ -23,7 +23,6 @@ export default function ProductOptions({ product_id }: iProductOptions) {
                     index={selectIndex}
                     handleOptionClick={(optionIndex: number) => {
                         selectOption(selectIndex, optionIndex)
-                        console.log(productSelects)
                     }}
                 />
             ))}

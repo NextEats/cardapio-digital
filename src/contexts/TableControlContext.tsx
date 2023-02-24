@@ -2,7 +2,7 @@ import { createContext, Dispatch, ReactNode, SetStateAction, useEffect, useMemo,
 import ordersProduct from "../pages/api/orders_products";
 import { iTableReducer, tableReducer, tableReducerDefaultValues } from "../reducers/tableReducer/reducer";
 import { api } from "../server/api";
-import { iAdditionals, iOrdersProducts, iOrdersTablesWithFkData, iProduct, iProductCategories, iProductOptions, iProducts, iRestaurant, iSelects, iTable, iTables } from "../types/types";
+import { iAdditionals, iCashBoxes, iOrdersProducts, iOrdersTablesWithFkData, iProduct, iProductCategories, iProductOptions, iProducts, iRestaurant, iSelects, iTable, iTables } from "../types/types";
 
 interface iTableContextProps {
     tables: iTables["data"];
@@ -17,9 +17,11 @@ interface iTableContextProps {
     setViewProduct: Dispatch<SetStateAction<iProduct["data"] | null>>
     viewProduct: iProduct["data"] | null
     products: iProducts["data"]
+    tableProducts: iProducts["data"] | undefined
     additionals: iAdditionals["data"]
     productOptions: iProductOptions["data"]
     selects: iSelects["data"]
+    cashBoxes: iCashBoxes["data"]
     ordersProducts: iOrdersProducts["data"]
     categories: iProductCategories["data"]
     ordersTables: iOrdersTablesWithFkData[]
@@ -40,11 +42,12 @@ interface iTableContextProviderProps {
     ordersProducts: iOrdersProducts["data"]
     categories: iProductCategories["data"]
     ordersTables: iOrdersTablesWithFkData[]
+    cashBoxes: iCashBoxes["data"]
 }
 
 export const TableContext = createContext({} as iTableContextProps)
 
-export default function TableContextProvider({ children, restaurant, products, ordersProducts, additionals, productOptions, selects, categories, ordersTables }: iTableContextProviderProps) {
+export default function TableContextProvider({ children, restaurant, products, ordersProducts, additionals, productOptions, selects, cashBoxes, categories, ordersTables }: iTableContextProviderProps) {
 
     const [tableState, tableDispatch] = useReducer(tableReducer, tableReducerDefaultValues)
 
@@ -66,18 +69,19 @@ export default function TableContextProvider({ children, restaurant, products, o
         getTables()
     }, [restaurant])
 
-    // useMemo(() => {
-    //     if(openedTableModal === null) return
-    //     const ordersTableFiltered = ordersTables.filter(ot => ot.tables.id === openedTableModal.id)
 
-    //     let ordersProductsFiltered
-    //     let tableProducts 
-    //     for(let i = 0; i < ordersTableFiltered.length; i) {
-    //         if(ordersTableFiltered[i].orders.order_status.status_name === 'entregue' && ordersTableFiltered[i].orders.order_status.status_name === 'cancelado') return
-    //         ordersProductsFiltered = ordersProducts.filter( op => op.order_id === ordersTableFiltered[i].orders.id)
-    //     }
+    const tableProducts = useMemo(() => {
+        if (!openedTableModal) return;
 
-    // }, [openedTableModal, ordersTables, ordersProducts])
+        const ordersTableFiltered = ordersTables.filter(ot => ot.tables.id === openedTableModal.id);
+
+        const ordersProductsFiltered = ordersProducts.filter(op =>
+            ordersTableFiltered.some(ot => ot.orders.id === op.order_id)
+        );
+        const tableProductIds = ordersProductsFiltered.map(op => op.product_id);
+
+        return products.filter(p => tableProductIds.includes(p.id));
+    }, [openedTableModal, ordersTables, ordersProducts, products]);
 
     async function createNewtable(cheirAmount: string, tableName: string) {
         if (tableName === '') {
@@ -133,9 +137,11 @@ export default function TableContextProvider({ children, restaurant, products, o
                 setViewProduct,
                 viewProduct,
                 products,
+                tableProducts,
                 additionals,
                 productOptions,
                 selects,
+                cashBoxes,
                 ordersProducts,
                 categories,
                 ordersTables,

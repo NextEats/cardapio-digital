@@ -10,7 +10,6 @@ export default async function ordersStatus(req: NextApiRequest, res: NextApiResp
         case 'GET':
             try {
                 const orderStatus = await getOrderStatusFetch()
-                console.log(orderStatus)
                 res.status(200).send(orderStatus)
             } catch {
                 res.status(404).end();

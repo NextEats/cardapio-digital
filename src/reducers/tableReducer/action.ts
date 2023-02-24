@@ -2,6 +2,7 @@ import { iAdditional, iInsertOrder, iProduct, iProductOption, iSelect } from "sr
 
 
 export enum tableReducerAction {
+    PRODUCTSSELECTED = "PRODUCTSSELECTED",
     PRODUCT = "PRODUCT",
     ADDITIONALS = "ADDITIONALS",
     CHANGEADDITIONALQUANTITY = "CHANGEADDITIONALQUANTITY",
@@ -24,5 +25,11 @@ export function changeAdditionalQuantityAction(isIncrement: boolean, additionalI
     return {
         type: tableReducerAction.CHANGEADDITIONALQUANTITY,
         payload: { isIncrement, additionalId }
+    }
+}
+export function addProductAction(product: iProduct["data"]) {
+    return {
+        type: tableReducerAction.PRODUCTSSELECTED,
+        payload: { product }
     }
 }

@@ -8,11 +8,12 @@ import { getProductsByRestaurantIdFetch } from "@/src/fetch/products/getProducts
 import { getProductsCategoriesByRestaurantIdFetch } from "@/src/fetch/productsCategories/getProductsCategoriesByRestaurantId";
 import { getRestaurantBySlugFetch } from "@/src/fetch/restaurant/getRestaurantBySlug";
 import { getSelectsByRestaurantIdFetch } from "@/src/fetch/selects/getSelectsByRestaurantId";
-import { iAdditionals, iOrdersProducts, iOrdersTablesWithFkData, iOrdersWithFKData, iProductCategories, iProductOptions, iProducts, iRestaurantWithFKData, iSelects } from "@/src/types/types";
+import { iAdditionals, iCashBoxes, iOrdersProducts, iOrdersTablesWithFkData, iOrdersWithFKData, iProductCategories, iProductOptions, iProducts, iRestaurantWithFKData, iSelects } from "@/src/types/types";
 import { GetServerSideProps } from "next";
 import getAdditionalsByRestaurantId from "@/src/pages/api/additionals/[restaurant_id]";
 import { getAdditionalsByRestaurantIdFetch } from "@/src/fetch/additionals/getAdditionals";
 import { MdOutlineWifiProtectedSetup } from "react-icons/md";
+import { getCashBoxesByRestaurantIdFetch } from "@/src/fetch/cashBoxes/getCashBoxesByRestaurantId";
 
 interface iAdminHomePageProps {
     restaurant: iRestaurantWithFKData
@@ -23,6 +24,7 @@ interface iAdminHomePageProps {
     ordersProducts: iOrdersProducts["data"]
     categories: iProductCategories["data"]
     ordersTables: iOrdersTablesWithFkData[]
+    cashBoxes: iCashBoxes["data"]
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
@@ -38,7 +40,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
             selects: await getSelectsByRestaurantIdFetch(restaurant.id),
             ordersProducts: await getOrdersProductsFetch(),
             categories: await getProductsCategoriesByRestaurantIdFetch(restaurant.id),
-            ordersTables: await getOrdersTablesFetch()
+            ordersTables: await getOrdersTablesFetch(),
+            cashBoxes: await getCashBoxesByRestaurantIdFetch(restaurant.id)
         },
     };
 };
@@ -51,7 +54,8 @@ export default function TableControl({
     ordersTables,
     selects,
     productOptions,
-    additionals
+    additionals,
+    cashBoxes
 }: iAdminHomePageProps) {
     return (
         <AdminWrapper>
@@ -64,6 +68,7 @@ export default function TableControl({
                 restaurant={restaurant}
                 additionals={additionals}
                 productOptions={productOptions}
+                cashBoxes={cashBoxes}
             >
                 <div className="flex flex-col gap-8">
 

@@ -444,25 +444,31 @@ export interface Database {
       }
       orders_products: {
         Row: {
+          additionals_data: Json | null
           created_at: string | null
           id: number
           observation: string | null
           order_id: number
           product_id: number
+          selects_data: Json | null
         }
         Insert: {
+          additionals_data?: Json | null
           created_at?: string | null
           id?: number
           observation?: string | null
           order_id: number
           product_id: number
+          selects_data?: Json | null
         }
         Update: {
+          additionals_data?: Json | null
           created_at?: string | null
           id?: number
           observation?: string | null
           order_id?: number
           product_id?: number
+          selects_data?: Json | null
         }
       }
       orders_tables: {
@@ -935,18 +941,21 @@ export interface Database {
         Row: {
           created_at: string | null
           id: number
+          is_waiter: boolean
           restaurant_id: number
           user_id: string
         }
         Insert: {
           created_at?: string | null
           id?: number
+          is_waiter?: boolean
           restaurant_id: number
           user_id: string
         }
         Update: {
           created_at?: string | null
           id?: number
+          is_waiter?: boolean
           restaurant_id?: number
           user_id?: string
         }

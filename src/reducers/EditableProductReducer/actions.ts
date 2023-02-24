@@ -68,7 +68,6 @@ export function setProductPictureFileAction(file: File) {
     }
 }
 export function setProductPictureUrlAction(url: string) {
-    console.log(url)
     return {
         type: EditableProductActions.SET_PICTURE_URL,
         payload: { picture_url: url }
@@ -143,7 +142,6 @@ export function setAddNewOption(optionName: string, optionPicture_url: string, i
     }
 }
 export function removeOptionFromIngredientAction(optionName: string, ingredientId: string) {
-    console.log("remove 1")
     return {
         type: EditableProductActions.REMOVE_OPTION_FROM_INGREDIENT,
         payload: { optionName, ingredientId }

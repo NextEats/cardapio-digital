@@ -1,16 +1,24 @@
+import { tSelectWithOptions } from "@/src/fetch/productSelects/getProductSelectWithOptions";
 import {
     iAdditionals,
-    iInsertSelect,
-    iProductOptions, iSelect, iSelects,
+    iProduct,
+    iProductOptions, iSelects,
 } from "../../types/types";
 import { tableReducerAction } from "./action";
 
-export interface iTableReducer {
+interface iTableSelectingProductData {
+    selects: iSelects["data"]
     additionals: iAdditionals["data"]
     quantityAdditionals: { quantity: number, price: number, additionalId: number }[]
-    selects: iSelects["data"]
-    optionsSelected: iProductOptions["data"]
     totalPrice: number
+    productSelects: tSelectWithOptions[]
+    product: iProduct["data"] | null
+    // optionsSelected: iProductOptions["data"]
+}
+
+export interface iTableReducer extends iTableSelectingProductData {
+
+    productsSelected: iTableSelectingProductData[]
 }
 
 export function tableReducer(state: iTableReducer, action: any) {
@@ -48,6 +56,27 @@ export function tableReducer(state: iTableReducer, action: any) {
                 }
                 return { ...state }
             }
+        case tableReducerAction.PRODUCTSSELECTED:
+            console.log(action.payload.product)
+            state.productsSelected.push({
+                additionals: state.additionals,
+                // optionsSelected: state.optionsSelected,
+                quantityAdditionals: state.quantityAdditionals,
+                selects: state.selects,
+                product: action.payload.product,
+                productSelects: action.payload.productSelects,
+                totalPrice: state.totalPrice,
+            })
+
+            return {
+                ...state,
+                additionals: [],
+                quantityAdditionals: [],
+                selects: [],
+                optionsSelected: [],
+                totalPrice: 0,
+            }
+
 
         default:
             return state;
@@ -59,6 +88,9 @@ export const tableReducerDefaultValues = {
     additionals: [],
     quantityAdditionals: [],
     selects: [],
-    optionsSelected: [],
-    totalPrice: 0
+    product: null,
+    // optionsSelected: [],
+    productSelects: [],
+    totalPrice: 0,
+    productsSelected: []
 }

@@ -1,5 +1,6 @@
 import { TableContext } from '@/src/contexts/TableControlContext';
 import useProductSelectsWithOptions from '@/src/hooks/useProductSelectsWithOptions';
+import { addProductAction } from '@/src/reducers/tableReducer/action';
 import * as Dialog from '@radix-ui/react-dialog';
 import Image from 'next/image';
 import { useContext } from 'react';
@@ -30,7 +31,7 @@ export default function ProductModal({ }: iProductModalProps) {
                         </Dialog.Title>
                         <div className=' max-h-[452px] overflow-auto mb-3 scrollbar-custom pr-2 py-2'>
 
-                            <div className="grid grid-cols-2 gap-10">
+                            <div className="flex flex-col sm:grid sm:grid-cols-2 gap-10">
                                 <div className='flex flex-col gap-3'>
                                     <Image
                                         className="rounded-md w-full" alt="" width={200} height={200}
@@ -52,7 +53,7 @@ export default function ProductModal({ }: iProductModalProps) {
                                                 index={selectIndex}
                                                 handleOptionClick={(optionIndex: number) => {
                                                     selectOption(selectIndex, optionIndex);
-                                                    console.log(productSelects);
+                                                    console.log(productSelects, selectOption);
                                                 }}
                                             />
                                         ))}
@@ -70,7 +71,7 @@ export default function ProductModal({ }: iProductModalProps) {
                         <div className="w-full flex items-center justify-end gap-3">
                             {/* <CardapioDigitalButton name="Cancelar" h="h-9" w="w-44" onClick={() => setViewProduct(null)} /> */}
                             <span className='text-lg font-semibold text-green-500'> R$ {tableState.totalPrice.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} </span>
-                            <CardapioDigitalButton name="Confirmar" h="h-9" w="w-44" />
+                            <CardapioDigitalButton name="Confirmar" h="h-9" w="w-44" onClick={() => tableDispatch(addProductAction(viewProduct!))} />
                         </div>
                         <Dialog.Close className="fixed top-3 right-3 text-gray-600" onClick={() => setViewProduct(null)}>
                             <FiX size={22} />

@@ -119,12 +119,16 @@ export interface iTables {
   data: Array<Database["public"]["Tables"]["tables"]["Row"]>;
 }
 export interface iOrdersTable {
-  data: Database["public"]["Tables"]["tables"]["Row"];
+  data: Database["public"]["Tables"]["orders_tables"]["Row"];
 }
 
 export interface iOrdersTables {
   data: Array<Database["public"]["Tables"]["orders_tables"]["Row"]>;
 }
+
+
+
+
 
 // ==================   INSERTS  =====================
 export interface iInsertOrdersTable {
@@ -269,6 +273,12 @@ export interface iProductOption {
 
 export interface iProductOptions {
   data: Array<Database["public"]["Tables"]["product_options"]["Row"]>;
+}
+export interface IAdditionalsData {
+  additionals_data: {
+    quantity: number;
+    additional_id: number;
+  }[]
 }
 
 export interface iCheckoutProduct {

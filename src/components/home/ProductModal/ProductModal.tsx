@@ -1,6 +1,6 @@
 import { DigitalMenuContext } from '@/src/contexts/DigitalMenuContext';
 import Image from 'next/image';
-import { MouseEvent, useContext, useEffect, useState } from 'react';
+import { MouseEvent, useContext, useEffect, useReducer, useState } from 'react';
 import { BsArrowLeftCircle } from 'react-icons/bs';
 
 import { getProductWithFKData } from '@/src/fetch/products/getProductWithFKData';
@@ -8,12 +8,17 @@ import useAdditionals from '@/src/hooks/useAdditionals';
 import Additionals from './components/Additionals';
 import ProductOptions from './components/ProductOptions';
 import SubmitButtons from './components/SubmitButtons';
+import { productsReducer } from '@/src/reducers/CheckoutReducer/reducer';
+import { ProductsReducer } from '@/src/reducers/ProductsReducer/reducer';
 
 export default function ProductModal() {
     const selects = useContext(DigitalMenuContext).selects;
 
     const selectedProduct = useContext(DigitalMenuContext).selectedProduct;
 
+    const [checkoutState, chackoutDispatch] = useReducer(ProductsReducer, [])
+
+    const [observation, setObservation] = useState('');
     const [productData, setProductData] = useState<any>(undefined);
 
     const { dispatch: additionalsDispatch, state: additionalsState } =
@@ -56,12 +61,26 @@ export default function ProductModal() {
             []
         );
 
+        chackoutDispatch({
+            type: 'add',
+            payload: {
+                id: productData.id,
+                additionals: additionals_data,
+                selects: selects?.state,
+                observation: observation
+            }
+        })
+
         console.log({
             id: productData.id,
             additionals: additionals_data,
             selects: selects?.state,
+            observation: observation
         });
+
+        setObservation('')
     }
+    console.log(checkoutState);
 
     /*
         {
@@ -135,7 +154,8 @@ export default function ProductModal() {
                     <form className="w-full mt-12 h-24 mb-8">
                         <textarea
                             name=""
-                            // onBlur={(e) => setObservation(e.target.value)}
+                            value={observation}
+                            onChange={(e) => setObservation(e.target.value)}
                             className=" scrollbar-custom w-full h-full resize-none rounded-sm bg-[#f6f6f6] shadow-sm text-base outline-none p-4"
                             placeholder="Observações"
                         ></textarea>

@@ -2,7 +2,7 @@ import { DigitalMenuContext } from '@/src/contexts/DigitalMenuContext';
 import { tSelectWithOptions } from '@/src/fetch/productSelects/getProductSelectWithOptions';
 import { filterOptionsSelected } from '@/src/helpers/filterOptionsSelected';
 import useProductSelectsWithOptions from '@/src/hooks/useProductSelectsWithOptions';
-import { useContext } from 'react';
+import { useContext, useMemo } from 'react';
 import SelectComponent from './SelectComponent';
 
 type tState = {
@@ -19,6 +19,14 @@ export default function ProductOptions({ product_id }: iProductOptions) {
 
     const { selects } = useContext(DigitalMenuContext);
 
+    useMemo(() => {
+        selects?.set(
+            filterOptionsSelected({
+                productsOptionsSelected: productSelects,
+            })
+        );
+    }, [productSelects])
+
     return (
         <div>
             {productSelects.map((select, selectIndex) => (
@@ -28,12 +36,6 @@ export default function ProductOptions({ product_id }: iProductOptions) {
                     index={selectIndex}
                     handleOptionClick={(optionIndex: number) => {
                         selectOption(selectIndex, optionIndex);
-
-                        selects?.set(
-                            filterOptionsSelected({
-                                productsOptionsSelected: productSelects,
-                            })
-                        );
                     }}
                 />
             ))}

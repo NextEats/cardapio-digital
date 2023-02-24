@@ -6,6 +6,14 @@ import subtractQuantity from './actions/subtractQuantity';
 export function ProductsReducer(state: Array<any>, action: any) {
     switch (action.type) {
         case 'add':
+            console.log({
+                id: action.payload.id,
+                selects: action.payload.selects,
+                additionals: action.payload.additionals,
+                observation: action.payload.observation,
+            })
+            console.log("foi")
+
             return add(state, action);
         case 'deleteProduct':
             return deleteProduct(state, action);

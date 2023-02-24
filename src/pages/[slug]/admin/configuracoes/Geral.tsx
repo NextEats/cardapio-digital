@@ -1,8 +1,9 @@
-import InputWithLabel from '@/src/components/InputWithLabel';
 import { AdminContext } from '@/src/contexts/adminContext';
+import { supabase } from '@/src/server/api';
 import Image from 'next/image';
 import { useContext } from 'react';
 import { useForm } from 'react-hook-form';
+import InputMask from 'react-input-mask';
 
 export default function Geral() {
     const {
@@ -12,8 +13,17 @@ export default function Geral() {
     } = useForm();
     const { restaurant } = useContext(AdminContext);
 
-    const onSubmit = (data: any) => {
-        console.log(data);
+    const onSubmit = (data: any, e: any) => {
+        async function updateRestaurant() {
+            await supabase
+                .from('restaurants')
+                .update({
+                    name: data.name,
+                    slug: data.slug,
+                })
+                .eq('id', restaurant?.id);
+        }
+        updateRestaurant();
     };
 
     if (!restaurant) {
@@ -30,30 +40,43 @@ export default function Geral() {
                         width={100}
                         height={100}
                     />
-                    <InputWithLabel
-                        label="Alterar foto do estabelecimento"
-                        placeholder="Escreva aqui o nome do seu estabelecimento..."
-                        defaultValue={restaurant.name}
-                        type="file"
-                        {...register('name')}
-                    />
-                    <InputWithLabel
-                        label="Nome do Estabelecimento"
-                        placeholder="Escreva aqui o nome do seu estabelecimento..."
-                        defaultValue={restaurant.name}
-                        {...register('name')}
-                    />
-                    <InputWithLabel
-                        label="Slug"
-                        {...register('slug')}
-                        defaultValue={restaurant.slug}
-                    />
-                    <InputWithLabel
-                        label="CEP"
-                        {...register('cep')}
-                        mask="99999-999"
-                        defaultValue={restaurant.addresses.cep}
-                    />
+                    <label className="w-full">
+                        <span className="text-sm font-semibold text-[#4b4b4b]">
+                            Nome do Estabelecimento
+                        </span>
+                        <input
+                            className="mt-2 w-full focus:outline-none border border-[#d1d1d1] rounded-sm py-2 pl-4"
+                            placeholder="Escreva aqui o nome do seu estabelecimento..."
+                            type="text"
+                            defaultValue={restaurant.name}
+                            {...register('name')}
+                        />
+                    </label>
+                    <label className="w-full">
+                        <span className="text-sm font-semibold text-[#4b4b4b]">
+                            Slug
+                        </span>
+                        <input
+                            className="mt-2 w-full focus:outline-none border border-[#d1d1d1] rounded-sm py-2 pl-4"
+                            placeholder="Escreva aqui o slug do seu estabelecimento..."
+                            type="text"
+                            defaultValue={restaurant.slug}
+                            {...register('slug')}
+                        />
+                    </label>
+                    <label className="w-full">
+                        <span className="text-sm font-semibold text-[#4b4b4b]">
+                            CEP
+                        </span>
+                        <InputMask
+                            mask="99999-999"
+                            className="mt-2 w-full focus:outline-none border border-[#d1d1d1] rounded-sm py-2 pl-4"
+                            placeholder="Escreva aqui o cep do seu estabelecimento..."
+                            type="text"
+                            defaultValue={restaurant.addresses.cep}
+                            {...register('cep')}
+                        />
+                    </label>
                 </div>
 
                 <button

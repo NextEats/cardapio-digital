@@ -7,7 +7,7 @@ type tState = {
 };
 
 interface iProductOptions {
-    product_id: number;
+    product_id: string;
 }
 
 export default function ProductOptions({ product_id }: iProductOptions) {

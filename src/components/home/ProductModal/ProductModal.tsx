@@ -1,87 +1,41 @@
-import {
-    iProductModalReducer,
-    ProductModalReducer,
-    tProductModalReducer,
-} from '@/src/reducers/ProductModalReducer/reducer';
+import { DigitalMenuContext } from '@/src/contexts/DigitalMenuContext';
 import Image from 'next/image';
-import { MouseEvent, useEffect, useReducer } from 'react';
+import { MouseEvent, useContext, useEffect, useState } from 'react';
 import { BsArrowLeftCircle } from 'react-icons/bs';
-import { iProduct } from '../../../types/types';
 
-export default function ProductModal({
-    productModal,
-    setProductModal,
-    productsDispatch,
-}: {
-    productModal: iProduct['data'] | undefined | null;
-    setProductModal: Function;
-    productsDispatch: Function;
-}) {
-    // const [additionals, setAdditionals] = useState<iProductAdditional[]>();
-    // const [price, setPrice] = useState<number>(0);
-    // const [selectedAdditionals, setSelectedAdditionals] = useState<any[]>([]);
-    // const [quantity, setQuantity] = useState<number>(1);
-    // const [observation, setObservation] = useState<string | null>(null);
+import { getProductWithFKData } from '@/src/fetch/products/getProductWithFKData';
+import ProductOptions from './components/ProductOptions';
 
-    const initialState: iProductModalReducer = {
-        additionals: [],
-        price: 0,
-        quantity: 1,
-        observation: null,
-    };
+export default function ProductModal() {
+    const selectedProduct = useContext(DigitalMenuContext).selectedProduct;
 
-    const [state, dispatch] = useReducer<tProductModalReducer>(
-        ProductModalReducer,
-        initialState
-    );
+    const [productData, setProductData] = useState<any>(undefined);
 
-    useEffect(() => {}, [productModal]);
+    console.log(productData);
+
+    useEffect(() => {
+        if (selectedProduct?.state) {
+            getProductWithFKData(selectedProduct).then((result) => {
+                setProductData(result);
+            });
+        }
+    }, [selectedProduct?.state, selectedProduct]);
+
+    if (!productData || !selectedProduct?.state) {
+        return <></>;
+    }
 
     const body = document.querySelector('body');
     body?.classList.add('overflow-hidden');
 
     function closeModal() {
-        setProductModal(null);
+        setProductData(undefined);
+        selectedProduct?.set(undefined);
         body?.classList.remove('overflow-hidden');
-    }
-
-    // useEffect(() => {
-    //     setQuantity(1);
-    // }, []);
-
-    // useEffect(() => {
-    //     if (!productModal) {
-    //         return;
-    //     }
-
-    //     getProductAdditionals(productModal?.id).then((response) => {
-    //         setAdditionals(response as iProductAdditional[]);
-    //     });
-
-    //     setPrice(productModal.price);
-    // }, [productModal]);
-
-    if (!productModal) {
-        return <div>Carregando</div>;
     }
 
     function handleSubmit(e: MouseEvent) {
         e.preventDefault();
-
-        // productsDispatch({
-        //     type: 'add',
-        //     payload: {
-        //         id: productModal?.id,
-        //         name: productModal?.name,
-        //         price: productModal?.price,
-        //         quantity: quantity,
-        //         picture_url: productModal?.picture_url,
-        //         additionals: selectedAdditionals,
-        //         observation,
-        //     },
-        // });
-
-        closeModal();
     }
 
     return (
@@ -93,7 +47,7 @@ export default function ProductModal({
                 }}
             ></div>
             <div
-                className={`max-w-[645px] pb-9 px-4 bg-white top-0 right-0 z-[200] fixed overflow-auto shadow-2xl h-screen`}
+                className={`max-w-[645px] pb-9 px-8 bg-white top-0 right-0 z-[200] fixed overflow-auto shadow-2xl h-screen`}
             >
                 <div className="sticky">
                     <BsArrowLeftCircle
@@ -106,7 +60,7 @@ export default function ProductModal({
                     <div className="flex items-center justify-center mb-9">
                         <Image
                             className="rounded-3xl"
-                            src={productModal.picture_url}
+                            src={productData.picture_url}
                             alt="backgfroundheader"
                             width={500}
                             height={500}
@@ -114,32 +68,24 @@ export default function ProductModal({
                     </div>
                     <div className="mb-9">
                         <h1 className="font-extrabold text-xl text-gray-800 ">
-                            {productModal.name}
+                            {productData.name}
                         </h1>
                         <p className="font-normal text-md text-gray-800 mt-3">
-                            {productModal.description}
+                            {productData.description}
                         </p>
                     </div>
 
-                    {/* <ProductOptions product_id={productModal.id} />
+                    <ProductOptions product_id={selectedProduct.state} />
+                    {/* <Additionals product_id={selectedProduct.state} /> */}
 
-                    {additionals?.length != 0 && additionals && (
-                        <Additionals
-                            data={additionals}
-                            setPrice={setPrice}
-                            selectedAdditionals={selectedAdditionals}
-                            setSelectedAdditionals={setSelectedAdditionals}
-                        />
-                    )} */}
-
-                    {/* <form className="w-full h-24 mb-8">
+                    <form className="w-full h-24 mb-8">
                         <textarea
                             name=""
-                            onBlur={(e) => setObservation(e.target.value)}
+                            // onBlur={(e) => setObservation(e.target.value)}
                             className=" scrollbar-custom w-full h-full resize-none rounded-sm bg-[#f6f6f6] shadow-sm text-base outline-none p-4"
                             placeholder="Observações"
                         ></textarea>
-                    </form> */}
+                    </form>
 
                     {/* <SubmitButtons
                         productModal={productModal}

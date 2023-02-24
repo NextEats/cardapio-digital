@@ -3,9 +3,10 @@ import { iProductAdditional } from '@/src/types/types';
 export type tProductModalReducer = React.Reducer<iProductModalReducer, any>;
 
 export interface iProductModalReducer {
+    id: string;
     additionals?: iProductAdditional[];
-    price: number;
-    quantity: number;
+    price?: number;
+    quantity?: number;
     observation?: string | null;
 }
 
@@ -14,12 +15,9 @@ export function ProductModalReducer(
     action: any
 ): iProductModalReducer {
     switch (action.type) {
-        case 'add':
-            // ... logic to update the state based on the action
-            return {
-                ...state,
-                // ... updated state properties
-            };
+        case 'SET':
+            console.log(state);
+            return state;
         default:
             return state;
     }

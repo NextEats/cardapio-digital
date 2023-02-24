@@ -1,39 +1,39 @@
-import { useEffect, useReducer } from 'react'
-import { getProductSelectWithOptions } from '../fetch/productSelects/getProductSelectWithOptions'
+import { useEffect, useReducer } from 'react';
+import { getProductSelectWithOptions } from '../fetch/productSelects/getProductSelectWithOptions';
 import productSelectReducer, {
     initialState,
-} from '../reducers/OptionsSelects/reducer'
+} from '../reducers/OptionsSelects/reducer';
 
-export default function useProductSelectsWithOptions(product_id: number) {
-    const [state, dispatch] = useReducer(productSelectReducer, initialState)
+export default function useProductSelectsWithOptions(product_id: string) {
+    const [state, dispatch] = useReducer(productSelectReducer, initialState);
 
     const selectOption = (selectIndex: number, optionIndex: number) => {
         dispatch({
             type: 'SELECT_OPTION',
             payload: { selectIndex, optionIndex },
-        })
-    }
+        });
+    };
 
     useEffect(() => {
-        let didCancel = false
+        let didCancel = false;
         const fetchProductSelectsWithOptions = async () => {
-            dispatch({ type: 'FETCH_INIT' })
+            dispatch({ type: 'FETCH_INIT' });
             try {
-                const response = await getProductSelectWithOptions(product_id)
+                const response = await getProductSelectWithOptions(product_id);
                 if (!didCancel && response) {
-                    dispatch({ type: 'FETCH_SUCCESS', payload: response })
+                    dispatch({ type: 'FETCH_SUCCESS', payload: response });
                 }
             } catch (error: any) {
                 if (!didCancel) {
-                    dispatch({ type: 'FETCH_FAILURE', payload: error.message })
+                    dispatch({ type: 'FETCH_FAILURE', payload: error.message });
                 }
             }
-        }
-        fetchProductSelectsWithOptions()
+        };
+        fetchProductSelectsWithOptions();
         return () => {
-            didCancel = true
-        }
-    }, [product_id])
+            didCancel = true;
+        };
+    }, [product_id]);
 
-    return { productSelects: state.productSelects, selectOption }
+    return { productSelects: state.productSelects, selectOption };
 }

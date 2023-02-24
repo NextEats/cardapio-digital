@@ -14,9 +14,9 @@ import { ProductsReducer } from '@/src/reducers/ProductsReducer/reducer';
 export default function ProductModal() {
     const selects = useContext(DigitalMenuContext).selects;
 
-    const selectedProduct = useContext(DigitalMenuContext).selectedProduct;
+    const { selectedProduct, productReducer } = useContext(DigitalMenuContext);
 
-    const [checkoutState, chackoutDispatch] = useReducer(ProductsReducer, [])
+    // const [checkoutState, chackoutDispatch] = useReducer(ProductsReducer, [])
 
     const [observation, setObservation] = useState('');
     const [productData, setProductData] = useState<any>(undefined);
@@ -61,7 +61,7 @@ export default function ProductModal() {
             []
         );
 
-        chackoutDispatch({
+        productReducer?.dispatch({
             type: 'add',
             payload: {
                 id: productData.id,
@@ -80,7 +80,7 @@ export default function ProductModal() {
 
         setObservation('')
     }
-    console.log(checkoutState);
+    console.log(productReducer?.state);
 
     /*
         {

@@ -300,8 +300,8 @@ export function OrderModal({
                                                         <strong>
                                                             {' '}
                                                             <DropdownMenuObservation
-                                                                observation={
-                                                                    orderProductByProductId.observation
+                                                                orderProduct={
+                                                                    orderProductByProductId
                                                                 }
                                                             />{' '}
                                                         </strong>
@@ -351,7 +351,7 @@ export function OrderModal({
 
                             <div className="flex flex-1 items-center justify-end gap-3 mt-5 hideButtonToPrint">
                                 {orderFound?.order_status.status_name ===
-                                'em análise' ? (
+                                    'em análise' ? (
                                     <ReactToPrint
                                         copyStyles={true}
                                         content={() => printComponent.current}

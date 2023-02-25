@@ -10,6 +10,7 @@ import {
 } from '../../../reducers/statusReducer/reducer';
 
 import {
+    iAdditionals,
     iCashBox,
     iCashBoxes,
     iInsertAddresses,
@@ -37,6 +38,8 @@ import LoadingSpinner from '@/src/components/LoadingSpinner';
 import { api, supabase } from '@/src/server/api';
 import { createServerSupabaseClient } from '@supabase/auth-helpers-nextjs';
 import 'react-toastify/dist/ReactToastify.css';
+import getAdditionalsByRestaurantId from '../../api/additionals/[restaurant_id]';
+import { getAdditionalsByRestaurantIdFetch } from '@/src/fetch/additionals/getAdditionals';
 
 interface iAdminHomePageProps {
     ordersData: iOrdersWithFKData[];
@@ -47,6 +50,7 @@ interface iAdminHomePageProps {
     contacts: iInsertContacts['data'];
     addresses: iInsertAddresses['data'];
     cashBoxes: iCashBoxes['data'];
+    additionals: iAdditionals['data'];
     restaurant: iRestaurantWithFKData;
 }
 
@@ -91,11 +95,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
                     slug: string;
                 };
             };
-
-            console.log(userDetailsTypedData.restaurants.slug);
+            ;
         }
-
-        console.log(session);
     }
 
     // const restaurant = await getRestaurantBySlugFetch(context.query.slug);
@@ -109,6 +110,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
             contacts: await getContactsFetch(),
             addresses: await getAddressesFetch(),
             cashBoxes: await getCashBoxesByRestaurantIdFetch(restaurant.id),
+            additionals: await getAdditionalsByRestaurantIdFetch(restaurant.id),
             restaurant,
         },
     };
@@ -119,6 +121,7 @@ export default function AdminHomepage({
     ordersProducts,
     products,
     cashBoxes,
+    additionals,
     restaurant,
 }: iAdminHomePageProps) {
     const [orders, setOrders] = useState<iOrdersWithFKData[]>(ordersData);
@@ -126,6 +129,7 @@ export default function AdminHomepage({
     const [cashBoxState, setCashBoxState] = useState<
         iCashBox['data'] | undefined
     >(cashBoxOpened);
+    console.log(additionals)
 
     const printComponent = useRef<HTMLDivElement>(null)
 
@@ -285,7 +289,7 @@ export default function AdminHomepage({
                     products={products}
                 />
 
-                <div className=" md:columns-3 gap-4">
+                <div className=" md:grid md:grid-cols-3 gap-4">
                     <OrderStatusCard
                         statusName="Em produção"
                         dispatch={ordersDispatch}
@@ -319,6 +323,7 @@ export default function AdminHomepage({
                         restaurant={restaurant}
                         ordersProducts={ordersProducts}
                         products={products}
+                        additionals={additionals}
                         ordersDispatch={ordersDispatch}
                     />
                 ) : null}

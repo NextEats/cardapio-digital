@@ -61,7 +61,7 @@ export default function OrderStatusCard({
     }
 
     return (
-        <div className="flex flex-1 min-h-[240px]  lg:w-full flex-col shadow-sm px-4 pt-2 pb-4 scrollbar-custom">
+        <div className="flex flex-1 max-h-[240px] overflow-auto lg:w-full flex-col shadow-sm px-4 pt-2 pb-4 scrollbar-custom">
             <div className=" flex items-center justify-between mb-4">
                 <h2 className="text-base font-bold"> {statusName} </h2>
                 <span className="text-md font-medium">{''}</span>
@@ -100,11 +100,13 @@ export default function OrderStatusCard({
                                         height={26}
                                     />
                                 </td>
-                                <td className="text-left text-sm font-medium px-2 hidden 2xs:table-cell md:hidden xl:table-cell">
-                                    <span className=" ">
-                                        {order.clients.name}
-                                    </span>
-                                </td>
+                                {order.clients ?
+                                    <td className="text-left text-sm font-medium px-2 hidden 2xs:table-cell md:hidden xl:table-cell">
+                                        <span className=" ">
+                                            {order.clients.name}
+                                        </span>
+                                    </td>
+                                    : null}
                                 <td
                                     className={`${tdStyle} px-5  hidden sm:table-cell md:hiden 2xl:table-cell`}
                                 >

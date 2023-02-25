@@ -33,7 +33,7 @@ export default function TableModal() {
         const orderData = await api.post(`api/orders/${restaurant.id}`, {
             order_type_id: 3,
             cash_box_id: foundCashBoxes.id,
-            order_status_id: 2,
+            order_status_id: 3,
         });
 
         if (orderData === null) return;
@@ -108,26 +108,26 @@ export default function TableModal() {
                         <div className=" flex flex-col lg:grid lg:grid-cols-2 gap-4 ">
                             {tableProducts
                                 ? tableProducts.map((product) => {
-                                      return (
-                                          <CustomerAtTheTable
-                                              key={product.id}
-                                              isInProduction={true}
-                                              product={product}
-                                          />
-                                      );
-                                  })
+                                    return (
+                                        <CustomerAtTheTable
+                                            key={product.id}
+                                            isInProduction={true}
+                                            product={product}
+                                        />
+                                    );
+                                })
                                 : null}
                             {tableState.productsSelected
                                 ? tableState.productsSelected.map((product) => {
-                                      if (product.product === null) return;
-                                      return (
-                                          <CustomerAtTheTable
-                                              key={product.product!.id}
-                                              isInProduction={false}
-                                              product={product.product!}
-                                          />
-                                      );
-                                  })
+                                    if (product.product === null) return;
+                                    return (
+                                        <CustomerAtTheTable
+                                            key={product.product!.id}
+                                            isInProduction={false}
+                                            product={product.product!}
+                                        />
+                                    );
+                                })
                                 : null}
                         </div>
 

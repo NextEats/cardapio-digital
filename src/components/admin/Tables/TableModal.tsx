@@ -131,7 +131,7 @@ export default function TableModal() {
                                 : null}
                         </div>
 
-                        {openedTableModal?.is_active === true ? (
+                        {!openedTableModal?.is_active ? (
                             <div className="w-full flex items-center justify-end gap-3">
                                 <CardapioDigitalButton
                                     name="Pedir"

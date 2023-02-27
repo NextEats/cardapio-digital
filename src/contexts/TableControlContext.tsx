@@ -41,6 +41,10 @@ interface iTableContextProps {
     setIsOpenedCreateTableModal: Dispatch<SetStateAction<boolean>>;
     isOpenedCreateTableModal: boolean;
     setViewProduct: Dispatch<SetStateAction<iProduct['data'] | null>>;
+    isOpenedInactiveTablesModalState: {
+        state: boolean;
+        set: Dispatch<SetStateAction<boolean>>;
+    };
     viewProduct: iProduct['data'] | null;
     products: iProducts['data'];
     tableProducts: iProducts['data'] | undefined;
@@ -106,6 +110,8 @@ export default function TableContextProvider({
     const [openedTableModal, setOpenedTableModal] = useState<
         iTable['data'] | null
     >(null);
+    const [isOpenedInactiveTablesModal, setIsOpenedInactiveTablesModal] =
+        useState(false);
     const [isOpenedProductTableModal, setIsOpenedProductTableModal] =
         useState(false);
     const [isOpenedTableConfigModal, setIsOpenedTableConfigModal] =
@@ -208,6 +214,10 @@ export default function TableContextProvider({
                 isOpenedTableConfigModal,
                 setIsOpenedCreateTableModal,
                 isOpenedCreateTableModal,
+                isOpenedInactiveTablesModalState: {
+                    state: isOpenedInactiveTablesModal,
+                    set: setIsOpenedInactiveTablesModal,
+                },
                 setViewProduct,
                 viewProduct,
                 products,

@@ -106,6 +106,7 @@ export function OrderModal({
             productsFiltered[i]!.price;
     }
 
+
     const result = Object.entries(countProducts).map(
         ([name, { id, count, price }]) => ({ id, name, count, price })
     );
@@ -113,6 +114,22 @@ export function OrderModal({
         (acc, product) => acc + product.price,
         0
     );
+
+    const totalAdditionalPrice = result.reduce((acc, item) => {
+        const orderProductByProductId = orderProductFiltered.find((op) => op.product_id === item.id);
+        if (!orderProductByProductId) return acc
+        const additionalsData = orderProductByProductId.additionals_data as { quantity: number, additional_id: number }[]
+        const priceOfEachAdditional = additionalsData ? additionalsData.map((ad) => {
+            if (additionals.some((a, index) => a.id === ad.additional_id)) {
+                return additionals[additionals.findIndex(a => a.id === ad.additional_id)].price * ad.quantity
+            }
+            return 0
+        }) : [0]
+
+        return acc + priceOfEachAdditional.reduce((sum, price) => sum + price, 0);
+
+    }, 0)
+
     const deliveryPrice = 10;
 
     const orderDateFormated = format(
@@ -323,7 +340,7 @@ export function OrderModal({
                                     <span className={`${textStyles}`}>
                                         <strong>
                                             {' '}
-                                            R$ {totalPriceOfProducts}{' '}
+                                            R$ {totalPriceOfProducts + totalAdditionalPrice}{' '}
                                         </strong>
                                     </span>
                                 </p>
@@ -344,7 +361,7 @@ export function OrderModal({
                                             {' '}
                                             R${' '}
                                             {totalPriceOfProducts +
-                                                deliveryPrice}{' '}
+                                                deliveryPrice + totalAdditionalPrice}{' '}
                                         </strong>
                                     </span>
                                 </p>

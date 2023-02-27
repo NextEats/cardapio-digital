@@ -16,20 +16,18 @@ export default function Table({ table }: iTableProps) {
         (elem, index) => elem.tables.id === table.id
     );
 
-    const tableStatusColor = ` ${
-        table.is_occupied
+    const tableStatusColor = ` ${table.is_occupied
             ? 'text-blue-400'
             : table.is_active
-            ? 'text-red-400'
-            : 'text-gray-400'
-    }`;
-    const tableBorderStatusColor = ` ${
-        table.is_occupied
+                ? 'text-red-400'
+                : 'text-gray-400'
+        }`;
+    const tableBorderStatusColor = ` ${table.is_occupied
             ? 'border-blue-400'
             : table.is_active
-            ? 'border-red-400'
-            : 'border-gray-400'
-    }`;
+                ? 'border-red-400'
+                : 'border-gray-400'
+        }`;
 
     return (
         <div
@@ -62,10 +60,11 @@ export default function Table({ table }: iTableProps) {
                 {!table
                     ? ''
                     : table.is_occupied
-                    ? 'Ocupada'
-                    : table.is_reserved
-                    ? 'Reservada'
-                    : 'Livre'}
+                        ? 'Ocupada'
+                        : table.is_reserved
+                            ? 'Reservada' :
+                            table.is_active ? 'Inativa'
+                                : 'Livre'}
             </span>
         </div>
     );

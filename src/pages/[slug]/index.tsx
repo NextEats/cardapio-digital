@@ -15,6 +15,7 @@ import { tSelectWithOptions } from '@/src/fetch/productSelects/getProductSelectW
 import { ProductsReducer } from '@/src/reducers/ProductsReducer/reducer';
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
+
     const restaurant = await getRestaurantBySlugFetch(context.query.slug);
 
     console.log('restaurant: ', restaurant);

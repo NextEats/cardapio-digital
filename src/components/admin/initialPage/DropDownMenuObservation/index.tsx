@@ -45,12 +45,12 @@ export function DropdownMenuObservation({ orderProduct, additionals }: iDropdown
     const additionalsData = orderProduct.additionals_data as { quantity: number, additional_id: number }[]
 
 
-    const additionalsDataFiltered = additionalsData.reduce((acc: { additional: iAdditional["data"], quantity: number }[], item) => {
+    const additionalsDataFiltered = additionalsData !== null ? additionalsData.reduce((acc: { additional: iAdditional["data"], quantity: number }[], item) => {
         if (additionals.some(a => a.id === item.additional_id)) {
             return [...acc, { additional: additionals[additionals.findIndex(a => a.id === item.additional_id)], quantity: item.quantity }]
         }
         return [...acc]
-    }, [])
+    }, []) : []
 
     return (
         <DropdownMenu.Root>
@@ -59,7 +59,7 @@ export function DropdownMenuObservation({ orderProduct, additionals }: iDropdown
             </DropdownMenu.Trigger>
 
             <DropdownMenu.Portal>
-                <DropdownMenu.Content data-state="top" className='rounded max-w-[350px] sm:max-w-[400px] bg-white p-2 shadow-md '>
+                <DropdownMenu.Content data-state="top" className='rounded max-w-[350px] sm:max-w-[400px] bg-white p-3 shadow-md '>
                     {/* <DropdownMenu.Label className='mb-2 text-xl font-bold text-gray-400'> Observação </DropdownMenu.Label> */}
 
                     <p className='text-lg font-medium text-gray-700 ml-2'>

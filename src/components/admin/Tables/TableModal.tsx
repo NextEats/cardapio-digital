@@ -21,7 +21,7 @@ export default function TableModal() {
         isOpenedProductTableModal,
         setIsOpenedTableConfigModal,
         setIsOpenedProductTableModal,
-        tableProducts,
+        tableData,
         tableState,
         updateTable,
     } = useContext(TableContext);
@@ -68,11 +68,14 @@ export default function TableModal() {
         const ordersTablesData = await api.post(`api/orders_tables/`, {
             order_id: orderData.data.id,
             table_id: openedTableModal?.id,
+            has_been_paid: false,
         });
 
         if (openedTableModal?.is_occupied === false) {
             await updateTable(false, true, openedTableModal?.id!);
         }
+
+        window.location.reload()
     }
 
     return (
@@ -87,14 +90,17 @@ export default function TableModal() {
                         onClick={() => setOpenedTableModal(null)}
                         className="w-screen h-screen flex items-center justify-center bg-black fixed inset-0 z-10 opacity-40 transition-all duration-300 ease-in-out"
                     />
-                    <Dialog.Content className="fixed top-1/3 right-1/2 z-20 translate-x-1/2 rounded-lg w-[350px] sm:w-[600px] lg:w-[900px] h-[] bg-white shadow-md p-6">
+                    <Dialog.Content className="fixed top-[14vh] right-1/2 z-20 translate-x-1/2 rounded-lg w-[350px] sm:w-[600px] lg:w-[900px] bg-white shadow-md p-6">
                         <Dialog.Title className="flex items-center justify-between text-base w-full text-center font-semibold mb-6 mt-3">
                             <div className="flex items-center justify-start gap-3">
                                 <GiTable className="text-gray-350" size={32} />
                                 <span className="text-lg font-bold ">
                                     {' '}
-                                    {openedTableModal?.name}{' '}
+                                    {openedTableModal?.name}
                                 </span>
+                                <span className='text-bsse font-semibold text-green-500'> R$ {tableData.tableBill.toLocaleString('pt-BR', {
+                                    minimumFractionDigits: 2, maximumFractionDigits: 2
+                                })} </span>
                             </div>
                             <BsGear
                                 size={24}
@@ -105,26 +111,26 @@ export default function TableModal() {
                             />
                         </Dialog.Title>
 
-                        <div className=" flex flex-col lg:grid lg:grid-cols-2 gap-4 ">
-                            {tableProducts
-                                ? tableProducts.map((product) => {
+                        <div className=" flex flex-col lg:grid lg:grid-cols-2 gap-4 max-h-[350px] overflow-auto p-2 scrollbar-custom">
+                            {tableData.productsData
+                                ? tableData.productsData.map((orderProductData, index) => {
                                     return (
                                         <CustomerAtTheTable
-                                            key={product.id}
+                                            key={orderProductData.product.id}
                                             isInProduction={true}
-                                            product={product}
+                                            orderProductData={orderProductData}
                                         />
                                     );
                                 })
                                 : null}
                             {tableState.productsSelected
-                                ? tableState.productsSelected.map((product) => {
-                                    if (product.product === null) return;
+                                ? tableState.productsSelected.map((orderProductData) => {
+                                    if (orderProductData.product === null) return;
                                     return (
                                         <CustomerAtTheTable
-                                            key={product.product!.id}
+                                            key={orderProductData.product.id}
                                             isInProduction={false}
-                                            product={product.product!}
+                                            orderProductData={orderProductData}
                                         />
                                     );
                                 })
@@ -132,7 +138,7 @@ export default function TableModal() {
                         </div>
 
                         {!openedTableModal?.is_active ? (
-                            <div className="w-full flex items-center justify-end gap-3">
+                            <div className="w-full flex items-center justify-end gap-3 mt-4 ">
                                 <CardapioDigitalButton
                                     name="Pedir"
                                     h="h-8"

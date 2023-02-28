@@ -10,11 +10,17 @@ import { CardapioDigitalButton } from '../cardapio-digital/CardapioDigitalButton
 import TableAdditionals from './TableAdditionals';
 
 export default function ProductModal() {
-    const { viewProduct, setViewProduct, tableState, tableDispatch } =
+    const { viewProduct, setViewProduct, tableState, tableDispatch, setIsOpenedProductTableModal, additionals, productAdditionals } =
         useContext(TableContext);
     const { productSelects, selectOption } = useProductSelectsWithOptions(
         viewProduct ? viewProduct?.id!.toString() : ''
     );
+
+    const additionalByProductId = additionals.filter((a) => {
+        return productAdditionals.some(
+            (pa) => pa.id === a.id && pa.product_id === viewProduct?.id
+        );
+    });
 
     return (
         <div>
@@ -68,7 +74,7 @@ export default function ProductModal() {
                                         )}
                                     </div>
 
-                                    <h2> Adicionais </h2>
+                                    {additionalByProductId.length !== 0 ? <h2> Adicionais </h2> : null}
 
                                     <TableAdditionals />
                                 </div>
@@ -86,13 +92,16 @@ export default function ProductModal() {
                                 name="Confirmar"
                                 h="h-9"
                                 w="w-44"
-                                onClick={() =>
+                                onClick={() => {
+                                    setViewProduct(null)
+                                    setIsOpenedProductTableModal(false)
                                     tableDispatch(
                                         addProductAction(
                                             viewProduct!,
                                             productSelects
                                         )
                                     )
+                                }
                                 }
                             />
                         </div>

@@ -8,6 +8,7 @@ export default async function ordersTables(req: NextApiRequest, res: NextApiResp
     const {
         order_id,
         table_id,
+        has_been_paid,
     } = body
 
     switch (method) {
@@ -24,6 +25,7 @@ export default async function ordersTables(req: NextApiRequest, res: NextApiResp
                 const ordersTable = await postOrderTableFetch({
                     order_id: Number(order_id),
                     table_id: Number(table_id),
+                    has_been_paid,
                 })
                 res.status(200).send(ordersTable)
             } catch {

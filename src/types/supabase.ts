@@ -474,18 +474,21 @@ export interface Database {
       orders_tables: {
         Row: {
           created_at: string | null
+          has_been_paid: boolean
           id: number
           order_id: number | null
           table_id: number | null
         }
         Insert: {
           created_at?: string | null
+          has_been_paid?: boolean
           id?: number
           order_id?: number | null
           table_id?: number | null
         }
         Update: {
           created_at?: string | null
+          has_been_paid?: boolean
           id?: number
           order_id?: number | null
           table_id?: number | null
@@ -512,21 +515,18 @@ export interface Database {
         Row: {
           created_at: string | null
           id: number
-          is_active: boolean
           payment_method_id: number
           restaurant_id: number
         }
         Insert: {
           created_at?: string | null
           id?: number
-          is_active?: boolean
           payment_method_id: number
           restaurant_id: number
         }
         Update: {
           created_at?: string | null
           id?: number
-          is_active?: boolean
           payment_method_id?: number
           restaurant_id?: number
         }
@@ -1050,7 +1050,10 @@ export interface Database {
     Tables: {
       buckets: {
         Row: {
+          allowed_mime_types: string[] | null
+          avif_autodetection: boolean | null
           created_at: string | null
+          file_size_limit: number | null
           id: string
           name: string
           owner: string | null
@@ -1058,7 +1061,10 @@ export interface Database {
           updated_at: string | null
         }
         Insert: {
+          allowed_mime_types?: string[] | null
+          avif_autodetection?: boolean | null
           created_at?: string | null
+          file_size_limit?: number | null
           id: string
           name: string
           owner?: string | null
@@ -1066,7 +1072,10 @@ export interface Database {
           updated_at?: string | null
         }
         Update: {
+          allowed_mime_types?: string[] | null
+          avif_autodetection?: boolean | null
           created_at?: string | null
+          file_size_limit?: number | null
           id?: string
           name?: string
           owner?: string | null

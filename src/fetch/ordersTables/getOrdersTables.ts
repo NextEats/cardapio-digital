@@ -4,6 +4,7 @@ import { iOrdersTables, iOrdersTablesWithFkData, iProducts } from "@/src/types/t
 export async function getOrdersTablesFetch(): Promise<iOrdersTablesWithFkData[]> {
     const { data } = await supabase.from("orders_tables").select(`
     id,
+    has_been_paid,
     orders (
         id,
         order_status (

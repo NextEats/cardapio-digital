@@ -7,9 +7,9 @@ import { FiX } from 'react-icons/fi';
 import { CardapioDigitalButton } from '../cardapio-digital/CardapioDigitalButton';
 import ProductModal from './productModal';
 
-interface iProductTableModalProps {}
+interface iProductTableModalProps { }
 
-export default function ProductsTableModal({}: iProductTableModalProps) {
+export default function ProductsTableModal({ }: iProductTableModalProps) {
     const {
         viewProduct,
         isOpenedProductTableModal,
@@ -83,11 +83,10 @@ export default function ProductsTableModal({}: iProductTableModalProps) {
                                     className={
                                         `flex items-center justify-center px-6 border border-black cursor-pointer rounded-full text-lg font-semibold` +
                                         `
-                                    ${
-                                        categoryId === 0
+                                    ${categoryId === 0
                                             ? 'bg-gray-800 text-white'
                                             : ''
-                                    }`
+                                        }`
                                     }
                                 >
                                     <span> Todos </span>
@@ -104,11 +103,10 @@ export default function ProductsTableModal({}: iProductTableModalProps) {
                                             className={
                                                 `flex items-center justify-center px-6 border border-black cursor-pointer rounded-full text-lg font-semibold ` +
                                                 `
-                                        ${
-                                            categoryId === category.id
-                                                ? 'bg-gray-800 text-white'
-                                                : ''
-                                        }`
+                                        ${categoryId === category.id
+                                                    ? 'bg-gray-800 text-white'
+                                                    : ''
+                                                }`
                                             }
                                         >
                                             <span> {category.name} </span>
@@ -162,11 +160,6 @@ export default function ProductsTableModal({}: iProductTableModalProps) {
                                     onClick={() =>
                                         setIsOpenedProductTableModal(false)
                                     }
-                                />
-                                <CardapioDigitalButton
-                                    name="Confirmar"
-                                    h="h-9"
-                                    w="w-44"
                                 />
                             </div>
                         </div>

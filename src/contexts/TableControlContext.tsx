@@ -8,6 +8,7 @@ import {
     useReducer,
     useState,
 } from 'react';
+import { getOrdersProductsData, iOrdersProductsData } from '../helpers/getOrdersProductsData';
 import {
     iTableReducer,
     tableReducer,
@@ -47,7 +48,10 @@ interface iTableContextProps {
     };
     viewProduct: iProduct['data'] | null;
     products: iProducts['data'];
-    tableProducts: iProducts['data'] | undefined;
+    tableData: {
+        productsData: iOrdersProductsData[] | undefined;
+        tableBill: number
+    }
     additionals: iAdditionals['data'];
     productOptions: iProductOptions['data'];
     selects: iSelects['data'];
@@ -129,13 +133,44 @@ export default function TableContextProvider({
         getTables();
     }, [restaurant]);
 
-    const tableProducts = useMemo(() => {
+
+    // const tableData = useMemo(() => {
+    //     if (!openedTableModal) return;
+
+    //     const ordersTableFiltered = ordersTables.filter((ot) => {
+    //         return ot.tables.id === openedTableModal.id && ot.has_been_paid === false
+    //     });
+    //     const ordersProductsFiltered = ordersProducts.filter((op) =>
+    //         ordersTableFiltered.some((ot) => ot.orders.id === op.order_id)
+    //     );
+    //     const tableProductIds = ordersProductsFiltered.map(
+    //         (op) => op.product_id
+    //     );
+
+    //     // const productsFiltered = products.filter((p) => tableProductIds.includes(p.id) )
+    //     const productsFiltered = tableProductIds.reduce((acc: iProducts["data"], id) => {
+    //         const product = products.find((p) => p.id === id);
+    //         if (product) {
+    //             acc.push(product);
+    //         }
+    //         return acc;
+    //     }, []);
+
+    //     const totalPriceOfProducts = productsFiltered.reduce((acc, item) => + acc + item.price, 0)
+    //     const ordersProductsDataTable = getOrdersProductsData({ additionals, ordersProducts: ordersProductsFiltered, products: productsFiltered })
+
+    //     const totalPriceOfAdditionals = ordersProductsDataTable.reduce((acc, item) => {
+    //         return acc + item.totalAdditionalsPriceByProduct
+    //     }, 0)
+
+    //     return { products: productsFiltered, tableBill: totalPriceOfProducts + totalPriceOfAdditionals }
+    // }, [openedTableModal, ordersTables, ordersProducts, products, additionals]);
+    const tableData = useMemo(() => {
         if (!openedTableModal) return;
 
-        const ordersTableFiltered = ordersTables.filter(
-            (ot) => ot.tables.id === openedTableModal.id
-        );
-
+        const ordersTableFiltered = ordersTables.filter((ot) => {
+            return ot.tables.id === openedTableModal.id && ot.has_been_paid === false
+        });
         const ordersProductsFiltered = ordersProducts.filter((op) =>
             ordersTableFiltered.some((ot) => ot.orders.id === op.order_id)
         );
@@ -143,8 +178,25 @@ export default function TableContextProvider({
             (op) => op.product_id
         );
 
-        return products.filter((p) => tableProductIds.includes(p.id));
-    }, [openedTableModal, ordersTables, ordersProducts, products]);
+        // const productsFiltered = products.filter((p) => tableProductIds.includes(p.id) )
+        const productsFiltered = tableProductIds.reduce((acc: iProducts["data"], id) => {
+            const product = products.find((p) => p.id === id);
+            if (product) {
+                acc.push(product);
+            }
+            return acc;
+        }, []);
+
+        const totalPriceOfProducts = productsFiltered.reduce((acc, item) => + acc + item.price, 0)
+        const ordersProductsDataTable = getOrdersProductsData({ additionals, ordersProducts: ordersProductsFiltered, products: productsFiltered })
+
+        const totalPriceOfAdditionals = ordersProductsDataTable.reduce((acc, item) => {
+            return acc + item.totalAdditionalsPriceByProduct
+        }, 0)
+
+        return { productsData: ordersProductsDataTable, tableBill: totalPriceOfProducts + totalPriceOfAdditionals }
+    }, [openedTableModal, ordersTables, ordersProducts, products, additionals]);
+
 
     async function createNewtable(cheirAmount: string, tableName: string) {
         if (tableName === '') {
@@ -152,11 +204,10 @@ export default function TableContextProvider({
             return;
         }
         const novaMessa: iTables['data'] = await api.post(
-            'api/table_control/' + restaurant.id,
-            {
-                chair_ammount: cheirAmount,
-                name: tableName,
-            }
+            'api/table_control/' + restaurant.id, {
+            chair_ammount: cheirAmount,
+            name: tableName,
+        }
         );
         setTables((state) => [...state, novaMessa[0]]);
     }
@@ -167,13 +218,12 @@ export default function TableContextProvider({
         table_id: number
     ) {
         const tableUpdated = await api.put(
-            `api/table_control/${restaurant.id!}`,
-            {
-                chair_ammount: openedTableModal?.chair_ammount,
-                is_active,
-                is_occupied,
-                table_id: openedTableModal?.id!,
-            }
+            `api/table_control/${restaurant.id!}`, {
+            chair_ammount: openedTableModal?.chair_ammount,
+            is_active,
+            is_occupied,
+            table_id: openedTableModal?.id!,
+        }
         );
         setOpenedTableModal(tableUpdated.data);
         setTables((state) => {
@@ -185,6 +235,7 @@ export default function TableContextProvider({
             return [...(updatedTables as iTables['data'])];
         });
         setIsOpenedTableConfigModal(false);
+        setOpenedTableModal(null)
     }
 
     async function deleteTable() {
@@ -222,7 +273,7 @@ export default function TableContextProvider({
                 viewProduct,
                 products,
                 productAdditionals,
-                tableProducts,
+                tableData: tableData !== undefined ? tableData : { productsData: undefined, tableBill: 0 },
                 additionals,
                 productOptions,
                 selects,

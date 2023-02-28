@@ -2,7 +2,7 @@ import { tSelectWithOptions } from '@/src/fetch/productSelects/getProductSelectW
 import { iAdditionals, iProduct, iSelects } from '../../types/types';
 import { tableReducerAction } from './action';
 
-interface iTableSelectingProductData {
+export interface iTableSelectingProductData {
     selects: iSelects['data'];
     additionals: iAdditionals['data'];
     quantityAdditionals: {
@@ -46,9 +46,9 @@ export function tableReducer(state: iTableReducer, action: any) {
         case tableReducerAction.CHANGEADDITIONALQUANTITY:
             const additional =
                 state.quantityAdditionals[
-                    state.quantityAdditionals.findIndex(
-                        (aq) => aq.additionalId === action.payload.additionalId
-                    )
+                state.quantityAdditionals.findIndex(
+                    (aq) => aq.additionalId === action.payload.additionalId
+                )
                 ];
             if (action.payload.isIncrement) {
                 state.quantityAdditionals[

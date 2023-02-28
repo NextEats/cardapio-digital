@@ -1,4 +1,5 @@
 import { postOrderFetch } from "@/src/fetch/orders/postOrder";
+import { updateOrderFetch } from "@/src/fetch/orders/updateOrder";
 import { NextApiRequest, NextApiResponse } from "next";
 import { getOrdersByRestaurantIdFetch } from "../../../fetch/orders/getOrdersByRestaurantId";
 
@@ -9,6 +10,7 @@ export default async function orders(req: NextApiRequest, res: NextApiResponse) 
         order_type_id,
         cash_box_id,
         client_id,
+        order_id,
         order_status_id,
         payment_method_id,
     } = body
@@ -32,6 +34,18 @@ export default async function orders(req: NextApiRequest, res: NextApiResponse) 
                     Number(order_status_id),
                     Number(payment_method_id),
                 )
+                res.status(200).send(order)
+            } catch (err) {
+                console.log(err)
+                res.status(404).end();
+            }
+            break
+        case 'PUT':
+            try {
+                const order = await updateOrderFetch({
+                    order_status_id: Number(order_status_id),
+                    order_id: Number(order_id),
+                })
                 res.status(200).send(order)
             } catch (err) {
                 console.log(err)

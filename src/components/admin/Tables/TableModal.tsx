@@ -24,6 +24,7 @@ export default function TableModal() {
         tableData,
         tableState,
         updateTable,
+        ordersTables,
     } = useContext(TableContext);
 
     async function handleFinishOrder() {
@@ -74,6 +75,18 @@ export default function TableModal() {
         window.location.reload()
     }
 
+    async function handleFinishProduction() {
+
+        const ordersInProduction = ordersTables.filter(ot => ot.orders.order_status.status_name === 'em produção')
+        ordersInProduction.forEach(async o => {
+            const orderData = await api.put(`api/orders/${restaurant.id}`, {
+                order_status_id: 1,
+                order_id: o.orders.id
+            });
+        })
+        window.location.reload()
+    }
+
     return (
         <>
             {isOpenedTableConfigModal ? <TableConfigModal /> : null}
@@ -98,6 +111,18 @@ export default function TableModal() {
                             <BsGear size={24} className="cursor-pointer" onClick={() => setIsOpenedTableConfigModal(true)} />
                         </Dialog.Title>
 
+                        <div className='flex flex-col sm:flex-row items-center gap-4'>
+                            <div className='flex items-center gap-3'>
+                                <span className='h-4 w-4 bg-green-500 rounded-full'></span><span> Pedidos Entregue </span>
+                            </div>
+                            <div className='flex items-center gap-3'>
+                                <span className='h-4 w-4 bg-blue-500 rounded-full'></span><span> Pedidos Em Produção </span>
+                            </div>
+                            <div className='flex items-center gap-3'>
+                                <span className='h-4 w-4 bg-red-500 rounded-full'></span><span> Pedidos Em Análise     </span>
+                            </div>
+                        </div>
+
                         <div className=" flex flex-col lg:grid lg:grid-cols-2 gap-4 max-h-[350px] overflow-auto p-2 scrollbar-custom">
                             {tableState.productsSelected
                                 ? tableState.productsSelected.map((orderProductData, index) => {
@@ -121,9 +146,11 @@ export default function TableModal() {
                         {!openedTableModal?.is_active ? (
                             <div className="w-full flex items-center justify-end gap-3 mt-4 ">
                                 {tableData.productsInProductionData !== undefined && tableData.productsInProductionData?.length > 0 ?
-                                    <CardapioDigitalButton name="Entregar Pedido" h="h-8" w="w-44" onClick={() => setIsOpenedProductTableModal(true)} />
+                                    <CardapioDigitalButton name="Entregar Pedido" h="h-8" w="w-44" onClick={() => handleFinishProduction()} />
                                     : null}
+
                                 <CardapioDigitalButton name="Pedir" h="h-8" w="w-40" onClick={() => setIsOpenedProductTableModal(true)} />
+
                                 {tableState.productsSelected.length > 0 ? (
                                     <CardapioDigitalButton name="Confirmar" h="h-8" w="w-40" onClick={() => handleFinishOrder()} />
                                 ) : null}

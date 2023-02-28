@@ -67,7 +67,7 @@ export default function ProductsTableModal({ }: iProductTableModalProps) {
                         onClick={() => setIsOpenedProductTableModal(false)}
                         className="w-screen h-screen flex items-center justify-center bg-black fixed inset-0 z-10 opacity-40 transition-all duration-300 ease-in-out"
                     />
-                    <Dialog.Content className="fixed top-[14vh] right-1/2 z-20 translate-x-1/2 rounded-lg w-[350px] 2xs:w-[435px] sm:w-[600px] lg:w-[900px] max-h-[68vh] bg-white shadow-md p-6">
+                    <Dialog.Content className="fixed top-[14vh] right-1/2 z-20 translate-x-1/2 rounded-lg w-[350px] 2xs:w-[435px] sm:w-[600px] lg:w-[900px] h-[68vh] bg-white shadow-md p-6">
                         <Dialog.Title className="text-base w-full flex items-center text-center font-semibold mb-3">
                             <input
                                 type="text"
@@ -114,7 +114,8 @@ export default function ProductsTableModal({ }: iProductTableModalProps) {
                                     );
                                 })}
                             </div>
-                            <div className="flex flex-col lg:grid lg:grid-cols-2 gap-2 h-[342px] overflow-auto scrollbar-custom p-1 mb-3">
+
+                            <div className="flex flex-col lg:grid lg:grid-cols-2 gap-2 h-[300px]  overflow-auto scrollbar-custom p-1 mb-3">
                                 {filteredProducts.map((product) => {
                                     return (
                                         <div

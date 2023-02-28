@@ -17,16 +17,16 @@ export default function Table({ table }: iTableProps) {
     );
 
     const tableStatusColor = ` ${table.is_occupied
-            ? 'text-blue-400'
-            : table.is_active
-                ? 'text-red-400'
-                : 'text-gray-400'
+        ? 'text-blue-400'
+        : table.is_active
+            ? 'text-red-400'
+            : 'text-gray-400'
         }`;
     const tableBorderStatusColor = ` ${table.is_occupied
-            ? 'border-blue-400'
-            : table.is_active
-                ? 'border-red-400'
-                : 'border-gray-400'
+        ? 'border-blue-400'
+        : table.is_active
+            ? 'border-red-400'
+            : 'border-gray-400'
         }`;
 
     return (

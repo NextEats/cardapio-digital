@@ -37,7 +37,7 @@ export default function InactiveTablesModal() {
 
                             <div className="flex flex-col md:grid md:grid-cols-2 gap-5">
                                 {tables.map((t, index) => {
-                                    if (!t.is_active) return
+                                    if (t.is_active === false) return
                                     return (
                                         <button
                                             key={index}

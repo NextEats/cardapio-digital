@@ -209,6 +209,8 @@ export default function TableContextProvider({
             name: tableName,
         }
         );
+        console.log(cheirAmount,
+            tableName, novaMessa)
         setTables((state) => [...state, novaMessa[0]]);
     }
 

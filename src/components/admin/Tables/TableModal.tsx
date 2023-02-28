@@ -116,7 +116,7 @@ export default function TableModal() {
                                 ? tableData.productsData.map((orderProductData, index) => {
                                     return (
                                         <CustomerAtTheTable
-                                            key={orderProductData.product.id}
+                                            key={index}
                                             isInProduction={true}
                                             orderProductData={orderProductData}
                                         />
@@ -124,11 +124,11 @@ export default function TableModal() {
                                 })
                                 : null}
                             {tableState.productsSelected
-                                ? tableState.productsSelected.map((orderProductData) => {
+                                ? tableState.productsSelected.map((orderProductData, index) => {
                                     if (orderProductData.product === null) return;
                                     return (
                                         <CustomerAtTheTable
-                                            key={orderProductData.product.id}
+                                            key={index}
                                             isInProduction={false}
                                             orderProductData={orderProductData}
                                         />

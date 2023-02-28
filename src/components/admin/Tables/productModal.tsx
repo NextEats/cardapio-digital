@@ -35,7 +35,7 @@ export default function ProductModal() {
                         <Dialog.Title className="text-base w-full flex items-center text-center font-semibold mb-3">
                             {/* <input type='text' onChange={handleFilter} placeholder="pesquisar" className='mb-3 w-[50%]' /> */}
                         </Dialog.Title>
-                        <div className=" max-h-[452px] overflow-auto mb-3 scrollbar-custom pr-2 py-2">
+                        <div className=" max-h-[400px] xs:max-h-[452px] overflow-auto mb-3 scrollbar-custom pr-2 py-2">
                             <div className="flex flex-col sm:grid sm:grid-cols-2 gap-10">
                                 <div className="flex flex-col gap-3">
                                     <Image

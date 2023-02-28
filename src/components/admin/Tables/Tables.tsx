@@ -31,7 +31,7 @@ export default function Tables() {
             </span>
             <div className="flex flex-col  sm:grid sm:grid-cols-2 xl:grid-cols-3 1280px gap-5">
                 {tables.map((t, index) => {
-                    if (t.is_active) return
+                    if (t.is_active === true) return
                     return (
                         <button
                             key={index}

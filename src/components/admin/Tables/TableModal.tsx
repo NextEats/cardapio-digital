@@ -41,20 +41,16 @@ export default function TableModal() {
         tableState.productsSelected.forEach(async (ps) => {
             const additionals_data = ps.quantityAdditionals.reduce(
                 (acc: { quantity: number; additional_id: number }[], item) => {
-                    return (acc = [
-                        ...acc,
-                        {
-                            quantity: item.quantity,
-                            additional_id: item.additionalId,
-                        },
+                    return (acc = [...acc, {
+                        quantity: item.quantity,
+                        additional_id: item.additionalId,
+                    },
                     ]);
                 },
                 []
             );
             const selects_data = filterOptionsSelected({
-                productsOptionsSelected: ps.productSelects
-                    ? ps.productSelects
-                    : [],
+                productsOptionsSelected: ps.productSelects ? ps.productSelects : [],
             });
 
             const ordersProductsData = await api.post(`api/orders_products/`, {
@@ -94,66 +90,42 @@ export default function TableModal() {
                         <Dialog.Title className="flex items-center justify-between text-base w-full text-center font-semibold mb-6 mt-3">
                             <div className="flex items-center justify-start gap-3">
                                 <GiTable className="text-gray-350" size={32} />
-                                <span className="text-lg font-bold ">
-                                    {' '}
-                                    {openedTableModal?.name}
-                                </span>
+                                <span className="text-lg font-bold ">  {openedTableModal?.name} </span>
                                 <span className='text-bsse font-semibold text-green-500'> R$ {tableData.tableBill.toLocaleString('pt-BR', {
                                     minimumFractionDigits: 2, maximumFractionDigits: 2
                                 })} </span>
                             </div>
-                            <BsGear
-                                size={24}
-                                className="cursor-pointer"
-                                onClick={() =>
-                                    setIsOpenedTableConfigModal(true)
-                                }
-                            />
+                            <BsGear size={24} className="cursor-pointer" onClick={() => setIsOpenedTableConfigModal(true)} />
                         </Dialog.Title>
 
                         <div className=" flex flex-col lg:grid lg:grid-cols-2 gap-4 max-h-[350px] overflow-auto p-2 scrollbar-custom">
-                            {tableData.productsData
-                                ? tableData.productsData.map((orderProductData, index) => {
-                                    return (
-                                        <CustomerAtTheTable
-                                            key={index}
-                                            isInProduction={true}
-                                            orderProductData={orderProductData}
-                                        />
-                                    );
-                                })
-                                : null}
                             {tableState.productsSelected
                                 ? tableState.productsSelected.map((orderProductData, index) => {
                                     if (orderProductData.product === null) return;
-                                    return (
-                                        <CustomerAtTheTable
-                                            key={index}
-                                            isInProduction={false}
-                                            orderProductData={orderProductData}
-                                        />
-                                    );
+                                    return <CustomerAtTheTable key={index} orderStatus='em análise' orderProductData={orderProductData} />
+                                })
+                                : null}
+                            {tableData.productsDeliveredData
+                                ? tableData.productsDeliveredData.map((orderProductData, index) => {
+                                    return <CustomerAtTheTable key={index} orderStatus={'entregue'} orderProductData={orderProductData} />
+                                })
+                                : null}
+
+                            {tableData.productsInProductionData
+                                ? tableData.productsInProductionData.map((orderProductData, index) => {
+                                    return <CustomerAtTheTable key={index} orderStatus='em produção' orderProductData={orderProductData} />
                                 })
                                 : null}
                         </div>
 
                         {!openedTableModal?.is_active ? (
                             <div className="w-full flex items-center justify-end gap-3 mt-4 ">
-                                <CardapioDigitalButton
-                                    name="Pedir"
-                                    h="h-8"
-                                    w="w-40"
-                                    onClick={() =>
-                                        setIsOpenedProductTableModal(true)
-                                    }
-                                />
+                                {tableData.productsInProductionData !== undefined && tableData.productsInProductionData?.length > 0 ?
+                                    <CardapioDigitalButton name="Entregar Pedido" h="h-8" w="w-44" onClick={() => setIsOpenedProductTableModal(true)} />
+                                    : null}
+                                <CardapioDigitalButton name="Pedir" h="h-8" w="w-40" onClick={() => setIsOpenedProductTableModal(true)} />
                                 {tableState.productsSelected.length > 0 ? (
-                                    <CardapioDigitalButton
-                                        name="Confirmar"
-                                        h="h-8"
-                                        w="w-40"
-                                        onClick={() => handleFinishOrder()}
-                                    />
+                                    <CardapioDigitalButton name="Confirmar" h="h-8" w="w-40" onClick={() => handleFinishOrder()} />
                                 ) : null}
                             </div>
                         ) : null}

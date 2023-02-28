@@ -49,7 +49,8 @@ interface iTableContextProps {
     viewProduct: iProduct['data'] | null;
     products: iProducts['data'];
     tableData: {
-        productsData: iOrdersProductsData[] | undefined;
+        productsInProductionData: iOrdersProductsData[] | undefined;
+        productsDeliveredData: iOrdersProductsData[] | undefined;
         tableBill: number
     }
     additionals: iAdditionals['data'];
@@ -133,52 +134,50 @@ export default function TableContextProvider({
         getTables();
     }, [restaurant]);
 
-
-    // const tableData = useMemo(() => {
-    //     if (!openedTableModal) return;
-
-    //     const ordersTableFiltered = ordersTables.filter((ot) => {
-    //         return ot.tables.id === openedTableModal.id && ot.has_been_paid === false
-    //     });
-    //     const ordersProductsFiltered = ordersProducts.filter((op) =>
-    //         ordersTableFiltered.some((ot) => ot.orders.id === op.order_id)
-    //     );
-    //     const tableProductIds = ordersProductsFiltered.map(
-    //         (op) => op.product_id
-    //     );
-
-    //     // const productsFiltered = products.filter((p) => tableProductIds.includes(p.id) )
-    //     const productsFiltered = tableProductIds.reduce((acc: iProducts["data"], id) => {
-    //         const product = products.find((p) => p.id === id);
-    //         if (product) {
-    //             acc.push(product);
-    //         }
-    //         return acc;
-    //     }, []);
-
-    //     const totalPriceOfProducts = productsFiltered.reduce((acc, item) => + acc + item.price, 0)
-    //     const ordersProductsDataTable = getOrdersProductsData({ additionals, ordersProducts: ordersProductsFiltered, products: productsFiltered })
-
-    //     const totalPriceOfAdditionals = ordersProductsDataTable.reduce((acc, item) => {
-    //         return acc + item.totalAdditionalsPriceByProduct
-    //     }, 0)
-
-    //     return { products: productsFiltered, tableBill: totalPriceOfProducts + totalPriceOfAdditionals }
-    // }, [openedTableModal, ordersTables, ordersProducts, products, additionals]);
-    const tableData = useMemo(() => {
+    const tableInProductionData = useMemo(() => {
         if (!openedTableModal) return;
 
-        const ordersTableFiltered = ordersTables.filter((ot) => {
-            return ot.tables.id === openedTableModal.id && ot.has_been_paid === false
+        const ordersTableInProductionFiltered = ordersTables.filter((ot) => {
+            return ot.tables.id === openedTableModal.id && ot.has_been_paid === false && ot.orders.order_status.status_name === 'em produção'
         });
         const ordersProductsFiltered = ordersProducts.filter((op) =>
-            ordersTableFiltered.some((ot) => ot.orders.id === op.order_id)
+            ordersTableInProductionFiltered.some((ot) => ot.orders.id === op.order_id)
         );
         const tableProductIds = ordersProductsFiltered.map(
             (op) => op.product_id
         );
 
-        // const productsFiltered = products.filter((p) => tableProductIds.includes(p.id) )
+        const productsFiltered = tableProductIds.reduce((acc: iProducts["data"], id) => {
+            const product = products.find((p) => p.id === id);
+            if (product) {
+                acc.push(product);
+            }
+            return acc;
+        }, []);
+
+        const totalPriceOfProducts = productsFiltered.reduce((acc, item) => + acc + item.price, 0)
+        const ordersProductsDataTable = getOrdersProductsData({ additionals, ordersProducts: ordersProductsFiltered, products: productsFiltered })
+
+        const totalPriceOfAdditionals = ordersProductsDataTable.reduce((acc, item) => {
+            return acc + item.totalAdditionalsPriceByProduct
+        }, 0)
+
+        return { productsData: ordersProductsDataTable, tableBill: totalPriceOfProducts + totalPriceOfAdditionals }
+    }, [openedTableModal, ordersTables, ordersProducts, products, additionals]);
+
+    const tableDeliveredData = useMemo(() => {
+        if (!openedTableModal) return;
+        const ordersTableDeliveredFiltered = ordersTables.filter((ot) => {
+            return ot.tables.id === openedTableModal.id && ot.has_been_paid === false && ot.orders.order_status.status_name === 'entregue'
+        });
+
+        const ordersProductsFiltered = ordersProducts.filter((op) =>
+            ordersTableDeliveredFiltered.some((ot) => ot.orders.id === op.order_id)
+        );
+        const tableProductIds = ordersProductsFiltered.map(
+            (op) => op.product_id
+        );
+
         const productsFiltered = tableProductIds.reduce((acc: iProducts["data"], id) => {
             const product = products.find((p) => p.id === id);
             if (product) {
@@ -275,7 +274,12 @@ export default function TableContextProvider({
                 viewProduct,
                 products,
                 productAdditionals,
-                tableData: tableData !== undefined ? tableData : { productsData: undefined, tableBill: 0 },
+                tableData: tableDeliveredData !== undefined ? {
+                    productsInProductionData: tableInProductionData?.productsData,
+                    productsDeliveredData: tableDeliveredData.productsData,
+                    tableBill: tableInProductionData !== undefined ? tableDeliveredData.tableBill + tableInProductionData.tableBill : tableDeliveredData.tableBill
+                } : { productsInProductionData: undefined, productsDeliveredData: undefined, tableBill: 0 },
+
                 additionals,
                 productOptions,
                 selects,

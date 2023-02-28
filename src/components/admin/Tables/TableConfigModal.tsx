@@ -55,7 +55,7 @@ export default function TableConfigModal({ }: iTableConfigModalProps) {
                 </Dialog.Trigger>
                 <Dialog.Portal>
                     <Dialog.Overlay onClick={() => setIsOpenedTableConfigModal(false)} className="w-screen h-screen flex items-center justify-center bg-black fixed inset-0 z-20 opacity-40 transition-all duration-300 ease-in-out" />
-                    <Dialog.Content className={"fixed top-[20vh] right-1/2 z-20 translate-x-1/2 rounded-lg w-[350px] sm:w-[600px] h-[] bg-white shadow-md p-6"} >
+                    <Dialog.Content className={"fixed top-[14vh] right-1/2 z-20 translate-x-1/2 rounded-lg w-[350px] sm:w-[600px] h-[] bg-white shadow-md p-6"} >
                         <Dialog.Title className="flex items-center justify-between text-base w-full text-center font-semibold mb-5 mt-4">
                             <div className="flex items-center justify-start gap-3">
                                 <FaHome className="text-gray-350" size={32} /> <span className="text-lg font-bold "> {openedTableModal!.name} </span>

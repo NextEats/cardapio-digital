@@ -29,7 +29,7 @@ export function GlobalValuesCard({ globalValuesData }: iGlobalValuesCardProps) {
     return (
         <>
             <div className="grid 2xs:grid-cols-2 xl:grid-cols-4 gap-3 mb-8">
-                <Card color="red" name="Faturamento" value={"R$" + billing()} />
+                <Card color="red" name="Faturamento" value={`${billing()}`} />
                 <Card color="green" name="Pedidos" value={`${ordersWithStatusEntregue.length}`} />
                 <Card color="yellow" name="Produtos no Cardápio" value={`${products.length}`} />
                 <Card color="blue" name="Ingredientes em Falta" value={"0"} />

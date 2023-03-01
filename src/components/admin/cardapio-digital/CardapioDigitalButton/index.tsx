@@ -19,7 +19,8 @@ interface iButtonProps {
     | 'Pedir'
     | 'Adicionar cliente'
     | 'Entregar Pedido'
-    | 'Confirmar';
+    | 'Confirmar'
+    | 'Finalizar atendimento';
     h?: string;
     w?: string;
     disabled?: boolean;
@@ -46,7 +47,8 @@ export function CardapioDigitalButton({
                     name === 'Nova Mesa' ||
                     name === 'Adicionar cliente' ||
                     name === 'Confirmar' ||
-                    name === 'Entregar Pedido'
+                    name === 'Entregar Pedido' ||
+                    name === 'Finalizar atendimento'
                     ? ' hover:bg-green-600 bg-green-300'
                     : ''
                 }

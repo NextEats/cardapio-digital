@@ -263,7 +263,7 @@ export default function AdminHomepage({
                     <Card
                         color="red"
                         name="Faturamento"
-                        value={`R$ ${billing()}`}
+                        value={`${billing()}`}
                     />
                     <Card
                         color="green"

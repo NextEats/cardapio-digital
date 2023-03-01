@@ -31,12 +31,12 @@ export function changeAdditionalQuantityAction(
     };
 }
 export function addProductAction(
-    product: iProduct['data'],
-    productSelects: tSelectWithOptions[]
+    { product, productSelects, table_id }:
+        { product: iProduct['data'], productSelects: tSelectWithOptions[], table_id: number, }
 ) {
     return {
         type: tableReducerAction.PRODUCTSSELECTED,
-        payload: { product, productSelects },
+        payload: { product, productSelects, table_id },
     };
 }
 export function removeProductAction(productId: number) {

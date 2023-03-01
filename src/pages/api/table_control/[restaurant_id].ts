@@ -1,7 +1,7 @@
 import { deleteTableFetch } from "@/src/fetch/tables/deleteTable";
 import { getTablesByRestaurantIdFetch } from "@/src/fetch/tables/getTablesByRestaurantId";
 import { postTableFetch } from "@/src/fetch/tables/postTable";
-import { updateTableFetch } from "@/src/fetch/tables/updateOrderTable";
+import { updateTableFetch } from "@/src/fetch/tables/updateTable";
 import { NextApiRequest, NextApiResponse } from "next";
 
 export default async function tables(req: NextApiRequest, res: NextApiResponse) {

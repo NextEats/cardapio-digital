@@ -13,7 +13,11 @@ export function Card({ name, value, color }: ICardProps) {
       ${color === "red" && 'border-b-red-500'} 
       ${color === "yellow" && 'border-b-yellow-500'} `}
     >
-      <span className="block text-lg sm:text-3xl font-semibold">{value}</span>
+      <span className="block text-lg sm:text-3xl font-semibold">{
+        name === 'Faturamento' ? 'R$' + Number(value).toLocaleString('pt-BR', {
+          minimumFractionDigits: 2, maximumFractionDigits: 2
+        }) : value
+      }</span>
       <span
         className={`block mt-1 font-semibold sm:font-bold text-base sm:text-2xl
         ${color === "green" && 'text-green-300'}

@@ -100,7 +100,9 @@ export function DropdownMenuObservation({ orderProduct, additionals }: iDropdown
                     </div>
 
                     <div>
-                        <h2 className='text-base font-medium mb-2'>Adicionais</h2>
+                        {additionalsDataFiltered.length > 0 ?
+                            <h2 className='text-base font-medium mb-2'>Adicionais</h2>
+                            : null}
                         {
                             additionalsDataFiltered.map((additional) => {
                                 return <div key={additional.additional.id} className="flex items-center justify-between pr-2 text-sm font-normal">

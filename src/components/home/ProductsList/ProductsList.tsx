@@ -40,7 +40,9 @@ function CategoriesNavbar({ groupedProductsData }: any) {
                 return (
                     <button
                         className={buttonClasses}
-                        onClick={() => scrollTo(category.category_name)}
+                        onClick={() => {
+                            scrollTo(category.category_name);
+                        }}
                         key={index}
                     >
                         {category.category_name}

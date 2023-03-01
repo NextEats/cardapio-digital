@@ -336,6 +336,32 @@ export interface Database {
           restaurant_id?: number
         }
       }
+      delivery_fees: {
+        Row: {
+          created_at: string | null
+          end_km: number | null
+          fee: number
+          id: number
+          restaurant_id: number
+          start_km: number | null
+        }
+        Insert: {
+          created_at?: string | null
+          end_km?: number | null
+          fee: number
+          id?: number
+          restaurant_id: number
+          start_km?: number | null
+        }
+        Update: {
+          created_at?: string | null
+          end_km?: number | null
+          fee?: number
+          id?: number
+          restaurant_id?: number
+          start_km?: number | null
+        }
+      }
       ingredients: {
         Row: {
           created_at: string | null

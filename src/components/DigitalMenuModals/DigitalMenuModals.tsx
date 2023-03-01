@@ -1,5 +1,6 @@
 import { DigitalMenuContext } from '@/src/contexts/DigitalMenuContext';
 import { useContext } from 'react';
+import Checkout from '../Checkout';
 import ProductModal from '../home/ProductModal';
 import { WeekdayOperatingTime } from '../WeekdayOperatingTime';
 
@@ -10,13 +11,7 @@ export default function DigitalMenuModals() {
         <>
             {modals?.state.operatingTime && <WeekdayOperatingTime />}
             {selectedProduct && <ProductModal />}
-            {/* {showCheckoutModal && (
-                <Checkout
-                    onClose={() => setShowCheckoutModal(false)}
-                    products={products}
-                    productsDispatch={productsDispatch}
-                />
-            )} */}
+            {modals?.state.checkout && <Checkout />}
         </>
     );
 }

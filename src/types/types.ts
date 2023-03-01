@@ -345,6 +345,10 @@ export interface iOrderTypes {
     data: Database['public']['Tables']['order_types']['Row'];
 }
 
+export interface iDeliveryFees {
+    data: Database['public']['Tables']['delivery_fees']['Row'];
+}
+
 export type iOrdersWithFKData = iOrder['data'] & {
     payment_methods: iPaymentMethods['data'];
     order_types: iOrderTypes['data'];

@@ -11,7 +11,7 @@ interface Props {
     restaurantId: number;
 }
 
-export default function PaymentMethods({ restaurantId }: Props) {
+export default function PaymentMethods() {
     const { restaurant } = useContext(AdminContext);
 
     const [paymentMethods, setPaymentMethods] = useState<PaymentMethod[]>([]);

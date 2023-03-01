@@ -25,7 +25,7 @@ export default function ProductOptions({ product_id }: iProductOptions) {
                 productsOptionsSelected: productSelects,
             })
         );
-    }, [productSelects])
+    }, [productSelects, selects]);
 
     return (
         <div>

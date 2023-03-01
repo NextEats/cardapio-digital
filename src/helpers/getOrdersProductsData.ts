@@ -19,7 +19,6 @@ export interface iOrdersProductsData {
 
 export function getOrdersProductsData({ ordersProducts, additionals, products }: iGetOrdersProductsDataProps) {
 
-
     const orderProductData = ordersProducts.reduce((acc: iOrdersProductsData[], item) => {
 
         const additionalsData = item.additionals_data as { quantity: number, additional_id: number }[]

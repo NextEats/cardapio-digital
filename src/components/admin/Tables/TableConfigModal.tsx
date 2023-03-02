@@ -20,7 +20,7 @@ export default function TableConfigModal({ }: iTableConfigModalProps) {
 
     async function handleUpdateTable() {
 
-        if (tableData.productsData !== undefined && tableData.productsData.length > 0) {
+        if (tableData.productsInProductionData !== undefined && tableData.productsInProductionData.length > 0) {
             alert("A mesa só pode ser fechada ou inativada se todos os pedidos estiverem sido entregue.")
             return
         }
@@ -40,7 +40,7 @@ export default function TableConfigModal({ }: iTableConfigModalProps) {
     }
 
     async function handleDeleteTable() {
-        if (tableData.productsData !== undefined && tableData.productsData.length > 0) {
+        if (tableData.productsInProductionData !== undefined && tableData.productsInProductionData.length > 0) {
             alert("A mesa só pode ser excluída se todos os pedidos estiverem sido entregue.")
             return
         }

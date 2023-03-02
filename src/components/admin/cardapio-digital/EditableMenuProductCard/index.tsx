@@ -258,11 +258,12 @@ export default function EditableMenuProductCard({
                     </NavigationMenu.Root>
                 ) : null}
 
-                <h2>
-                    {!state.category
-                        ? 'Selecione uma categoria'
-                        : `${state.category.name}`}
-                </h2>
+                <div className='flex items-center gap-2 text-lg font-medium text-gray-700 mb-6'>
+                    <span> Categoria: </span>
+                    <span className=''>
+                        {!state.category ? 'Selecione uma categoria' : `${state.category.name}`}
+                    </span>
+                </div>
 
                 <Igredient
                     state={state}

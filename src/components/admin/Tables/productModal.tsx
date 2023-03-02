@@ -10,7 +10,7 @@ import { CardapioDigitalButton } from '../cardapio-digital/CardapioDigitalButton
 import TableAdditionals from './TableAdditionals';
 
 export default function ProductModal() {
-    const { viewProduct, setViewProduct, tableState, tableDispatch, setIsOpenedProductTableModal, additionals, productAdditionals } =
+    const { viewProduct, setViewProduct, tableState, tableDispatch, setIsOpenedProductTableModal, openedTableModal, additionals, productAdditionals } =
         useContext(TableContext);
     const { productSelects, selectOption } = useProductSelectsWithOptions(
         viewProduct ? viewProduct?.id!.toString() : ''
@@ -97,8 +97,11 @@ export default function ProductModal() {
                                     setIsOpenedProductTableModal(false)
                                     tableDispatch(
                                         addProductAction(
-                                            viewProduct!,
-                                            productSelects
+                                            {
+                                                product: viewProduct!,
+                                                productSelects,
+                                                table_id: openedTableModal!.id
+                                            }
                                         )
                                     )
                                 }

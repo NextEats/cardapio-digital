@@ -19,7 +19,9 @@ import {
     iInsertOrdersProducts,
     iInsertOrderStatuss,
     iInsertProducts,
+    iOrdersProducts,
     iOrdersWithFKData,
+    iProducts,
     iRestaurantWithFKData,
 } from '../../../types/types';
 
@@ -40,12 +42,13 @@ import { createServerSupabaseClient } from '@supabase/auth-helpers-nextjs';
 import 'react-toastify/dist/ReactToastify.css';
 import getAdditionalsByRestaurantId from '../../api/additionals/[restaurant_id]';
 import { getAdditionalsByRestaurantIdFetch } from '@/src/fetch/additionals/getAdditionals';
+import { getOrdersProductsData } from '@/src/helpers/getOrdersProductsData';
 
 interface iAdminHomePageProps {
     ordersData: iOrdersWithFKData[];
     orderStatuss: iInsertOrderStatuss['data'];
-    ordersProducts: iInsertOrdersProducts['data'];
-    products: iInsertProducts['data'];
+    ordersProducts: iOrdersProducts['data'];
+    products: iProducts['data'];
     clients: iInsertClients['data'];
     contacts: iInsertContacts['data'];
     addresses: iInsertAddresses['data'];
@@ -164,30 +167,57 @@ export default function AdminHomepage({
         orderId: 0,
     });
 
+    // function billing() {
+    //     let ordersProductFiltered;
+    //     if (ordersGroupedByOrderStatus['entregue']) {
+    //         ordersProductFiltered = ordersProducts.filter((op) =>
+    //             ordersGroupedByOrderStatus['entregue'].some(
+    //                 (o) => o.id === op.order_id
+    //             )
+    //         );
+
+    //         const productIds = ordersProductFiltered.map(
+    //             (ordersProduct) => ordersProduct.product_id
+    //         );
+    //         const selectedProduct = productIds.map(
+    //             (productId) =>
+    //                 products[
+    //                 products.findIndex(
+    //                     (product) => productId === product.id
+    //                 )
+    //                 ]
+    //         );
+    //         return selectedProduct.reduce(
+    //             (acc, product) => acc + product?.price!,
+    //             0
+    //         );
+    //     } else {
+    //         return 0;
+    //     }
+    // }
+
     function billing() {
         let ordersProductFiltered;
         if (ordersGroupedByOrderStatus['entregue']) {
             ordersProductFiltered = ordersProducts.filter((op) =>
-                ordersGroupedByOrderStatus['entregue'].some(
-                    (o) => o.id === op.order_id
-                )
+                ordersGroupedByOrderStatus['entregue'].some((o) => o.id === op.order_id)
             );
 
             const productIds = ordersProductFiltered.map(
                 (ordersProduct) => ordersProduct.product_id
             );
             const selectedProduct = productIds.map(
-                (productId) =>
-                    products[
-                    products.findIndex(
-                        (product) => productId === product.id
-                    )
-                    ]
+                (productId) => products[products.findIndex((product) => productId === product.id)]
             );
-            return selectedProduct.reduce(
-                (acc, product) => acc + product?.price!,
-                0
-            );
+
+            const totalPriceOfDeliveryFee = ordersGroupedByOrderStatus['entregue'].reduce((acc, item) => {
+                if (!item.delivery_fees) return acc
+                return acc + item.delivery_fees.fee
+            }, 0)
+            const totalAdditionalPrice = getOrdersProductsData({ ordersProducts: ordersProductFiltered, additionals, products })
+                .reduce((acc, item) => acc + item.totalAdditionalsPriceByProduct, 0)
+
+            return selectedProduct.reduce((acc, product) => acc + product?.price!, 0) + totalPriceOfDeliveryFee + totalAdditionalPrice
         } else {
             return 0;
         }
@@ -263,7 +293,7 @@ export default function AdminHomepage({
                     <Card
                         color="red"
                         name="Faturamento"
-                        value={`R$ ${billing()}`}
+                        value={`${billing()}`}
                     />
                     <Card
                         color="green"

@@ -158,7 +158,7 @@ export function Additional({
     return (
         <div className="mb-24">
             {state.isViewingUpdatingOrAdding !== 'VIEWING' ||
-            state.additionals.length !== 0 ? (
+                state.additionals.length !== 0 ? (
                 <h2 className="mb-5 font-semibold text-sm">Adicionais</h2>
             ) : null}
 
@@ -189,12 +189,12 @@ export function Additional({
                                             {additional?.name}
                                         </p>
                                         <p className="font-medium text-xs text-black ">
-                                            R$ {additional?.price}
+                                            R$ {additional?.price.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                                         </p>
                                     </div>
                                 </div>
                                 {state.isViewingUpdatingOrAdding !==
-                                'VIEWING' ? (
+                                    'VIEWING' ? (
                                     <div className="flex items-center gap-2 absolute top-1 right-1">
                                         <BiPencil
                                             onClick={() =>
@@ -220,7 +220,7 @@ export function Additional({
                     })}
                 </div>
                 {showAdditionalModal === 'ADD' ||
-                showAdditionalModal === 'UPDATE' ? (
+                    showAdditionalModal === 'UPDATE' ? (
                     <div className="w-72 h-auto p-4 absolute z-50 bottom-0 right-1/2 translate-x-1/2 rounded-md bg-white shadow-md">
                         <h3 className="text-base font-semibold mb-6">
                             Adicional

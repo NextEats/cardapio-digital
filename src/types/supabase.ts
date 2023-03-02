@@ -313,27 +313,30 @@ export interface Database {
           phone?: number | null
         }
       }
-      delivery_distance_fee: {
+      delivery_fees: {
         Row: {
           created_at: string | null
-          distance_in_meters: number
-          fee_in_reais: number
+          end_km: number | null
+          fee: number
           id: number
           restaurant_id: number
+          start_km: number | null
         }
         Insert: {
           created_at?: string | null
-          distance_in_meters?: number
-          fee_in_reais?: number
+          end_km?: number | null
+          fee: number
           id?: number
           restaurant_id: number
+          start_km?: number | null
         }
         Update: {
           created_at?: string | null
-          distance_in_meters?: number
-          fee_in_reais?: number
+          end_km?: number | null
+          fee?: number
           id?: number
           restaurant_id?: number
+          start_km?: number | null
         }
       }
       delivery_fees: {
@@ -441,6 +444,7 @@ export interface Database {
           cash_box_id: number | null
           client_id: number | null
           created_at: string | null
+          delivery_fee_id: number | null
           id: number
           order_status_id: number | null
           order_type_id: number
@@ -451,6 +455,7 @@ export interface Database {
           cash_box_id?: number | null
           client_id?: number | null
           created_at?: string | null
+          delivery_fee_id?: number | null
           id?: number
           order_status_id?: number | null
           order_type_id: number
@@ -461,6 +466,7 @@ export interface Database {
           cash_box_id?: number | null
           client_id?: number | null
           created_at?: string | null
+          delivery_fee_id?: number | null
           id?: number
           order_status_id?: number | null
           order_type_id?: number
@@ -540,18 +546,21 @@ export interface Database {
       payment_methods_restaurants: {
         Row: {
           created_at: string | null
+          enabled: boolean | null
           id: number
           payment_method_id: number
           restaurant_id: number
         }
         Insert: {
           created_at?: string | null
+          enabled?: boolean | null
           id?: number
           payment_method_id: number
           restaurant_id: number
         }
         Update: {
           created_at?: string | null
+          enabled?: boolean | null
           id?: number
           payment_method_id?: number
           restaurant_id?: number

@@ -13,6 +13,7 @@ export interface iTableSelectingProductData {
     totalPrice: number;
     productSelects: tSelectWithOptions[];
     product: iProduct['data'] | null;
+    table_id: number;
     // optionsSelected: iProductOptions["data"]
 }
 
@@ -87,6 +88,7 @@ export function tableReducer(state: iTableReducer, action: any) {
                 product: action.payload.product,
                 productSelects: action.payload.productSelects,
                 totalPrice: state.totalPrice,
+                table_id: action.payload.table_id,
             });
 
             return {
@@ -124,4 +126,5 @@ export const tableReducerDefaultValues = {
     productSelects: [],
     totalPrice: 0,
     productsSelected: [],
+    table_id: 0
 };

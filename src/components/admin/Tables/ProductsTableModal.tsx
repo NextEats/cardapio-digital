@@ -115,7 +115,7 @@ export default function ProductsTableModal({ }: iProductTableModalProps) {
                                 })}
                             </div>
 
-                            <div className="flex flex-col lg:grid lg:grid-cols-2 gap-2 max-h-[330px] overflow-auto scrollbar-custom p-1 mb-3">
+                            <div className="flex flex-col lg:grid lg:grid-cols-2 gap-2 max-h-[305px] overflow-auto scrollbar-custom p-1 mb-3">
                                 {filteredProducts.map((product) => {
                                     return (
                                         <div

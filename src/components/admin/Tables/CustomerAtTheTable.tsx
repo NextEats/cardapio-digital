@@ -9,12 +9,12 @@ import { FiTrash2 } from 'react-icons/fi';
 
 interface iCustomerAtTheTableProps {
     orderProductData: iOrdersProductsData | iTableSelectingProductData;
-    isInProduction: boolean;
+    orderStatus: 'em análise' | 'em produção' | 'entregue';
 }
 
 export default function CustomerAtTheTable({
     orderProductData,
-    isInProduction,
+    orderStatus,
 }: iCustomerAtTheTableProps) {
     const { tableDispatch, tableData } = useContext(TableContext);
 
@@ -29,7 +29,7 @@ export default function CustomerAtTheTable({
                     </Checkbox.Indicator>
                 </Checkbox.Root> */}
                 <span
-                    className={`text-base font-semibold w-28 sm:w-60 truncate ${isInProduction ? 'text-blue-500' : 'text-red-500'
+                    className={`text-base font-semibold w-28 sm:w-60 truncate ${orderStatus === 'em produção' ? 'text-blue-500' : orderStatus === 'em análise' ? 'text-red-500' : 'text-green-500'
                         }`}
                 >
                     {orderProductData.product ? orderProductData.product.name : null}
@@ -43,15 +43,7 @@ export default function CustomerAtTheTable({
                         maximumFractionDigits: 2,
                     })}
                 </span>
-                {isInProduction ? (
-                    <BsCheckCircle
-                        size={24}
-                        className="text-blue-500 cursor-pointer"
-                    // onClick={() =>
-                    //     tableDispatch(removeProductAction(product.id))
-                    // }
-                    />
-                ) : (
+                {orderStatus === 'em análise' ?
                     <FiTrash2
                         size={24}
                         className="text-red-400 cursor-pointer"
@@ -59,8 +51,7 @@ export default function CustomerAtTheTable({
                             tableDispatch(removeProductAction(
                                 orderProductData.product ? orderProductData.product.id : 0))
                         }
-                    />
-                )}
+                    /> : null}
             </div>
         </div>
     );

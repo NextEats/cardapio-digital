@@ -49,6 +49,8 @@ export function OrderModal({
         uf: '',
     });
 
+    console.log(ordersState)
+
     const orderProductFiltered = ordersProducts.filter(
         (op) => op.order_id === ordersState.orderId
     );
@@ -130,8 +132,6 @@ export function OrderModal({
 
     }, 0)
 
-    const deliveryPrice = 10;
-
     const orderDateFormated = format(
         new Date(`${orderFound?.created_at}`),
         'P',
@@ -168,9 +168,7 @@ export function OrderModal({
                         >
                             <Dialog.Title className="text-xl font-bold text-center"> Next Eats </Dialog.Title>
 
-                            <Dialog.Description
-                                className={`${descriptionsStyles}`}
-                            >
+                            <Dialog.Description className={`${descriptionsStyles}`}>
                                 Dados do restaurante
                             </Dialog.Description>
 
@@ -344,24 +342,26 @@ export function OrderModal({
                                         </strong>
                                     </span>
                                 </p>
-                                <p className="grid grid-cols-2 items-center gap-20">
-                                    <span className={`${textStyles} `}>
-                                        Taxa de entrega:
-                                    </span>
-                                    <span className={`${textStyles}`}>
-                                        <strong> R$ {deliveryPrice} </strong>
-                                    </span>
-                                </p>
+                                {orderFound?.delivery_fees ?
+                                    <p className="grid grid-cols-2 items-center gap-20">
+                                        <span className={`${textStyles} `}>
+                                            Taxa de entrega:
+                                        </span>
+                                        <span className={`${textStyles}`}>
+                                            <strong> R$ {orderFound?.delivery_fees.fee} </strong>
+                                        </span>
+                                    </p>
+                                    : null
+                                }
+
                                 <p className="grid grid-cols-2 items-center gap-20">
                                     <span className={`${textStyles}`}>
                                         Total a pagar:{' '}
                                     </span>
                                     <span className={`${textStyles} w-`}>
                                         <strong>
-                                            {' '}
-                                            R${' '}
-                                            {totalPriceOfProducts +
-                                                deliveryPrice + totalAdditionalPrice}{' '}
+                                            R$ {totalPriceOfProducts +
+                                                (orderFound?.delivery_fees ? orderFound.delivery_fees.fee : 0) + totalAdditionalPrice}{' '}
                                         </strong>
                                     </span>
                                 </p>

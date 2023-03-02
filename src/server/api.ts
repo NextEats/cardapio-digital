@@ -103,7 +103,6 @@ export async function updateAdditional(
         })
         .eq('id', additionalId)
         .select('*');
-    console.log(additionalData);
     return additionalData;
 }
 export async function updateProduct(
@@ -223,16 +222,15 @@ export async function createProduct(
     if (!restaurant) {
         return;
     }
-    console.log(state.productInformation.name);
 
     const imageData = await supabase.storage
-        .from(restaurant.slug!)
+        .from('product-pictures')
         .upload(
             state.productInformation.name.toLocaleLowerCase(),
             state.picture_file!
         );
     const getImageData = supabase.storage
-        .from(restaurant.slug!)
+        .from('product-pictures')
         .getPublicUrl(imageData.data?.path!);
     const data = await supabase
         .from('products')

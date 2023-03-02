@@ -4,6 +4,7 @@ import { FaSearch } from 'react-icons/fa';
 
 import { DigitalMenuContext } from '@/src/contexts/DigitalMenuContext';
 import scrollTo from '@/src/helpers/scrollTo';
+import toNormalForm from '@/src/helpers/stringToNormalForm';
 import { useContext } from 'react';
 
 export default function ProductList() {
@@ -40,7 +41,9 @@ function CategoriesNavbar({ groupedProductsData }: any) {
                 return (
                     <button
                         className={buttonClasses}
-                        onClick={() => scrollTo(category.category_name)}
+                        onClick={() => {
+                            scrollTo(toNormalForm(category.category_name));
+                        }}
                         key={index}
                     >
                         {category.category_name}
@@ -71,7 +74,10 @@ function ProductsHorizontalList({ category }: { category: any }) {
     const selectedProduct = useContext(DigitalMenuContext).selectedProduct;
 
     return (
-        <div id={category.category_name} className="mb-12 scroll-mt-24">
+        <div
+            id={toNormalForm(category.category_name)}
+            className="mb-12 scroll-mt-24"
+        >
             <h2 className="text-2xl mb-3 mt-5 font-semibold text-gray-700">
                 {category.category_name}
             </h2>
@@ -81,7 +87,10 @@ function ProductsHorizontalList({ category }: { category: any }) {
                         <div
                             key={index}
                             onClick={() => {
-                                selectedProduct?.set(product.id);
+                                if (product.id) {
+                                    selectedProduct?.set(undefined);
+                                    selectedProduct?.set(product.id);
+                                }
                             }}
                             className="border bg-gray-100 hover:bg-gray-300 w-44 px-3 py-6 mr-3 inline-block rounded-md cursor-pointer"
                         >

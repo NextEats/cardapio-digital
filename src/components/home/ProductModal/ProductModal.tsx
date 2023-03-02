@@ -4,14 +4,21 @@ import { MouseEvent, useContext, useEffect, useState } from 'react';
 import { BsArrowLeftCircle } from 'react-icons/bs';
 
 import { getProductWithFKData } from '@/src/fetch/products/getProductWithFKData';
+import useAdditionals from '@/src/hooks/useAdditionals';
+import Additionals from './components/Additionals';
 import ProductOptions from './components/ProductOptions';
+import SubmitButtons from './components/SubmitButtons';
 
 export default function ProductModal() {
-    const selectedProduct = useContext(DigitalMenuContext).selectedProduct;
+    const selects = useContext(DigitalMenuContext).selects;
 
+    const { selectedProduct, productReducer } = useContext(DigitalMenuContext);
+
+    const [observation, setObservation] = useState('');
     const [productData, setProductData] = useState<any>(undefined);
 
-    console.log(productData);
+    const { dispatch: additionalsDispatch, state: additionalsState } =
+        useAdditionals(productData?.id);
 
     useEffect(() => {
         if (selectedProduct?.state) {
@@ -36,6 +43,33 @@ export default function ProductModal() {
 
     function handleSubmit(e: MouseEvent) {
         e.preventDefault();
+
+        const additionals_data = additionalsState.quantityAdditionals.reduce(
+            (acc: { quantity: number; additional_id: number }[], item) => {
+                return (acc = [
+                    ...acc,
+                    {
+                        quantity: item.quantity,
+                        additional_id: item.additionalId,
+                    },
+                ]);
+            },
+            []
+        );
+
+        productReducer?.dispatch({
+            type: 'add',
+            payload: {
+                id: productData.id,
+                additionals: additionals_data,
+                selects: selects?.state,
+                observation: observation,
+                quantity: 1,
+            },
+        });
+
+        setObservation('');
+        closeModal();
     }
 
     return (
@@ -76,23 +110,34 @@ export default function ProductModal() {
                     </div>
 
                     <ProductOptions product_id={selectedProduct.state} />
-                    {/* <Additionals product_id={selectedProduct.state} /> */}
 
-                    <form className="w-full h-24 mb-8">
+                    <div className="flex flex-col gap-3 mt-12">
+                        <Additionals
+                            dispatch={additionalsDispatch}
+                            state={additionalsState}
+                            product_id={selectedProduct.state}
+                        />
+                    </div>
+
+                    <form className="w-full mt-12 h-24 mb-8">
                         <textarea
                             name=""
-                            // onBlur={(e) => setObservation(e.target.value)}
+                            value={observation}
+                            onChange={(e) => setObservation(e.target.value)}
                             className=" scrollbar-custom w-full h-full resize-none rounded-sm bg-[#f6f6f6] shadow-sm text-base outline-none p-4"
                             placeholder="Observações"
                         ></textarea>
                     </form>
 
+                    <SubmitButtons handleSubmit={handleSubmit} />
+
                     {/* <SubmitButtons
-                        productModal={productModal}
-                        price={price}
-                        quantity={quantity}
-                        setQuantity={setQuantity}
-                        setPrice={setPrice}
+                        submitFunction={setProductData}
+                        productModal={null}
+                        price={20}
+                        quantity={2}
+                        setQuantity={setProductData}
+                        setPrice={setProductData}
                     /> */}
                 </div>
             </div>

@@ -10,11 +10,17 @@ import { CardapioDigitalButton } from '../cardapio-digital/CardapioDigitalButton
 import TableAdditionals from './TableAdditionals';
 
 export default function ProductModal() {
-    const { viewProduct, setViewProduct, tableState, tableDispatch } =
+    const { viewProduct, setViewProduct, tableState, tableDispatch, setIsOpenedProductTableModal, openedTableModal, additionals, productAdditionals } =
         useContext(TableContext);
     const { productSelects, selectOption } = useProductSelectsWithOptions(
         viewProduct ? viewProduct?.id!.toString() : ''
     );
+
+    const additionalByProductId = additionals.filter((a) => {
+        return productAdditionals.some(
+            (pa) => pa.id === a.id && pa.product_id === viewProduct?.id
+        );
+    });
 
     return (
         <div>
@@ -25,11 +31,11 @@ export default function ProductModal() {
                         onClick={() => setViewProduct(null)}
                         className="w-screen h-screen flex items-center justify-center bg-black fixed inset-0 z-10 opacity-40 transition-all duration-300 ease-in-out"
                     />
-                    <Dialog.Content className="fixed top-[14vh] right-1/2 z-20 translate-x-1/2 rounded-lg w-[350px] 2xs:w-[435px] sm:w-[600px] lg:w-[900px] max-h-[68vh] bg-white shadow-md p-6">
+                    <Dialog.Content className="fixed top-[14vh] right-1/2 z-20 translate-x-1/2 rounded-lg w-[350px] 2xs:w-[435px] sm:w-[600px] lg:w-[900px] h-[550px] bg-white shadow-md p-6">
                         <Dialog.Title className="text-base w-full flex items-center text-center font-semibold mb-3">
                             {/* <input type='text' onChange={handleFilter} placeholder="pesquisar" className='mb-3 w-[50%]' /> */}
                         </Dialog.Title>
-                        <div className=" max-h-[452px] overflow-auto mb-3 scrollbar-custom pr-2 py-2">
+                        <div className=" max-h-[452px] xs:max-h-[452px] overflow-auto mb-3 scrollbar-custom pr-2 py-2">
                             <div className="flex flex-col sm:grid sm:grid-cols-2 gap-10">
                                 <div className="flex flex-col gap-3">
                                     <Image
@@ -62,17 +68,13 @@ export default function ProductModal() {
                                                             selectIndex,
                                                             optionIndex
                                                         );
-                                                        console.log(
-                                                            productSelects,
-                                                            selectOption
-                                                        );
                                                     }}
                                                 />
                                             )
                                         )}
                                     </div>
 
-                                    <h2> Adicionais </h2>
+                                    {additionalByProductId.length !== 0 ? <h2> Adicionais </h2> : null}
 
                                     <TableAdditionals />
                                 </div>
@@ -80,21 +82,29 @@ export default function ProductModal() {
                         </div>
                         <div className="w-full flex items-center justify-end gap-3">
                             <span className="text-lg font-semibold text-green-500">
-                                {' '}
-                                R${' '}
+                                R$
                                 {tableState.totalPrice.toLocaleString('pt-BR', {
                                     minimumFractionDigits: 2,
                                     maximumFractionDigits: 2,
-                                })}{' '}
+                                })}
                             </span>
                             <CardapioDigitalButton
                                 name="Confirmar"
                                 h="h-9"
                                 w="w-44"
-                                onClick={() =>
+                                onClick={() => {
+                                    setViewProduct(null)
+                                    setIsOpenedProductTableModal(false)
                                     tableDispatch(
-                                        addProductAction(viewProduct!)
+                                        addProductAction(
+                                            {
+                                                product: viewProduct!,
+                                                productSelects,
+                                                table_id: openedTableModal!.id
+                                            }
+                                        )
                                     )
+                                }
                                 }
                             />
                         </div>

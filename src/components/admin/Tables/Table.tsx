@@ -11,22 +11,27 @@ interface iTableProps {
 export default function Table({ table }: iTableProps) {
     const { ordersTables } = useContext(TableContext);
     if (!table) return <></>;
-    const tableStatusColor = ` ${
-        table.is_occupied
-            ? 'text-blue-400'
-            : table.is_reserved
-            ? 'text-red-400'
-            : 'text-gray-400'
-    }
-    `;
 
     const thisTable = ordersTables.filter(
         (elem, index) => elem.tables.id === table.id
     );
 
+    const tableStatusColor = ` ${table.is_occupied
+        ? 'text-blue-400'
+        : table.is_active
+            ? 'text-red-400'
+            : 'text-gray-400'
+        }`;
+    const tableBorderStatusColor = ` ${table.is_occupied
+        ? 'border-blue-400'
+        : table.is_active
+            ? 'border-red-400'
+            : 'border-gray-400'
+        }`;
+
     return (
         <div
-            className={`flex flex-1 flex-col border-l-8 rounded-md bg-white shadow-md py-2 pr-3 pl-4 `}
+            className={`flex flex-1 flex-col border-l-8 rounded-md bg-white shadow-md py-2 pr-3 pl-4 ${tableBorderStatusColor} `}
         >
             <div className="flex flex-1 items-center justify-end ">
                 <span className="text-sm font-medium flex items-center text-gray-500">
@@ -41,10 +46,10 @@ export default function Table({ table }: iTableProps) {
                     <span className="text-lg font-bold text-start">
                         {table.name}
                     </span>
-                    <span className="text-sm font-medium ">
+                    {/* <span className="text-sm font-medium ">
                         {' '}
                         Aguadando cliente{' '}
-                    </span>
+                    </span> */}
                 </div>
             </div>
             <span
@@ -55,10 +60,11 @@ export default function Table({ table }: iTableProps) {
                 {!table
                     ? ''
                     : table.is_occupied
-                    ? 'Ocupada'
-                    : table.is_reserved
-                    ? 'Reservada'
-                    : 'Livre'}
+                        ? 'Ocupada'
+                        : table.is_reserved
+                            ? 'Reservada' :
+                            table.is_active ? 'Inativa'
+                                : 'Livre'}
             </span>
         </div>
     );

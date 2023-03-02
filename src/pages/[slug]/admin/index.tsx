@@ -10,15 +10,16 @@ import {
 } from '../../../reducers/statusReducer/reducer';
 
 import {
+    iAdditionals,
     iCashBox,
     iCashBoxes,
     iInsertAddresses,
     iInsertClients,
     iInsertContacts,
-    iInsertOrdersProducts,
     iInsertOrderStatuss,
-    iInsertProducts,
+    iOrdersProducts,
     iOrdersWithFKData,
+    iProducts,
     iRestaurantWithFKData,
 } from '../../../types/types';
 
@@ -34,6 +35,8 @@ import { getRestaurantBySlugFetch } from '../../../fetch/restaurant/getRestauran
 import CashBoxButtons from '@/src/components/admin/initialPage/CashBoxButtons';
 import { OrderModal } from '@/src/components/admin/initialPage/OrderModal';
 import LoadingSpinner from '@/src/components/LoadingSpinner';
+import { getAdditionalsByRestaurantIdFetch } from '@/src/fetch/additionals/getAdditionals';
+import { getOrdersProductsData } from '@/src/helpers/getOrdersProductsData';
 import { api, supabase } from '@/src/server/api';
 import { createServerSupabaseClient } from '@supabase/auth-helpers-nextjs';
 import 'react-toastify/dist/ReactToastify.css';
@@ -41,12 +44,13 @@ import 'react-toastify/dist/ReactToastify.css';
 interface iAdminHomePageProps {
     ordersData: iOrdersWithFKData[];
     orderStatuss: iInsertOrderStatuss['data'];
-    ordersProducts: iInsertOrdersProducts['data'];
-    products: iInsertProducts['data'];
+    ordersProducts: iOrdersProducts['data'];
+    products: iProducts['data'];
     clients: iInsertClients['data'];
     contacts: iInsertContacts['data'];
     addresses: iInsertAddresses['data'];
     cashBoxes: iCashBoxes['data'];
+    additionals: iAdditionals['data'];
     restaurant: iRestaurantWithFKData;
 }
 
@@ -91,11 +95,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
                     slug: string;
                 };
             };
-
-            console.log(userDetailsTypedData.restaurants.slug);
         }
-
-        console.log(session);
     }
 
     // const restaurant = await getRestaurantBySlugFetch(context.query.slug);
@@ -109,6 +109,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
             contacts: await getContactsFetch(),
             addresses: await getAddressesFetch(),
             cashBoxes: await getCashBoxesByRestaurantIdFetch(restaurant.id),
+            additionals: await getAdditionalsByRestaurantIdFetch(restaurant.id),
             restaurant,
         },
     };
@@ -119,6 +120,7 @@ export default function AdminHomepage({
     ordersProducts,
     products,
     cashBoxes,
+    additionals,
     restaurant,
 }: iAdminHomePageProps) {
     const [orders, setOrders] = useState<iOrdersWithFKData[]>(ordersData);
@@ -127,7 +129,7 @@ export default function AdminHomepage({
         iCashBox['data'] | undefined
     >(cashBoxOpened);
 
-    const printComponent = useRef<HTMLDivElement>(null)
+    const printComponent = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         if (cashBoxState === undefined) {
@@ -160,6 +162,35 @@ export default function AdminHomepage({
         orderId: 0,
     });
 
+    // function billing() {
+    //     let ordersProductFiltered;
+    //     if (ordersGroupedByOrderStatus['entregue']) {
+    //         ordersProductFiltered = ordersProducts.filter((op) =>
+    //             ordersGroupedByOrderStatus['entregue'].some(
+    //                 (o) => o.id === op.order_id
+    //             )
+    //         );
+
+    //         const productIds = ordersProductFiltered.map(
+    //             (ordersProduct) => ordersProduct.product_id
+    //         );
+    //         const selectedProduct = productIds.map(
+    //             (productId) =>
+    //                 products[
+    //                 products.findIndex(
+    //                     (product) => productId === product.id
+    //                 )
+    //                 ]
+    //         );
+    //         return selectedProduct.reduce(
+    //             (acc, product) => acc + product?.price!,
+    //             0
+    //         );
+    //     } else {
+    //         return 0;
+    //     }
+    // }
+
     function billing() {
         let ordersProductFiltered;
         if (ordersGroupedByOrderStatus['entregue']) {
@@ -175,14 +206,34 @@ export default function AdminHomepage({
             const selectedProduct = productIds.map(
                 (productId) =>
                     products[
-                    products.findIndex(
-                        (product) => productId === product.id
-                    )
+                        products.findIndex(
+                            (product) => productId === product.id
+                        )
                     ]
             );
-            return selectedProduct.reduce(
-                (acc, product) => acc + product?.price!,
+
+            const totalPriceOfDeliveryFee = ordersGroupedByOrderStatus[
+                'entregue'
+            ].reduce((acc, item) => {
+                if (!item.delivery_fees) return acc;
+                return acc + item.delivery_fees.fee;
+            }, 0);
+            const totalAdditionalPrice = getOrdersProductsData({
+                ordersProducts: ordersProductFiltered,
+                additionals,
+                products,
+            }).reduce(
+                (acc, item) => acc + item.totalAdditionalsPriceByProduct,
                 0
+            );
+
+            return (
+                selectedProduct.reduce(
+                    (acc, product) => acc + product?.price!,
+                    0
+                ) +
+                totalPriceOfDeliveryFee +
+                totalAdditionalPrice
             );
         } else {
             return 0;
@@ -204,7 +255,6 @@ export default function AdminHomepage({
                     table: 'orders',
                 },
                 (payload: any) => {
-                    console.log('entrou');
                     newOrder();
                 }
             )
@@ -244,7 +294,6 @@ export default function AdminHomepage({
         return <LoadingSpinner />;
     }
 
-
     return (
         <AdminWrapper>
             <div className="flex flex-col gap-8">
@@ -259,7 +308,7 @@ export default function AdminHomepage({
                     <Card
                         color="red"
                         name="Faturamento"
-                        value={`R$ ${billing()}`}
+                        value={`${billing()}`}
                     />
                     <Card
                         color="green"
@@ -285,7 +334,7 @@ export default function AdminHomepage({
                     products={products}
                 />
 
-                <div className=" md:columns-3 gap-4">
+                <div className=" md:grid md:grid-cols-3 gap-4">
                     <OrderStatusCard
                         statusName="Em produção"
                         dispatch={ordersDispatch}
@@ -319,6 +368,7 @@ export default function AdminHomepage({
                         restaurant={restaurant}
                         ordersProducts={ordersProducts}
                         products={products}
+                        additionals={additionals}
                         ordersDispatch={ordersDispatch}
                     />
                 ) : null}

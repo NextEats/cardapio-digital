@@ -47,6 +47,7 @@ export default function NewRequests({
             .from('orders')
             .update({ order_status_id: 3 })
             .eq('id', orderId);
+        // TODO2
     }
 
     function showModal(orderId: number) {
@@ -70,7 +71,7 @@ export default function NewRequests({
     return (
         <div className="flex flex-1 flex-col min-h-[230px] bg-white w-auto shadow-sm px-6 pt-2 rounded-md ">
             <h2 className="text-base font-bold mb-4">Novos pedidos </h2>
-            <div className='w-full overflow-auto  scrollbar-custom'>
+            <div className="w-full overflow-auto  scrollbar-custom">
                 <table className="w-full ">
                     <tbody className="w-full border-collapse ">
                         {ordersGroupedByOrderStatus['em análise']?.map(
@@ -123,7 +124,7 @@ export default function NewRequests({
                                         >
                                             R$ {totalProductsPrice}
                                         </td>
-                                        {phone ?
+                                        {phone ? (
                                             <td
                                                 className={`${tdStyle} w-auto text-ellipsis whitespace-nowrap overflow-hidden hidden sm:table-cell`}
                                             >
@@ -132,9 +133,12 @@ export default function NewRequests({
                                                     ' ) ' +
                                                     phone?.slice(2, 7) +
                                                     '-' +
-                                                    phone?.slice(7, phone.length)}
+                                                    phone?.slice(
+                                                        7,
+                                                        phone.length
+                                                    )}
                                             </td>
-                                            : null}
+                                        ) : null}
                                         <td className={`${tdStyle}`}>
                                             <div className="flex items-center justify-center gap-2">
                                                 <button

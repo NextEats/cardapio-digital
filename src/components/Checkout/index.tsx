@@ -2,8 +2,9 @@ import { DigitalMenuContext } from '@/src/contexts/DigitalMenuContext';
 import { useContext, useState } from 'react';
 import ContactInfoForm from './subcomponents/ContactInfoForm';
 import ProductsList from './subcomponents/ProductsList';
+import ThankYouPage from './subcomponents/ThankYou';
 
-type tSteps = 'products_list' | 'contact_info';
+type tSteps = 'products_list' | 'contact_info' | 'thank_you';
 
 export default function Checkout() {
     const { modals } = useContext(DigitalMenuContext);
@@ -30,6 +31,8 @@ export default function Checkout() {
                 );
             case 'contact_info':
                 return <ContactInfoForm setCurrentStep={setCurrentStep} />;
+            case 'thank_you':
+                return <ThankYouPage />;
         }
     }
 
@@ -39,7 +42,7 @@ export default function Checkout() {
                 className="fixed w-screen h-screen bg-[#0000009f] z-[400]"
                 onClick={handleCloseModal}
             ></div>
-            <div className="min-h-[600px] max-w-[550px] w-[92%] fixed bg-white z-[500] px-4 py-9 rounded">
+            <div className="h-[600px] overflow-auto max-w-[550px] w-[92%] fixed bg-white z-[500] px-4 py-9 rounded">
                 <CurrentStepComponent />
             </div>
         </div>

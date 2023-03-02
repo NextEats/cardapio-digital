@@ -44,6 +44,7 @@ export default function ContactInfoForm({ setCurrentStep }: any) {
             restaurant,
             payment_method,
         });
+        setCurrentStep('thank_you');
     };
 
     const [activePaymentMethods, setActivePaymentMethods] = useState<any>();
@@ -105,14 +106,13 @@ export default function ContactInfoForm({ setCurrentStep }: any) {
                     >
                         WhatsApp
                     </label>
-                    <InputMask
+                    <input
                         {...register('whatsapp', { required: true })}
                         id="whatsapp"
-                        type="text"
+                        type="number"
                         className={`appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${
                             errors.whatsapp && 'border-red-500'
                         }`}
-                        mask="(99) 99999-9999"
                     />
                     {errors.cep && (
                         <p className="text-red-500 text-xs italic">

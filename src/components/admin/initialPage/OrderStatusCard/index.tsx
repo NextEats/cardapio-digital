@@ -47,11 +47,13 @@ export default function OrderStatusCard({
                 .from('orders')
                 .update({ order_status_id: 4 })
                 .eq('id', orderId);
+            // TODO3 Seu pedido está a caminho
         } else if (statusName === 'A caminho') {
             await supabase
                 .from('orders')
                 .update({ order_status_id: 1 })
                 .eq('id', orderId);
+            // TODO4 Seu pedido foi entregue com sucesso
         }
     }
 
@@ -67,18 +69,17 @@ export default function OrderStatusCard({
                 <span className="text-md font-medium">{''}</span>
             </div>
 
-            <div className='w-full overflow-auto  scrollbar-custom'>
-
-
+            <div className="w-full overflow-auto  scrollbar-custom">
                 <table className="w-full  ">
                     <tbody className="w-full border-collapse">
                         {orders?.map((order) => {
                             if (!order) {
                                 return;
                             }
-                            const ordersProductsFiltered = ordersProducts.filter(
-                                (op) => op.order_id === order.id!
-                            );
+                            const ordersProductsFiltered =
+                                ordersProducts.filter(
+                                    (op) => op.order_id === order.id!
+                                );
                             const productsFiltered = ordersProductsFiltered.map(
                                 (op) => {
                                     return products[
@@ -104,9 +105,17 @@ export default function OrderStatusCard({
                                         />
                                     </td>
                                     <td className="text-left text-sm font-medium px-2  max-w-20 truncate 2xs:table-cell md:hidden xl:table-cell">
-                                        {order.clients ? <span className=""> {order.clients.name} </span>
-                                            : <span className="text-green-400 "> Mesa </span>
-                                        }
+                                        {order.clients ? (
+                                            <span className="">
+                                                {' '}
+                                                {order.clients.name}{' '}
+                                            </span>
+                                        ) : (
+                                            <span className="text-green-400 ">
+                                                {' '}
+                                                Mesa{' '}
+                                            </span>
+                                        )}
                                     </td>
                                     <td
                                         className={`${tdStyle} px-5  hidden sm:table-cell md:hiden 2xl:table-cell`}
@@ -116,7 +125,9 @@ export default function OrderStatusCard({
                                     <td className={`${tdStyle}`}>
                                         <div className="flex items-center justify-center gap-2">
                                             <button
-                                                onClick={() => showModal(order.id!)}
+                                                onClick={() =>
+                                                    showModal(order.id!)
+                                                }
                                                 className="rounded-full pl-[1px] w-8 h-6 bg-gray-400 cursor-pointer flex items-center justify-center"
                                             >
                                                 <AiFillEye className="text-xl text-white" />

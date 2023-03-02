@@ -243,6 +243,7 @@ export default function AdminHomepage({
     useMemo(() => {
         async function newOrder() {
             const getNewOrder = await api.get(`/api/orders/${restaurant.id}`);
+            // TODO1 Enviar mensagem de "seu pedido foi recebido com sucesso"
             setOrders(getNewOrder.data);
         }
         const channel = supabase

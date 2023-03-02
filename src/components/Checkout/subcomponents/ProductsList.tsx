@@ -8,6 +8,8 @@ export default function ProductsList({
 }: any) {
     const products = useContext(DigitalMenuContext).productReducer!;
 
+    console.log(products.state);
+
     return (
         <>
             <div className="w-full flex justify-center">

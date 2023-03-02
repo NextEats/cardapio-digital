@@ -8,7 +8,10 @@ import {
     useReducer,
     useState,
 } from 'react';
-import { getOrdersProductsData, iOrdersProductsData } from '../helpers/getOrdersProductsData';
+import {
+    getOrdersProductsData,
+    iOrdersProductsData,
+} from '../helpers/getOrdersProductsData';
 import {
     iTableReducer,
     tableReducer,
@@ -51,8 +54,8 @@ interface iTableContextProps {
     tableData: {
         productsInProductionData: iOrdersProductsData[] | undefined;
         productsDeliveredData: iOrdersProductsData[] | undefined;
-        tableBill: number
-    }
+        tableBill: number;
+    };
     additionals: iAdditionals['data'];
     productOptions: iProductOptions['data'];
     selects: iSelects['data'];
@@ -105,7 +108,7 @@ export default function TableContextProvider({
         tableReducer,
         tableReducerDefaultValues
     );
-    console.log(tableState)
+    console.log(tableState);
     const [tables, setTables] = useState<iTables['data']>([]);
 
     const [viewProduct, setViewProduct] = useState<iProduct['data'] | null>(
@@ -138,64 +141,107 @@ export default function TableContextProvider({
         if (!openedTableModal) return;
 
         const ordersTableInProductionFiltered = ordersTables.filter((ot) => {
-            return ot.tables.id === openedTableModal.id && ot.has_been_paid === false && ot.orders.order_status.status_name === 'em produção'
+            return (
+                ot.tables.id === openedTableModal.id &&
+                ot.has_been_paid === false &&
+                ot.orders.order_status.status_name === 'em produção'
+            );
         });
         const ordersProductsFiltered = ordersProducts.filter((op) =>
-            ordersTableInProductionFiltered.some((ot) => ot.orders.id === op.order_id)
+            ordersTableInProductionFiltered.some(
+                (ot) => ot.orders.id === op.order_id
+            )
         );
         const tableProductIds = ordersProductsFiltered.map(
             (op) => op.product_id
         );
 
-        const productsFiltered = tableProductIds.reduce((acc: iProducts["data"], id) => {
-            const product = products.find((p) => p.id === id);
-            if (product) {
-                acc.push(product);
-            }
-            return acc;
-        }, []);
+        const productsFiltered = tableProductIds.reduce(
+            (acc: iProducts['data'], id) => {
+                const product = products.find((p) => p.id === id);
+                if (product) {
+                    acc.push(product);
+                }
+                return acc;
+            },
+            []
+        );
 
-        const totalPriceOfProducts = productsFiltered.reduce((acc, item) => + acc + item.price, 0)
-        const ordersProductsDataTable = getOrdersProductsData({ additionals, ordersProducts: ordersProductsFiltered, products: productsFiltered })
+        const totalPriceOfProducts = productsFiltered.reduce(
+            (acc, item) => +acc + item.price,
+            0
+        );
+        const ordersProductsDataTable = getOrdersProductsData({
+            additionals,
+            ordersProducts: ordersProductsFiltered,
+            products: productsFiltered,
+        });
 
-        const totalPriceOfAdditionals = ordersProductsDataTable.reduce((acc, item) => {
-            return acc + item.totalAdditionalsPriceByProduct
-        }, 0)
+        const totalPriceOfAdditionals = ordersProductsDataTable.reduce(
+            (acc, item) => {
+                return acc + item.totalAdditionalsPriceByProduct;
+            },
+            0
+        );
 
-        return { productsData: ordersProductsDataTable, tableBill: totalPriceOfProducts + totalPriceOfAdditionals }
+        return {
+            productsData: ordersProductsDataTable,
+            tableBill: totalPriceOfProducts + totalPriceOfAdditionals,
+        };
     }, [openedTableModal, ordersTables, ordersProducts, products, additionals]);
 
     const tableDeliveredData = useMemo(() => {
         if (!openedTableModal) return;
         const ordersTableDeliveredFiltered = ordersTables.filter((ot) => {
-            return ot.tables.id === openedTableModal.id && ot.has_been_paid === false && ot.orders.order_status.status_name === 'entregue'
+            return (
+                ot.tables.id === openedTableModal.id &&
+                ot.has_been_paid === false &&
+                ot.orders.order_status.status_name === 'entregue'
+            );
         });
 
         const ordersProductsFiltered = ordersProducts.filter((op) =>
-            ordersTableDeliveredFiltered.some((ot) => ot.orders.id === op.order_id)
+            ordersTableDeliveredFiltered.some(
+                (ot) => ot.orders.id === op.order_id
+            )
         );
         const tableProductIds = ordersProductsFiltered.map(
             (op) => op.product_id
         );
 
-        const productsFiltered = tableProductIds.reduce((acc: iProducts["data"], id) => {
-            const product = products.find((p) => p.id === id);
-            if (product) {
-                acc.push(product);
-            }
-            return acc;
-        }, []);
+        const productsFiltered = tableProductIds.reduce(
+            (acc: iProducts['data'], id) => {
+                const product = products.find((p) => p.id === id);
+                if (product) {
+                    acc.push(product);
+                }
+                return acc;
+            },
+            []
+        );
 
-        const totalPriceOfProducts = productsFiltered.reduce((acc, item) => + acc + item.price, 0)
-        const ordersProductsDataTable = getOrdersProductsData({ additionals, ordersProducts: ordersProductsFiltered, products: productsFiltered })
+        const totalPriceOfProducts = productsFiltered.reduce(
+            (acc, item) => +acc + item.price,
+            0
+        );
+        const ordersProductsDataTable = getOrdersProductsData({
+            additionals,
+            ordersProducts: ordersProductsFiltered,
+            products: productsFiltered,
+        });
 
-        const totalPriceOfAdditionals = ordersProductsDataTable.reduce((acc, item) => {
-            return acc + item.totalAdditionalsPriceByProduct
-        }, 0)
+        const totalPriceOfAdditionals = ordersProductsDataTable.reduce(
+            (acc, item) => {
+                return acc + item.totalAdditionalsPriceByProduct;
+            },
+            0
+        );
 
-        return { productsData: ordersProductsDataTable, tableBill: totalPriceOfProducts + totalPriceOfAdditionals }
+        return {
+            productsData: ordersProductsDataTable,
+            tableBill: totalPriceOfProducts + totalPriceOfAdditionals,
+        };
     }, [openedTableModal, ordersTables, ordersProducts, products, additionals]);
-
 
     async function createNewtable(cheirAmount: string, tableName: string) {
         if (tableName === '') {
@@ -203,14 +249,14 @@ export default function TableContextProvider({
             return;
         }
         const novaMessa: iTables['data'] = await api.post(
-            'api/table_control/' + restaurant.id, {
-            chair_ammount: cheirAmount,
-            name: tableName,
-        }
+            'api/table_control/' + restaurant.id,
+            {
+                chair_ammount: cheirAmount,
+                name: tableName,
+            }
         );
 
-        window.location.reload()
-
+        window.location.reload();
     }
 
     async function updateTable(
@@ -219,12 +265,13 @@ export default function TableContextProvider({
         table_id: number
     ) {
         const tableUpdated = await api.put(
-            `api/table_control/${restaurant.id!}`, {
-            chair_ammount: openedTableModal?.chair_ammount,
-            is_active,
-            is_occupied,
-            table_id: openedTableModal?.id!,
-        }
+            `api/table_control/${restaurant.id!}`,
+            {
+                chair_ammount: openedTableModal?.chair_ammount,
+                is_active,
+                is_occupied,
+                table_id: openedTableModal?.id!,
+            }
         );
         setOpenedTableModal(tableUpdated.data);
         setTables((state) => {
@@ -236,7 +283,7 @@ export default function TableContextProvider({
             return [...(updatedTables as iTables['data'])];
         });
         setIsOpenedTableConfigModal(false);
-        setOpenedTableModal(null)
+        setOpenedTableModal(null);
     }
 
     async function deleteTable() {
@@ -274,11 +321,24 @@ export default function TableContextProvider({
                 viewProduct,
                 products,
                 productAdditionals,
-                tableData: tableDeliveredData !== undefined ? {
-                    productsInProductionData: tableInProductionData?.productsData,
-                    productsDeliveredData: tableDeliveredData.productsData,
-                    tableBill: tableInProductionData !== undefined ? tableDeliveredData.tableBill + tableInProductionData.tableBill : tableDeliveredData.tableBill
-                } : { productsInProductionData: undefined, productsDeliveredData: undefined, tableBill: 0 },
+                tableData:
+                    tableDeliveredData !== undefined
+                        ? {
+                              productsInProductionData:
+                                  tableInProductionData?.productsData,
+                              productsDeliveredData:
+                                  tableDeliveredData.productsData,
+                              tableBill:
+                                  tableInProductionData !== undefined
+                                      ? tableDeliveredData.tableBill +
+                                        tableInProductionData.tableBill
+                                      : tableDeliveredData.tableBill,
+                          }
+                        : {
+                              productsInProductionData: undefined,
+                              productsDeliveredData: undefined,
+                              tableBill: 0,
+                          },
 
                 additionals,
                 productOptions,

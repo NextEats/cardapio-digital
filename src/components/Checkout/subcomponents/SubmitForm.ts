@@ -14,6 +14,7 @@ export async function SubmitForm({
     whatsapp,
     products,
     restaurant,
+    payment_method,
 }: any) {
     try {
         const { data: addressData } = await supabase
@@ -33,13 +34,6 @@ export async function SubmitForm({
 
         const contact = contactData![0] as unknown as iContact['data'];
 
-        console.log('clientData', {
-            name,
-            restaurant_id: restaurant!.id,
-            address_id: address.id,
-            contact_id: contact.id,
-        });
-
         const { data: clientData } = await supabase
             .from('clients')
             .insert({
@@ -56,8 +50,6 @@ export async function SubmitForm({
             .select('*')
             .match({ restaurant_id: restaurant!.id, is_open: true });
 
-        console.log(currentCashBoxData);
-
         const currentCashBox =
             currentCashBoxData![0] as unknown as iCashBox['data'];
 
@@ -69,7 +61,7 @@ export async function SubmitForm({
                 order_type_id: 1,
                 cash_box_id: currentCashBox.id,
                 order_status_id: 2,
-                payment_method_id: 1,
+                payment_method_id: payment_method,
             })
             .select('*');
 
@@ -86,11 +78,7 @@ export async function SubmitForm({
                     additionals_data: product.additionals,
                 })
                 .select('*');
-
-            console.log(ordersProductsData);
         });
-
-        console.log(order);
     } catch (error) {
         console.error(error);
     }

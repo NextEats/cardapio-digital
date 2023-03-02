@@ -103,7 +103,6 @@ export async function updateAdditional(
         })
         .eq('id', additionalId)
         .select('*');
-    console.log(additionalData);
     return additionalData;
 }
 export async function updateProduct(

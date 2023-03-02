@@ -1,14 +1,11 @@
 import { AdminContext } from '@/src/contexts/adminContext';
 import { supabase } from '@/src/server/api';
-import { iDeliveryFees } from '@/src/types/types';
 import { useContext, useEffect, useState } from 'react';
 
 export default function TaxaPorDistancia() {
     const { restaurant } = useContext(AdminContext);
 
-    const [deliveryFees, setDeliveryFees] = useState<
-        Array<iDeliveryFees['data']>
-    >([]);
+    const [deliveryFees, setDeliveryFees] = useState<any>([]);
 
     useEffect(() => {
         fetchDeliveryFees();
@@ -57,7 +54,7 @@ export default function TaxaPorDistancia() {
             .delete()
             .match({ id });
         if (error) console.error(error);
-        else setDeliveryFees(deliveryFees.filter((fee) => fee.id !== id));
+        else setDeliveryFees(deliveryFees.filter((fee: any) => fee.id !== id));
     };
 
     const handleAddDeliveryFee = () => {
@@ -107,7 +104,7 @@ export default function TaxaPorDistancia() {
                     </tr>
                 </thead>
                 <tbody>
-                    {deliveryFees.map((deliveryFee) => (
+                    {deliveryFees.map((deliveryFee: any) => (
                         <tr key={deliveryFee.id}>
                             <td className="border px-4 py-2">{`${deliveryFee.start_km} km - ${deliveryFee.end_km} km`}</td>
                             <td className="border px-4 py-2">{`R$ ${deliveryFee.fee.toFixed(

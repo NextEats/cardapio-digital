@@ -1,6 +1,7 @@
-import { useContext } from 'react';
 import { DigitalMenuContext } from '@/src/contexts/DigitalMenuContext';
+import { supabase } from '@/src/server/api';
 import cep from 'cep-promise';
+import { useContext, useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import InputMask from 'react-input-mask';
 import { SubmitForm } from './SubmitForm';
@@ -13,6 +14,7 @@ export default function ContactInfoForm({ setCurrentStep }: any) {
         number: string;
         whatsapp: string;
         name: string;
+        payment_method: number;
     };
 
     const {
@@ -31,9 +33,46 @@ export default function ContactInfoForm({ setCurrentStep }: any) {
         name,
         number,
         whatsapp,
+        payment_method,
     }) => {
-        SubmitForm({ cep, name, number, whatsapp, products, restaurant });
+        SubmitForm({
+            cep,
+            name,
+            number,
+            whatsapp,
+            products,
+            restaurant,
+            payment_method,
+        });
     };
+
+    const [activePaymentMethods, setActivePaymentMethods] = useState<any>();
+
+    useEffect(() => {
+        async function fetchActivePaymentMethods() {
+            const { data, error } = await supabase
+                .from('payment_methods_restaurants')
+                .select(
+                    'id, payment_method_id, restaurant_id, enabled, payment_methods ( id, name )'
+                )
+                .match({ restaurant_id: restaurant!.id, enabled: true });
+
+            if (data && !error) {
+                const formatedData = data.map((elem: any) => {
+                    return {
+                        id: elem.payment_methods!.id,
+                        name: elem.payment_methods!.name,
+                    };
+                });
+
+                setActivePaymentMethods(formatedData);
+            } else {
+                console.error(error);
+            }
+        }
+
+        fetchActivePaymentMethods();
+    }, [restaurant]);
 
     return (
         <form onSubmit={handleSubmit(onSubmit)} className="">
@@ -108,7 +147,7 @@ export default function ContactInfoForm({ setCurrentStep }: any) {
                                     setValue('street', cepInfo.street);
                                 }
                             } catch {
-                                console.log('CEP não encontrado');
+                                console.error('CEP não encontrado');
                             }
                         }}
                     />
@@ -173,6 +212,45 @@ export default function ContactInfoForm({ setCurrentStep }: any) {
                         </p>
                     )}
                 </div>
+                <div className="mb-4">
+                    <label
+                        className="block text-gray-700 font-bold mb-2"
+                        htmlFor="number"
+                    >
+                        Método de Pagamento
+                    </label>
+                    <select
+                        {...register('payment_method', { required: true })}
+                        id="payment_method"
+                        className={`appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${
+                            errors.payment_method && 'border-red-500'
+                        }`}
+                    >
+                        <option
+                            disabled={true}
+                            value={undefined}
+                            selected={true}
+                        >
+                            Selecione um método de pagamento
+                        </option>
+                        {activePaymentMethods &&
+                            activePaymentMethods.map(
+                                (elem: any, index: any) => {
+                                    return (
+                                        <option key={index} value={elem.id}>
+                                            {elem.name}
+                                        </option>
+                                    );
+                                }
+                            )}
+                    </select>
+                    {errors.payment_method && (
+                        <p className="text-red-500 text-xs italic">
+                            Escolha um método de pagamento
+                        </p>
+                    )}
+                </div>
+
                 <div className="flex w-full gap-x-2 mt-16">
                     <button
                         onClick={() => {

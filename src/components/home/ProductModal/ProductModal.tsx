@@ -64,14 +64,13 @@ export default function ProductModal() {
                 additionals: additionals_data,
                 selects: selects?.state,
                 observation: observation,
+                quantity: 1,
             },
         });
 
         setObservation('');
         closeModal();
     }
-
-    console.log(productReducer?.state);
 
     return (
         <>

@@ -2,7 +2,7 @@ import { DigitalMenuContext } from '@/src/contexts/DigitalMenuContext';
 import cep from 'cep-promise';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { FaClock } from 'react-icons/fa';
 import { MdExpandMore, MdLocationOn } from 'react-icons/md';
 
@@ -11,11 +11,13 @@ export default function RestaurantHeader() {
 
     const [street, setStreet] = useState<string>('');
 
-    if (restaurant?.addresses.cep) {
-        cep(restaurant?.addresses.cep).then((res) => {
-            setStreet(res.street);
-        });
-    }
+    useEffect(() => {
+        if (restaurant?.addresses.cep) {
+            cep(restaurant?.addresses.cep).then((res) => {
+                setStreet(res.street);
+            });
+        }
+    }, [restaurant?.addresses.cep]);
 
     if (!restaurant) {
         return <></>;

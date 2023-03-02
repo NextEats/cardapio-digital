@@ -33,9 +33,6 @@ export default function Additionals({
                 const additionalQuantity = state.quantityAdditionals.find(
                     (aq) => aq.additionalId === additional.id
                 );
-                console.log(
-                    additionalQuantity ? additionalQuantity.quantity : ''
-                );
 
                 return (
                     <div

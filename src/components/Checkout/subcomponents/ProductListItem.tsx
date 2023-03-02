@@ -1,13 +1,26 @@
+import { DigitalMenuContext } from '@/src/contexts/DigitalMenuContext';
 import useProductDataForId from '@/src/hooks/useProductDataForId';
 import Image from 'next/image';
+import { useContext } from 'react';
 import { QuantitySelector } from '../../QuantitySelector';
 
 export default function ProductListItem({ product }: any) {
+    const { dispatch, state } = useContext(DigitalMenuContext).productReducer!;
+
     const data = useProductDataForId(product.id);
 
     if (!data) {
         return null;
     }
+
+    const returnCurrentIndex = () => {
+        return state.findIndex((elem: any) => elem.id === product.id);
+    };
+
+    const returnCurrentQuantity = () => {
+        const thisProduct = state.find((elem: any) => elem.id === product.id);
+        return thisProduct.quantity;
+    };
 
     return (
         <>
@@ -31,10 +44,25 @@ export default function ProductListItem({ product }: any) {
                 </div>
                 <div className="ml-auto">
                     <QuantitySelector
-                        value={1}
-                        addValue={() => {}}
-                        subtractValue={() => {}}
-                        deleteValue={() => {}}
+                        value={returnCurrentQuantity()}
+                        addValue={() => {
+                            dispatch({
+                                type: 'addQuantity',
+                                payload: { index: returnCurrentIndex() },
+                            });
+                        }}
+                        subtractValue={() => {
+                            dispatch({
+                                type: 'subtractQuantity',
+                                payload: { index: returnCurrentIndex() },
+                            });
+                        }}
+                        deleteValue={() => {
+                            dispatch({
+                                type: 'deleteProduct',
+                                payload: { index: returnCurrentIndex() },
+                            });
+                        }}
                     />
                 </div>
             </div>

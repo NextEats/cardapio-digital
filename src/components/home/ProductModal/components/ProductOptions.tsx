@@ -1,13 +1,8 @@
 import { DigitalMenuContext } from '@/src/contexts/DigitalMenuContext';
-import { tSelectWithOptions } from '@/src/fetch/productSelects/getProductSelectWithOptions';
 import { filterOptionsSelected } from '@/src/helpers/filterOptionsSelected';
 import useProductSelectsWithOptions from '@/src/hooks/useProductSelectsWithOptions';
 import { useContext, useMemo } from 'react';
 import SelectComponent from './SelectComponent';
-
-type tState = {
-    productSelects: tSelectWithOptions[];
-};
 
 interface iProductOptions {
     product_id: string;
@@ -25,7 +20,7 @@ export default function ProductOptions({ product_id }: iProductOptions) {
                 productsOptionsSelected: productSelects,
             })
         );
-    }, [productSelects, selects]);
+    }, []);
 
     return (
         <div>

@@ -250,7 +250,6 @@ export interface Database {
           contact_id: number
           created_at: string | null
           id: number
-          is_delivery: boolean | null
           name: string
           table_id: number | null
         }
@@ -259,7 +258,6 @@ export interface Database {
           contact_id: number
           created_at?: string | null
           id?: number
-          is_delivery?: boolean | null
           name: string
           table_id?: number | null
         }
@@ -268,7 +266,6 @@ export interface Database {
           contact_id?: number
           created_at?: string | null
           id?: number
-          is_delivery?: boolean | null
           name?: string
           table_id?: number | null
         }
@@ -311,32 +308,6 @@ export interface Database {
           email?: string | null
           id?: number
           phone?: number | null
-        }
-      }
-      delivery_fees: {
-        Row: {
-          created_at: string | null
-          end_km: number | null
-          fee: number
-          id: number
-          restaurant_id: number
-          start_km: number | null
-        }
-        Insert: {
-          created_at?: string | null
-          end_km?: number | null
-          fee: number
-          id?: number
-          restaurant_id: number
-          start_km?: number | null
-        }
-        Update: {
-          created_at?: string | null
-          end_km?: number | null
-          fee?: number
-          id?: number
-          restaurant_id?: number
-          start_km?: number | null
         }
       }
       delivery_fees: {

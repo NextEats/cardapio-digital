@@ -16,9 +16,7 @@ import {
     iInsertAddresses,
     iInsertClients,
     iInsertContacts,
-    iInsertOrdersProducts,
     iInsertOrderStatuss,
-    iInsertProducts,
     iOrdersProducts,
     iOrdersWithFKData,
     iProducts,
@@ -37,12 +35,11 @@ import { getRestaurantBySlugFetch } from '../../../fetch/restaurant/getRestauran
 import CashBoxButtons from '@/src/components/admin/initialPage/CashBoxButtons';
 import { OrderModal } from '@/src/components/admin/initialPage/OrderModal';
 import LoadingSpinner from '@/src/components/LoadingSpinner';
+import { getAdditionalsByRestaurantIdFetch } from '@/src/fetch/additionals/getAdditionals';
+import { getOrdersProductsData } from '@/src/helpers/getOrdersProductsData';
 import { api, supabase } from '@/src/server/api';
 import { createServerSupabaseClient } from '@supabase/auth-helpers-nextjs';
 import 'react-toastify/dist/ReactToastify.css';
-import getAdditionalsByRestaurantId from '../../api/additionals/[restaurant_id]';
-import { getAdditionalsByRestaurantIdFetch } from '@/src/fetch/additionals/getAdditionals';
-import { getOrdersProductsData } from '@/src/helpers/getOrdersProductsData';
 
 interface iAdminHomePageProps {
     ordersData: iOrdersWithFKData[];
@@ -98,7 +95,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
                     slug: string;
                 };
             };
-            ;
         }
     }
 
@@ -132,9 +128,8 @@ export default function AdminHomepage({
     const [cashBoxState, setCashBoxState] = useState<
         iCashBox['data'] | undefined
     >(cashBoxOpened);
-    console.log(additionals)
 
-    const printComponent = useRef<HTMLDivElement>(null)
+    const printComponent = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         if (cashBoxState === undefined) {
@@ -200,24 +195,46 @@ export default function AdminHomepage({
         let ordersProductFiltered;
         if (ordersGroupedByOrderStatus['entregue']) {
             ordersProductFiltered = ordersProducts.filter((op) =>
-                ordersGroupedByOrderStatus['entregue'].some((o) => o.id === op.order_id)
+                ordersGroupedByOrderStatus['entregue'].some(
+                    (o) => o.id === op.order_id
+                )
             );
 
             const productIds = ordersProductFiltered.map(
                 (ordersProduct) => ordersProduct.product_id
             );
             const selectedProduct = productIds.map(
-                (productId) => products[products.findIndex((product) => productId === product.id)]
+                (productId) =>
+                    products[
+                        products.findIndex(
+                            (product) => productId === product.id
+                        )
+                    ]
             );
 
-            const totalPriceOfDeliveryFee = ordersGroupedByOrderStatus['entregue'].reduce((acc, item) => {
-                if (!item.delivery_fees) return acc
-                return acc + item.delivery_fees.fee
-            }, 0)
-            const totalAdditionalPrice = getOrdersProductsData({ ordersProducts: ordersProductFiltered, additionals, products })
-                .reduce((acc, item) => acc + item.totalAdditionalsPriceByProduct, 0)
+            const totalPriceOfDeliveryFee = ordersGroupedByOrderStatus[
+                'entregue'
+            ].reduce((acc, item) => {
+                if (!item.delivery_fees) return acc;
+                return acc + item.delivery_fees.fee;
+            }, 0);
+            const totalAdditionalPrice = getOrdersProductsData({
+                ordersProducts: ordersProductFiltered,
+                additionals,
+                products,
+            }).reduce(
+                (acc, item) => acc + item.totalAdditionalsPriceByProduct,
+                0
+            );
 
-            return selectedProduct.reduce((acc, product) => acc + product?.price!, 0) + totalPriceOfDeliveryFee + totalAdditionalPrice
+            return (
+                selectedProduct.reduce(
+                    (acc, product) => acc + product?.price!,
+                    0
+                ) +
+                totalPriceOfDeliveryFee +
+                totalAdditionalPrice
+            );
         } else {
             return 0;
         }
@@ -238,7 +255,6 @@ export default function AdminHomepage({
                     table: 'orders',
                 },
                 (payload: any) => {
-                    console.log('entrou');
                     newOrder();
                 }
             )
@@ -277,7 +293,6 @@ export default function AdminHomepage({
     ) {
         return <LoadingSpinner />;
     }
-
 
     return (
         <AdminWrapper>

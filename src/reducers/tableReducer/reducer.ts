@@ -47,9 +47,9 @@ export function tableReducer(state: iTableReducer, action: any) {
         case tableReducerAction.CHANGEADDITIONALQUANTITY:
             const additional =
                 state.quantityAdditionals[
-                state.quantityAdditionals.findIndex(
-                    (aq) => aq.additionalId === action.payload.additionalId
-                )
+                    state.quantityAdditionals.findIndex(
+                        (aq) => aq.additionalId === action.payload.additionalId
+                    )
                 ];
             if (action.payload.isIncrement) {
                 state.quantityAdditionals[
@@ -100,7 +100,6 @@ export function tableReducer(state: iTableReducer, action: any) {
                 totalPrice: 0,
             };
         case tableReducerAction.REMOVEPRODUCTSSELECTED:
-            console.log(action.payload.productId);
             state.productsSelected.splice(
                 state.productsSelected.findIndex(
                     (ps) => ps.product?.id === action.payload.productId

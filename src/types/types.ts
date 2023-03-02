@@ -360,7 +360,7 @@ export interface iOrderTypes {
 }
 
 export interface iDeliveryFees {
-    data: Database['public']['Tables']['delivery_fees']['Row'];
+    data: Array<Database['public']['Tables']['delivery_fees']['Row']>;
 }
 
 export type iOrdersWithFKData = iOrder['data'] & {

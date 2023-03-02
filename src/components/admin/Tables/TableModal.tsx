@@ -29,7 +29,10 @@ export default function TableModal() {
 
     async function handleFinishOrder() {
         const foundCashBoxes = cashBoxes.find((c) => c.is_open === true);
-        if (foundCashBoxes === undefined) return;
+        if (foundCashBoxes === undefined) {
+            alert('O Pedido só pode ser feito se o caixa estiver aberto.')
+            return
+        };
 
         const orderData = await api.post(`api/orders/${restaurant.id}`, {
             order_type_id: 3,

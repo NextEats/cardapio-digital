@@ -250,7 +250,6 @@ export interface Database {
           contact_id: number
           created_at: string | null
           id: number
-          is_delivery: boolean | null
           name: string
           table_id: number | null
         }
@@ -259,7 +258,6 @@ export interface Database {
           contact_id: number
           created_at?: string | null
           id?: number
-          is_delivery?: boolean | null
           name: string
           table_id?: number | null
         }
@@ -268,7 +266,6 @@ export interface Database {
           contact_id?: number
           created_at?: string | null
           id?: number
-          is_delivery?: boolean | null
           name?: string
           table_id?: number | null
         }
@@ -313,27 +310,30 @@ export interface Database {
           phone?: number | null
         }
       }
-      delivery_distance_fee: {
+      delivery_fees: {
         Row: {
           created_at: string | null
-          distance_in_meters: number
-          fee_in_reais: number
+          end_km: number | null
+          fee: number
           id: number
           restaurant_id: number
+          start_km: number | null
         }
         Insert: {
           created_at?: string | null
-          distance_in_meters?: number
-          fee_in_reais?: number
+          end_km?: number | null
+          fee: number
           id?: number
           restaurant_id: number
+          start_km?: number | null
         }
         Update: {
           created_at?: string | null
-          distance_in_meters?: number
-          fee_in_reais?: number
+          end_km?: number | null
+          fee?: number
           id?: number
           restaurant_id?: number
+          start_km?: number | null
         }
       }
       ingredients: {
@@ -415,6 +415,7 @@ export interface Database {
           cash_box_id: number | null
           client_id: number | null
           created_at: string | null
+          delivery_fee_id: number | null
           id: number
           order_status_id: number | null
           order_type_id: number
@@ -425,6 +426,7 @@ export interface Database {
           cash_box_id?: number | null
           client_id?: number | null
           created_at?: string | null
+          delivery_fee_id?: number | null
           id?: number
           order_status_id?: number | null
           order_type_id: number
@@ -435,6 +437,7 @@ export interface Database {
           cash_box_id?: number | null
           client_id?: number | null
           created_at?: string | null
+          delivery_fee_id?: number | null
           id?: number
           order_status_id?: number | null
           order_type_id?: number
@@ -474,18 +477,21 @@ export interface Database {
       orders_tables: {
         Row: {
           created_at: string | null
+          has_been_paid: boolean
           id: number
           order_id: number | null
           table_id: number | null
         }
         Insert: {
           created_at?: string | null
+          has_been_paid?: boolean
           id?: number
           order_id?: number | null
           table_id?: number | null
         }
         Update: {
           created_at?: string | null
+          has_been_paid?: boolean
           id?: number
           order_id?: number | null
           table_id?: number | null
@@ -511,22 +517,22 @@ export interface Database {
       payment_methods_restaurants: {
         Row: {
           created_at: string | null
+          enabled: boolean | null
           id: number
-          is_active: boolean
           payment_method_id: number
           restaurant_id: number
         }
         Insert: {
           created_at?: string | null
+          enabled?: boolean | null
           id?: number
-          is_active?: boolean
           payment_method_id: number
           restaurant_id: number
         }
         Update: {
           created_at?: string | null
+          enabled?: boolean | null
           id?: number
-          is_active?: boolean
           payment_method_id?: number
           restaurant_id?: number
         }
@@ -1050,7 +1056,10 @@ export interface Database {
     Tables: {
       buckets: {
         Row: {
+          allowed_mime_types: string[] | null
+          avif_autodetection: boolean | null
           created_at: string | null
+          file_size_limit: number | null
           id: string
           name: string
           owner: string | null
@@ -1058,7 +1067,10 @@ export interface Database {
           updated_at: string | null
         }
         Insert: {
+          allowed_mime_types?: string[] | null
+          avif_autodetection?: boolean | null
           created_at?: string | null
+          file_size_limit?: number | null
           id: string
           name: string
           owner?: string | null
@@ -1066,7 +1078,10 @@ export interface Database {
           updated_at?: string | null
         }
         Update: {
+          allowed_mime_types?: string[] | null
+          avif_autodetection?: boolean | null
           created_at?: string | null
+          file_size_limit?: number | null
           id?: string
           name?: string
           owner?: string | null

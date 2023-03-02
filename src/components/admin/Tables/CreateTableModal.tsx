@@ -15,7 +15,11 @@ export default function CreateTableModal({ }: iCreateTableModalProps) {
 
     const { createNewtable, setIsOpenedCreateTableModal, isOpenedCreateTableModal } = useContext(TableContext)
     const [tableName, setTableName] = useState('')
-    const [cheirAmount, setCheirAmount] = useState('')
+    const [cheirAmount, setCheirAmount] = useState('4')
+
+    async function handleCreateTable() {
+        await createNewtable(cheirAmount, tableName)
+    }
 
     return (
         <>
@@ -30,7 +34,10 @@ export default function CreateTableModal({ }: iCreateTableModalProps) {
                             Criar nova mesa
                         </Dialog.Title>
 
-                        <form className="w-full flex flex-col gap-6" onSubmit={() => createNewtable(cheirAmount, tableName)}>
+                        <form className="w-full flex flex-col gap-6" onSubmit={(e) => {
+                            e.preventDefault()
+                            handleCreateTable()
+                        }}>
                             <InputWithLabel label="Nome da mesa" type="text" placeholder="Ex.: Mesa 12" setState={setTableName} />
                             <InputWithLabel defaultValue={4} label="Quandidade de lugares" type="number" placeholder="ex.: 4" setState={setCheirAmount} />
                             <div className="flex flex-1 items-center justify-end">

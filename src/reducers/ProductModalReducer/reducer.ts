@@ -16,7 +16,6 @@ export function ProductModalReducer(
 ): iProductModalReducer {
     switch (action.type) {
         case 'SET':
-            console.log(state);
             return state;
         default:
             return state;

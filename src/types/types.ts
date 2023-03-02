@@ -125,8 +125,22 @@ export interface iOrdersTable {
 export interface iOrdersTables {
     data: Array<Database['public']['Tables']['orders_tables']['Row']>;
 }
+export interface iDeliveryFee {
+    data: Database['public']['Tables']['delivery_fees']['Row'];
+}
+
+export interface iDeliveryFees {
+    data: Array<Database['public']['Tables']['delivery_fees']['Row']>;
+}
 
 // ==================   INSERTS  =====================
+export interface iInsertDeliveryFee {
+    data: Database['public']['Tables']['delivery_fees']['Insert'];
+}
+
+export interface iInsertDeliveryFees {
+    data: Array<Database['public']['Tables']['delivery_fees']['Insert']>;
+}
 export interface iInsertOrdersTable {
     data: Database['public']['Tables']['orders_tables']['Insert'];
 }
@@ -345,6 +359,10 @@ export interface iOrderTypes {
     data: Database['public']['Tables']['order_types']['Row'];
 }
 
+export interface iDeliveryFees {
+    data: Array<Database['public']['Tables']['delivery_fees']['Row']>;
+}
+
 export type iOrdersWithFKData = iOrder['data'] & {
     payment_methods: iPaymentMethods['data'];
     order_types: iOrderTypes['data'];
@@ -355,6 +373,7 @@ export type iOrdersWithFKData = iOrder['data'] & {
         addresses: iAddress['data'];
     };
     order_status: iOrderStatus['data'];
+    delivery_fees: iDeliveryFee['data'];
 };
 
 export type iOrdersTablesWithFkData = iOrdersTable['data'] & {

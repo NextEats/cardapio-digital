@@ -1,4 +1,5 @@
 import {
+    iAdditionals,
     iInsertOrdersProducts,
     iInsertProducts,
     iRestaurantWithFKData,
@@ -21,6 +22,7 @@ interface iOrderModalProps {
     ordersDispatch: Dispatch<any>;
     restaurant: iRestaurantWithFKData;
     ordersProducts: iInsertOrdersProducts['data'];
+    additionals: iAdditionals['data'];
     products: iInsertProducts['data'];
     printComponent: RefObject<HTMLDivElement>;
 }
@@ -32,6 +34,7 @@ export function OrderModal({
     products,
     restaurant,
     printComponent,
+    additionals,
 }: iOrderModalProps) {
     const [address, setAddress] = useState({
         bairro: '',
@@ -45,6 +48,8 @@ export function OrderModal({
         siafi: '',
         uf: '',
     });
+
+    console.log(ordersState);
 
     const orderProductFiltered = ordersProducts.filter(
         (op) => op.order_id === ordersState.orderId
@@ -74,7 +79,7 @@ export function OrderModal({
             );
             setAddress(res.data);
         };
-        getAddress();
+        orderFound?.clients ? getAddress() : null;
     }, [orderFound]);
 
     let countProducts: {
@@ -110,7 +115,37 @@ export function OrderModal({
         (acc, product) => acc + product.price,
         0
     );
-    const deliveryPrice = 10;
+
+    const totalAdditionalPrice = result.reduce((acc, item) => {
+        const orderProductByProductId = orderProductFiltered.find(
+            (op) => op.product_id === item.id
+        );
+        if (!orderProductByProductId) return acc;
+        const additionalsData = orderProductByProductId.additionals_data as {
+            quantity: number;
+            additional_id: number;
+        }[];
+        const priceOfEachAdditional = additionalsData
+            ? additionalsData.map((ad) => {
+                  if (
+                      additionals.some((a, index) => a.id === ad.additional_id)
+                  ) {
+                      return (
+                          additionals[
+                              additionals.findIndex(
+                                  (a) => a.id === ad.additional_id
+                              )
+                          ].price * ad.quantity
+                      );
+                  }
+                  return 0;
+              })
+            : [0];
+
+        return (
+            acc + priceOfEachAdditional.reduce((sum, price) => sum + price, 0)
+        );
+    }, 0);
 
     const orderDateFormated = format(
         new Date(`${orderFound?.created_at}`),
@@ -128,9 +163,9 @@ export function OrderModal({
 
     function handleAfterPrint(event: { wasCancelled: boolean }) {
         if (event.wasCancelled) {
-            console.log('A impressão foi cancelada');
+            console.error('A impressão foi cancelada');
         } else {
-            console.log('A impressão foi concluída com sucesso');
+            console.error('A impressão foi concluída com sucesso');
         }
     }
     return (
@@ -147,7 +182,8 @@ export function OrderModal({
                             className="bg-white shadow-bd w-[350px] md:w-[550px] fixed top-1/2 right-1/2 translate-x-1/2 -translate-y-1/2  rounded-md p-6"
                         >
                             <Dialog.Title className="text-xl font-bold text-center">
-                                Next Eats
+                                {' '}
+                                Next Eats{' '}
                             </Dialog.Title>
 
                             <Dialog.Description
@@ -172,64 +208,74 @@ export function OrderModal({
                                 </p>
                             </div>
 
-                            <Dialog.Description
-                                className={`${descriptionsStyles}`}
-                            >
-                                Dados do cliente
-                            </Dialog.Description>
+                            {orderFound?.clients ? (
+                                <>
+                                    <Dialog.Description
+                                        className={`${descriptionsStyles}`}
+                                    >
+                                        Dados do cliente
+                                    </Dialog.Description>
 
-                            <div>
-                                <p className={`${textStyles}`}>
-                                    &nbsp; Nome:{' '}
-                                    <strong>
-                                        {' '}
-                                        {orderFound?.clients?.name}{' '}
-                                    </strong>
-                                    &nbsp;
-                                </p>
-                                <p className={`${textStyles}`}>
-                                    &nbsp; Telefone:{' '}
-                                    <strong>
-                                        {' '}
-                                        {
-                                            orderFound?.clients.contacts?.phone
-                                        }{' '}
-                                    </strong>
-                                    &nbsp;
-                                </p>
-                                <p className={`${textStyles}`}>
-                                    &nbsp; Email:{' '}
-                                    <strong>
-                                        {' '}
-                                        {
-                                            orderFound?.clients.contacts?.email
-                                        }{' '}
-                                    </strong>
-                                    &nbsp;
-                                </p>
-                                <p className={`${textStyles}`}>
-                                    &nbsp; Endereço:&nbsp;
-                                    <strong>
-                                        &nbsp;
-                                        {address.logradouro},{' '}
-                                        {orderFound?.clients.addresses?.number}
-                                        &nbsp;
-                                    </strong>
-                                    &nbsp;
-                                </p>
-                                <p className={`${textStyles}`}>
-                                    &nbsp; Bairro:{' '}
-                                    <strong> {address.bairro} </strong>&nbsp;
-                                </p>
-                                <p className={`${textStyles}`}>
-                                    &nbsp; Cidade:&nbsp;
-                                    <strong>
-                                        &nbsp;
-                                        {address.localidade}, {address.uf}&nbsp;
-                                    </strong>
-                                    &nbsp;
-                                </p>
-                            </div>
+                                    <div>
+                                        <p className={`${textStyles}`}>
+                                            &nbsp; Nome:{' '}
+                                            <strong>
+                                                {orderFound?.clients?.name}
+                                            </strong>
+                                            &nbsp;
+                                        </p>
+                                        <p className={`${textStyles}`}>
+                                            &nbsp; Telefone:{' '}
+                                            <strong>
+                                                {' '}
+                                                {
+                                                    orderFound?.clients.contacts
+                                                        ?.phone
+                                                }{' '}
+                                            </strong>
+                                            &nbsp;
+                                        </p>
+                                        <p className={`${textStyles}`}>
+                                            &nbsp; Email:{' '}
+                                            <strong>
+                                                {' '}
+                                                {
+                                                    orderFound?.clients.contacts
+                                                        ?.email
+                                                }{' '}
+                                            </strong>
+                                            &nbsp;
+                                        </p>
+                                        <p className={`${textStyles}`}>
+                                            &nbsp; Endereço:&nbsp;
+                                            <strong>
+                                                &nbsp;
+                                                {address.logradouro},{' '}
+                                                {
+                                                    orderFound?.clients
+                                                        .addresses?.number
+                                                }
+                                                &nbsp;
+                                            </strong>
+                                            &nbsp;
+                                        </p>
+                                        <p className={`${textStyles}`}>
+                                            &nbsp; Bairro:{' '}
+                                            <strong> {address.bairro} </strong>
+                                            &nbsp;
+                                        </p>
+                                        <p className={`${textStyles}`}>
+                                            &nbsp; Cidade:&nbsp;
+                                            <strong>
+                                                &nbsp;
+                                                {address.localidade},{' '}
+                                                {address.uf}&nbsp;
+                                            </strong>
+                                            &nbsp;
+                                        </p>
+                                    </div>
+                                </>
+                            ) : null}
 
                             <Dialog.Description
                                 className={`${descriptionsStyles}`}
@@ -252,14 +298,14 @@ export function OrderModal({
                                             {' '}
                                             Preço{' '}
                                         </td>
-                                        {thereAnyObservation ? (
-                                            <td
-                                                className={`${textStyles} w-24 hideButtonToPrint`}
-                                            >
-                                                {' '}
-                                                Obs.{' '}
-                                            </td>
-                                        ) : null}
+                                        <td
+                                            className={`${textStyles} w-24 hideButtonToPrint`}
+                                        >
+                                            {' '}
+                                            Obs.{' '}
+                                        </td>
+                                        {/* {thereAnyObservation ? (
+                                        ) : null} */}
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -293,21 +339,23 @@ export function OrderModal({
                                                         R$ {product.price}{' '}
                                                     </strong>
                                                 </td>
-                                                {orderProductByProductId?.observation ? (
-                                                    <td
-                                                        className={`${textStyles} hideButtonToPrint`}
-                                                    >
-                                                        <strong>
-                                                            {' '}
-                                                            <DropdownMenuObservation
-                                                                observation={
-                                                                    orderProductByProductId.observation
-                                                                }
-                                                            />{' '}
-                                                        </strong>
-                                                        &nbsp;
-                                                    </td>
-                                                ) : null}
+                                                <td
+                                                    className={`${textStyles} hideButtonToPrint`}
+                                                >
+                                                    <strong>
+                                                        <DropdownMenuObservation
+                                                            orderProduct={
+                                                                orderProductByProductId!
+                                                            }
+                                                            additionals={
+                                                                additionals
+                                                            }
+                                                        />
+                                                    </strong>
+                                                    &nbsp;
+                                                </td>
+                                                {/* {orderProductByProductId?.observation ? (
+                                                ): null} */}
                                             </tr>
                                         );
                                     })}
@@ -322,28 +370,43 @@ export function OrderModal({
                                     <span className={`${textStyles}`}>
                                         <strong>
                                             {' '}
-                                            R$ {totalPriceOfProducts}{' '}
+                                            R${' '}
+                                            {totalPriceOfProducts +
+                                                totalAdditionalPrice}{' '}
                                         </strong>
                                     </span>
                                 </p>
-                                <p className="grid grid-cols-2 items-center gap-20">
-                                    <span className={`${textStyles} `}>
-                                        Taxa de entrega:
-                                    </span>
-                                    <span className={`${textStyles}`}>
-                                        <strong> R$ {deliveryPrice} </strong>
-                                    </span>
-                                </p>
+                                {orderFound?.delivery_fees ? (
+                                    <p className="grid grid-cols-2 items-center gap-20">
+                                        <span className={`${textStyles} `}>
+                                            Taxa de entrega:
+                                        </span>
+                                        <span className={`${textStyles}`}>
+                                            <strong>
+                                                {' '}
+                                                R${' '}
+                                                {
+                                                    orderFound?.delivery_fees
+                                                        .fee
+                                                }{' '}
+                                            </strong>
+                                        </span>
+                                    </p>
+                                ) : null}
+
                                 <p className="grid grid-cols-2 items-center gap-20">
                                     <span className={`${textStyles}`}>
                                         Total a pagar:{' '}
                                     </span>
                                     <span className={`${textStyles} w-`}>
                                         <strong>
-                                            {' '}
                                             R${' '}
                                             {totalPriceOfProducts +
-                                                deliveryPrice}{' '}
+                                                (orderFound?.delivery_fees
+                                                    ? orderFound.delivery_fees
+                                                          .fee
+                                                    : 0) +
+                                                totalAdditionalPrice}{' '}
                                         </strong>
                                     </span>
                                 </p>

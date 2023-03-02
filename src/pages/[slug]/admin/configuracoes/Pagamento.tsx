@@ -1,83 +1,112 @@
 import { AdminContext } from '@/src/contexts/adminContext';
+import { supabase } from '@/src/server/api';
 import { useContext, useEffect, useState } from 'react';
-import { iPaymentMethod } from '../../../../types/types';
-import {
-    getPaymentMethodsAvailable,
-    getPaymentMethodsForThisRestaurant,
-} from './../../../../server/api';
 
-export default function Payment() {
-    const restaurant = useContext(AdminContext).restaurant;
+interface PaymentMethod {
+    id: number;
+    name: string;
+}
 
-    const [paymentMethodsAvailable, setPaymentMethodsAvailable] =
-        useState<iPaymentMethod['data'][]>();
+interface Props {
+    restaurantId: number;
+}
 
-    const [
-        paymentMethodsForThisRestaurant,
-        setPaymentMethodsForThisRestaurant,
-    ] = useState<any>();
+export default function PaymentMethods() {
+    const { restaurant } = useContext(AdminContext);
+
+    const [paymentMethods, setPaymentMethods] = useState<PaymentMethod[]>([]);
+    const [enabledPaymentMethods, setEnabledPaymentMethods] = useState<
+        number[]
+    >([]);
 
     useEffect(() => {
-        async function getData() {
-            await getPaymentMethodsAvailable().then((data) => {
-                if (data) {
-                    setPaymentMethodsAvailable(data);
-                }
+        async function fetchPaymentMethods() {
+            const { data, error } = await supabase
+                .from('payment_methods')
+                .select('*');
+            if (error) console.error(error);
+            else setPaymentMethods(data);
+        }
+
+        async function fetchEnabledPaymentMethods() {
+            const { data, error } = await supabase
+                .from('payment_methods_restaurants')
+                .select('payment_method_id')
+                .eq('restaurant_id', restaurant!.id);
+            if (error) console.error(error);
+            else {
+                const enabledMethods = data.map(
+                    (item: { payment_method_id: number }) =>
+                        item.payment_method_id
+                );
+                setEnabledPaymentMethods(enabledMethods);
+            }
+        }
+
+        fetchPaymentMethods();
+        fetchEnabledPaymentMethods();
+    }, [restaurant]);
+
+    if (!restaurant) {
+        return null;
+    }
+
+    async function handleTogglePaymentMethod(
+        paymentMethodId: number,
+        enabled: boolean
+    ) {
+        const { error } = await supabase
+            .from('payment_methods_restaurants')
+            .upsert({
+                payment_method_id: paymentMethodId,
+                restaurant_id: restaurant!.id,
+                enabled,
+            })
+            .match({
+                restaurant_id: restaurant!.id,
+                payment_method_id: paymentMethodId,
             });
+        if (error) {
+            console.error(error);
+        } else {
+            if (enabled) {
+                setEnabledPaymentMethods([
+                    ...enabledPaymentMethods,
+                    paymentMethodId,
+                ]);
+            } else {
+                setEnabledPaymentMethods(
+                    enabledPaymentMethods.filter((id) => id !== paymentMethodId)
+                );
+            }
         }
-
-        getData();
-    }, []);
-
-    useEffect(() => {
-        async function getData() {
-            await getPaymentMethodsForThisRestaurant(restaurant!.id).then(
-                (data) => {
-                    if (data) {
-                        setPaymentMethodsForThisRestaurant(data.data);
-                        console.log(data.data);
-                    }
-                }
-            );
-        }
-
-        getData();
-    }, []);
+    }
 
     return (
-        <div>
-            <h3 className="mb-4 font-semibold">Métodos de Pagamento Ativos</h3>
-            {paymentMethodsAvailable && (
-                <div className="flex flex-col gap-y-3">
-                    {paymentMethodsAvailable.map(
-                        (
-                            paymentMethod: iPaymentMethod['data'],
-                            index: number
-                        ) => {
-                            return (
-                                <div key={index}>
-                                    <div className="ml-4 relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
-                                        <input
-                                            type="checkbox"
-                                            name={paymentMethod.name}
-                                            id={paymentMethod.name}
-                                            className="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer"
-                                            defaultValue={paymentMethod.name}
-                                        />
-                                        <label
-                                            htmlFor={paymentMethod.name}
-                                            className="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"
-                                        ></label>
-                                    </div>
-                                    <span className="uppercase">
-                                        {paymentMethod.name}
-                                    </span>
-                                </div>
-                            );
+        <div className="flex flex-col">
+            {paymentMethods.map((paymentMethod) => (
+                <div key={paymentMethod.id} className="flex items-center mt-2">
+                    <input
+                        type="checkbox"
+                        id={`paymentMethod-${paymentMethod.id}`}
+                        onChange={(e) =>
+                            handleTogglePaymentMethod(
+                                paymentMethod.id,
+                                e.target.checked
+                            )
                         }
-                    )}
+                        checked={enabledPaymentMethods.includes(
+                            paymentMethod.id
+                        )}
+                    />
+                    <label
+                        htmlFor={`paymentMethod-${paymentMethod.id}`}
+                        className="ml-2"
+                    >
+                        {paymentMethod.name}
+                    </label>
                 </div>
-            )}
+            ))}
         </div>
     );
 }

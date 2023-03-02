@@ -14,12 +14,17 @@ interface iTableConfigModalProps {
 }
 
 export default function TableConfigModal({ }: iTableConfigModalProps) {
-    const { isOpenedTableConfigModal, setIsOpenedTableConfigModal, openedTableModal, updateTable, deleteTable } = useContext(TableContext)
+    const { isOpenedTableConfigModal, setIsOpenedTableConfigModal, openedTableModal, updateTable, deleteTable, tableData } = useContext(TableContext)
     const [tableStatus, setTableStatus] = useState('')
-
     const statusDefaultValue = openedTableModal?.is_active ? 'is_active' : openedTableModal?.is_occupied ? 'is_occupied' : "free"
 
     async function handleUpdateTable() {
+
+        if (tableData.productsInProductionData !== undefined && tableData.productsInProductionData.length > 0) {
+            alert("A mesa só pode ser fechada ou inativada se todos os pedidos estiverem sido entregue.")
+            return
+        }
+
         switch (tableStatus) {
             case 'is_active':
                 await updateTable(true, false, openedTableModal?.id!)
@@ -35,6 +40,10 @@ export default function TableConfigModal({ }: iTableConfigModalProps) {
     }
 
     async function handleDeleteTable() {
+        if (tableData.productsInProductionData !== undefined && tableData.productsInProductionData.length > 0) {
+            alert("A mesa só pode ser excluída se todos os pedidos estiverem sido entregue.")
+            return
+        }
         await deleteTable()
     }
 
@@ -46,10 +55,10 @@ export default function TableConfigModal({ }: iTableConfigModalProps) {
                 </Dialog.Trigger>
                 <Dialog.Portal>
                     <Dialog.Overlay onClick={() => setIsOpenedTableConfigModal(false)} className="w-screen h-screen flex items-center justify-center bg-black fixed inset-0 z-20 opacity-40 transition-all duration-300 ease-in-out" />
-                    <Dialog.Content className={"fixed top-[20vh] right-1/2 z-20 translate-x-1/2 rounded-lg w-[350px] sm:w-[600px] h-[] bg-white shadow-md p-6"} >
+                    <Dialog.Content className={"fixed top-[14vh] right-1/2 z-20 translate-x-1/2 rounded-lg w-[350px] sm:w-[600px] h-[] bg-white shadow-md p-6"} >
                         <Dialog.Title className="flex items-center justify-between text-base w-full text-center font-semibold mb-5 mt-4">
                             <div className="flex items-center justify-start gap-3">
-                                <FaHome className="text-gray-350" size={32} /> <span className="text-lg font-bold "> Mesa id </span>
+                                <FaHome className="text-gray-350" size={32} /> <span className="text-lg font-bold "> {openedTableModal!.name} </span>
                             </div>
                             <CardapioDigitalButton name="Excluir" h="h-9" w="w-28" onClick={() => handleDeleteTable()} />
                         </Dialog.Title>
@@ -57,7 +66,7 @@ export default function TableConfigModal({ }: iTableConfigModalProps) {
                         <div className=" flex flex-col pl-10 gap-4 ">
                             <h2 className="text-lg font-semibold"> Status da Mesa  </h2>
                             <RadioGroup.Root
-                                className="flex gap-10"
+                                className="flex flex-col sm:flex-row gap-3 sm:gap-10 "
                                 defaultValue={statusDefaultValue}
                                 aria-label="View density"
                                 onValueChange={(value) => setTableStatus(value)}

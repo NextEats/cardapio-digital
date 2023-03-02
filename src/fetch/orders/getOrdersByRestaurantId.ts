@@ -36,6 +36,12 @@ export async function getOrdersByRestaurantIdFetch(
     order_status (
         id,
         status_name
+    ),
+    delivery_fees (
+        id,
+        start_km,
+        end_km,
+        fee
     )
     `
     )

@@ -44,6 +44,7 @@ export default function ContactInfoForm({ setCurrentStep }: any) {
             restaurant,
             payment_method,
         });
+        setCurrentStep('thank_you');
     };
 
     const [activePaymentMethods, setActivePaymentMethods] = useState<any>();

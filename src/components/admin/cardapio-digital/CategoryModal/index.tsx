@@ -4,9 +4,7 @@ import {
   Dispatch,
   FormEvent,
   SetStateAction,
-  useCallback,
   useEffect,
-  useMemo,
 } from "react";
 import { useForm } from "react-hook-form";
 import { FiX } from "react-icons/fi";
@@ -16,6 +14,7 @@ import { iInsertProductCategory, iProducts, iRestaurantWithFKData } from "@/src/
 
 const newCategoryFormValidationSchema = zod.object({
   productCategory: zod.string(),
+  categoryOrder: zod.number(),
 });
 
 type NewCategoryFormData = zod.infer<typeof newCategoryFormValidationSchema>;
@@ -64,6 +63,7 @@ export function CategoryModal({
       resolver: zodResolver(newCategoryFormValidationSchema),
       defaultValues: {
         productCategory: "",
+        categoryOrder: 0,
       },
     }
   );
@@ -80,13 +80,10 @@ export function CategoryModal({
 
   async function updateCategory() {
     const productCategory = getValues("productCategory");
-    await supabase
-      .from("product_categories")
-      .update({
-        name: productCategory,
-        restaurant_id: restaurant.id,
-      })
-      .eq("id", editCategory.categoryData.id);
+    await supabase.from("product_categories").update({
+      name: productCategory,
+      restaurant_id: restaurant.id,
+    }).eq("id", editCategory.categoryData.id);
     reset();
     setModalIsOpen(false);
     setEditCategory({
@@ -124,10 +121,8 @@ export function CategoryModal({
           ></div>
           <div
             className={`fixed top-1/3 right-1/2 z-20 translate-x-1/2 rounded-lg w-[350px] sm:w-[500px] h-[] bg-white shadow-md p-6
-                    ${modalIsOpen || editCategory.isEditing
-                ? "opacity-100 transition-all duration-300 ease-in-out"
-                : " opacity-0 pointer-events-none duration-[0s]"
-              }
+                    ${modalIsOpen || editCategory.isEditing ? "opacity-100 transition-all duration-300 ease-in-out"
+                : " opacity-0 pointer-events-none duration-[0s]"}
                     `}
           >
             <form className="w-full">
@@ -139,6 +134,12 @@ export function CategoryModal({
                 type="text"
                 {...register("productCategory")}
                 placeholder="Dê um nome para a categoria"
+                className="w-full h-9 rounded text-base font-medium text-gray-600 placeholder:text-gray-400 outline-none border border-gray-400 px-2 mb-10 "
+              />
+              <input
+                type="number"
+                {...register("categoryOrder")}
+                placeholder="Ordem da categoria Ex.: 2"
                 className="w-full h-9 rounded text-base font-medium text-gray-600 placeholder:text-gray-400 outline-none border border-gray-400 px-2 mb-10 "
               />
 

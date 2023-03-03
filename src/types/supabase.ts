@@ -295,19 +295,19 @@ export interface Database {
           created_at: string | null
           email: string | null
           id: number
-          phone: number | null
+          phone: string | null
         }
         Insert: {
           created_at?: string | null
           email?: string | null
           id?: number
-          phone?: number | null
+          phone?: string | null
         }
         Update: {
           created_at?: string | null
           email?: string | null
           id?: number
-          phone?: number | null
+          phone?: string | null
         }
       }
       delivery_fees: {
@@ -559,18 +559,21 @@ export interface Database {
       }
       product_categories: {
         Row: {
+          category_order: number
           created_at: string | null
           id: number
           name: string
           restaurant_id: number
         }
         Insert: {
+          category_order: number
           created_at?: string | null
           id?: number
           name: string
           restaurant_id: number
         }
         Update: {
+          category_order?: number
           created_at?: string | null
           id?: number
           name?: string

@@ -18,6 +18,7 @@ export const defaultValues = {
     category: {
         id: 0,
         name: '',
+        category_order: 0,
         restaurant_id: 0,
     },
 

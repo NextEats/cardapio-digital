@@ -67,11 +67,7 @@ export default function Categories({
                       onClick={() =>
                         setEditCategory({
                           isEditing: true,
-                          categoryData: {
-                            name: category.name,
-                            restaurant_id: category.restaurant_id,
-                            id: category.id,
-                          },
+                          categoryData: category,
                         })
                       }
                       className="w-7 h-6 flex items-center justify-center rounded-tr-md rounded-br-md hover:scale-110 transition-all ease-in-out bg-blue-500 "
@@ -85,6 +81,6 @@ export default function Categories({
           })}
         </tbody>
       </table>
-    </div>
+    </div >
   );
 }

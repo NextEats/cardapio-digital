@@ -104,6 +104,7 @@ export default function CardapioDigital({
         isEditing: false,
         categoryData: {
             name: '',
+            category_order: 0,
             restaurant_id: 0,
             id: 0,
         },
@@ -222,6 +223,7 @@ export default function CardapioDigital({
                             />
                         </div>
                         <CategoryModal
+                            productCategories={productCategories}
                             modalIsOpen={modalIsOpen}
                             products={products}
                             setViewCategory={setViewCategory}

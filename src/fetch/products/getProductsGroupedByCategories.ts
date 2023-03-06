@@ -7,6 +7,7 @@ export async function getProductsGroupedByCategories(restaurantId: number) {
         return;
     }
 
+
     const products = await getProducts(restaurantId);
     if (!products) {
         return;
@@ -19,7 +20,7 @@ async function getCategoryMap(restaurantId: number) {
     try {
         const res = await supabase
             .from('product_categories')
-            .select('id, name')
+            .select('id, name, category_order')
             .eq('restaurant_id', restaurantId);
         if (!res.data) {
             return;
@@ -29,6 +30,7 @@ async function getCategoryMap(restaurantId: number) {
         for (const category of res.data) {
             categoryMap.set(category.id, category.name);
         }
+
         return categoryMap;
     } catch (error: any) {
         throw new error(error);

@@ -54,6 +54,8 @@ interface iAdminHomePageProps {
     restaurant: iRestaurantWithFKData;
 }
 
+
+// const audio = new Audio('/alertAudio.mp3');
 export const getServerSideProps: GetServerSideProps = async (context) => {
     const supabaseServer = createServerSupabaseClient(context);
 
@@ -154,42 +156,11 @@ export default function AdminHomepage({
         {}
     );
 
-    const [ordersState, ordersDispatch] = useReducer<
-        (state: iStatusReducer, action: any) => iStatusReducer
-    >(statusReducer, {
+    const [ordersState, ordersDispatch] = useReducer<(state: iStatusReducer, action: any) => iStatusReducer>(statusReducer, {
         orders: orders,
         isOpenOrderModal: false,
         orderId: 0,
     });
-
-    // function billing() {
-    //     let ordersProductFiltered;
-    //     if (ordersGroupedByOrderStatus['entregue']) {
-    //         ordersProductFiltered = ordersProducts.filter((op) =>
-    //             ordersGroupedByOrderStatus['entregue'].some(
-    //                 (o) => o.id === op.order_id
-    //             )
-    //         );
-
-    //         const productIds = ordersProductFiltered.map(
-    //             (ordersProduct) => ordersProduct.product_id
-    //         );
-    //         const selectedProduct = productIds.map(
-    //             (productId) =>
-    //                 products[
-    //                 products.findIndex(
-    //                     (product) => productId === product.id
-    //                 )
-    //                 ]
-    //         );
-    //         return selectedProduct.reduce(
-    //             (acc, product) => acc + product?.price!,
-    //             0
-    //         );
-    //     } else {
-    //         return 0;
-    //     }
-    // }
 
     function billing() {
         let ordersProductFiltered;
@@ -206,9 +177,9 @@ export default function AdminHomepage({
             const selectedProduct = productIds.map(
                 (productId) =>
                     products[
-                        products.findIndex(
-                            (product) => productId === product.id
-                        )
+                    products.findIndex(
+                        (product) => productId === product.id
+                    )
                     ]
             );
 
@@ -239,6 +210,22 @@ export default function AdminHomepage({
             return 0;
         }
     }
+
+
+    useEffect(() => {
+
+        // if (!ordersGroupedByOrderStatus['em análise']) return
+        // audio.play();
+        // console.log(audio.paused)
+        // if (audio.paused && audio.currentTime === 0) {
+        //     console.log('O áudio ainda não começou a ser reproduzido.');
+        // }
+        // else {
+        //     console.log('O áudio está sendo reproduzido.');
+        // }
+
+    }, [ordersGroupedByOrderStatus])
+
 
     useMemo(() => {
         async function newOrder() {
@@ -298,6 +285,7 @@ export default function AdminHomepage({
     return (
         <AdminWrapper>
             <div className="flex flex-col gap-8">
+                <button className='play flex-none' hidden></button>
                 <CashBoxButtons
                     cashBoxState={cashBoxState}
                     restaurantId={restaurant.id}

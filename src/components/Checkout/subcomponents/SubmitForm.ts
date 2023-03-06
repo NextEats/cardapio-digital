@@ -42,7 +42,7 @@ export async function SubmitForm({
 
         const { data: contactData } = await supabase
             .from('contacts')
-            .insert({ phone: Number(whatsapp) })
+            .insert({ phone: whatsapp })
             .select('*');
 
         const contact = contactData![0] as unknown as iContact['data'];

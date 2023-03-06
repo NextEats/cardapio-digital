@@ -18,6 +18,8 @@ import { DropdownMenuObservation } from '../DropDownMenuObservation';
 import ReactToPrint from 'react-to-print';
 import { Br, Cut, Line, Printer, Text, Row, render } from 'react-thermal-printer';
 
+
+
 interface iOrderModalProps {
     ordersState: iStatusReducer;
     ordersDispatch: Dispatch<any>;
@@ -170,6 +172,9 @@ export function OrderModal({
         }
     }
 
+
+
+
     // const receipt = (
     //     <Printer type="epson" width={42} characterSet="korea">
     //         <Text size={{ width: 2, height: 2 }}>9,500원</Text>
@@ -203,6 +208,11 @@ export function OrderModal({
     // );
 
     async function handleThermalPrint() {
+
+        const print = await api.post('api/print')
+        console.log(print)
+        // const url = 'https://web.whatsapp.com/send?phone=87998199329&text=edu&app_absent=0'
+        // window.open(url)
 
         // try {
         //     const data: Uint8Array = await render(receipt);

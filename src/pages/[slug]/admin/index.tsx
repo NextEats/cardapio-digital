@@ -54,8 +54,6 @@ interface iAdminHomePageProps {
     restaurant: iRestaurantWithFKData;
 }
 
-
-// const audio = new Audio('/alertAudio.mp3');
 export const getServerSideProps: GetServerSideProps = async (context) => {
     const supabaseServer = createServerSupabaseClient(context);
 
@@ -212,25 +210,21 @@ export default function AdminHomepage({
     }
 
 
-    useEffect(() => {
+    // const [audio] = useState(new Audio('/alertAudio.mp3'));
+    // const [newPlay, setNewPlay] = useState(false);
 
-        // if (!ordersGroupedByOrderStatus['em análise']) return
-        // audio.play();
-        // console.log(audio.paused)
-        // if (audio.paused && audio.currentTime === 0) {
-        //     console.log('O áudio ainda não começou a ser reproduzido.');
-        // }
-        // else {
-        //     console.log('O áudio está sendo reproduzido.');
-        // }
-
-    }, [ordersGroupedByOrderStatus])
-
+    // useEffect(() => {
+    //     if (newPlay) {
+    //         audio.play();
+    //         setNewPlay(false);
+    //     }
+    // }, [newPlay, audio]);
 
     useMemo(() => {
         async function newOrder() {
             const getNewOrder = await api.get(`/api/orders/${restaurant.id}`);
             // TODO1 Enviar mensagem de "seu pedido foi recebido com sucesso"
+            // setNewPlay(false);
             setOrders(getNewOrder.data);
         }
         const channel = supabase

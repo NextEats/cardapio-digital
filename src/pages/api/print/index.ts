@@ -4,16 +4,16 @@ import { ThermalPrinter, PrinterTypes, CharacterSet, BreakLine } from 'node-ther
 import Printer from 'node-thermal-printer';
 
 let printer = new ThermalPrinter({
-    type: PrinterTypes.STAR,                                  // Printer type: 'star' or 'epson'
-    interface: 'tcp://xxx.xxx.xxx.xxx',                       // Printer interface                      // Printer character set - default: SLOVENIA
-    removeSpecialCharacters: false,                           // Removes special characters - default: false
-    lineCharacter: "=",                                       // Set character for lines - default: "-"
-    options: {                                                 // Additional options
-        timeout: 5000                                           // Connection timeout (ms) [applicable only for network printers] - default: 3000
+    type: undefined,
+    interface: 'tcp://192.168.1.100:9100',
+    removeSpecialCharacters: false,
+    lineCharacter: "=",
+    options: {
+        timeout: 5000
     }
 });
 
-export default async function selects(req: NextApiRequest, res: NextApiResponse) {
+export default async function print(req: NextApiRequest, res: NextApiResponse) {
     const { method, query, body } = req
     const restaurant_id = Number(query.restaurant_id)
     const { id, name } = body

@@ -4,13 +4,14 @@ import { ThermalPrinter, PrinterTypes, CharacterSet, BreakLine } from 'node-ther
 
 let printer = new ThermalPrinter({
     type: undefined,
-    interface: 'tcp://192.168.1.100:9100',
+    interface: '/dev/usb/lp0',
     removeSpecialCharacters: false,
     lineCharacter: "=",
     options: {
         timeout: 5000
     }
 });
+
 
 export default async function print(req: NextApiRequest, res: NextApiResponse) {
     const { method, query, body } = req

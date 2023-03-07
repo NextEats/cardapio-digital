@@ -217,7 +217,7 @@ export function OrderModal({
 
 
         const data: Uint8Array = await render(receipt);
-
+        // @ts-ignore
         const port = await window.navigator.serial.requestPort();
         await port.open({ baudRate: 9600 });
         const writer = port.writable?.getWriter();

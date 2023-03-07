@@ -3,7 +3,8 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { ThermalPrinter, PrinterTypes, CharacterSet, BreakLine } from 'node-thermal-printer';
 
 let printer = new ThermalPrinter({
-    interface: 'tcp://xxx.xxx.xxx.xxx',
+    type: undefined,
+    interface: 'tcp://192.168.1.100:9100',
     removeSpecialCharacters: false,
     lineCharacter: "=",
     options: {
@@ -11,7 +12,7 @@ let printer = new ThermalPrinter({
     }
 });
 
-export default async function selects(req: NextApiRequest, res: NextApiResponse) {
+export default async function print(req: NextApiRequest, res: NextApiResponse) {
     const { method, query, body } = req
     const restaurant_id = Number(query.restaurant_id)
     const { id, name } = body

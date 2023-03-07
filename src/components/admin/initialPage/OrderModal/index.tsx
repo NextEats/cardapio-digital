@@ -185,24 +185,24 @@ export function OrderModal({
 
     async function handleThermalPrint() {
 
-        // const print = await api.post('api/print')
-        // console.log(print)
-        // console.log("print")
+        const print = await api.post('api/print')
+        console.log(print)
+        console.log("print")
         // const url = 'https://web.whatsapp.com/send?phone=87998199329&text=edu&app_absent=0'
         // window.open(url)
 
-        const data: Uint8Array = await render(receipt);
+        // const data: Uint8Array = await render(receipt);
 
 
         // @ts-ignore
-        const port = await window.navigator.serial.requestPort();
-        await port.open({ baudRate: 9600 });
-        const writer = port.writable?.getWriter();
-        if (writer != null) {
-            await writer.write(data);
-            writer.releaseLock();
-        }
-        console.log(data);
+        // const port = await window.navigator.serial.requestPort();
+        // await port.open({ baudRate: 9600 });
+        // const writer = port.writable?.getWriter();
+        // if (writer != null) {
+        //     await writer.write(data);
+        //     writer.releaseLock();
+        // }
+        // console.log(data);
     }
 
     return (

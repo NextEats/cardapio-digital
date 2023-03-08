@@ -17,6 +17,19 @@ export async function SubmitForm({
     payment_method,
 }: any) {
     try {
+        const { data: currentCashBoxData } = await supabase
+            .from('cash_boxes')
+            .select('*')
+            .match({ restaurant_id: restaurant!.id, is_open: true });
+
+        const currentCashBox =
+            currentCashBoxData![0] as unknown as iCashBox['data'];
+
+        if (!currentCashBox) {
+            alert('O Pedido só pode ser feito se o caixa estiver aberto.')
+            return
+        };
+
         const { data: addressData } = await supabase
             .from('addresses')
             .insert({
@@ -29,7 +42,7 @@ export async function SubmitForm({
 
         const { data: contactData } = await supabase
             .from('contacts')
-            .insert({ phone: Number(whatsapp) })
+            .insert({ phone: whatsapp })
             .select('*');
 
         const contact = contactData![0] as unknown as iContact['data'];
@@ -45,13 +58,6 @@ export async function SubmitForm({
 
         const client = clientData![0] as unknown as iClient['data'];
 
-        const { data: currentCashBoxData } = await supabase
-            .from('cash_boxes')
-            .select('*')
-            .match({ restaurant_id: restaurant!.id, is_open: true });
-
-        const currentCashBox =
-            currentCashBoxData![0] as unknown as iCashBox['data'];
 
         const { data: orderData } = await supabase
             .from('orders')

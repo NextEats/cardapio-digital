@@ -8,9 +8,12 @@ import useAdditionals from '@/src/hooks/useAdditionals';
 import Additionals from './components/Additionals';
 import ProductOptions from './components/ProductOptions';
 import SubmitButtons from './components/SubmitButtons';
+import { supabase } from '@/src/server/api';
+import { iCashBox } from '@/src/types/types';
 
 export default function ProductModal() {
     const selects = useContext(DigitalMenuContext).selects;
+    const restaurant = useContext(DigitalMenuContext).restaurant;
 
     const { selectedProduct, productReducer } = useContext(DigitalMenuContext);
 
@@ -41,8 +44,21 @@ export default function ProductModal() {
         body?.classList.remove('overflow-hidden');
     }
 
-    function handleSubmit(e: MouseEvent) {
+    async function handleSubmit(e: MouseEvent) {
         e.preventDefault();
+
+        const { data: currentCashBoxData } = await supabase
+            .from('cash_boxes')
+            .select('*')
+            .match({ restaurant_id: restaurant!.id, is_open: true });
+
+        const currentCashBox =
+            currentCashBoxData![0] as unknown as iCashBox['data'];
+
+        if (!currentCashBox) {
+            alert('O Pedido só pode ser feito se o caixa estiver aberto.')
+            return
+        };
 
         const additionals_data = additionalsState.quantityAdditionals.reduce(
             (acc: { quantity: number; additional_id: number }[], item) => {

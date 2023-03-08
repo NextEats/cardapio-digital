@@ -1,23 +1,26 @@
 import { supabase } from '@/src/server/api';
 import {
     iInsertProductCategory,
+    iProductCategories,
     iProducts,
     iRestaurantWithFKData,
 } from '@/src/types/types';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Image from 'next/image';
-import { Dispatch, FormEvent, SetStateAction, useEffect } from 'react';
+import { Dispatch, FormEvent, SetStateAction, useEffect, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { FiX } from 'react-icons/fi';
 import * as zod from 'zod';
 
 const newCategoryFormValidationSchema = zod.object({
     productCategory: zod.string(),
+    categoryOrder: zod.number(),
 });
 
 type NewCategoryFormData = zod.infer<typeof newCategoryFormValidationSchema>;
 
 interface iCategoryModalProps {
+    productCategories: iProductCategories['data'];
     modalIsOpen: boolean;
     setModalIsOpen: Dispatch<SetStateAction<boolean>>;
     editCategory: {
@@ -48,6 +51,7 @@ interface iCategoryModalProps {
 
 export function CategoryModal({
     modalIsOpen,
+    productCategories,
     setModalIsOpen,
     editCategory,
     setEditCategory,
@@ -56,30 +60,75 @@ export function CategoryModal({
     setViewCategory,
     restaurant,
 }: iCategoryModalProps) {
-    const { register, reset, getValues, setValue } =
+    const { register, reset, getValues, setValue, watch } =
         useForm<NewCategoryFormData>({
             resolver: zodResolver(newCategoryFormValidationSchema),
             defaultValues: {
                 productCategory: '',
+                categoryOrder: 0,
             },
         });
+    const categoryOrdervalue = watch('categoryOrder');
 
     async function handleNewCategory() {
         const productCategory = getValues('productCategory');
+        if (!productCategory) {
+            alert('O nome da categoria não pode ser vazio.');
+            return;
+        }
+        if (categoryOrdervalue <= 0) {
+            alert(
+                'Insira somente valores acima de 0 para a ordem da categoria.'
+            );
+            return;
+        }
+        if (
+            productCategories.some(
+                (c) => c.category_order === categoryOrdervalue
+            )
+        ) {
+            alert(
+                'Já existe uma categoria nessa posição, por favor escolha outro número.'
+            );
+            return;
+        }
         await supabase.from('product_categories').insert({
             name: productCategory,
+            category_order: categoryOrdervalue,
             restaurant_id: restaurant.id,
         });
         reset();
         setModalIsOpen(false);
+        window.location.reload();
     }
 
     async function updateCategory() {
         const productCategory = getValues('productCategory');
+        if (!productCategory) {
+            alert('O nome da categoria não pode ser vazio.');
+            return;
+        }
+        if (categoryOrdervalue <= 0) {
+            alert(
+                'Insira somente valores acima de 0 para a ordem da categoria.'
+            );
+            return;
+        }
+        if (
+            productCategories.some(
+                (c) => c.category_order === categoryOrdervalue
+            )
+        ) {
+            alert(
+                'Já existe uma categoria nessa posição, por favor escolha outro número.'
+            );
+            return;
+        }
         await supabase
             .from('product_categories')
             .update({
                 name: productCategory,
+                category_order: categoryOrdervalue,
                 restaurant_id: restaurant.id,
             })
             .eq('id', editCategory.categoryData.id);
@@ -87,8 +136,9 @@ export function CategoryModal({
         setModalIsOpen(false);
         setEditCategory({
             isEditing: false,
-            categoryData: { name: '', restaurant_id: 0 },
+            categoryData: { category_order: 0, name: '', restaurant_id: 0 },
         });
+        window.location.reload();
     }
 
     function cancel(e: FormEvent) {
@@ -97,14 +147,36 @@ export function CategoryModal({
         setModalIsOpen(false);
         setEditCategory({
             isEditing: false,
-            categoryData: { name: '', restaurant_id: 0 },
+            categoryData: { category_order: 0, name: '', restaurant_id: 0 },
         });
     }
 
     useEffect(() => {
         if (editCategory.isEditing)
-            setValue('productCategory', editCategory.categoryData.name);
-    }, [editCategory.isEditing, setValue, editCategory.categoryData.name]);
+            console.log(
+                editCategory.categoryData.category_order,
+                editCategory.categoryData.name
+            );
+        setValue('productCategory', editCategory.categoryData.name);
+        setValue('categoryOrder', editCategory.categoryData.category_order);
+    }, [editCategory.isEditing, setValue, editCategory.categoryData]);
+
+    const numbersOfCategoryOrder = productCategories
+        .map((category) => category.category_order)
+        .sort((a, b) => {
+            if (a > b) return 1;
+            if (a < b) return -1;
+            return 0;
+        });
+
+    const ascendingSequence = useMemo(() => {
+        const maximo = numbersOfCategoryOrder[productCategories.length - 1] + 3;
+        const sequencia = [];
+        for (let i = 1; i <= maximo; i++) {
+            sequencia.push(i);
+        }
+        return sequencia;
+    }, [productCategories, numbersOfCategoryOrder]);
 
     return (
         <>
@@ -137,8 +209,71 @@ export function CategoryModal({
                                 type="text"
                                 {...register('productCategory')}
                                 placeholder="Dê um nome para a categoria"
-                                className="w-full h-9 rounded text-base font-medium text-gray-600 placeholder:text-gray-400 outline-none border border-gray-400 px-2 mb-10 "
+                                className="w-full h-9 rounded text-base font-medium text-gray-600 placeholder:text-gray-400 outline-none border border-gray-400 px-2 mb-4 "
                             />
+                            <input
+                                type="number"
+                                {...register('categoryOrder', {
+                                    valueAsNumber: true,
+                                })}
+                                placeholder="Ordem da categoria Ex.: 2"
+                                className="w-full h-9 rounded text-base font-medium text-gray-600 placeholder:text-gray-400 outline-none border border-gray-400 px-2 "
+                            />
+                            {productCategories.some(
+                                (c) => c.category_order === categoryOrdervalue
+                            ) &&
+                            editCategory.categoryData.category_order !==
+                                categoryOrdervalue ? (
+                                <span className="text-red-500 text-sm font-normal leading-1">
+                                    Já existe uma categoria nessa posição, por
+                                    favor escolha outro número.
+                                </span>
+                            ) : null}
+
+                            <div className="flex flex-wrap items-center gap-3 mb-4 mt-6">
+                                {ascendingSequence.map((sequence) => {
+                                    if (
+                                        productCategories.some(
+                                            (pc) =>
+                                                pc.category_order === sequence
+                                        )
+                                    ) {
+                                        return (
+                                            <button
+                                                key={sequence}
+                                                className={`text-base font-semibold text-gray-700 w-6 h-6 rounded cursor-not-allowed  ${
+                                                    editCategory.categoryData
+                                                        .category_order ===
+                                                    sequence
+                                                        ? 'bg-green-400'
+                                                        : 'bg-gray-400'
+                                                }`}
+                                            >
+                                                {' '}
+                                                {sequence}
+                                            </button>
+                                        );
+                                    }
+                                    return (
+                                        <button
+                                            key={sequence}
+                                            onClick={(e) => {
+                                                e.preventDefault();
+                                                setValue(
+                                                    'categoryOrder',
+                                                    sequence
+                                                );
+                                            }}
+                                            className="text-base font-semibold text-gray-800 w-6 h-6 rounded bg-blue-500"
+                                        >
+                                            {sequence}
+                                        </button>
+                                    );
+                                })}{' '}
+                                <span className="text-2xl font-semibold text-gray-700 leading-4">
+                                    ...
+                                </span>
+                            </div>
 
                             <div className="flex flex-1 items-center gap-3">
                                 <button
@@ -148,11 +283,12 @@ export function CategoryModal({
                                     Cancelar
                                 </button>
                                 <button
-                                    onClick={() =>
+                                    onClick={(e) => {
+                                        e.preventDefault();
                                         editCategory.isEditing
                                             ? updateCategory()
-                                            : handleNewCategory()
-                                    }
+                                            : handleNewCategory();
+                                    }}
                                     className={`h-9 flex flex-1 items-center justify-center
                             text-white font-semibold cursor-pointer duration-300 rounded transition-all ease-in-out
                             ${

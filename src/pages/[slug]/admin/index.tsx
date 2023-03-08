@@ -154,42 +154,11 @@ export default function AdminHomepage({
         {}
     );
 
-    const [ordersState, ordersDispatch] = useReducer<
-        (state: iStatusReducer, action: any) => iStatusReducer
-    >(statusReducer, {
+    const [ordersState, ordersDispatch] = useReducer<(state: iStatusReducer, action: any) => iStatusReducer>(statusReducer, {
         orders: orders,
         isOpenOrderModal: false,
         orderId: 0,
     });
-
-    // function billing() {
-    //     let ordersProductFiltered;
-    //     if (ordersGroupedByOrderStatus['entregue']) {
-    //         ordersProductFiltered = ordersProducts.filter((op) =>
-    //             ordersGroupedByOrderStatus['entregue'].some(
-    //                 (o) => o.id === op.order_id
-    //             )
-    //         );
-
-    //         const productIds = ordersProductFiltered.map(
-    //             (ordersProduct) => ordersProduct.product_id
-    //         );
-    //         const selectedProduct = productIds.map(
-    //             (productId) =>
-    //                 products[
-    //                 products.findIndex(
-    //                     (product) => productId === product.id
-    //                 )
-    //                 ]
-    //         );
-    //         return selectedProduct.reduce(
-    //             (acc, product) => acc + product?.price!,
-    //             0
-    //         );
-    //     } else {
-    //         return 0;
-    //     }
-    // }
 
     function billing() {
         let ordersProductFiltered;
@@ -206,9 +175,9 @@ export default function AdminHomepage({
             const selectedProduct = productIds.map(
                 (productId) =>
                     products[
-                        products.findIndex(
-                            (product) => productId === product.id
-                        )
+                    products.findIndex(
+                        (product) => productId === product.id
+                    )
                     ]
             );
 
@@ -240,10 +209,22 @@ export default function AdminHomepage({
         }
     }
 
+
+    // const [audio] = useState(new Audio('/alertAudio.mp3'));
+    // const [newPlay, setNewPlay] = useState(false);
+
+    // useEffect(() => {
+    //     if (newPlay) {
+    //         audio.play();
+    //         setNewPlay(false);
+    //     }
+    // }, [newPlay, audio]);
+
     useMemo(() => {
         async function newOrder() {
             const getNewOrder = await api.get(`/api/orders/${restaurant.id}`);
             // TODO1 Enviar mensagem de "seu pedido foi recebido com sucesso"
+            // setNewPlay(false);
             setOrders(getNewOrder.data);
         }
         const channel = supabase
@@ -298,6 +279,7 @@ export default function AdminHomepage({
     return (
         <AdminWrapper>
             <div className="flex flex-col gap-8">
+                <button className='play flex-none' hidden></button>
                 <CashBoxButtons
                     cashBoxState={cashBoxState}
                     restaurantId={restaurant.id}

@@ -279,12 +279,12 @@ export default function AdminHomepage({
     return (
         <AdminWrapper>
             <div className="flex flex-col gap-8">
-                <button className='play flex-none' hidden></button>
                 <CashBoxButtons
                     cashBoxState={cashBoxState}
                     restaurantId={restaurant.id}
                     ordersGroupedByOrderStatus={ordersGroupedByOrderStatus}
                     cashBoxes={cashBoxes}
+                    billing={billing()}
                 />
 
                 <div className="grid 2xs:grid-cols-2 lg:grid-cols-3 gap-3">

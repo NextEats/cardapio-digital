@@ -41,6 +41,9 @@
     .hideButtonToPrint {
         display: none;
     }
+    .hideShadowToPrint {
+        box-shadow: none;
+    }
 }
 
 .animated {

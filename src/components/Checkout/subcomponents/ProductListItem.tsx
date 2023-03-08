@@ -31,39 +31,41 @@ export default function ProductListItem({ product }: any) {
                     width={80}
                     height={50}
                 />
-                <div className="flex flex-col ml-4 pb-1">
-                    <span className="text-xl font-bold text-[#3a3a3a]">
-                        {data.name}
-                    </span>
-                    <span className=" text-[#7d7d7d] truncate w-[200px]">
-                        {data.description}
-                    </span>
-                    <span className="mt-2 text-md text-[#4b9e40]">
-                        R$ {data.price}
-                    </span>
-                </div>
-                <div className="ml-auto">
-                    <QuantitySelector
-                        value={returnCurrentQuantity()}
-                        addValue={() => {
-                            dispatch({
-                                type: 'addQuantity',
-                                payload: { index: returnCurrentIndex() },
-                            });
-                        }}
-                        subtractValue={() => {
-                            dispatch({
-                                type: 'subtractQuantity',
-                                payload: { index: returnCurrentIndex() },
-                            });
-                        }}
-                        deleteValue={() => {
-                            dispatch({
-                                type: 'deleteProduct',
-                                payload: { index: returnCurrentIndex() },
-                            });
-                        }}
-                    />
+                <div className="flex sm:flex-row flex-col sm:items-center sm:justify-between w-full">
+                    <div className="flex flex-col ml-4 pb-1">
+                        <span className="text-xl font-bold text-[#3a3a3a]">
+                            {data.name}
+                        </span>
+                        <span className=" text-[#7d7d7d] truncate w-[200px]">
+                            {data.description}
+                        </span>
+                        <span className="mt-2 text-md text-[#4b9e40]">
+                            R$ {data.price}
+                        </span>
+                    </div>
+                    <div className="">
+                        <QuantitySelector
+                            value={returnCurrentQuantity()}
+                            addValue={() => {
+                                dispatch({
+                                    type: 'addQuantity',
+                                    payload: { index: returnCurrentIndex() },
+                                });
+                            }}
+                            subtractValue={() => {
+                                dispatch({
+                                    type: 'subtractQuantity',
+                                    payload: { index: returnCurrentIndex() },
+                                });
+                            }}
+                            deleteValue={() => {
+                                dispatch({
+                                    type: 'deleteProduct',
+                                    payload: { index: returnCurrentIndex() },
+                                });
+                            }}
+                        />
+                    </div>
                 </div>
             </div>
         </>

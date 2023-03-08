@@ -1,60 +1,70 @@
-import { useState, useEffect, useContext } from "react";
-import { AdminContext } from "@/src/contexts/adminContext";
+import { AdminContext } from '@/src/contexts/adminContext';
+import { useContext, useEffect, useState } from 'react';
+import QRCode from 'react-qr-code';
 
-import io from "socket.io-client";
-import QRCode from "react-qr-code";
-import { serverURL, supabase } from "@/src/server/api";
+import { whatsappRestApi } from '@/src/server/api';
 
 export default function Whatsapp() {
-  const [successMessage, setSuccessMessage] = useState("");
-  const [qrCode, setQrCode] = useState("");
+    const { restaurant } = useContext(AdminContext);
 
-  const { restaurant } = useContext(AdminContext);
+    const [qrCode, setQrCode] = useState<string | undefined>(undefined);
 
-  useEffect(() => {
-    if (restaurant?.whatsapp_qrcode) {
-      setQrCode(restaurant?.whatsapp_qrcode);
-    }
+    useEffect(() => {
+        async function getResponse() {
+            try {
+                const res = await whatsappRestApi({
+                    method: 'post',
+                    url: '/create',
+                    data: {
+                        id: restaurant!.slug,
+                    },
+                });
 
-    async function fetchSocketIo() {
-      await fetch(`${serverURL}/api/whatsapp/${restaurant?.slug}/socket-qrcode`);
+                if (res.data.qrcode) {
+                    setQrCode(res.data.qrcode);
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        }
+        getResponse();
+    }, [restaurant]);
 
-      var socket = io({ transports: ["websocket"], forceNew: true });
+    const handleSendMessage = async () => {
+        try {
+            console.log({
+                id: restaurant!.slug,
+                number: restaurant!.whatsapp_number,
+                message:
+                    'O sistema de cardápio digital da NextEats foi configurado com sucesso para este número.',
+            });
 
-      socket.on("success", (newMessage: any) => {
-        setSuccessMessage(newMessage);
-      });
+            const res = await whatsappRestApi({
+                method: 'post',
+                url: '/send-message',
+                data: {
+                    id: restaurant!.slug,
+                    number: restaurant!.whatsapp_number,
+                    message:
+                        'O sistema de cardápio digital da NextEats foi configurado com sucesso para este número.',
+                },
+            });
 
-      socket.on("qr", async (qr: any) => {
-        await supabase
-          .from("restaurants")
-          .update({ whatsapp_qrcode: qr })
-          .eq("id", restaurant?.id);
+            console.log(res);
+        } catch (err) {
+            console.error(err);
+        }
+    };
 
-        setQrCode(qr);
-      });
-    }
-    fetchSocketIo();
-  }, [restaurant]);
-
-  function QRCodeImageOrLoadingText() {
-    if (!qrCode || qrCode === "") {
-      return <span>QR Code carregando...</span>;
-    } else {
-      return (
+    return (
         <>
-          <QRCode value={qrCode} />
+            {qrCode && <QRCode value={qrCode} />}
+            <button
+                onClick={() => handleSendMessage()}
+                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+            >
+                Enviar Mensagem de Teste
+            </button>
         </>
-      );
-    }
-  }
-
-  return (
-    <>
-      <div>
-        <QRCodeImageOrLoadingText />
-      </div>
-      {successMessage && <div>QR code autenticado com sucesso.</div>}
-    </>
-  );
+    );
 }

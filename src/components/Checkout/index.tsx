@@ -1,5 +1,6 @@
 import { DigitalMenuContext } from '@/src/contexts/DigitalMenuContext';
 import { useContext, useState } from 'react';
+import { BsX } from 'react-icons/bs';
 import ContactInfoForm from './subcomponents/ContactInfoForm';
 import ProductsList from './subcomponents/ProductsList';
 import ThankYouPage from './subcomponents/ThankYou';
@@ -37,12 +38,9 @@ export default function Checkout() {
     }
 
     return (
-        <div className="absolute w-[98vw] h-screen flex items-center justify-center">
-            <div
-                className="fixed w-screen h-screen bg-[#0000009f] z-[400]"
-                onClick={handleCloseModal}
-            ></div>
-            <div className="h-[600px] overflow-auto max-w-[550px] w-[92%] fixed bg-white z-[500] px-4 py-9 rounded">
+        <div className="overflow-auto w-screen h-screen fixed bg-white z-[500] flex justify-center items-center">
+            <BsX></BsX>
+            <div className="w-full max-w-[600px] px-2">
                 <CurrentStepComponent />
             </div>
         </div>

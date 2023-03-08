@@ -111,15 +111,15 @@ export default function EditableMenuProductCard({
     return (
         <>
             <div
-                className={`fixed inset-0 bg-black w-screen h-screen opacity-60 z-20 cursor-pointer ${productModal
-                    ? 'opacity-40'
-                    : 'opacity-0 pointer-events-none'
-                    }`}
+                className={`fixed inset-0 bg-black w-screen h-screen z-20 cursor-pointer ${
+                    productModal ? 'block opacity-80' : 'hidden opacity-0'
+                }`}
                 onClick={() => setProductModal(false)}
             ></div>
             <div
-                className={`w-[360px] md:w-[420px] 2xl:w-[468px] fixed ${productModal ? 'right-0' : 'right-[-700px]'
-                    } transition-all ease-out z-30 top-16 bg-white shadow-md rounded-md h-[calc(100vh-64px)] overflow-auto p-4`}
+                className={`w-[360px] md:w-[420px] 2xl:w-[468px] fixed ${
+                    productModal ? 'right-0' : 'right-[-700px]'
+                } transition-all ease-out z-30 top-16 bg-white shadow-md rounded-md h-[calc(100vh-64px)] overflow-auto p-4`}
             >
                 <div className="flex flex-1 items-center justify-between pb-6">
                     <BsArrowLeftCircle
@@ -258,10 +258,12 @@ export default function EditableMenuProductCard({
                     </NavigationMenu.Root>
                 ) : null}
 
-                <div className='flex items-center gap-2 text-lg font-medium text-gray-700 mb-6'>
+                <div className="flex items-center gap-2 text-lg font-medium text-gray-700 mb-6">
                     <span> Categoria: </span>
-                    <span className=''>
-                        {!state.category ? 'Selecione uma categoria' : `${state.category.name}`}
+                    <span className="">
+                        {!state.category
+                            ? 'Selecione uma categoria'
+                            : `${state.category.name}`}
                     </span>
                 </div>
 

@@ -1,12 +1,13 @@
+import { AdminContext } from '@/src/contexts/adminContext';
 import Image from 'next/image';
-import { Dispatch, useState } from 'react';
+import { Dispatch, useContext, useState } from 'react';
 import { AiFillEye, AiOutlineCheck } from 'react-icons/ai';
 import {
     getModalDataAction,
     showModalAction,
 } from '../../../../reducers/statusReducer/action';
 import { iStatusReducer } from '../../../../reducers/statusReducer/reducer';
-import { supabase } from '../../../../server/api';
+import { supabase, whatsappRestApi } from '../../../../server/api';
 import {
     iInsertOrdersProducts,
     iInsertProducts,
@@ -39,22 +40,6 @@ export default function NewRequests({
     ordersProducts,
     products,
 }: iNewRequestProps) {
-    const tdStyle =
-        'border-collapse border-l-2 px-2 border-gray-300 text-sm font-medium';
-
-    async function moveToEmProduçãoCard(orderId: number) {
-        await supabase
-            .from('orders')
-            .update({ order_status_id: 3 })
-            .eq('id', orderId);
-        // TODO2
-    }
-
-    function showModal(orderId: number) {
-        dispatch(showModalAction());
-        dispatch(getModalDataAction(orderId));
-    }
-
     const [addressState, setAddressState] = useState({
         bairro: '',
         cep: '',
@@ -67,6 +52,45 @@ export default function NewRequests({
         siafi: '',
         uf: '',
     });
+
+    const restaurant = useContext(AdminContext).restaurant;
+
+    const tdStyle =
+        'border-collapse border-l-2 px-2 border-gray-300 text-sm font-medium';
+
+    async function moveToEmProduçãoCard(orderId: number) {
+        const { data: orderWithUpdatedStatus } = await supabase
+            .from('orders')
+            .update({ order_status_id: 3 })
+            .eq('id', orderId)
+            .select('*, clients ( *, contacts (*) )');
+
+        if (!orderWithUpdatedStatus || !orderWithUpdatedStatus[0]) {
+            return;
+        }
+
+        const whatsappNumber = orderWithUpdatedStatus[0] as unknown as any;
+
+        try {
+            await whatsappRestApi({
+                method: 'post',
+                url: '/send-message',
+                data: {
+                    id: restaurant!.slug,
+                    number: '55' + whatsappNumber.clients.contacts.phone,
+                    message:
+                        'O seu pedido foi aprovado e já começou a ser preparado!',
+                },
+            });
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
+    function showModal(orderId: number) {
+        dispatch(showModalAction());
+        dispatch(getModalDataAction(orderId));
+    }
 
     return (
         <div className="flex flex-1 flex-col min-h-[230px] bg-white w-auto shadow-sm px-6 pt-2 rounded-md ">

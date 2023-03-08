@@ -124,19 +124,19 @@ export function OrderModal({
         }[];
         const priceOfEachAdditional = additionalsData
             ? additionalsData.map((ad) => {
-                  if (
-                      additionals.some((a, index) => a.id === ad.additional_id)
-                  ) {
-                      return (
-                          additionals[
-                              additionals.findIndex(
-                                  (a) => a.id === ad.additional_id
-                              )
-                          ].price * ad.quantity
-                      );
-                  }
-                  return 0;
-              })
+                if (
+                    additionals.some((a, index) => a.id === ad.additional_id)
+                ) {
+                    return (
+                        additionals[
+                            additionals.findIndex(
+                                (a) => a.id === ad.additional_id
+                            )
+                        ].price * ad.quantity
+                    );
+                }
+                return 0;
+            })
             : [0];
 
         return (
@@ -392,7 +392,7 @@ export function OrderModal({
                                             {totalPriceOfProducts +
                                                 (orderFound?.delivery_fees
                                                     ? orderFound.delivery_fees
-                                                          .fee
+                                                        .fee
                                                     : 0) +
                                                 totalAdditionalPrice}
                                         </strong>
@@ -402,7 +402,7 @@ export function OrderModal({
 
                             <div className="flex flex-1 flex-col items-center justify-end gap-3 mt-5 hideButtonToPrint">
                                 {orderFound?.order_status.status_name ===
-                                'em análise' ? (
+                                    'em análise' ? (
                                     <ReactToPrint
                                         copyStyles={true}
                                         content={() => printComponent.current}

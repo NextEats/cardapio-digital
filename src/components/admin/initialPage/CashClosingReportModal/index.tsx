@@ -1,5 +1,5 @@
-import { api } from '@/src/server/api';
-import { iAdditionals, iCashBox, iCashBoxes, iOrdersProducts, iOrdersWithFKData, iProducts } from '@/src/types/types';
+import { api, supabase } from '@/src/server/api';
+import { iAdditionals, iCashBox, iCashBoxes, iOrdersProducts, iOrdersWithFKData, iProducts, iUserDetails } from '@/src/types/types';
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
@@ -32,6 +32,7 @@ export default function CashClosingReportModal({
     const [ordersProducts, setOrdersProducts] = useState<iOrdersProducts["data"]>([])
     const [additionals, setAdditionals] = useState<iAdditionals["data"]>([])
     const [products, setProducts] = useState<iProducts["data"]>([])
+    const [usersData, setUsersData] = useState<iUserDetails["data"] | null>(null)
     const CashBoxReportComponent = useRef<HTMLDivElement>(null)
 
     const user = useUser();
@@ -47,9 +48,12 @@ export default function CashClosingReportModal({
             setAdditionals(additionalsData.data)
             const productsData = await api.get(`api/products/${restaurantId}`)
             setProducts(productsData.data)
+            const getUserData = await supabase.from("user_details").select().eq('user_id', user?.id)
+            if (getUserData.data)
+                setUsersData(getUserData.data[0])
         }
         getDatas()
-    }, [restaurantId])
+    }, [restaurantId, user])
     async function handleCloseCashBox() {
         if (
             ordersGroupedByOrderStatus['em análise'] ||
@@ -113,13 +117,13 @@ export default function CashClosingReportModal({
 
                 <Dialog.Portal>
                     <Dialog.Overlay onClick={() => setOpenCashBoxClosingReportModal(false)} className="w-screen h-screen flex items-center justify-center bg-black fixed inset-0 z-10 opacity-40 transition-all duration-300 ease-in-out" />
-                    <Dialog.Content ref={CashBoxReportComponent} className="hideShadowToPrint fixed top-[14vh] right-1/2 z-20 translate-x-1/2 rounded-lg w-[350px] sm:w-[400px] h-[] bg-white shadow-md p-6" >
+                    <Dialog.Content ref={CashBoxReportComponent} className="hideShadowToPrint fixed top-[14vh] right-1/2 z-20 translate-x-1/2 rounded-lg w-[298px] bg-white shadow-md p-6" >
                         <Dialog.Title className="text-base w-full uppercase text-center font-semibold mb-6">
                             Extrato e Caixa
                         </Dialog.Title>
 
                         <div className='max-w-full'>
-                            <p className=''> Usuário: Fulano</p>
+                            <p className=''> Usuário: {usersData ? usersData.name : null}</p>
                             <p className='mb-2'>Email: {user?.email}</p>
 
                             {cashBoxState ?
@@ -146,7 +150,7 @@ export default function CashClosingReportModal({
                             <FiX size={22} />
                         </Dialog.Close>
 
-                        <div className='flex items-center gap-3 w-full mt-6 hideButtonToPrint'>
+                        <div className='flex flex-col items-center gap-3 w-full mt-6 hideButtonToPrint'>
                             <ReactToPrint
                                 copyStyles={true}
                                 content={() => CashBoxReportComponent.current}
@@ -155,7 +159,7 @@ export default function CashClosingReportModal({
                                     return (
                                         <CardapioDigitalButton
                                             name="Imprimir e fechar o caixa"
-                                            w="w-80"
+                                            w="w-full"
                                             h="h-8"
                                         />
                                     );
@@ -170,7 +174,7 @@ export default function CashClosingReportModal({
                                     return (
                                         <CardapioDigitalButton
                                             name="Imprimir"
-                                            w="w-32"
+                                            w="w-full"
                                             h="h-8"
                                         />
                                     );

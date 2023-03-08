@@ -210,7 +210,6 @@ export default function AdminHomepage({
         }
     }
 
-
     // const [audio] = useState(new Audio('/alertAudio.mp3'));
     // const [newPlay, setNewPlay] = useState(false);
 
@@ -250,8 +249,6 @@ export default function AdminHomepage({
     async function newOrdersProducts() {
         const getNewOrdersProducts = await getOrdersProductsFetch();
         setOrdersProducts(getNewOrdersProducts)
-        console.log(getNewOrdersProducts)
-        console.log("payload")
     }
     const channel = supabase
         .channel('db-orders_products')

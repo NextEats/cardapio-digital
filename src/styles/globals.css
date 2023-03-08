@@ -2,6 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
+@media print {
+    .hideButtonToPrint {
+        display: none;
+    }
+}
+
 .scrollbar-custom::-webkit-scrollbar {
     width: 8px;
     height: 8px;
@@ -35,12 +41,6 @@
 .toggle-checkbox:checked + .toggle-label {
     @apply: bg-green-400;
     background-color: #68d391;
-}
-
-@media print {
-    .hideButtonToPrint {
-        display: none;
-    }
 }
 
 .animated {

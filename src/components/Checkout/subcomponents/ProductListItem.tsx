@@ -24,7 +24,7 @@ export default function ProductListItem({ product }: any) {
 
     return (
         <>
-            <div className="bg-[#00000005] shadow-sm border border-[#0000000c] p-3 m-3 flex flex-row h-32 items-center rounded-sm">
+            <div className="bg-[#00000005] shadow-sm border border-[#0000000c] p-3 m-3 flex flex-row h-44 sm:h-32 items-center rounded-sm">
                 <Image
                     src={data.picture_url}
                     alt={data!.picture_url}
@@ -43,7 +43,7 @@ export default function ProductListItem({ product }: any) {
                             R$ {data.price}
                         </span>
                     </div>
-                    <div className="">
+                    <div className="mt-2 ml-4 sm:mt-0 sm:ml-0">
                         <QuantitySelector
                             value={returnCurrentQuantity()}
                             addValue={() => {

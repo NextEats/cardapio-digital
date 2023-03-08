@@ -16,8 +16,6 @@ import { CardapioDigitalButton } from '../../cardapio-digital/CardapioDigitalBut
 import { DropdownMenuObservation } from '../DropDownMenuObservation';
 
 import ReactToPrint from 'react-to-print';
-import { Br, Cut, Line, Printer, Text, Row, render } from 'react-thermal-printer';
-
 
 interface iOrderModalProps {
     ordersState: iStatusReducer;
@@ -127,19 +125,19 @@ export function OrderModal({
         }[];
         const priceOfEachAdditional = additionalsData
             ? additionalsData.map((ad) => {
-                if (
-                    additionals.some((a, index) => a.id === ad.additional_id)
-                ) {
-                    return (
-                        additionals[
-                            additionals.findIndex(
-                                (a) => a.id === ad.additional_id
-                            )
-                        ].price * ad.quantity
-                    );
-                }
-                return 0;
-            })
+                  if (
+                      additionals.some((a, index) => a.id === ad.additional_id)
+                  ) {
+                      return (
+                          additionals[
+                              additionals.findIndex(
+                                  (a) => a.id === ad.additional_id
+                              )
+                          ].price * ad.quantity
+                      );
+                  }
+                  return 0;
+              })
             : [0];
 
         return (
@@ -169,30 +167,14 @@ export function OrderModal({
         }
     }
 
-
-
-
-    const receipt = (
-        <Printer type="star" width={42} characterSet="pc860_portuguese">
-            <Text size={{ width: 2, height: 2 }}>9,500원</Text>
-            <Text bold={true}>결제 완료</Text>
-            <Br />
-            <Line />
-            <Row left="Nomeasdasd" right={orderFound?.clients?.name!} />
-            <Row left="Número" right={'sdfsldmfs'} />
-        </Printer>
-    );
-
     async function handleThermalPrint() {
-
-        const print = await api.post('api/print')
-        console.log(print)
-        console.log("print")
+        const print = await api.post('api/print');
+        console.log(print);
+        console.log('print');
         // const url = 'https://web.whatsapp.com/send?phone=87998199329&text=edu&app_absent=0'
         // window.open(url)
 
         // const data: Uint8Array = await render(receipt);
-
 
         // @ts-ignore
         // const port = await window.navigator.serial.requestPort();
@@ -254,14 +236,18 @@ export function OrderModal({
                                     </Dialog.Description>
 
                                     <div>
-                                        <p className={`${textStyles} font-serif text-left `}>
+                                        <p
+                                            className={`${textStyles} font-serif text-left `}
+                                        >
                                             &nbsp; Nome:{' '}
                                             <strong>
                                                 {orderFound?.clients?.name}
                                             </strong>
                                             &nbsp;
                                         </p>
-                                        <p className={`${textStyles} font-sans text-left `}>
+                                        <p
+                                            className={`${textStyles} font-sans text-left `}
+                                        >
                                             &nbsp; Telefone:{' '}
                                             <strong>
                                                 {' '}
@@ -272,7 +258,9 @@ export function OrderModal({
                                             </strong>
                                             &nbsp;
                                         </p>
-                                        <p className={`${textStyles} text-left `}>
+                                        <p
+                                            className={`${textStyles} text-left `}
+                                        >
                                             &nbsp; Email:{' '}
                                             <strong>
                                                 {' '}
@@ -441,7 +429,7 @@ export function OrderModal({
                                             {totalPriceOfProducts +
                                                 (orderFound?.delivery_fees
                                                     ? orderFound.delivery_fees
-                                                        .fee
+                                                          .fee
                                                     : 0) +
                                                 totalAdditionalPrice}{' '}
                                         </strong>
@@ -451,7 +439,7 @@ export function OrderModal({
 
                             <div className="flex flex-1 items-center justify-end gap-3 mt-5 hideButtonToPrint">
                                 {orderFound?.order_status.status_name ===
-                                    'em análise' ? (
+                                'em análise' ? (
                                     <ReactToPrint
                                         copyStyles={true}
                                         content={() => printComponent.current}
@@ -472,7 +460,6 @@ export function OrderModal({
                                     />
                                 ) : null}
                                 <ReactToPrint
-                                    copyStyles={true}
                                     content={() => printComponent.current}
                                     trigger={() => {
                                         return (
@@ -488,7 +475,9 @@ export function OrderModal({
                                     name="Confirmar"
                                     w="flex-1"
                                     h="h-8"
-                                    onClick={async () => await handleThermalPrint()}
+                                    onClick={async () =>
+                                        await handleThermalPrint()
+                                    }
                                 />
                             </div>
 

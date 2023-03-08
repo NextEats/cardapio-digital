@@ -1,4 +1,4 @@
-import { supabase } from '@/src/server/api';
+import { supabase, whatsappRestApi } from '@/src/server/api';
 import {
     iAddress,
     iCashBox,
@@ -85,6 +85,21 @@ export async function SubmitForm({
                 })
                 .select('*');
         });
+        try {
+            await whatsappRestApi({
+                method: 'post',
+                url: '/send-message',
+                data: {
+                    id: restaurant!.slug,
+                    number: '55' + whatsapp,
+                    message:
+                        'O seu pedido foi recebido com sucesso pelo restaurante ' +
+                        restaurant!.name,
+                },
+            });
+        } catch (err) {
+            console.error(err);
+        }
     } catch (error) {
         console.error(error);
     }

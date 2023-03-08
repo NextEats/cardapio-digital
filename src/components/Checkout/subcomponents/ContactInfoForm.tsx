@@ -104,7 +104,7 @@ export default function ContactInfoForm({ setCurrentStep }: any) {
                         className="block text-gray-700 font-bold mb-2"
                         htmlFor="whatsapp"
                     >
-                        WhatsApp
+                        WhatsApp (com DDD)
                     </label>
                     <input
                         {...register('whatsapp', { required: true })}
@@ -114,7 +114,7 @@ export default function ContactInfoForm({ setCurrentStep }: any) {
                             errors.whatsapp && 'border-red-500'
                         }`}
                     />
-                    {errors.cep && (
+                    {errors.whatsapp && (
                         <p className="text-red-500 text-xs italic">
                             Digite seu número de WhatsApp
                         </p>

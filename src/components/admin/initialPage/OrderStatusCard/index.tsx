@@ -1,10 +1,11 @@
+import { AdminContext } from '@/src/contexts/adminContext';
 import {
     getModalDataAction,
     showModalAction,
 } from '@/src/reducers/statusReducer/action';
-import { supabase } from '@/src/server/api';
+import { supabase, whatsappRestApi } from '@/src/server/api';
 import Image from 'next/image';
-import { Dispatch } from 'react';
+import { Dispatch, useContext } from 'react';
 import { AiFillEye } from 'react-icons/ai';
 import { BiArrowFromLeft } from 'react-icons/bi';
 import { iStatusReducer } from '../../../../reducers/statusReducer/reducer';
@@ -30,6 +31,8 @@ export default function OrderStatusCard({
     ordersProducts,
     products,
 }: IOrderStatusCardProps) {
+    const restaurant = useContext(AdminContext).restaurant;
+
     let orders;
     if (statusName === 'Em produção')
         orders = ordersGroupedByOrderStatus['em produção'];
@@ -43,17 +46,57 @@ export default function OrderStatusCard({
 
     async function switchStatus(orderId: number) {
         if (statusName === 'Em produção') {
-            await supabase
+            const { data: orderWithUpdatedStatus } = await supabase
                 .from('orders')
                 .update({ order_status_id: 4 })
-                .eq('id', orderId);
-            // TODO3 Seu pedido está a caminho
+                .eq('id', orderId)
+                .select('*, clients ( *, contacts (*) )');
+
+            if (!orderWithUpdatedStatus || !orderWithUpdatedStatus[0]) {
+                return;
+            }
+
+            const whatsappNumber = orderWithUpdatedStatus[0] as unknown as any;
+
+            try {
+                await whatsappRestApi({
+                    method: 'post',
+                    url: '/send-message',
+                    data: {
+                        id: restaurant!.slug,
+                        number: '55' + whatsappNumber.clients.contacts.phone,
+                        message: 'O seu pedido esta a caminho!',
+                    },
+                });
+            } catch (err) {
+                console.error(err);
+            }
         } else if (statusName === 'A caminho') {
-            await supabase
+            const { data: orderWithUpdatedStatus } = await supabase
                 .from('orders')
                 .update({ order_status_id: 1 })
-                .eq('id', orderId);
-            // TODO4 Seu pedido foi entregue com sucesso
+                .eq('id', orderId)
+                .select('*, clients ( *, contacts (*) )');
+
+            if (!orderWithUpdatedStatus || !orderWithUpdatedStatus[0]) {
+                return;
+            }
+
+            const whatsappNumber = orderWithUpdatedStatus[0] as unknown as any;
+
+            try {
+                await whatsappRestApi({
+                    method: 'post',
+                    url: '/send-message',
+                    data: {
+                        id: restaurant!.slug,
+                        number: '55' + whatsappNumber.clients.contacts.phone,
+                        message: 'O seu pedido foi entregue com sucesso!',
+                    },
+                });
+            } catch (err) {
+                console.error(err);
+            }
         }
     }
 

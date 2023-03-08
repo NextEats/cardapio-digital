@@ -1,7 +1,6 @@
 
 import { NextApiRequest, NextApiResponse } from "next";
 import { ThermalPrinter, PrinterTypes, CharacterSet, BreakLine } from 'node-thermal-printer';
-import Printer from 'node-thermal-printer';
 
 let printer = new ThermalPrinter({
     type: undefined,

@@ -22,10 +22,10 @@ export default function ProductsList({
                     return <ProductListItem product={product} key={index} />;
                 })}
             </div>
-            <div className="flex w-full gap-x-2 mt-4">
+            <div className="flex sm:flex-row flex-col gap-y-2 justify-center w-full gap-x-2 mt-4">
                 <button
                     onClick={handleCloseModal}
-                    className="w-[50%] font-semibold text-sm uppercase shadow border border-indigo-600 bg-white text-indigo-600 hover:text-white hover:bg-indigo-600 focus:shadow-outline focus:outline-none py-3 px-10 rounded"
+                    className="font-semibold text-sm uppercase shadow border border-indigo-600 bg-white text-indigo-600 hover:text-white hover:bg-indigo-600 focus:shadow-outline focus:outline-none py-3 px-10 rounded"
                 >
                     Adicionar + produtos
                 </button>
@@ -33,7 +33,7 @@ export default function ProductsList({
                     onClick={() => {
                         setCurrentStep('contact_info');
                     }}
-                    className="w-[50%] font-semibold text-sm uppercase shadow bg-indigo-800 hover:bg-indigo-600 focus:shadow-outline focus:outline-none text-white py-3 px-10 rounded"
+                    className="font-semibold text-sm uppercase shadow bg-indigo-800 hover:bg-indigo-600 focus:shadow-outline focus:outline-none text-white py-3 px-10 rounded"
                 >
                     finalizar pedido
                 </button>

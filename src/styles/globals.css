@@ -37,14 +37,6 @@
     background-color: #68d391;
 }
 
-@media print {
-    .hideButtonToPrint {
-        display: none;
-    }
-    .hideShadowToPrint {
-        box-shadow: none;
-    }
-}
 
 .animated {
     -webkit-animation-duration: 1s;
@@ -66,6 +58,15 @@
 .fadeOut {
     -webkit-animation-name: fadeOut;
     animation-name: fadeOut;
+}
+
+@media print {
+    .hideButtonToPrint {
+        display: none;
+    }
+    .hideShadowToPrint {
+        box-shadow: none;
+    }
 }
 
 @keyframes fadeIn {

@@ -62,9 +62,8 @@ export function OrderModal({
     );
 
     const descriptionsStyles =
-        'text-sm font-semibold text-gray-red-400 text-center mb-3 mt-6';
-    const textStyles =
-        'text-sm font-semibold text-gray-red-400 text-left leading-6';
+        'text-sm font-semibold text-black text-center mb-3 mt-6';
+    const textStyles = 'text-sm font-semibold text-black text-left leading-6';
 
     const orderFound = ordersState.orders.find(
         (order) => order.id === ordersState.orderId
@@ -167,26 +166,6 @@ export function OrderModal({
         }
     }
 
-    async function handleThermalPrint() {
-        const print = await api.post('api/print');
-        console.log(print);
-        console.log('print');
-        // const url = 'https://web.whatsapp.com/send?phone=87998199329&text=edu&app_absent=0'
-        // window.open(url)
-
-        // const data: Uint8Array = await render(receipt);
-
-        // @ts-ignore
-        // const port = await window.navigator.serial.requestPort();
-        // await port.open({ baudRate: 9600 });
-        // const writer = port.writable?.getWriter();
-        // if (writer != null) {
-        //     await writer.write(data);
-        //     writer.releaseLock();
-        // }
-        // console.log(data);
-    }
-
     return (
         <>
             <div>
@@ -198,11 +177,11 @@ export function OrderModal({
                         />
                         <Dialog.Content
                             ref={printComponent}
-                            className="bg-white shadow-bd w-[302.36px] md:w-[550px] fixed top-1/2 right-1/2 translate-x-1/2 -translate-y-1/2  rounded-md p-6"
+                            className="bg-white shadow-bd w-[298px] fixed top-1/2 right-1/2 
+                            translate-x-1/2 -translate-y-1/2  rounded-md p-6"
                         >
                             <Dialog.Title className="text-xl font-bold text-center">
-                                {' '}
-                                Next Eats{' '}
+                                Next Eats
                             </Dialog.Title>
 
                             <Dialog.Description
@@ -210,16 +189,14 @@ export function OrderModal({
                             >
                                 Dados do restaurante
                             </Dialog.Description>
-
                             <div>
                                 <p className={`${textStyles} text`}>
-                                    &nbsp; Restaurante:{' '}
+                                    Restaurante:
                                     <strong>{restaurant!.name}</strong>
-                                    &nbsp;
                                 </p>
                                 <p className={`${textStyles}`}>
-                                    &nbsp; Nº do pedido:{' '}
-                                    <strong> {orderFound?.id} </strong>&nbsp;
+                                    Nº do pedido:
+                                    <strong> {orderFound?.id} </strong>
                                 </p>
                                 <p className={`${textStyles}`}>
                                     Data:
@@ -237,9 +214,9 @@ export function OrderModal({
 
                                     <div>
                                         <p
-                                            className={`${textStyles} font-serif text-left `}
+                                            className={`${textStyles} text-left `}
                                         >
-                                            &nbsp; Nome:{' '}
+                                            &nbsp; Nome:
                                             <strong>
                                                 {orderFound?.clients?.name}
                                             </strong>
@@ -248,26 +225,24 @@ export function OrderModal({
                                         <p
                                             className={`${textStyles} font-sans text-left `}
                                         >
-                                            &nbsp; Telefone:{' '}
+                                            &nbsp; Telefone:
                                             <strong>
-                                                {' '}
                                                 {
                                                     orderFound?.clients.contacts
                                                         ?.phone
-                                                }{' '}
+                                                }
                                             </strong>
                                             &nbsp;
                                         </p>
                                         <p
                                             className={`${textStyles} text-left `}
                                         >
-                                            &nbsp; Email:{' '}
+                                            &nbsp; Email:
                                             <strong>
-                                                {' '}
                                                 {
                                                     orderFound?.clients.contacts
                                                         ?.email
-                                                }{' '}
+                                                }
                                             </strong>
                                             &nbsp;
                                         </p>
@@ -275,7 +250,7 @@ export function OrderModal({
                                             &nbsp; Endereço:&nbsp;
                                             <strong>
                                                 &nbsp;
-                                                {address.logradouro},{' '}
+                                                {address.logradouro},
                                                 {
                                                     orderFound?.clients
                                                         .addresses?.number
@@ -285,7 +260,7 @@ export function OrderModal({
                                             &nbsp;
                                         </p>
                                         <p className={`${textStyles}`}>
-                                            &nbsp; Bairro:{' '}
+                                            &nbsp; Bairro:
                                             <strong> {address.bairro} </strong>
                                             &nbsp;
                                         </p>
@@ -293,7 +268,7 @@ export function OrderModal({
                                             &nbsp; Cidade:&nbsp;
                                             <strong>
                                                 &nbsp;
-                                                {address.localidade},{' '}
+                                                {address.localidade},
                                                 {address.uf}&nbsp;
                                             </strong>
                                             &nbsp;
@@ -312,22 +287,18 @@ export function OrderModal({
                                 <thead>
                                     <tr>
                                         <td className={`${textStyles} `}>
-                                            {' '}
-                                            Qnt{' '}
+                                            Qnt
                                         </td>
                                         <td className={`${textStyles}`}>
-                                            {' '}
-                                            Item{' '}
+                                            Item
                                         </td>
                                         <td className={`${textStyles} w-24`}>
-                                            {' '}
-                                            Preço{' '}
+                                            Preço
                                         </td>
                                         <td
                                             className={`${textStyles} w-24 hideButtonToPrint`}
                                         >
-                                            {' '}
-                                            Obs.{' '}
+                                            Obs.
                                         </td>
                                         {/* {thereAnyObservation ? (
                                         ) : null} */}
@@ -348,20 +319,17 @@ export function OrderModal({
                                             <tr key={product.id}>
                                                 <td className={`${textStyles}`}>
                                                     <strong>
-                                                        {' '}
-                                                        {product.count}{' '}
+                                                        {product.count}
                                                     </strong>
                                                 </td>
                                                 <td className={`${textStyles}`}>
                                                     <strong>
-                                                        {' '}
-                                                        {product.name}{' '}
+                                                        {product.name}
                                                     </strong>
                                                 </td>
                                                 <td className={`${textStyles}`}>
                                                     <strong>
-                                                        {' '}
-                                                        R$ {product.price}{' '}
+                                                        R$ {product.price}
                                                     </strong>
                                                 </td>
                                                 <td
@@ -394,10 +362,9 @@ export function OrderModal({
                                     </span>
                                     <span className={`${textStyles}`}>
                                         <strong>
-                                            {' '}
-                                            R${' '}
+                                            R$
                                             {totalPriceOfProducts +
-                                                totalAdditionalPrice}{' '}
+                                                totalAdditionalPrice}
                                         </strong>
                                     </span>
                                 </p>
@@ -408,12 +375,8 @@ export function OrderModal({
                                         </span>
                                         <span className={`${textStyles}`}>
                                             <strong>
-                                                {' '}
-                                                R${' '}
-                                                {
-                                                    orderFound?.delivery_fees
-                                                        .fee
-                                                }{' '}
+                                                R$
+                                                {orderFound?.delivery_fees.fee}
                                             </strong>
                                         </span>
                                     </p>
@@ -421,23 +384,23 @@ export function OrderModal({
 
                                 <p className="grid grid-cols-2 items-center gap-20">
                                     <span className={`${textStyles}`}>
-                                        Total a pagar:{' '}
+                                        Total a pagar:
                                     </span>
                                     <span className={`${textStyles} w-`}>
                                         <strong>
-                                            R${' '}
+                                            R$
                                             {totalPriceOfProducts +
                                                 (orderFound?.delivery_fees
                                                     ? orderFound.delivery_fees
                                                           .fee
                                                     : 0) +
-                                                totalAdditionalPrice}{' '}
+                                                totalAdditionalPrice}
                                         </strong>
                                     </span>
                                 </p>
                             </div>
 
-                            <div className="flex flex-1 items-center justify-end gap-3 mt-5 hideButtonToPrint">
+                            <div className="flex flex-1 flex-col items-center justify-end gap-3 mt-5 hideButtonToPrint">
                                 {orderFound?.order_status.status_name ===
                                 'em análise' ? (
                                     <ReactToPrint
@@ -452,8 +415,8 @@ export function OrderModal({
                                             return (
                                                 <CardapioDigitalButton
                                                     name="Imprimir e aceitar o pedido"
-                                                    w="w-80"
-                                                    h="h-8"
+                                                    w="w-full"
+                                                    h="h-10"
                                                 />
                                             );
                                         }}
@@ -465,19 +428,11 @@ export function OrderModal({
                                         return (
                                             <CardapioDigitalButton
                                                 name="Imprimir"
-                                                w="flex-1"
-                                                h="h-8"
+                                                w="w-full"
+                                                h="h-10"
                                             />
                                         );
                                     }}
-                                />
-                                <CardapioDigitalButton
-                                    name="Confirmar"
-                                    w="flex-1"
-                                    h="h-8"
-                                    onClick={async () =>
-                                        await handleThermalPrint()
-                                    }
                                 />
                             </div>
 

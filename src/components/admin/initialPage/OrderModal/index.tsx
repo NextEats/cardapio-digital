@@ -198,7 +198,7 @@ export function OrderModal({
                         />
                         <Dialog.Content
                             ref={printComponent}
-                            className="bg-white shadow-bd w-[350px] md:w-[550px] fixed top-1/2 right-1/2 translate-x-1/2 -translate-y-1/2  rounded-md p-6"
+                            className="bg-white shadow-bd w-[302.36px] md:w-[550px] fixed top-1/2 right-1/2 translate-x-1/2 -translate-y-1/2  rounded-md p-6"
                         >
                             <Dialog.Title className="text-xl font-bold text-center">
                                 {' '}

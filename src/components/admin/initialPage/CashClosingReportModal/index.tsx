@@ -72,7 +72,7 @@ export default function CashClosingReportModal({
 
     function getPaymentTotals(orders: iOrdersWithFKData[]): Payment[] {
         const paymentTotals: Payment[] = [];
-
+        if (!orders) return []
         orders.forEach((order) => {
             const paymentMethod = order.payment_methods.name;
             const orderValue = getOrderValue(order);

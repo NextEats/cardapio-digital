@@ -191,7 +191,7 @@ export function OrderModal({
         // const url = 'https://web.whatsapp.com/send?phone=87998199329&text=edu&app_absent=0'
         // window.open(url)
 
-        // const data: Uint8Array = await render(receipt);
+        const data: Uint8Array = await render(receipt);
 
 
         // @ts-ignore

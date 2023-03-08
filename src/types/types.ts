@@ -364,7 +364,7 @@ export interface iDeliveryFees {
 }
 
 export type iOrdersWithFKData = iOrder['data'] & {
-    payment_methods: iPaymentMethods['data'];
+    payment_methods: iPaymentMethod['data'];
     order_types: iOrderTypes['data'];
     clients: {
         id: number;

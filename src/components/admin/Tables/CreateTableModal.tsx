@@ -1,12 +1,9 @@
 import { TableContext } from "@/src/contexts/TableControlContext";
-import { iTable } from "@/src/types/types";
 import * as Dialog from '@radix-ui/react-dialog';
-import { Dispatch, SetStateAction, useContext, useState } from "react";
+import { useContext, useState } from "react";
 import { FiX } from "react-icons/fi";
 import InputWithLabel from "../../InputWithLabel";
 import { CardapioDigitalButton } from "../cardapio-digital/CardapioDigitalButton";
-import Table from "./Table";
-
 interface iCreateTableModalProps {
 
 }

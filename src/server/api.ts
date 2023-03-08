@@ -16,6 +16,15 @@ export const serverURL = dev
     ? 'http://localhost:3000'
     : 'https://www.nexteats.com.br/';
 
+export const whatsappRestApi = axios.create({
+    baseURL: 'http://localhost:3001/',
+    timeout: 100000,
+    headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,PATCH,OPTIONS',
+    },
+});
+
 export const api = axios.create({
     baseURL: serverURL,
 });

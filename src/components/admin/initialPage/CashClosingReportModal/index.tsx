@@ -69,7 +69,6 @@ export default function CashClosingReportModal({
         setOpenCashBoxClosingReportModal(false)
     }
 
-
     interface Payment {
         payment_method: string;
         value: number;

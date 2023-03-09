@@ -253,6 +253,13 @@ export function OrderModal({
                                     </div>
                                 </>
                             ) : null}
+                            <p className={`${textStyles}`}>
+                                Metódo de P. :
+                                <strong>
+                                    {' '}{orderFound?.payment_methods.name}
+                                </strong>
+
+                            </p>
 
                             <Dialog.Description
                                 className={`${descriptionsStyles}`}

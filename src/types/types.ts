@@ -132,6 +132,13 @@ export interface iDeliveryFee {
 export interface iDeliveryFees {
     data: Array<Database['public']['Tables']['delivery_fees']['Row']>;
 }
+export interface iAdditionalCategory {
+    data: Database['public']['Tables']['additional_categories']['Row'];
+}
+
+export interface iAdditionalCategories {
+    data: Array<Database['public']['Tables']['additional_categories']['Row']>;
+}
 
 // ==================   INSERTS  =====================
 export interface iInsertDeliveryFee {

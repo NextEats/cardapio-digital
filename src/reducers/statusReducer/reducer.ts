@@ -26,6 +26,8 @@ export function statusReducer(state: iStatusReducer, action: any) {
 
     case statusReducerAction.GET_MODAL_DATA:
       return { ...state, orderId: action.payload.orderId };
+    case statusReducerAction.ADD_NEW_UNDER_REVIEW:
+      return { ...state, orders: [...state.orders, action.payload.order] };
 
     default:
       return state;

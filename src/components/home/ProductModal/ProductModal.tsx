@@ -126,7 +126,6 @@ export default function ProductModal() {
                     </div>
 
                     <ProductOptions product_id={selectedProduct.state} />
-
                     <div className="flex flex-col gap-3 mt-12">
                         <Additionals
                             dispatch={additionalsDispatch}

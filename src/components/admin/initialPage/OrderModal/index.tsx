@@ -62,7 +62,7 @@ export function OrderModal({
     );
 
     const descriptionsStyles =
-        'text-sm font-semibold text-black text-center mb-3 mt-6';
+        'text-sm font-semibold text-black text-center mb-3 mt-2';
     const textStyles = 'text-sm font-semibold text-black text-left leading-6';
 
     const orderFound = ordersState.orders.find(
@@ -191,16 +191,13 @@ export function OrderModal({
                             </Dialog.Description>
                             <div>
                                 <p className={`${textStyles} text`}>
-                                    Restaurante:
-                                    <strong>{restaurant!.name}</strong>
+                                    Restaurante: <strong>{restaurant!.name}</strong>
                                 </p>
                                 <p className={`${textStyles}`}>
-                                    Nº do pedido:
-                                    <strong> {orderFound?.id} </strong>
+                                    Nº do pedido: <strong> {orderFound?.id} </strong>
                                 </p>
                                 <p className={`${textStyles}`}>
-                                    Data:
-                                    <strong>{orderDateFormated}</strong>
+                                    Data: <strong>{orderDateFormated}</strong>
                                 </p>
                             </div>
 
@@ -213,65 +210,42 @@ export function OrderModal({
                                     </Dialog.Description>
 
                                     <div>
-                                        <p
-                                            className={`${textStyles} text-left `}
-                                        >
-                                            &nbsp; Nome:
-                                            <strong>
-                                                {orderFound?.clients?.name}
-                                            </strong>
-                                            &nbsp;
+                                        <p className={`${textStyles} text-left `} >
+                                            Nome: <strong> {orderFound?.clients?.name}</strong>
                                         </p>
-                                        <p
-                                            className={`${textStyles} font-sans text-left `}
-                                        >
-                                            &nbsp; Telefone:
-                                            <strong>
-                                                {
-                                                    orderFound?.clients.contacts
-                                                        ?.phone
-                                                }
-                                            </strong>
-                                            &nbsp;
+                                        <p className={`${textStyles} font-sans text-left `} >
+                                            Telefone: <strong> {orderFound?.clients.contacts?.phone} </strong>
                                         </p>
-                                        <p
-                                            className={`${textStyles} text-left `}
-                                        >
-                                            &nbsp; Email:
-                                            <strong>
-                                                {
-                                                    orderFound?.clients.contacts
-                                                        ?.email
-                                                }
-                                            </strong>
-                                            &nbsp;
-                                        </p>
+                                        {/* <p className={`${textStyles} text-left `}>
+                                            Email:<strong>    {orderFound?.clients.contacts?.email}</strong>
+                                           
+                                        </p> */}
                                         <p className={`${textStyles}`}>
-                                            &nbsp; Endereço:&nbsp;
+                                            Endereço:
                                             <strong>
-                                                &nbsp;
+
                                                 {address.logradouro},
                                                 {
                                                     orderFound?.clients
                                                         .addresses?.number
                                                 }
-                                                &nbsp;
+
                                             </strong>
-                                            &nbsp;
+
                                         </p>
                                         <p className={`${textStyles}`}>
-                                            &nbsp; Bairro:
+                                            Bairro:
                                             <strong> {address.bairro} </strong>
-                                            &nbsp;
+
                                         </p>
                                         <p className={`${textStyles}`}>
-                                            &nbsp; Cidade:&nbsp;
+                                            Cidade:
                                             <strong>
-                                                &nbsp;
+
                                                 {address.localidade},
-                                                {address.uf}&nbsp;
+                                                {address.uf}
                                             </strong>
-                                            &nbsp;
+
                                         </p>
                                     </div>
                                 </>
@@ -283,7 +257,7 @@ export function OrderModal({
                                 Detalhes do pedido
                             </Dialog.Description>
 
-                            <table className="mb-4 w-full">
+                            <table className="mb-2 w-full">
                                 <thead>
                                     <tr>
                                         <td className={`${textStyles} `}>
@@ -345,7 +319,6 @@ export function OrderModal({
                                                             }
                                                         />
                                                     </strong>
-                                                    &nbsp;
                                                 </td>
                                                 {/* {orderProductByProductId?.observation ? (
                                                 ): null} */}
@@ -356,7 +329,7 @@ export function OrderModal({
                             </table>
 
                             <div>
-                                <p className="grid grid-cols-2 items-center gap-20">
+                                <p className="grid grid-cols-2 items-center gap-10">
                                     <span className={`${textStyles}`}>
                                         sub-total:
                                     </span>
@@ -369,7 +342,7 @@ export function OrderModal({
                                     </span>
                                 </p>
                                 {orderFound?.delivery_fees ? (
-                                    <p className="grid grid-cols-2 items-center gap-20">
+                                    <p className="grid grid-cols-2 items-center gap-10">
                                         <span className={`${textStyles} `}>
                                             Taxa de entrega:
                                         </span>
@@ -382,7 +355,7 @@ export function OrderModal({
                                     </p>
                                 ) : null}
 
-                                <p className="grid grid-cols-2 items-center gap-20">
+                                <p className="grid grid-cols-2 items-center gap-10">
                                     <span className={`${textStyles}`}>
                                         Total a pagar:
                                     </span>

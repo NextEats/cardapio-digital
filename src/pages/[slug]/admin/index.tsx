@@ -154,7 +154,9 @@ export default function AdminHomepage({
         {}
     );
 
-    const [ordersState, ordersDispatch] = useReducer<(state: iStatusReducer, action: any) => iStatusReducer>(statusReducer, {
+    const [ordersState, ordersDispatch] = useReducer<
+        (state: iStatusReducer, action: any) => iStatusReducer
+    >(statusReducer, {
         orders: orders,
         isOpenOrderModal: false,
         orderId: 0,
@@ -175,9 +177,9 @@ export default function AdminHomepage({
             const selectedProduct = productIds.map(
                 (productId) =>
                     products[
-                    products.findIndex(
-                        (product) => productId === product.id
-                    )
+                        products.findIndex(
+                            (product) => productId === product.id
+                        )
                     ]
             );
 
@@ -208,7 +210,6 @@ export default function AdminHomepage({
             return 0;
         }
     }
-
 
     // const [audio] = useState(new Audio('/alertAudio.mp3'));
     // const [newPlay, setNewPlay] = useState(false);
@@ -279,7 +280,7 @@ export default function AdminHomepage({
     return (
         <AdminWrapper>
             <div className="flex flex-col gap-8">
-                <button className='play flex-none' hidden></button>
+                <button className="play flex-none" hidden></button>
                 <CashBoxButtons
                     cashBoxState={cashBoxState}
                     restaurantId={restaurant.id}

@@ -163,8 +163,32 @@ export interface Database {
   }
   public: {
     Tables: {
+      additional_categories: {
+        Row: {
+          category_order: number | null
+          created_at: string | null
+          id: number
+          name: string | null
+          restaurant_id: number
+        }
+        Insert: {
+          category_order?: number | null
+          created_at?: string | null
+          id?: number
+          name?: string | null
+          restaurant_id: number
+        }
+        Update: {
+          category_order?: number | null
+          created_at?: string | null
+          id?: number
+          name?: string | null
+          restaurant_id?: number
+        }
+      }
       additionals: {
         Row: {
+          additional_category_id: number | null
           created_at: string | null
           id: number
           name: string
@@ -173,6 +197,7 @@ export interface Database {
           restaurant_id: number | null
         }
         Insert: {
+          additional_category_id?: number | null
           created_at?: string | null
           id?: number
           name: string
@@ -181,6 +206,7 @@ export interface Database {
           restaurant_id?: number | null
         }
         Update: {
+          additional_category_id?: number | null
           created_at?: string | null
           id?: number
           name?: string
@@ -951,6 +977,7 @@ export interface Database {
           created_at: string | null
           id: number
           is_waiter: boolean
+          name: string | null
           restaurant_id: number
           user_id: string
         }
@@ -958,6 +985,7 @@ export interface Database {
           created_at?: string | null
           id?: number
           is_waiter?: boolean
+          name?: string | null
           restaurant_id: number
           user_id: string
         }
@@ -965,6 +993,7 @@ export interface Database {
           created_at?: string | null
           id?: number
           is_waiter?: boolean
+          name?: string | null
           restaurant_id?: number
           user_id?: string
         }
@@ -1152,6 +1181,15 @@ export interface Database {
       [_ in never]: never
     }
     Functions: {
+      can_insert_object: {
+        Args: {
+          bucketid: string
+          name: string
+          owner: string
+          metadata: Json
+        }
+        Returns: undefined
+      }
       extension: {
         Args: {
           name: string

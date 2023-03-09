@@ -17,8 +17,6 @@ export default function Additionals({
     state,
     dispatch,
 }: iAdditionalsProps) {
-    // Import hook here to fetch data
-
     function handleSelectAdditional(additional: iAdditional['data']) {
         dispatch(selectNewAdditionalAction(additional));
     }

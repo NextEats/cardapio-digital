@@ -42,11 +42,11 @@ function CategoriesNavbar({ groupedProductsData }: any) {
                     <button
                         className={buttonClasses}
                         onClick={() => {
-                            scrollTo(toNormalForm(category.category_name));
+                            scrollTo(toNormalForm(category.name));
                         }}
                         key={index}
                     >
-                        {category.category_name}
+                        {category.name}
                     </button>
                 );
             })}
@@ -74,12 +74,9 @@ function ProductsHorizontalList({ category }: { category: any }) {
     const selectedProduct = useContext(DigitalMenuContext).selectedProduct;
 
     return (
-        <div
-            id={toNormalForm(category.category_name)}
-            className="mb-12 scroll-mt-24"
-        >
+        <div id={toNormalForm(category.name)} className="mb-12 scroll-mt-24">
             <h2 className="text-2xl mb-3 mt-5 font-semibold text-gray-700">
-                {category.category_name}
+                {category.name}
             </h2>
             <div className="whitespace-nowrap overflow-auto scrollbar-custom">
                 {category.products.map((product: any, index: any) => {

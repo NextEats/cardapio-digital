@@ -394,6 +394,7 @@ export default function AdminHomepage({
                     <OrderModal
                         printComponent={printComponent}
                         ordersState={ordersState}
+                        ordersGroupedByOrderStatus={ordersGroupedByOrderStatus}
                         restaurant={restaurant}
                         ordersProducts={ordersProducts}
                         products={products}

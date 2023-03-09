@@ -33,9 +33,11 @@ export default function TableAdditionals() {
 
     const additionalByProductId = additionals.filter((a) => {
         return productAdditionals.some(
-            (pa) => pa.id === a.id && pa.product_id === viewProduct?.id
+            (pa) => pa.additional_id === a.id && pa.product_id === viewProduct?.id
         );
     });
+
+    console.log(productAdditionals)
 
     return (
         <>

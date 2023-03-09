@@ -2,6 +2,7 @@ import {
     iAdditionals,
     iInsertOrdersProducts,
     iInsertProducts,
+    iOrdersWithFKData,
     iRestaurantWithFKData,
 } from '@/src/types/types';
 import * as Dialog from '@radix-ui/react-dialog';
@@ -19,6 +20,7 @@ import ReactToPrint from 'react-to-print';
 
 interface iOrderModalProps {
     ordersState: iStatusReducer;
+    ordersGroupedByOrderStatus: { [key: string]: iOrdersWithFKData[] };
     ordersDispatch: Dispatch<any>;
     restaurant: iRestaurantWithFKData;
     ordersProducts: iInsertOrdersProducts['data'];
@@ -30,6 +32,7 @@ interface iOrderModalProps {
 export function OrderModal({
     ordersDispatch,
     ordersProducts,
+    ordersGroupedByOrderStatus,
     ordersState,
     products,
     restaurant,
@@ -374,27 +377,28 @@ export function OrderModal({
                             </div>
 
                             <div className="flex flex-1 flex-col items-center justify-end gap-3 mt-5 hideButtonToPrint">
-                                {orderFound?.order_status.status_name ===
-                                    'em análise' ? (
-                                    <ReactToPrint
-                                        copyStyles={true}
-                                        content={() => printComponent.current}
-                                        onAfterPrint={() =>
-                                            moveToEmProduçãoCard(
-                                                orderFound?.id!
-                                            )
-                                        }
-                                        trigger={() => {
-                                            return (
-                                                <CardapioDigitalButton
-                                                    name="Imprimir e aceitar o pedido"
-                                                    w="w-full"
-                                                    h="h-10"
-                                                />
-                                            );
-                                        }}
-                                    />
-                                ) : null}
+                                {!ordersGroupedByOrderStatus["em análise"] ? null :
+                                    ordersGroupedByOrderStatus["em análise"].some(o => o.id === orderFound?.id)
+                                        ? (
+                                            <ReactToPrint
+                                                copyStyles={true}
+                                                content={() => printComponent.current}
+                                                onAfterPrint={() =>
+                                                    moveToEmProduçãoCard(
+                                                        orderFound?.id!
+                                                    )
+                                                }
+                                                trigger={() => {
+                                                    return (
+                                                        <CardapioDigitalButton
+                                                            name="Imprimir e aceitar o pedido"
+                                                            w="w-full"
+                                                            h="h-10"
+                                                        />
+                                                    );
+                                                }}
+                                            />
+                                        ) : null}
                                 <ReactToPrint
                                     content={() => printComponent.current}
                                     trigger={() => {

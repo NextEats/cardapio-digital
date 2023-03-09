@@ -16,12 +16,14 @@ import { BarChart } from '../../../../components/admin/relatorios/Charts/BarChar
 import { DoughnutChart } from '../../../../components/admin/relatorios/Charts/DoughnutChart';
 import { HorizontalGraphics } from '../../../../components/admin/relatorios/Charts/HorizontalGraphics';
 import {
+    iAdditionals,
     iOrdersProducts,
     iOrdersStatus,
     iOrdersWithFKData,
     iProductCategories,
     iProducts,
 } from '../../../../types/types';
+import { getAdditionalsByRestaurantIdFetch } from '@/src/fetch/additionals/getAdditionals';
 
 interface DailyRevenue {
     date: Date;
@@ -34,6 +36,7 @@ interface iReportsProps {
     productCategories: iProductCategories['data'];
     ordersProducts: iOrdersProducts['data'];
     ordersStatus: iOrdersStatus['data'];
+    additionals: iAdditionals['data'];
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
@@ -45,6 +48,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     const products = await getProductsByRestaurantIdFetch(restaurant.id);
     const ordersStatus = await getOrderStatusFetch();
     const ordersProducts = await getOrdersProductsFetch();
+    const additionals = await getAdditionalsByRestaurantIdFetch(restaurant.id);
 
     return {
         props: {
@@ -53,6 +57,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
             ordersProducts,
             productCategories,
             ordersStatus,
+            additionals,
         },
     };
 };
@@ -63,6 +68,7 @@ export default function Reports({
     products,
     ordersProducts,
     ordersStatus,
+    additionals,
 }: iReportsProps) {
     const ordersGroupedByOrderStatus = orders.reduce(
         (acc: { [key: string]: iOrdersWithFKData[] }, obj) => {
@@ -209,7 +215,7 @@ export default function Reports({
                     />
                     {/* <button onClick={handleFilterClick}>Filter</button> */}
                 </div>
-                <GlobalValuesCard globalValuesData={globalValuesData} />
+                <GlobalValuesCard additionals={additionals} globalValuesData={globalValuesData} />
 
                 <div className="xl:grid  xl:grid-cols-xlcharts xl:max-w-full gap-5 xl: mb-8">
                     {/* <LineChart

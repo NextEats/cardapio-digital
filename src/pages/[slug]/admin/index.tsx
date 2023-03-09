@@ -40,6 +40,7 @@ import { getOrdersProductsData } from '@/src/helpers/getOrdersProductsData';
 import { api, supabase } from '@/src/server/api';
 import { createServerSupabaseClient } from '@supabase/auth-helpers-nextjs';
 import 'react-toastify/dist/ReactToastify.css';
+import { addNewUnderReviewAction } from '@/src/reducers/statusReducer/action';
 
 interface iAdminHomePageProps {
     ordersData: iOrdersWithFKData[];
@@ -210,24 +211,42 @@ export default function AdminHomepage({
         }
     }
 
-    // const [audio] = useState(new Audio('/alertAudio.mp3'));
-    // const [newPlay, setNewPlay] = useState(false);
+    useEffect(() => {
+        const audio = new Audio('/alertAudio.mp3');
+        let intervalId: number | undefined | any; // variável para armazenar o id do setInterval
 
-    // useEffect(() => {
-    //     if (newPlay) {
-    //         audio.play();
-    //         setNewPlay(false);
-    //     }
-    // }, [newPlay, audio]);
+        if (ordersGroupedByOrderStatus['em análise']) {
+            intervalId = setInterval(() => {
+                if (ordersGroupedByOrderStatus['em análise'] === undefined) {
+                    clearInterval(intervalId);
+                    return;
+                }
+                if (audio.paused === true) audio.pause();
+                audio.play();
+            }, 1000)
+        }
+
+        if (ordersGroupedByOrderStatus['em análise'] === undefined) {
+            clearInterval(intervalId); // se ordersGroupedByOrderStatus['em análise'] é undefined, pare o setInterval
+            audio.pause();
+        }
+
+        // limpa o setInterval quando o componente é desmontado
+        return () => clearInterval(intervalId);
+    }, [ordersGroupedByOrderStatus]);
+
 
     useMemo(() => {
-        async function newOrder() {
+        async function newOrder(payload: any) {
             const getNewOrder = await api.get(`/api/orders/${restaurant.id}`);
             // TODO1 Enviar mensagem de "seu pedido foi recebido com sucesso"
-            // setNewPlay(false);
             const orderData: iOrdersWithFKData[] = getNewOrder.data
             const ordersFilterend = orderData.filter(o => o.cash_box_id === cashBoxState?.id)
             setOrders(ordersFilterend);
+
+            const findNewOrder = ordersFilterend.find(o => o.id === payload.new.id)
+            if (findNewOrder)
+                ordersDispatch(addNewUnderReviewAction(findNewOrder!))
         }
         const channel = supabase
             .channel('db-changes')
@@ -239,8 +258,7 @@ export default function AdminHomepage({
                     table: 'orders',
                 },
                 (payload: any) => {
-                    newOrder();
-                    console.log("payload22222")
+                    newOrder(payload);
                 }
             )
             .subscribe();

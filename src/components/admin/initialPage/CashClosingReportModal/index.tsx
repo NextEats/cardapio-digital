@@ -66,6 +66,7 @@ export default function CashClosingReportModal({
         const cashBox = await api.post('api/cash_boxes/close', {
             restaurant_id: restaurantId,
         });
+        setOpenCashBoxClosingReportModal(false)
     }
 
 

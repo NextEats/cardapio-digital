@@ -57,13 +57,6 @@ export default function CashBoxButtons({
                 disabled={cashBoxState === undefined}
                 onClick={() => openCashBoxReportToCloseCashBox()}
             />
-            {/* <CardapioDigitalButton
-                name="Fechar caixa"
-                h="h-10"
-                w="w-40"
-                disabled={cashBoxState === undefined}
-                onClick={() => handleCloseCashBox()}
-            /> */}
 
             <CashClosingReportModal
                 cashBoxState={cashBoxState}

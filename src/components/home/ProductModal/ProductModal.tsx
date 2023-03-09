@@ -34,7 +34,7 @@ export default function ProductModal() {
     }, [selectedProduct?.state, selectedProduct]);
 
     const { dispatch: additionalsDispatch, state: additionalsState } =
-        useAdditionals(productData?.id);
+        useAdditionals(selectedProduct?.state ? selectedProduct?.state : '0');
 
 
 

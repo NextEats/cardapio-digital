@@ -108,7 +108,7 @@ function ProductsHorizontalList({ category }: { category: any }) {
 
                             <div className="mt-2">
                                 <span className="block before:content-['R$'] text-md font-semibold">
-                                    &nbsp;{product.price}
+                                    {product.price}
                                 </span>
                             </div>
                         </div>

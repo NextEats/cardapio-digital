@@ -37,6 +37,7 @@ import { OrderModal } from '@/src/components/admin/initialPage/OrderModal';
 import LoadingSpinner from '@/src/components/LoadingSpinner';
 import { getAdditionalsByRestaurantIdFetch } from '@/src/fetch/additionals/getAdditionals';
 import { getOrdersProductsData } from '@/src/helpers/getOrdersProductsData';
+import { addNewUnderReviewAction } from '@/src/reducers/statusReducer/action';
 import { api, supabase } from '@/src/server/api';
 import { createServerSupabaseClient } from '@supabase/auth-helpers-nextjs';
 import 'react-toastify/dist/ReactToastify.css';
@@ -44,7 +45,7 @@ import 'react-toastify/dist/ReactToastify.css';
 interface iAdminHomePageProps {
     ordersData: iOrdersWithFKData[];
     orderStatuss: iInsertOrderStatuss['data'];
-    ordersProducts: iOrdersProducts['data'];
+    ordersProductsData: iOrdersProducts['data'];
     products: iProducts['data'];
     clients: iInsertClients['data'];
     contacts: iInsertContacts['data'];
@@ -103,7 +104,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     return {
         props: {
             ordersData: await getOrdersByRestaurantIdFetch(restaurant.id),
-            ordersProducts: await getOrdersProductsFetch(),
+            ordersProductsData: await getOrdersProductsFetch(),
             products: await getProductsByRestaurantIdFetch(restaurant.id),
             clients: await getclientsFetch(),
             contacts: await getContactsFetch(),
@@ -117,12 +118,14 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
 export default function AdminHomepage({
     ordersData,
-    ordersProducts,
+    ordersProductsData,
     products,
     cashBoxes,
     additionals,
     restaurant,
 }: iAdminHomePageProps) {
+    const [ordersProducts, setOrdersProducts] =
+        useState<iOrdersProducts['data']>(ordersProductsData);
     const [orders, setOrders] = useState<iOrdersWithFKData[]>(ordersData);
     const cashBoxOpened = cashBoxes.find((cb) => cb.is_open === true);
     const [cashBoxState, setCashBoxState] = useState<
@@ -211,22 +214,45 @@ export default function AdminHomepage({
         }
     }
 
-    // const [audio] = useState(new Audio('/alertAudio.mp3'));
-    // const [newPlay, setNewPlay] = useState(false);
+    useEffect(() => {
+        const audio = new Audio('/alertAudio.mp3');
+        let intervalId: number | undefined | any; // variável para armazenar o id do setInterval
 
-    // useEffect(() => {
-    //     if (newPlay) {
-    //         audio.play();
-    //         setNewPlay(false);
-    //     }
-    // }, [newPlay, audio]);
+        if (ordersGroupedByOrderStatus['em análise']) {
+            intervalId = setInterval(() => {
+                if (ordersGroupedByOrderStatus['em análise'] === undefined) {
+                    clearInterval(intervalId);
+                    return;
+                }
+                if (audio.paused === true) audio.pause();
+                audio.play();
+            }, 1000);
+        }
+
+        if (ordersGroupedByOrderStatus['em análise'] === undefined) {
+            clearInterval(intervalId); // se ordersGroupedByOrderStatus['em análise'] é undefined, pare o setInterval
+            audio.pause();
+        }
+
+        // limpa o setInterval quando o componente é desmontado
+        return () => clearInterval(intervalId);
+    }, [ordersGroupedByOrderStatus]);
 
     useMemo(() => {
-        async function newOrder() {
+        async function newOrder(payload: any) {
             const getNewOrder = await api.get(`/api/orders/${restaurant.id}`);
             // TODO1 Enviar mensagem de "seu pedido foi recebido com sucesso"
-            // setNewPlay(false);
-            setOrders(getNewOrder.data);
+            const orderData: iOrdersWithFKData[] = getNewOrder.data;
+            const ordersFilterend = orderData.filter(
+                (o) => o.cash_box_id === cashBoxState?.id
+            );
+            setOrders(ordersFilterend);
+
+            const findNewOrder = ordersFilterend.find(
+                (o) => o.id === payload.new.id
+            );
+            if (findNewOrder)
+                ordersDispatch(addNewUnderReviewAction(findNewOrder!));
         }
         const channel = supabase
             .channel('db-changes')
@@ -238,13 +264,32 @@ export default function AdminHomepage({
                     table: 'orders',
                 },
                 (payload: any) => {
-                    newOrder();
+                    newOrder(payload);
                 }
             )
             .subscribe();
-    }, [restaurant]);
+    }, [restaurant, cashBoxState]);
 
+    async function newOrdersProducts() {
+        const getNewOrdersProducts = await getOrdersProductsFetch();
+        setOrdersProducts(getNewOrdersProducts);
+    }
     const channel = supabase
+        .channel('db-orders_products')
+        .on(
+            'postgres_changes',
+            {
+                event: '*',
+                schema: 'public',
+                table: 'orders_products',
+            },
+            (payload: any) => {
+                newOrdersProducts();
+            }
+        )
+        .subscribe();
+
+    supabase
         .channel('db-cash')
         .on(
             'postgres_changes',
@@ -280,12 +325,12 @@ export default function AdminHomepage({
     return (
         <AdminWrapper>
             <div className="flex flex-col gap-8">
-                <button className="play flex-none" hidden></button>
                 <CashBoxButtons
                     cashBoxState={cashBoxState}
                     restaurantId={restaurant.id}
                     ordersGroupedByOrderStatus={ordersGroupedByOrderStatus}
                     cashBoxes={cashBoxes}
+                    billing={billing()}
                 />
 
                 <div className="grid 2xs:grid-cols-2 lg:grid-cols-3 gap-3">

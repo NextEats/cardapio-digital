@@ -15,6 +15,7 @@ interface iButtonProps {
     | 'Adicionar novo item'
     | 'Imprimir'
     | 'Imprimir e aceitar o pedido'
+    | 'Imprimir e fechar o caixa'
     | 'Nova Mesa'
     | 'Pedir'
     | 'Adicionar cliente'
@@ -57,6 +58,7 @@ export function CardapioDigitalButton({
                     name === 'Editar' ||
                     name === 'Filtrar' ||
                     name === 'Pedir' ||
+                    name === 'Imprimir e fechar o caixa' ||
                     name === 'Imprimir e aceitar o pedido'
                     ? 'hover:bg-blue-700 bg-blue-500'
                     : ''

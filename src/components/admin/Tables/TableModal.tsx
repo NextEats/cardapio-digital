@@ -38,10 +38,11 @@ export default function TableModal() {
             order_type_id: 3,
             cash_box_id: foundCashBoxes.id,
             order_status_id: 3,
+            payment_method_id: 7,
         });
 
         if (orderData === null) return;
-        // if (ps.table_id !== openedTableModal?.id) return;
+
         const productsOfTheTable = tableState.productsSelected.filter(p => p.table_id === openedTableModal!.id)
 
         productsOfTheTable.forEach(async (ps) => {

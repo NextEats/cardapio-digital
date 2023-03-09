@@ -2,12 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-@media print {
-    .hideButtonToPrint {
-        display: none;
-    }
-}
-
 .scrollbar-custom::-webkit-scrollbar {
     width: 8px;
     height: 8px;
@@ -43,6 +37,7 @@
     background-color: #68d391;
 }
 
+
 .animated {
     -webkit-animation-duration: 1s;
     animation-duration: 1s;
@@ -63,6 +58,15 @@
 .fadeOut {
     -webkit-animation-name: fadeOut;
     animation-name: fadeOut;
+}
+
+@media print {
+    .hideButtonToPrint {
+        display: none;
+    }
+    .hideShadowToPrint {
+        box-shadow: none;
+    }
 }
 
 @keyframes fadeIn {

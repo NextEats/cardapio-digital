@@ -42,7 +42,13 @@ export function getModalDataAction(orderId: number) {
         payload: { orderId },
     }
 }
-export function addNewUnderReviewAtion(order: iInsertOrder["data"]) {
+export function addNewUnderReviewAction(order: iInsertOrder["data"]) {
+    return {
+        type: statusReducerAction.ADD_NEW_UNDER_REVIEW,
+        payload: { order },
+    }
+}
+export function addNewOrderAction(order: iInsertOrder["data"]) {
     return {
         type: statusReducerAction.ADD_NEW_UNDER_REVIEW,
         payload: { order },

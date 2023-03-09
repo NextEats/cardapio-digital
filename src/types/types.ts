@@ -132,6 +132,13 @@ export interface iDeliveryFee {
 export interface iDeliveryFees {
     data: Array<Database['public']['Tables']['delivery_fees']['Row']>;
 }
+export interface iAdditionalCategory {
+    data: Database['public']['Tables']['additional_categories']['Row'];
+}
+
+export interface iAdditionalCategories {
+    data: Array<Database['public']['Tables']['additional_categories']['Row']>;
+}
 
 // ==================   INSERTS  =====================
 export interface iInsertDeliveryFee {
@@ -365,7 +372,7 @@ export interface iDeliveryFees {
 }
 
 export type iOrdersWithFKData = iOrder['data'] & {
-    payment_methods: iPaymentMethods['data'];
+    payment_methods: iPaymentMethod['data'];
     order_types: iOrderTypes['data'];
     clients: {
         id: number;

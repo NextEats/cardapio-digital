@@ -276,6 +276,7 @@ export interface iGroupedProducts {
 
 export type ProductWithCategory = iProduct['data'] & {
     category_name: string;
+    category_order: number;
 };
 
 export interface iProductOption {
@@ -392,7 +393,7 @@ export type iOrdersTablesWithFkData = iOrdersTable['data'] & {
 };
 export interface iDigitalMenuData {
     restaurant: iRestaurantWithFKData;
-    groupedProducts: iGroupedProducts | undefined;
+    groupedProducts: any;
 }
 
 export interface iUserDetails {

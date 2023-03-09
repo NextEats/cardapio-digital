@@ -15,7 +15,7 @@ export function filterOptionsSelected({
                     {
                         id: item.id,
                         options: item.options.filter(
-                            (op) => op.selected === true
+                            (op) => op.selected && op.selected === true
                         ),
                     },
                 ]);

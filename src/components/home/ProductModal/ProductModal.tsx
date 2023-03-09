@@ -1,21 +1,26 @@
 import { DigitalMenuContext } from '@/src/contexts/DigitalMenuContext';
+import { filterOptionsSelected } from '@/src/helpers/filterOptionsSelected';
 import Image from 'next/image';
 import { MouseEvent, useContext, useEffect, useState } from 'react';
 import { BsArrowLeftCircle } from 'react-icons/bs';
 
 import { getProductWithFKData } from '@/src/fetch/products/getProductWithFKData';
+import { tSelectWithOptions } from '@/src/fetch/productSelects/getProductSelectWithOptions';
 import useAdditionals from '@/src/hooks/useAdditionals';
+import useProductSelectsWithOptions from '@/src/hooks/useProductSelectsWithOptions';
+import { supabase } from '@/src/server/api';
+import { iCashBox } from '@/src/types/types';
 import Additionals from './components/Additionals';
 import ProductOptions from './components/ProductOptions';
 import SubmitButtons from './components/SubmitButtons';
-import { supabase } from '@/src/server/api';
-import { iCashBox } from '@/src/types/types';
 
 export default function ProductModal() {
-    const selects = useContext(DigitalMenuContext).selects;
-    const restaurant = useContext(DigitalMenuContext).restaurant;
-
     const { selectedProduct, productReducer } = useContext(DigitalMenuContext);
+    const { productSelects, selectOption } = useProductSelectsWithOptions(
+        selectedProduct!.state!
+    );
+
+    const restaurant = useContext(DigitalMenuContext).restaurant;
 
     const [observation, setObservation] = useState('');
     const [productData, setProductData] = useState<any>(undefined);
@@ -56,9 +61,9 @@ export default function ProductModal() {
             currentCashBoxData![0] as unknown as iCashBox['data'];
 
         if (!currentCashBox) {
-            alert('O Pedido só pode ser feito se o caixa estiver aberto.')
-            return
-        };
+            alert('O Pedido só pode ser feito se o caixa estiver aberto.');
+            return;
+        }
 
         const additionals_data = additionalsState.quantityAdditionals.reduce(
             (acc: { quantity: number; additional_id: number }[], item) => {
@@ -78,7 +83,10 @@ export default function ProductModal() {
             payload: {
                 id: productData.id,
                 additionals: additionals_data,
-                selects: selects?.state,
+                selects: filterOptionsSelected({
+                    productsOptionsSelected:
+                        productSelects as unknown as tSelectWithOptions[],
+                }),
                 observation: observation,
                 quantity: 1,
             },
@@ -125,7 +133,11 @@ export default function ProductModal() {
                         </p>
                     </div>
 
-                    <ProductOptions product_id={selectedProduct.state} />
+                    <ProductOptions
+                        product_id={selectedProduct.state}
+                        productSelects={productSelects}
+                        selectOption={selectOption}
+                    />
                     <div className="flex flex-col gap-3 mt-12">
                         <Additionals
                             dispatch={additionalsDispatch}
@@ -145,15 +157,6 @@ export default function ProductModal() {
                     </form>
 
                     <SubmitButtons handleSubmit={handleSubmit} />
-
-                    {/* <SubmitButtons
-                        submitFunction={setProductData}
-                        productModal={null}
-                        price={20}
-                        quantity={2}
-                        setQuantity={setProductData}
-                        setPrice={setProductData}
-                    /> */}
                 </div>
             </div>
         </>

@@ -37,10 +37,10 @@ import { OrderModal } from '@/src/components/admin/initialPage/OrderModal';
 import LoadingSpinner from '@/src/components/LoadingSpinner';
 import { getAdditionalsByRestaurantIdFetch } from '@/src/fetch/additionals/getAdditionals';
 import { getOrdersProductsData } from '@/src/helpers/getOrdersProductsData';
+import { addNewUnderReviewAction } from '@/src/reducers/statusReducer/action';
 import { api, supabase } from '@/src/server/api';
 import { createServerSupabaseClient } from '@supabase/auth-helpers-nextjs';
 import 'react-toastify/dist/ReactToastify.css';
-import { addNewUnderReviewAction } from '@/src/reducers/statusReducer/action';
 
 interface iAdminHomePageProps {
     ordersData: iOrdersWithFKData[];
@@ -124,7 +124,8 @@ export default function AdminHomepage({
     additionals,
     restaurant,
 }: iAdminHomePageProps) {
-    const [ordersProducts, setOrdersProducts] = useState<iOrdersProducts["data"]>(ordersProductsData);
+    const [ordersProducts, setOrdersProducts] =
+        useState<iOrdersProducts['data']>(ordersProductsData);
     const [orders, setOrders] = useState<iOrdersWithFKData[]>(ordersData);
     const cashBoxOpened = cashBoxes.find((cb) => cb.is_open === true);
     const [cashBoxState, setCashBoxState] = useState<
@@ -156,7 +157,9 @@ export default function AdminHomepage({
         {}
     );
 
-    const [ordersState, ordersDispatch] = useReducer<(state: iStatusReducer, action: any) => iStatusReducer>(statusReducer, {
+    const [ordersState, ordersDispatch] = useReducer<
+        (state: iStatusReducer, action: any) => iStatusReducer
+    >(statusReducer, {
         orders: orders,
         isOpenOrderModal: false,
         orderId: 0,
@@ -177,9 +180,9 @@ export default function AdminHomepage({
             const selectedProduct = productIds.map(
                 (productId) =>
                     products[
-                    products.findIndex(
-                        (product) => productId === product.id
-                    )
+                        products.findIndex(
+                            (product) => productId === product.id
+                        )
                     ]
             );
 
@@ -223,7 +226,7 @@ export default function AdminHomepage({
                 }
                 if (audio.paused === true) audio.pause();
                 audio.play();
-            }, 1000)
+            }, 1000);
         }
 
         if (ordersGroupedByOrderStatus['em análise'] === undefined) {
@@ -235,18 +238,21 @@ export default function AdminHomepage({
         return () => clearInterval(intervalId);
     }, [ordersGroupedByOrderStatus]);
 
-
     useMemo(() => {
         async function newOrder(payload: any) {
             const getNewOrder = await api.get(`/api/orders/${restaurant.id}`);
             // TODO1 Enviar mensagem de "seu pedido foi recebido com sucesso"
-            const orderData: iOrdersWithFKData[] = getNewOrder.data
-            const ordersFilterend = orderData.filter(o => o.cash_box_id === cashBoxState?.id)
+            const orderData: iOrdersWithFKData[] = getNewOrder.data;
+            const ordersFilterend = orderData.filter(
+                (o) => o.cash_box_id === cashBoxState?.id
+            );
             setOrders(ordersFilterend);
 
-            const findNewOrder = ordersFilterend.find(o => o.id === payload.new.id)
+            const findNewOrder = ordersFilterend.find(
+                (o) => o.id === payload.new.id
+            );
             if (findNewOrder)
-                ordersDispatch(addNewUnderReviewAction(findNewOrder!))
+                ordersDispatch(addNewUnderReviewAction(findNewOrder!));
         }
         const channel = supabase
             .channel('db-changes')
@@ -266,7 +272,7 @@ export default function AdminHomepage({
 
     async function newOrdersProducts() {
         const getNewOrdersProducts = await getOrdersProductsFetch();
-        setOrdersProducts(getNewOrdersProducts)
+        setOrdersProducts(getNewOrdersProducts);
     }
     const channel = supabase
         .channel('db-orders_products')
@@ -278,28 +284,33 @@ export default function AdminHomepage({
                 table: 'orders_products',
             },
             (payload: any) => {
-                newOrdersProducts()
+                newOrdersProducts();
             }
         )
         .subscribe();
 
-    supabase.channel('db-cash').on('postgres_changes', {
-        event: '*',
-        schema: 'public',
-        table: 'cash_boxes',
-    },
-        (payload: any) => {
-            if (payload.eventType === 'UPDATE') {
-                setOrders([]);
-                setCashBoxState(undefined);
-                alert('Caixa fechado!');
+    supabase
+        .channel('db-cash')
+        .on(
+            'postgres_changes',
+            {
+                event: '*',
+                schema: 'public',
+                table: 'cash_boxes',
+            },
+            (payload: any) => {
+                if (payload.eventType === 'UPDATE') {
+                    setOrders([]);
+                    setCashBoxState(undefined);
+                    alert('Caixa fechado!');
+                }
+                if (payload.eventType === 'INSERT') {
+                    setCashBoxState(payload.new);
+                    alert('Caixa aberto!');
+                }
             }
-            if (payload.eventType === 'INSERT') {
-                setCashBoxState(payload.new);
-                alert('Caixa aberto!');
-            }
-        }
-    ).subscribe();
+        )
+        .subscribe();
 
     if (
         !ordersData ||

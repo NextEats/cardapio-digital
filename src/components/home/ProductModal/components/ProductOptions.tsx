@@ -1,30 +1,19 @@
-import { DigitalMenuContext } from '@/src/contexts/DigitalMenuContext';
-import { filterOptionsSelected } from '@/src/helpers/filterOptionsSelected';
-import useProductSelectsWithOptions from '@/src/hooks/useProductSelectsWithOptions';
-import { useContext, useMemo } from 'react';
 import SelectComponent from './SelectComponent';
 
 interface iProductOptions {
     product_id: string;
+    productSelects: any;
+    selectOption: any;
 }
 
-export default function ProductOptions({ product_id }: iProductOptions) {
-    const { productSelects, selectOption } =
-        useProductSelectsWithOptions(product_id);
-
-    const { selects } = useContext(DigitalMenuContext);
-
-    useMemo(() => {
-        selects?.set(
-            filterOptionsSelected({
-                productsOptionsSelected: productSelects,
-            })
-        );
-    }, []);
-
+export default function ProductOptions({
+    product_id,
+    productSelects,
+    selectOption,
+}: iProductOptions) {
     return (
         <div>
-            {productSelects.map((select, selectIndex) => (
+            {productSelects.map((select: any, selectIndex: any) => (
                 <SelectComponent
                     select={select}
                     key={selectIndex}

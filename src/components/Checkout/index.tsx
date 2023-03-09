@@ -1,6 +1,5 @@
 import { DigitalMenuContext } from '@/src/contexts/DigitalMenuContext';
 import { useContext, useState } from 'react';
-import { BsX } from 'react-icons/bs';
 import ContactInfoForm from './subcomponents/ContactInfoForm';
 import ProductsList from './subcomponents/ProductsList';
 import ThankYouPage from './subcomponents/ThankYou';
@@ -39,7 +38,6 @@ export default function Checkout() {
 
     return (
         <div className="overflow-auto w-screen h-screen fixed bg-white z-[500] flex justify-center items-center">
-            <BsX></BsX>
             <div className="w-full max-w-[600px] px-2">
                 <CurrentStepComponent />
             </div>

@@ -26,9 +26,9 @@ export async function SubmitForm({
             currentCashBoxData![0] as unknown as iCashBox['data'];
 
         if (!currentCashBox) {
-            alert('O Pedido só pode ser feito se o caixa estiver aberto.')
-            return
-        };
+            alert('O Pedido só pode ser feito se o caixa estiver aberto.');
+            return;
+        }
 
         const { data: addressData } = await supabase
             .from('addresses')
@@ -58,7 +58,6 @@ export async function SubmitForm({
 
         const client = clientData![0] as unknown as iClient['data'];
 
-
         const { data: orderData } = await supabase
             .from('orders')
             .insert({
@@ -74,16 +73,32 @@ export async function SubmitForm({
         const order = orderData![0] as unknown as iOrder['data'];
 
         products.state.forEach(async (product: any) => {
-            const { data: ordersProductsData } = await supabase
-                .from('orders_products')
-                .insert({
-                    order_id: order.id,
-                    product_id: product.id,
-                    selects_data: product.selects,
-                    observation: product.observation,
-                    additionals_data: product.additionals,
-                })
-                .select('*');
+            console.log('quantity', product.quantity);
+            if (product.quantity) {
+                for (let i = 0; i < product.quantity; i++) {
+                    const { data: ordersProductsData } = await supabase
+                        .from('orders_products')
+                        .insert({
+                            order_id: order.id,
+                            product_id: product.id,
+                            selects_data: product.selects,
+                            observation: product.observation,
+                            additionals_data: product.additionals,
+                        })
+                        .select('*');
+                }
+            } else {
+                const { data: ordersProductsData } = await supabase
+                    .from('orders_products')
+                    .insert({
+                        order_id: order.id,
+                        product_id: product.id,
+                        selects_data: product.selects,
+                        observation: product.observation,
+                        additionals_data: product.additionals,
+                    })
+                    .select('*');
+            }
         });
         try {
             await whatsappRestApi({

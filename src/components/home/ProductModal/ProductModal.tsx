@@ -25,9 +25,6 @@ export default function ProductModal() {
     const [observation, setObservation] = useState('');
     const [productData, setProductData] = useState<any>(undefined);
 
-    const { dispatch: additionalsDispatch, state: additionalsState } =
-        useAdditionals(productData?.id);
-
     useEffect(() => {
         if (selectedProduct?.state) {
             getProductWithFKData(selectedProduct).then((result) => {
@@ -35,6 +32,11 @@ export default function ProductModal() {
             });
         }
     }, [selectedProduct?.state, selectedProduct]);
+
+    const { dispatch: additionalsDispatch, state: additionalsState } =
+        useAdditionals(productData?.id);
+
+
 
     if (!productData || !selectedProduct?.state) {
         return <></>;

@@ -17,7 +17,7 @@ export const serverURL = dev
     : 'https://www.nexteats.com.br/';
 
 export const whatsappRestApi = axios.create({
-    baseURL: 'http://localhost:3001/',
+    baseURL: 'https://whatsapp-rest-api.herokuapp.com/',
     timeout: 100000,
     headers: {
         'Access-Control-Allow-Origin': '*',

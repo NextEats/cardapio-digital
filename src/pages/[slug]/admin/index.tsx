@@ -180,9 +180,9 @@ export default function AdminHomepage({
             const selectedProduct = productIds.map(
                 (productId) =>
                     products[
-                        products.findIndex(
-                            (product) => productId === product.id
-                        )
+                    products.findIndex(
+                        (product) => productId === product.id
+                    )
                     ]
             );
 
@@ -324,7 +324,7 @@ export default function AdminHomepage({
 
     return (
         <AdminWrapper>
-            <div className="flex flex-col gap-8">
+            <div className="flex flex-col gap-4">
                 <CashBoxButtons
                     cashBoxState={cashBoxState}
                     restaurantId={restaurant.id}
@@ -332,28 +332,6 @@ export default function AdminHomepage({
                     cashBoxes={cashBoxes}
                     billing={billing()}
                 />
-
-                <div className="grid 2xs:grid-cols-2 lg:grid-cols-3 gap-3">
-                    <Card
-                        color="red"
-                        name="Faturamento"
-                        value={`${billing()}`}
-                    />
-                    <Card
-                        color="green"
-                        name="Pedidos"
-                        value={
-                            ordersGroupedByOrderStatus['entregue']
-                                ? `${ordersGroupedByOrderStatus['entregue'].length}`
-                                : '0'
-                        }
-                    />
-                    <Card
-                        color="yellow"
-                        name="Produtos no Cardápio"
-                        value={products.length.toString()}
-                    />
-                </div>
 
                 <NewRequests
                     dispatch={ordersDispatch}
@@ -363,32 +341,30 @@ export default function AdminHomepage({
                     products={products}
                 />
 
-                <div className=" md:grid md:grid-cols-3 gap-4">
-                    <OrderStatusCard
-                        statusName="Em produção"
-                        dispatch={ordersDispatch}
-                        ordersState={ordersState}
-                        ordersGroupedByOrderStatus={ordersGroupedByOrderStatus}
-                        ordersProducts={ordersProducts}
-                        products={products}
-                    />
-                    <OrderStatusCard
-                        statusName="A caminho"
-                        dispatch={ordersDispatch}
-                        ordersState={ordersState}
-                        ordersGroupedByOrderStatus={ordersGroupedByOrderStatus}
-                        ordersProducts={ordersProducts}
-                        products={products}
-                    />
-                    <OrderStatusCard
-                        statusName="Entregue"
-                        dispatch={ordersDispatch}
-                        ordersState={ordersState}
-                        ordersGroupedByOrderStatus={ordersGroupedByOrderStatus}
-                        ordersProducts={ordersProducts}
-                        products={products}
-                    />
-                </div>
+                <OrderStatusCard
+                    statusName="Em produção"
+                    dispatch={ordersDispatch}
+                    ordersState={ordersState}
+                    ordersGroupedByOrderStatus={ordersGroupedByOrderStatus}
+                    ordersProducts={ordersProducts}
+                    products={products}
+                />
+                <OrderStatusCard
+                    statusName="A caminho"
+                    dispatch={ordersDispatch}
+                    ordersState={ordersState}
+                    ordersGroupedByOrderStatus={ordersGroupedByOrderStatus}
+                    ordersProducts={ordersProducts}
+                    products={products}
+                />
+                <OrderStatusCard
+                    statusName="Entregue"
+                    dispatch={ordersDispatch}
+                    ordersState={ordersState}
+                    ordersGroupedByOrderStatus={ordersGroupedByOrderStatus}
+                    ordersProducts={ordersProducts}
+                    products={products}
+                />
 
                 {ordersState.isOpenOrderModal ? (
                     <OrderModal

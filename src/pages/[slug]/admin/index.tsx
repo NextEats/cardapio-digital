@@ -20,7 +20,9 @@ import {
     iOrdersProducts,
     iOrdersWithFKData,
     iProducts,
+    iProductSelects,
     iRestaurantWithFKData,
+    iSelects,
 } from '../../../types/types';
 
 import { getAddressesFetch } from 'src/fetch/addresses/getAddresses';
@@ -41,6 +43,8 @@ import { addNewUnderReviewAction } from '@/src/reducers/statusReducer/action';
 import { api, supabase } from '@/src/server/api';
 import { createServerSupabaseClient } from '@supabase/auth-helpers-nextjs';
 import 'react-toastify/dist/ReactToastify.css';
+import { getProductSelectsFetch } from '@/src/fetch/productSelects/getProductSelects';
+import { getSelectsByRestaurantIdFetch } from '@/src/fetch/selects/getSelectsByRestaurantId';
 
 interface iAdminHomePageProps {
     ordersData: iOrdersWithFKData[];
@@ -52,6 +56,7 @@ interface iAdminHomePageProps {
     addresses: iInsertAddresses['data'];
     cashBoxes: iCashBoxes['data'];
     additionals: iAdditionals['data'];
+    selects: iSelects["data"];
     restaurant: iRestaurantWithFKData;
 }
 
@@ -70,10 +75,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
             },
         };
     } else {
-        const { data: userDetailsData } = await supabase
-            .from('user_details')
-            .select(
-                `
+        const { data: userDetailsData } = await supabase.from('user_details').select(
+            `
                     id,
                     restaurant_id,
                     user_id,
@@ -83,8 +86,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
                         slug
                     )
             `
-            )
-            .eq('user_id', session.user.id);
+        ).eq('user_id', session.user.id);
         if (userDetailsData) {
             const userDetailsTypedData = userDetailsData[0] as unknown as {
                 id: number;
@@ -111,6 +113,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
             addresses: await getAddressesFetch(),
             cashBoxes: await getCashBoxesByRestaurantIdFetch(restaurant.id),
             additionals: await getAdditionalsByRestaurantIdFetch(restaurant.id),
+            selects: await getSelectsByRestaurantIdFetch(restaurant.id),
             restaurant,
         },
     };
@@ -122,6 +125,7 @@ export default function AdminHomepage({
     products,
     cashBoxes,
     additionals,
+    selects,
     restaurant,
 }: iAdminHomePageProps) {
     const [ordersProducts, setOrdersProducts] =
@@ -375,6 +379,7 @@ export default function AdminHomepage({
                         ordersProducts={ordersProducts}
                         products={products}
                         additionals={additionals}
+                        selects={selects}
                         ordersDispatch={ordersDispatch}
                     />
                 ) : null}

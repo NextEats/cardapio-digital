@@ -52,9 +52,7 @@ export function OrderModal({
         (op) => op.order_id === ordersState.orderId
     );
     const productsFiltered = orderProductFiltered.map((op) => {
-        return products.find((p) => {
-            return p.id === op?.product_id;
-        });
+        return products.find((p) => p.id === op?.product_id);
     });
     const thereAnyObservation = orderProductFiltered.some(
         (op) => op.observation !== null

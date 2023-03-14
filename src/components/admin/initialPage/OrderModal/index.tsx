@@ -191,7 +191,7 @@ export function OrderModal({
                                     Restaurante: <strong>{restaurant!.name}</strong>
                                 </p>
                                 <p className={`${textStyles}`}>
-                                    Nº do pedido: <strong> {orderFound?.id} </strong>
+                                    Nº do pedido: <strong>  #{orderFound?.number.toString().padStart(4, '0')} </strong>
                                 </p>
                                 <p className={`${textStyles}`}>
                                     Data: <strong>{orderDateFormated}</strong>

@@ -154,11 +154,13 @@ export default function OrderStatusCard({
                                             height={26}
                                         />
                                     </td>
-                                    <td className="text-left text-sm font-medium px-2  max-w-20 truncate 2xs:table-cell md:hidden xl:table-cell">
+                                    <td className="text-left text-sm font-medium px-2  max-w-20 truncate 2xs:table-cell  xl:table-cell">
+                                        #{order.number.toString().padStart(4, '0')}
+                                    </td>
+                                    <td className={`${tdStyle} pl-2 text-left text-sm font-medium px-2  max-w-20 truncate 2xs:table-cell  xl:table-cell`}>
                                         {order.clients ? (
                                             <span className="">
-                                                {' '}
-                                                {order.clients.name}{' '}
+                                                {order.clients.name}
                                             </span>
                                         ) : (
                                             <span className="text-green-400 ">

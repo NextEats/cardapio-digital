@@ -13,6 +13,7 @@ import DigitalMenuModals from '@/src/components/DigitalMenuModals';
 import { tSelectWithOptions } from '@/src/fetch/productSelects/getProductSelectWithOptions';
 import { ProductsReducer } from '@/src/reducers/ProductsReducer/reducer';
 import { supabase } from '@/src/server/api';
+import Image from 'next/image';
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
     const restaurant = await getRestaurantBySlugFetch(context.query.slug);
@@ -79,6 +80,21 @@ export default function CardapioDigital({ data }: { data: iDigitalMenuData }) {
             </Head>
             <DigitalMenuModals />
             <DigitalMenuContent />
+
+            <footer className='flex flex-col items-center bg-slate-200 justify-center py-5'>
+                <p className='text-sm font-semibold'>Platafora de delivery desenvolvido por: </p>
+                <div className='flex items-center gap-2'>
+                    <Image
+                        className=''
+                        src={'/LogoPequeno_Laranja.png'}
+                        alt=''
+                        width={70}
+                        height={70}
+                    />
+                    <span className='text-2xl font-bold '>NextEats</span>
+                </div>
+                <span className='text-sm text-gray-500'>versão 1.0.0</span>
+            </footer>
         </DigitalMenuContext.Provider>
     );
 }

@@ -439,10 +439,12 @@ export interface Database {
       orders: {
         Row: {
           cash_box_id: number | null
+          change_value: number | null
           client_id: number | null
           created_at: string | null
           delivery_fee_id: number | null
           id: number
+          number: number
           order_status_id: number | null
           order_type_id: number
           payment_method_id: number | null
@@ -450,10 +452,12 @@ export interface Database {
         }
         Insert: {
           cash_box_id?: number | null
+          change_value?: number | null
           client_id?: number | null
           created_at?: string | null
           delivery_fee_id?: number | null
           id?: number
+          number?: number
           order_status_id?: number | null
           order_type_id: number
           payment_method_id?: number | null
@@ -461,10 +465,12 @@ export interface Database {
         }
         Update: {
           cash_box_id?: number | null
+          change_value?: number | null
           client_id?: number | null
           created_at?: string | null
           delivery_fee_id?: number | null
           id?: number
+          number?: number
           order_status_id?: number | null
           order_type_id?: number
           payment_method_id?: number | null

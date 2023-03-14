@@ -18,6 +18,8 @@ import {
     iInsertContacts,
     iInsertOrderStatuss,
     iOrdersProducts,
+    iOrdersTables,
+    iOrdersTablesWithFkData,
     iOrdersWithFKData,
     iProducts,
     iProductSelects,
@@ -45,6 +47,7 @@ import { createServerSupabaseClient } from '@supabase/auth-helpers-nextjs';
 import 'react-toastify/dist/ReactToastify.css';
 import { getProductSelectsFetch } from '@/src/fetch/productSelects/getProductSelects';
 import { getSelectsByRestaurantIdFetch } from '@/src/fetch/selects/getSelectsByRestaurantId';
+import { getOrdersTablesFetch } from '@/src/fetch/ordersTables/getOrdersTables';
 
 interface iAdminHomePageProps {
     ordersData: iOrdersWithFKData[];
@@ -57,6 +60,7 @@ interface iAdminHomePageProps {
     cashBoxes: iCashBoxes['data'];
     additionals: iAdditionals['data'];
     selects: iSelects["data"];
+    ordersTables: iOrdersTablesWithFkData[];
     restaurant: iRestaurantWithFKData;
 }
 
@@ -114,6 +118,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
             cashBoxes: await getCashBoxesByRestaurantIdFetch(restaurant.id),
             additionals: await getAdditionalsByRestaurantIdFetch(restaurant.id),
             selects: await getSelectsByRestaurantIdFetch(restaurant.id),
+            ordersTables: await getOrdersTablesFetch(),
             restaurant,
         },
     };
@@ -126,6 +131,7 @@ export default function AdminHomepage({
     cashBoxes,
     additionals,
     selects,
+    ordersTables,
     restaurant,
 }: iAdminHomePageProps) {
     const [ordersProducts, setOrdersProducts] =
@@ -346,6 +352,7 @@ export default function AdminHomepage({
                 />
 
                 <OrderStatusCard
+                    ordersTables={ordersTables}
                     statusName="Em produção"
                     dispatch={ordersDispatch}
                     ordersState={ordersState}
@@ -355,6 +362,7 @@ export default function AdminHomepage({
                 />
                 <OrderStatusCard
                     statusName="A caminho"
+                    ordersTables={ordersTables}
                     dispatch={ordersDispatch}
                     ordersState={ordersState}
                     ordersGroupedByOrderStatus={ordersGroupedByOrderStatus}
@@ -363,6 +371,7 @@ export default function AdminHomepage({
                 />
                 <OrderStatusCard
                     statusName="Entregue"
+                    ordersTables={ordersTables}
                     dispatch={ordersDispatch}
                     ordersState={ordersState}
                     ordersGroupedByOrderStatus={ordersGroupedByOrderStatus}

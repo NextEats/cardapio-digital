@@ -12,6 +12,8 @@ import { iStatusReducer } from '../../../../reducers/statusReducer/reducer';
 import {
     iInsertOrdersProducts,
     iInsertProducts,
+    iOrdersTables,
+    iOrdersTablesWithFkData,
     iOrdersWithFKData,
 } from '../../../../types/types';
 
@@ -22,6 +24,7 @@ interface IOrderStatusCardProps {
     ordersGroupedByOrderStatus: { [key: string]: iOrdersWithFKData[] };
     ordersProducts: iInsertOrdersProducts['data'];
     products: iInsertProducts['data'];
+    ordersTables: iOrdersTablesWithFkData[];
 }
 
 export default function OrderStatusCard({
@@ -30,6 +33,7 @@ export default function OrderStatusCard({
     ordersGroupedByOrderStatus,
     ordersProducts,
     products,
+    ordersTables,
 }: IOrderStatusCardProps) {
     const restaurant = useContext(AdminContext).restaurant;
 
@@ -119,6 +123,9 @@ export default function OrderStatusCard({
                             if (!order) {
                                 return;
                             }
+
+                            const ordersTablesFound = ordersTables.find(ot => ot.orders.id === order.id)
+
                             const ordersProductsFiltered =
                                 ordersProducts.filter(
                                     (op) => op.order_id === order.id!
@@ -155,8 +162,7 @@ export default function OrderStatusCard({
                                             </span>
                                         ) : (
                                             <span className="text-green-400 ">
-                                                {' '}
-                                                Mesa{' '}
+                                                {ordersTablesFound?.tables.name}
                                             </span>
                                         )}
                                     </td>

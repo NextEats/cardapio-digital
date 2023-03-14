@@ -1,10 +1,4 @@
-import {
-    iAdditionals,
-    iInsertOrdersProducts,
-    iInsertProducts,
-    iOrdersWithFKData,
-    iRestaurantWithFKData,
-} from '@/src/types/types';
+import { iAdditional, iAdditionals, iInsertOrdersProducts, iInsertProducts, iOrdersTablesWithFkData, iOrdersWithFKData, iRestaurantWithFKData, iSelects, } from '@/src/types/types';
 import * as Dialog from '@radix-ui/react-dialog';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
@@ -14,9 +8,9 @@ import { showModalAction } from '../../../../reducers/statusReducer/action';
 import { iStatusReducer } from '../../../../reducers/statusReducer/reducer';
 import { api, supabase } from '../../../../server/api';
 import { CardapioDigitalButton } from '../../cardapio-digital/CardapioDigitalButton';
-import { DropdownMenuObservation } from '../DropDownMenuObservation';
 
 import ReactToPrint from 'react-to-print';
+import ProductsDetails from './ProductsDetails';
 
 interface iOrderModalProps {
     ordersState: iStatusReducer;
@@ -25,8 +19,10 @@ interface iOrderModalProps {
     restaurant: iRestaurantWithFKData;
     ordersProducts: iInsertOrdersProducts['data'];
     additionals: iAdditionals['data'];
+    selects: iSelects["data"];
     products: iInsertProducts['data'];
     printComponent: RefObject<HTMLDivElement>;
+    ordersTables: iOrdersTablesWithFkData[];
 }
 
 export function OrderModal({
@@ -36,8 +32,10 @@ export function OrderModal({
     ordersState,
     products,
     restaurant,
+    selects,
     printComponent,
     additionals,
+    ordersTables
 }: iOrderModalProps) {
     const [address, setAddress] = useState({
         bairro: '',
@@ -56,31 +54,27 @@ export function OrderModal({
         (op) => op.order_id === ordersState.orderId
     );
     const productsFiltered = orderProductFiltered.map((op) => {
-        return products.find((p) => {
-            return p.id === op?.product_id;
-        });
+        return products.find((p) => p.id === op?.product_id);
     });
     const thereAnyObservation = orderProductFiltered.some(
         (op) => op.observation !== null
     );
 
     const descriptionsStyles =
-        'text-sm font-semibold text-black text-center mb-3 mt-2';
-    const textStyles = 'text-sm font-semibold text-black text-left leading-6';
+        'text-sm font-semibold text-black text-center mb-3 mt-1';
+    const textStyles = 'text-[10px] leading-[14px] font-semibold text-black text-left leading-6';
 
-    const orderFound = ordersState.orders.find(
-        (order) => order.id === ordersState.orderId
-    );
+    const orderFound = ordersState.orders.find((order) => order.id === ordersState.orderId);
 
     useMemo(() => {
         const getAddress = async () => {
-            const res = await api.get(
-                `https://viacep.com.br/ws/${orderFound?.clients.addresses.cep}/json/`
-            );
+            const res = await api.get(`https://viacep.com.br/ws/${orderFound?.clients.addresses.cep}/json/`);
             setAddress(res.data);
         };
         orderFound?.clients ? getAddress() : null;
     }, [orderFound]);
+
+    const ordersTablesFound = ordersTables.find(ot => ot.orders.id === orderFound?.id)
 
     let countProducts: {
         [key: string]: {
@@ -202,6 +196,14 @@ export function OrderModal({
                                 <p className={`${textStyles}`}>
                                     Data: <strong>{orderDateFormated}</strong>
                                 </p>
+                                <p className={`${textStyles}`}>
+                                    Metódo de P. : <strong> {orderFound?.payment_methods.name} </strong>
+                                </p>
+                                {ordersTablesFound ?
+                                    <p className={`${textStyles}`}>
+                                        Nome da mesa : <strong> {ordersTablesFound.tables.name} </strong>
+                                    </p>
+                                    : null}
                             </div>
 
                             {orderFound?.clients ? (
@@ -253,13 +255,6 @@ export function OrderModal({
                                     </div>
                                 </>
                             ) : null}
-                            <p className={`${textStyles}`}>
-                                Metódo de P. :
-                                <strong>
-                                    {' '}{orderFound?.payment_methods.name}
-                                </strong>
-
-                            </p>
 
                             <Dialog.Description
                                 className={`${descriptionsStyles}`}
@@ -267,76 +262,7 @@ export function OrderModal({
                                 Detalhes do pedido
                             </Dialog.Description>
 
-                            <table className="mb-2 w-full">
-                                <thead>
-                                    <tr>
-                                        <td className={`${textStyles} `}>
-                                            Qnt
-                                        </td>
-                                        <td className={`${textStyles}`}>
-                                            Item
-                                        </td>
-                                        <td className={`${textStyles} w-24`}>
-                                            Preço
-                                        </td>
-                                        <td
-                                            className={`${textStyles} w-24 hideButtonToPrint`}
-                                        >
-                                            Obs.
-                                        </td>
-                                        {/* {thereAnyObservation ? (
-                                        ) : null} */}
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {result.map((product) => {
-                                        const orderProductByProductId =
-                                            orderProductFiltered.find(
-                                                (op) =>
-                                                    op.product_id === product.id
-                                            );
-
-                                        if (product === undefined) {
-                                            return;
-                                        }
-                                        return (
-                                            <tr key={product.id}>
-                                                <td className={`${textStyles}`}>
-                                                    <strong>
-                                                        {product.count}
-                                                    </strong>
-                                                </td>
-                                                <td className={`${textStyles}`}>
-                                                    <strong>
-                                                        {product.name}
-                                                    </strong>
-                                                </td>
-                                                <td className={`${textStyles}`}>
-                                                    <strong>
-                                                        R$ {product.price}
-                                                    </strong>
-                                                </td>
-                                                <td
-                                                    className={`${textStyles} hideButtonToPrint`}
-                                                >
-                                                    <strong>
-                                                        <DropdownMenuObservation
-                                                            orderProduct={
-                                                                orderProductByProductId!
-                                                            }
-                                                            additionals={
-                                                                additionals
-                                                            }
-                                                        />
-                                                    </strong>
-                                                </td>
-                                                {/* {orderProductByProductId?.observation ? (
-                                                ): null} */}
-                                            </tr>
-                                        );
-                                    })}
-                                </tbody>
-                            </table>
+                            <ProductsDetails additionals={additionals} result={result} orderProductFiltered={orderProductFiltered} selects={selects} />
 
                             <div>
                                 <p className="grid grid-cols-2 items-center gap-10">
@@ -345,39 +271,25 @@ export function OrderModal({
                                     </span>
                                     <span className={`${textStyles}`}>
                                         <strong>
-                                            R$
-                                            {totalPriceOfProducts +
-                                                totalAdditionalPrice}
+                                            R${totalPriceOfProducts + totalAdditionalPrice}
                                         </strong>
                                     </span>
                                 </p>
                                 {orderFound?.delivery_fees ? (
                                     <p className="grid grid-cols-2 items-center gap-10">
-                                        <span className={`${textStyles} `}>
-                                            Taxa de entrega:
-                                        </span>
+                                        <span className={`${textStyles} `}> Taxa de entrega:</span>
                                         <span className={`${textStyles}`}>
-                                            <strong>
-                                                R$
-                                                {orderFound?.delivery_fees.fee}
-                                            </strong>
+                                            <strong> R$ {orderFound?.delivery_fees.fee} </strong>
                                         </span>
                                     </p>
                                 ) : null}
 
                                 <p className="grid grid-cols-2 items-center gap-10">
-                                    <span className={`${textStyles}`}>
-                                        Total a pagar:
-                                    </span>
+                                    <span className={`${textStyles}`}> Total a pagar: </span>
                                     <span className={`${textStyles} w-`}>
                                         <strong>
-                                            R$
-                                            {totalPriceOfProducts +
-                                                (orderFound?.delivery_fees
-                                                    ? orderFound.delivery_fees
-                                                        .fee
-                                                    : 0) +
-                                                totalAdditionalPrice}
+                                            R$ {totalPriceOfProducts +
+                                                (orderFound?.delivery_fees ? orderFound.delivery_fees.fee : 0) + totalAdditionalPrice}
                                         </strong>
                                     </span>
                                 </p>
@@ -390,41 +302,23 @@ export function OrderModal({
                                             <ReactToPrint
                                                 copyStyles={true}
                                                 content={() => printComponent.current}
-                                                onAfterPrint={() =>
-                                                    moveToEmProduçãoCard(
-                                                        orderFound?.id!
-                                                    )
-                                                }
+                                                onAfterPrint={() => moveToEmProduçãoCard(orderFound?.id!)}
                                                 trigger={() => {
-                                                    return (
-                                                        <CardapioDigitalButton
-                                                            name="Imprimir e aceitar o pedido"
-                                                            w="w-full"
-                                                            h="h-10"
-                                                        />
-                                                    );
+                                                    return <CardapioDigitalButton name="Imprimir e aceitar o pedido" w="w-full" h="h-10" />
                                                 }}
                                             />
                                         ) : null}
                                 <ReactToPrint
                                     content={() => printComponent.current}
                                     trigger={() => {
-                                        return (
-                                            <CardapioDigitalButton
-                                                name="Imprimir"
-                                                w="w-full"
-                                                h="h-10"
-                                            />
-                                        );
+                                        return <CardapioDigitalButton name="Imprimir" w="w-full" h="h-10" />
                                     }}
                                 />
                             </div>
 
                             <Dialog.Close
                                 asChild
-                                onClick={() =>
-                                    ordersDispatch(showModalAction())
-                                }
+                                onClick={() => ordersDispatch(showModalAction())}
                             >
                                 <button
                                     className={`absolute top-3 right-3 hideButtonToPrint`}

@@ -1,4 +1,4 @@
-import { iAdditional, iAdditionals, iInsertOrdersProducts, iInsertProducts, iOrdersWithFKData, iRestaurantWithFKData, iSelects, } from '@/src/types/types';
+import { iAdditional, iAdditionals, iInsertOrdersProducts, iInsertProducts, iOrdersTablesWithFkData, iOrdersWithFKData, iRestaurantWithFKData, iSelects, } from '@/src/types/types';
 import * as Dialog from '@radix-ui/react-dialog';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
@@ -22,6 +22,7 @@ interface iOrderModalProps {
     selects: iSelects["data"];
     products: iInsertProducts['data'];
     printComponent: RefObject<HTMLDivElement>;
+    ordersTables: iOrdersTablesWithFkData[];
 }
 
 export function OrderModal({
@@ -34,6 +35,7 @@ export function OrderModal({
     selects,
     printComponent,
     additionals,
+    ordersTables
 }: iOrderModalProps) {
     const [address, setAddress] = useState({
         bairro: '',
@@ -71,6 +73,8 @@ export function OrderModal({
         };
         orderFound?.clients ? getAddress() : null;
     }, [orderFound]);
+
+    const ordersTablesFound = ordersTables.find(ot => ot.orders.id === orderFound?.id)
 
     let countProducts: {
         [key: string]: {
@@ -192,6 +196,14 @@ export function OrderModal({
                                 <p className={`${textStyles}`}>
                                     Data: <strong>{orderDateFormated}</strong>
                                 </p>
+                                <p className={`${textStyles}`}>
+                                    Metódo de P. : <strong> {orderFound?.payment_methods.name} </strong>
+                                </p>
+                                {ordersTablesFound ?
+                                    <p className={`${textStyles}`}>
+                                        Nome da mesa : <strong> {ordersTablesFound.tables.name} </strong>
+                                    </p>
+                                    : null}
                             </div>
 
                             {orderFound?.clients ? (
@@ -243,13 +255,6 @@ export function OrderModal({
                                     </div>
                                 </>
                             ) : null}
-                            <p className={`${textStyles}`}>
-                                Metódo de P. :
-                                <strong>
-                                    {' '}{orderFound?.payment_methods.name}
-                                </strong>
-
-                            </p>
 
                             <Dialog.Description
                                 className={`${descriptionsStyles}`}

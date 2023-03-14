@@ -382,6 +382,7 @@ export default function AdminHomepage({
                 {ordersState.isOpenOrderModal ? (
                     <OrderModal
                         printComponent={printComponent}
+                        ordersTables={ordersTables}
                         ordersState={ordersState}
                         ordersGroupedByOrderStatus={ordersGroupedByOrderStatus}
                         restaurant={restaurant}

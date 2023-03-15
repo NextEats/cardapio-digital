@@ -1,4 +1,5 @@
 import { DigitalMenuContext } from '@/src/contexts/DigitalMenuContext';
+import { calculateTotalOrderPrice } from '@/src/helpers/calculateTotalOrderPrice';
 import { api, supabase } from '@/src/server/api';
 import { iAdditional, iAdditionals, iProducts } from '@/src/types/types';
 import cep from 'cep-promise';
@@ -29,7 +30,6 @@ export default function ContactInfoForm({ setCurrentStep }: any) {
         formState: { errors },
     } = useForm<ContactFormValues>();
     const [activePaymentMethods, setActivePaymentMethods] = useState<any>();
-    const [calculatedChangeValue, setCalculatedChangeValue] = useState(0)
 
     const restaurant = useContext(DigitalMenuContext).restaurant;
     const products = useContext(DigitalMenuContext).productReducer!;
@@ -60,30 +60,10 @@ export default function ContactInfoForm({ setCurrentStep }: any) {
     };
 
     async function calculateChangeValue({ products }: any) {
-        const { data: additionalData } = await api.get(`api/additionals/${restaurant?.id}`)
-        const { data: productsData } = await api.get(`api/products/${restaurant?.id}`)
 
-        const additionals = additionalData as iAdditionals["data"]
-        const orderPice: number = products.state.reduce((acc: number, item: any) => {
+        const orderPrice = await calculateTotalOrderPrice({ products, restaurantId: restaurant?.id })
+        const change = change_value - orderPrice!
 
-            const productFound = (productsData as iProducts["data"]).find(p => p.id === item.id)
-            if (!productFound) return
-
-            const totalAddicionalPrice: number = item.additionals.reduce((accAdd: number, itemAdd: any) => {
-                const additionalFoundById = additionals.find((a) => a.id === itemAdd.additional_id)
-                if (!additionalFoundById) return acc
-                console.log("111", additionalFoundById.price * itemAdd.quantity)
-                return acc + (additionalFoundById.price * itemAdd.quantity)
-            }, 0);
-
-            const totalOrderProductPrice = (productFound?.price * item.quantity) + totalAddicionalPrice
-
-            return acc + totalOrderProductPrice
-        }, 0)
-
-        const change = change_value - orderPice
-
-        setCalculatedChangeValue(change)
         return change
     }
 

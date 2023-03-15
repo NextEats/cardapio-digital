@@ -1,4 +1,5 @@
 import { tSelectWithOptions } from '@/src/fetch/productSelects/getProductSelectWithOptions';
+import { iProductOption } from '@/src/types/types';
 import Image from 'next/image';
 import stringToNormalForm from '../../../../helpers/stringToNormalForm';
 
@@ -31,7 +32,8 @@ export default function SelectComponent({
             )}
 
             <div className="flex mt-8 flex-wrap gap-2">
-                {select.options?.map((option: any, optionIndex) => {
+                {select.options?.map((option: iProductOption["data"], optionIndex) => {
+                    // if (option.is_default_value) handleOptionClick(optionIndex)
                     return (
                         <div
                             key={option.id}
@@ -46,11 +48,10 @@ export default function SelectComponent({
                                 }
                             >
                                 <div
-                                    className={`w-[130px] h-[130px] rounded-lg relative cursor-pointer ${
-                                        option.selected
-                                            ? 'selected'
-                                            : 'unselected'
-                                    }`}
+                                    className={`w-[130px] h-[130px] rounded-lg relative cursor-pointer ${option.is_default_value
+                                        ? 'selected'
+                                        : 'unselected'
+                                        }`}
                                 >
                                     <div className="w-full h-full absolute rounded-lg z-10 bg-gradient-to-t from-[#000000ff] via-[#00000063] to-[#00000000]"></div>
                                     <span className="absolute bottom-1 left-1 z-20 text-white-300 text-sm font-medium">

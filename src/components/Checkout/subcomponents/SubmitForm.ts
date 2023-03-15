@@ -59,7 +59,6 @@ export async function SubmitForm({
 
         const orderPosition = orderDataByCashBoxId.data ? orderDataByCashBoxId?.data.length + 1 : 1
 
-        console.log('value 2', change_value)
         const { data: orderData } = await supabase
             .from('orders')
             .insert({

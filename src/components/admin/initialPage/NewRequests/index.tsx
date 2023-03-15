@@ -89,7 +89,7 @@ export default function NewRequests({
     }
 
     return (
-        <div className="flex flex-1 flex-col min-h-[150px] max-h-[230px] bg-white w-auto shadow-sm px-6 pt-2 rounded-md ">
+        <div className="flex flex-1 flex-col min-h-[150px] max-h-[270px] bg-white w-auto shadow-sm px-6 pt-2 rounded-md ">
             <h2 className="text-base font-bold mb-4">Novos pedidos</h2>
             <div className="w-full overflow-auto scrollbar-custom">
                 <table className="w-full ">

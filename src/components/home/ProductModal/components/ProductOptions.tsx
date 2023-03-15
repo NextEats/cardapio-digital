@@ -13,7 +13,7 @@ export default function ProductOptions({
 }: iProductOptions) {
     return (
         <div>
-            {productSelects.map((select: any, selectIndex: any) => (
+            {productSelects.map((select: any, selectIndex: number) => (
                 <SelectComponent
                     select={select}
                     key={selectIndex}

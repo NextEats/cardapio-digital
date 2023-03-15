@@ -36,7 +36,6 @@ export default function ProductModal() {
         useAdditionals(selectedProduct?.state ? selectedProduct?.state : '0');
 
 
-
     if (!productData || !selectedProduct?.state) {
         return <></>;
     }
@@ -97,7 +96,13 @@ export default function ProductModal() {
         setObservation('');
         closeModal();
     }
-    console.log(productSelects, selectOption)
+    const allOptionsSelected = productSelects.every(select => {
+        let atLeastOneOptionSelected = false;
+        select.options.forEach(option => {
+            if (option.selected) atLeastOneOptionSelected = true
+        });
+        return atLeastOneOptionSelected;
+    });
 
     return (
         <>
@@ -158,8 +163,11 @@ export default function ProductModal() {
                             placeholder="Observações"
                         ></textarea>
                     </form>
-                    {/* { productSelects && } */}
-                    <SubmitButtons handleSubmit={handleSubmit} />
+                    {productSelects && allOptionsSelected ?
+                        <SubmitButtons handleSubmit={handleSubmit} />
+                        :
+                        <SubmitButtons handleSubmit={() => alert("Para finalizar o produto, selecione ao menos uma opção de cada ingrediente.")} />
+                    }
                 </div>
             </div>
         </>

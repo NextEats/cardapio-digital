@@ -6,7 +6,10 @@ export async function getOrdersTablesFetch(): Promise<iOrdersTablesWithFkData[]>
     id,
     has_been_paid,
     orders (
-        id,
+        *,
+        cash_boxes (
+            is_open
+        ),
         order_status (
             id, 
             status_name

@@ -1,12 +1,11 @@
 import { DigitalMenuContext } from '@/src/contexts/DigitalMenuContext';
 import { api, supabase } from '@/src/server/api';
-import { iAdditionals } from '@/src/types/types';
+import { iAdditional, iAdditionals, iProducts } from '@/src/types/types';
 import cep from 'cep-promise';
 import { useContext, useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import InputMask from 'react-input-mask';
 import { SubmitForm } from './SubmitForm';
-import InputWithLabel from '../../InputWithLabel';
 
 export default function ContactInfoForm({ setCurrentStep }: any) {
     type ContactFormValues = {
@@ -17,7 +16,7 @@ export default function ContactInfoForm({ setCurrentStep }: any) {
         whatsapp: string;
         name: string;
         payment_method: number;
-        change_need: string;
+        change_need: boolean;
         change_value: number;
     };
 
@@ -29,21 +28,24 @@ export default function ContactInfoForm({ setCurrentStep }: any) {
         getValues,
         formState: { errors },
     } = useForm<ContactFormValues>();
+    const [activePaymentMethods, setActivePaymentMethods] = useState<any>();
+    const [calculatedChangeValue, setCalculatedChangeValue] = useState(0)
 
     const restaurant = useContext(DigitalMenuContext).restaurant;
     const products = useContext(DigitalMenuContext).productReducer!;
     const watchingPaymentMethod = Number(watch('payment_method'))
     const watchingChangeNeed = watch('change_need')
+    const change_value = watch('change_value')
 
     const onSubmit: SubmitHandler<ContactFormValues> = async ({
         cep,
         name,
         number,
         whatsapp,
-        payment_method,
-        change_value
+        payment_method
     }) => {
-        SubmitForm({
+        const chenge = watchingPaymentMethod === 5 && watchingChangeNeed ? await calculateChangeValue({ products }) : null
+        await SubmitForm({
             cep,
             name,
             number,
@@ -51,21 +53,39 @@ export default function ContactInfoForm({ setCurrentStep }: any) {
             products,
             restaurant,
             payment_method,
-            change_value: calculeChangeValue({ products })
+            change_value: chenge !== null ? chenge : 0
         });
 
         setCurrentStep('thank_you');
     };
 
-    async function calculeChangeValue({ products }: any) {
+    async function calculateChangeValue({ products }: any) {
         const { data: additionalData } = await api.get(`api/additionals/${restaurant?.id}`)
+        const { data: productsData } = await api.get(`api/products/${restaurant?.id}`)
 
-        const additional = additionalData as iAdditionals["data"]
+        const additionals = additionalData as iAdditionals["data"]
+        const orderPice: number = products.state.reduce((acc: number, item: any) => {
 
-        return 0
+            const productFound = (productsData as iProducts["data"]).find(p => p.id === item.id)
+            if (!productFound) return
+
+            const totalAddicionalPrice: number = item.additionals.reduce((accAdd: number, itemAdd: any) => {
+                const additionalFoundById = additionals.find((a) => a.id === itemAdd.additional_id)
+                if (!additionalFoundById) return acc
+                console.log("111", additionalFoundById.price * itemAdd.quantity)
+                return acc + (additionalFoundById.price * itemAdd.quantity)
+            }, 0);
+
+            const totalOrderProductPrice = (productFound?.price * item.quantity) + totalAddicionalPrice
+
+            return acc + totalOrderProductPrice
+        }, 0)
+
+        const change = change_value - orderPice
+
+        setCalculatedChangeValue(change)
+        return change
     }
-
-    const [activePaymentMethods, setActivePaymentMethods] = useState<any>();
 
     useEffect(() => {
         async function fetchActivePaymentMethods() {
@@ -91,6 +111,7 @@ export default function ContactInfoForm({ setCurrentStep }: any) {
         }
 
         fetchActivePaymentMethods();
+
     }, [restaurant]);
 
     return (
@@ -261,20 +282,25 @@ export default function ContactInfoForm({ setCurrentStep }: any) {
                 </div>
 
                 {watchingPaymentMethod === 5 ? (
-                    <div>
-                        <p>Metodo de pagamento em dinheiro selecionado</p>
-                        <input  {...register('change_need')} type="checkbox" value="Sim" />
-                        <label>Preciso de troco</label>
+                    <div className='flex items-center gap-1 mb-2'>
+                        <input
+                            className='h-5 w-5'
+                            {...register('change_need')} type="checkbox" />
+                        <label className='text-lg'>Preciso de troco</label>
                     </div>
                 ) : null
-
                 }
 
-                {watchingChangeNeed === "Sim" ? (
+                {watchingChangeNeed && watchingPaymentMethod === 5 ? (
                     <div>
-                        <label className='flex flex-col'>Valor Total das Cédulas?
-                            <input type="number" {...register('change_value')} className='border-2' />
-                        </label>
+                        <label htmlFor='change_value' className='block text-gray-700 font-bold mb-2'>Valor Total das Cédulas?</label>
+                        <input
+                            {...register('change_value')}
+                            className={`appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${errors.whatsapp && 'border-red-500'}`}
+                            id='change_value'
+                            min={1}
+                            type="number"
+                        />
                     </div>
                 ) : null
                 }

@@ -19,13 +19,11 @@ export async function SubmitForm({
     change_value
 }: any) {
 
-    console.log("orderDataByCashBoxId 1")
     try {
         const { data: currentCashBoxData } = await supabase
             .from('cash_boxes')
             .select('*')
             .match({ restaurant_id: restaurant!.id, is_open: true });
-        console.log("orderDataByCashBoxId 2")
 
         const currentCashBox =
             currentCashBoxData![0] as unknown as iCashBox['data'];
@@ -34,7 +32,6 @@ export async function SubmitForm({
             alert('O Pedido só pode ser feito se o caixa estiver aberto.');
             return;
         }
-        console.log("orderDataByCashBoxId 3")
 
         const { data: addressData } = await supabase.from('addresses').insert({ cep, number: Number(number), }).select('*');
 
@@ -61,8 +58,8 @@ export async function SubmitForm({
         const orderDataByCashBoxId = await supabase.from('orders').select('*').eq('restaurant_id', restaurant.id)
 
         const orderPosition = orderDataByCashBoxId.data ? orderDataByCashBoxId?.data.length + 1 : 1
-        console.log(orderPosition)
 
+        console.log('value 2', change_value)
         const { data: orderData } = await supabase
             .from('orders')
             .insert({
@@ -72,7 +69,8 @@ export async function SubmitForm({
                 cash_box_id: currentCashBox.id,
                 order_status_id: 2,
                 payment_method_id: payment_method,
-                number: orderPosition
+                number: orderPosition,
+                change_value
             })
             .select('*');
 

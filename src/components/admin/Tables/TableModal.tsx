@@ -59,7 +59,6 @@ export default function TableModal() {
         const productsOfTheTable = tableState.productsSelected.filter(
             (p) => p.table_id === openedTableModal!.id
         );
-
         productsOfTheTable.forEach(async (ps) => {
             const additionals_data = ps.quantityAdditionals.reduce(
                 (acc: { quantity: number; additional_id: number }[], item) => {
@@ -78,6 +77,7 @@ export default function TableModal() {
                     ? ps.productSelects
                     : [],
             });
+            console.log(selects_data);
 
             const ordersProductsData = await api.post(`api/orders_products/`, {
                 order_id: orderData.data.id,
@@ -97,7 +97,7 @@ export default function TableModal() {
             await updateTable(false, true, openedTableModal?.id!);
         }
 
-        window.location.reload();
+        // window.location.reload();
     }
 
     async function handleFinishProduction() {

@@ -13,6 +13,7 @@ export default function ProductionOrder({
     orderProductFiltered,
     totalPriceOfProducts,
     selects,
+    productsFiltered,
     totalAdditionalPrice,
 }: any) {
     return (
@@ -23,6 +24,7 @@ export default function ProductionOrder({
                             translate-x-1/2 px-6 pt-3 pb-6 "
             >
                 <ProductionOrderContent
+                    productsFiltered={productsFiltered}
                     restaurant={restaurant}
                     orderFound={orderFound}
                     orderDateFormated={orderDateFormated}
@@ -53,6 +55,7 @@ function ProductionOrderContent({
     totalPriceOfProducts,
     selects,
     totalAdditionalPrice,
+    productsFiltered,
 }: any) {
     const textStyles =
         'text-[10px] leading-[14px] font-semibold text-black text-left leading-6';
@@ -93,6 +96,7 @@ function ProductionOrderContent({
             <hr className="my-2" />
 
             <ProductsDetails
+                productsFiltered={productsFiltered}
                 additionals={additionals}
                 result={result}
                 orderProductFiltered={orderProductFiltered}

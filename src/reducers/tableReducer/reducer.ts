@@ -125,5 +125,5 @@ export const tableReducerDefaultValues = {
     productSelects: [],
     totalPrice: 0,
     productsSelected: [],
-    table_id: 0
+    table_id: 0,
 };

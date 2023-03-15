@@ -26,9 +26,10 @@ export default function ContactInfoForm({ setCurrentStep }: any) {
         setValue,
         watch,
         getValues,
-        formState: { errors },
+        formState: { errors, isLoading },
     } = useForm<ContactFormValues>();
     const [activePaymentMethods, setActivePaymentMethods] = useState<any>();
+    const [loading, setLoading] = useState(false);
 
     const restaurant = useContext(DigitalMenuContext).restaurant;
     const products = useContext(DigitalMenuContext).productReducer!;
@@ -47,6 +48,7 @@ export default function ContactInfoForm({ setCurrentStep }: any) {
             watchingPaymentMethod === 5 && watchingChangeNeed
                 ? await calculateChangeValue({ products })
                 : null;
+        setLoading(true);
         await SubmitForm({
             cep: cep.replace('-', ''),
             name,
@@ -70,6 +72,19 @@ export default function ContactInfoForm({ setCurrentStep }: any) {
 
         return change;
     }
+
+    const handleDeactivateButton = () => {
+        console.log('HandlingButton');
+        const submitBtn = document.querySelector(
+            '#submitBtn'
+        ) as HTMLButtonElement;
+        submitBtn.disabled = true;
+        // submitBtn.classList.add('pointer-events-none, bg-red-600');
+
+        setTimeout(() => {
+            submitBtn.disabled = false;
+        }, 1000);
+    };
 
     useEffect(() => {
         async function fetchActivePaymentMethods() {
@@ -314,8 +329,9 @@ export default function ContactInfoForm({ setCurrentStep }: any) {
                         voltar
                     </button>
                     <button
+                        disabled={loading}
                         type="submit"
-                        className="w-[50%] font-semibold text-sm uppercase shadow bg-indigo-800 hover:bg-indigo-600 focus:shadow-outline focus:outline-none text-white py-3 px-10 rounded"
+                        className="w-[50%] font-semibold disabled:bg-gray-500 text-sm uppercase shadow bg-indigo-800 hover:bg-indigo-600 focus:shadow-outline focus:outline-none text-white py-3 px-10 rounded"
                     >
                         continuar
                     </button>

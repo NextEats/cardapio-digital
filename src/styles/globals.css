@@ -20,11 +20,11 @@
 }
 
 .selected {
-    opacity: 1;
+    opacity: 0.4;
 }
 
 .unselected {
-    opacity: 0.4;
+    opacity: 1;
 }
 
 .toggle-checkbox:checked {
@@ -36,7 +36,6 @@
     @apply: bg-green-400;
     background-color: #68d391;
 }
-
 
 .animated {
     -webkit-animation-duration: 1s;

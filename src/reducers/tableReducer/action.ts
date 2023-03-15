@@ -30,10 +30,15 @@ export function changeAdditionalQuantityAction(
         payload: { isIncrement, additionalId },
     };
 }
-export function addProductAction(
-    { product, productSelects, table_id }:
-        { product: iProduct['data'], productSelects: tSelectWithOptions[], table_id: number, }
-) {
+export function addProductAction({
+    product,
+    productSelects,
+    table_id,
+}: {
+    product: iProduct['data'];
+    productSelects: tSelectWithOptions[];
+    table_id: number;
+}) {
     return {
         type: tableReducerAction.PRODUCTSSELECTED,
         payload: { product, productSelects, table_id },

@@ -1,7 +1,6 @@
 import { GetServerSideProps } from 'next';
 import { useEffect, useMemo, useReducer, useRef, useState } from 'react';
 import AdminWrapper from '../../../components/admin/AdminWrapper';
-import { Card } from '../../../components/admin/Card';
 import NewRequests from '../../../components/admin/initialPage/NewRequests';
 import OrderStatusCard from '../../../components/admin/initialPage/OrderStatusCard';
 import {
@@ -18,11 +17,9 @@ import {
     iInsertContacts,
     iInsertOrderStatuss,
     iOrdersProducts,
-    iOrdersTables,
     iOrdersTablesWithFkData,
     iOrdersWithFKData,
     iProducts,
-    iProductSelects,
     iRestaurantWithFKData,
     iSelects,
 } from '../../../types/types';
@@ -40,14 +37,13 @@ import CashBoxButtons from '@/src/components/admin/initialPage/CashBoxButtons';
 import { OrderModal } from '@/src/components/admin/initialPage/OrderModal';
 import LoadingSpinner from '@/src/components/LoadingSpinner';
 import { getAdditionalsByRestaurantIdFetch } from '@/src/fetch/additionals/getAdditionals';
+import { getOrdersTablesFetch } from '@/src/fetch/ordersTables/getOrdersTables';
+import { getSelectsByRestaurantIdFetch } from '@/src/fetch/selects/getSelectsByRestaurantId';
 import { getOrdersProductsData } from '@/src/helpers/getOrdersProductsData';
 import { addNewUnderReviewAction } from '@/src/reducers/statusReducer/action';
 import { api, supabase } from '@/src/server/api';
 import { createServerSupabaseClient } from '@supabase/auth-helpers-nextjs';
 import 'react-toastify/dist/ReactToastify.css';
-import { getProductSelectsFetch } from '@/src/fetch/productSelects/getProductSelects';
-import { getSelectsByRestaurantIdFetch } from '@/src/fetch/selects/getSelectsByRestaurantId';
-import { getOrdersTablesFetch } from '@/src/fetch/ordersTables/getOrdersTables';
 
 interface iAdminHomePageProps {
     ordersData: iOrdersWithFKData[];
@@ -59,7 +55,7 @@ interface iAdminHomePageProps {
     addresses: iInsertAddresses['data'];
     cashBoxes: iCashBoxes['data'];
     additionals: iAdditionals['data'];
-    selects: iSelects["data"];
+    selects: iSelects['data'];
     ordersTables: iOrdersTablesWithFkData[];
     restaurant: iRestaurantWithFKData;
 }
@@ -79,8 +75,10 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
             },
         };
     } else {
-        const { data: userDetailsData } = await supabase.from('user_details').select(
-            `
+        const { data: userDetailsData } = await supabase
+            .from('user_details')
+            .select(
+                `
                     id,
                     restaurant_id,
                     user_id,
@@ -90,7 +88,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
                         slug
                     )
             `
-        ).eq('user_id', session.user.id);
+            )
+            .eq('user_id', session.user.id);
         if (userDetailsData) {
             const userDetailsTypedData = userDetailsData[0] as unknown as {
                 id: number;
@@ -190,9 +189,9 @@ export default function AdminHomepage({
             const selectedProduct = productIds.map(
                 (productId) =>
                     products[
-                    products.findIndex(
-                        (product) => productId === product.id
-                    )
+                        products.findIndex(
+                            (product) => productId === product.id
+                        )
                     ]
             );
 
@@ -236,7 +235,7 @@ export default function AdminHomepage({
                 }
                 if (audio.paused === true) audio.pause();
                 audio.play();
-            }, 1000);
+            }, 1000 * 14);
         }
 
         if (ordersGroupedByOrderStatus['em análise'] === undefined) {

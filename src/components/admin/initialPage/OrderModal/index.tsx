@@ -2,8 +2,10 @@ import {
     iAdditionals,
     iInsertOrdersProducts,
     iInsertProducts,
+    iOrdersProducts,
     iOrdersTablesWithFkData,
     iOrdersWithFKData,
+    iProducts,
     iRestaurantWithFKData,
     iSelects,
 } from '@/src/types/types';
@@ -17,6 +19,7 @@ import { iStatusReducer } from '../../../../reducers/statusReducer/reducer';
 import { api, supabase } from '../../../../server/api';
 import { CardapioDigitalButton } from '../../cardapio-digital/CardapioDigitalButton';
 
+import { getOrdersProductsData } from '@/src/helpers/getOrdersProductsData';
 import ReactToPrint, { useReactToPrint } from 'react-to-print';
 import ProductionOrder from './ProductionOrder';
 import ProductsDetails from './ProductsDetails';
@@ -129,36 +132,11 @@ export function OrderModal({
         0
     );
 
-    const totalAdditionalPrice = result.reduce((acc, item) => {
-        const orderProductByProductId = orderProductFiltered.find(
-            (op) => op.product_id === item.id
-        );
-        if (!orderProductByProductId) return acc;
-        const additionalsData = orderProductByProductId.additionals_data as {
-            quantity: number;
-            additional_id: number;
-        }[];
-        const priceOfEachAdditional = additionalsData
-            ? additionalsData.map((ad) => {
-                  if (
-                      additionals.some((a, index) => a.id === ad.additional_id)
-                  ) {
-                      return (
-                          additionals[
-                              additionals.findIndex(
-                                  (a) => a.id === ad.additional_id
-                              )
-                          ].price * ad.quantity
-                      );
-                  }
-                  return 0;
-              })
-            : [0];
-
-        return (
-            acc + priceOfEachAdditional.reduce((sum, price) => sum + price, 0)
-        );
-    }, 0);
+    const totalAdditionalPrice = getOrdersProductsData({
+        ordersProducts: orderProductFiltered as iOrdersProducts['data'],
+        additionals,
+        products: products as iProducts['data'],
+    }).reduce((acc, item) => acc + item.totalAdditionalsPriceByProduct, 0);
 
     const orderDateFormated = format(
         new Date(`${orderFound?.created_at}`),
@@ -201,6 +179,7 @@ export function OrderModal({
                             translate-x-1/2 px-6 pt-3 pb-6"
                             >
                                 <ProductionOrder
+                                    productsFiltered={productsFiltered}
                                     productionOrder={productionOrder}
                                     printProductionOrder={printProductionOrder}
                                     restaurant={restaurant}
@@ -243,27 +222,20 @@ export function OrderModal({
                                     <p className={`${textStyles}`}>
                                         Pagamento:{' '}
                                         <strong>
-                                            {' '}
-                                            {
-                                                orderFound?.payment_methods.name
-                                            }{' '}
+                                            {orderFound?.payment_methods.name}
                                         </strong>
                                     </p>
                                     {ordersTablesFound ? (
                                         <p className={`${textStyles}`}>
                                             Nome da mesa :{' '}
                                             <strong>
-                                                {' '}
-                                                {
-                                                    ordersTablesFound.tables
-                                                        .name
-                                                }{' '}
+                                                {ordersTablesFound.tables.name}
                                             </strong>
                                         </p>
                                     ) : null}
                                     {orderFound?.payment_methods.id == 5 ? (
                                         <p className={`${textStyles}`}>
-                                            Troco:{' '}
+                                            Troco:
                                             <strong>
                                                 R$ {orderFound?.change_value}{' '}
                                             </strong>
@@ -318,6 +290,9 @@ export function OrderModal({
                                 <hr className="my-2" />
 
                                 <ProductsDetails
+                                    productsFiltered={
+                                        productsFiltered! as iProducts['data']
+                                    }
                                     additionals={additionals}
                                     result={result}
                                     orderProductFiltered={orderProductFiltered}

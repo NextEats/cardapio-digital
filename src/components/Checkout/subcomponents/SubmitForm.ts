@@ -100,20 +100,41 @@ export async function SubmitForm({
                     .select('*');
             }
         });
-        try {
-            await whatsappRestApi({
-                method: 'post',
-                url: '/send-message',
-                data: {
-                    id: restaurant!.slug,
-                    number: '55' + whatsapp,
-                    message:
-                        'O seu pedido foi recebido com sucesso pelo restaurante ' +
-                        restaurant!.name,
-                },
-            });
-        } catch (err) {
-            console.error(err);
+
+        const isPayingUsingPix = payment_method == 1;
+
+        if (isPayingUsingPix) {
+            try {
+                await whatsappRestApi({
+                    method: 'post',
+                    url: '/send-message',
+                    data: {
+                        id: restaurant!.slug,
+                        number: '55' + whatsapp,
+                        message: `*${
+                            restaurant!.name
+                        }*\n\n✅ _Seu pedido foi recebido com sucesso e começará a ser preparado em breve! Você receberá aqui todas as atualizações.\n\n Pague através da chave pix: *INSIRA CHAVE PIX*`,
+                    },
+                });
+            } catch (err) {
+                console.error(err);
+            }
+        } else {
+            try {
+                await whatsappRestApi({
+                    method: 'post',
+                    url: '/send-message',
+                    data: {
+                        id: restaurant!.slug,
+                        number: '55' + whatsapp,
+                        message: `*${
+                            restaurant!.name
+                        }*\n\n✅ _Seu pedido foi recebido com sucesso e começará a ser preparado em breve! Você receberá aqui todas as atualizações.`,
+                    },
+                });
+            } catch (err) {
+                console.error(err);
+            }
         }
     } catch (error) {
         console.error(error);

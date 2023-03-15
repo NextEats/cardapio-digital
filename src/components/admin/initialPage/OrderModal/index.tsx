@@ -127,19 +127,19 @@ export function OrderModal({
         }[];
         const priceOfEachAdditional = additionalsData
             ? additionalsData.map((ad) => {
-                if (
-                    additionals.some((a, index) => a.id === ad.additional_id)
-                ) {
-                    return (
-                        additionals[
-                            additionals.findIndex(
-                                (a) => a.id === ad.additional_id
-                            )
-                        ].price * ad.quantity
-                    );
-                }
-                return 0;
-            })
+                  if (
+                      additionals.some((a, index) => a.id === ad.additional_id)
+                  ) {
+                      return (
+                          additionals[
+                              additionals.findIndex(
+                                  (a) => a.id === ad.additional_id
+                              )
+                          ].price * ad.quantity
+                      );
+                  }
+                  return 0;
+              })
             : [0];
 
         return (
@@ -169,6 +169,8 @@ export function OrderModal({
         }
     }
 
+    //
+
     return (
         <>
             <div>
@@ -178,262 +180,295 @@ export function OrderModal({
                             className="bg-black opacity-40 fixed inset-0 transition-all ease-in-out duration-300"
                             onClick={() => ordersDispatch(showModalAction())}
                         />
-                        <Dialog.Content
-                            ref={printComponent}
-                            className="bg-white shadow-bd w-[298px] fixed top-1/2 right-1/2 
-                            translate-x-1/2 -translate-y-1/2  rounded-md p-6"
-                        >
-                            <Dialog.Title className="text-xl font-bold text-center">
-                                Next Eats
-                            </Dialog.Title>
-
-                            <Dialog.Description
-                                className={`${descriptionsStyles}`}
+                        <div className="fixed mt-32 right-1/2 translate-x-1/2 p-4 bg-[#fb3d3a] w-[298px] rounded-lg">
+                            <Dialog.Content
+                                ref={printComponent}
+                                className="bg-white shadow-bd w-[298px] fixed right-1/2 
+                            translate-x-1/2 px-6 pt-3 pb-6"
                             >
-                                Dados do restaurante
-                            </Dialog.Description>
-                            <div>
-                                <p className={`${textStyles} text`}>
-                                    Restaurante: <strong>{restaurant!.name}</strong>
-                                </p>
-                                <p className={`${textStyles}`}>
-                                    Nº do pedido: <strong> {orderFound?.id} </strong>
-                                </p>
-                                <p className={`${textStyles}`}>
-                                    Data: <strong>{orderDateFormated}</strong>
-                                </p>
-                            </div>
+                                <Dialog.Title className="text-xl font-bold text-center">
+                                    Next Eats
+                                </Dialog.Title>
 
-                            {orderFound?.clients ? (
-                                <>
-                                    <Dialog.Description
-                                        className={`${descriptionsStyles}`}
-                                    >
-                                        Dados do cliente
-                                    </Dialog.Description>
+                                <Dialog.Description
+                                    className={`${descriptionsStyles}`}
+                                >
+                                    Dados do restaurante
+                                </Dialog.Description>
+                                <div>
+                                    <p className={`${textStyles} text`}>
+                                        Restaurante:{' '}
+                                        <strong>{restaurant!.name}</strong>
+                                    </p>
+                                    <p className={`${textStyles}`}>
+                                        Nº do pedido:{' '}
+                                        <strong> {orderFound?.id} </strong>
+                                    </p>
+                                    <p className={`${textStyles}`}>
+                                        Data:{' '}
+                                        <strong>{orderDateFormated}</strong>
+                                    </p>
+                                </div>
 
-                                    <div>
-                                        <p className={`${textStyles} text-left `} >
-                                            Nome: <strong> {orderFound?.clients?.name}</strong>
-                                        </p>
-                                        <p className={`${textStyles} font-sans text-left `} >
-                                            Telefone: <strong> {orderFound?.clients.contacts?.phone} </strong>
-                                        </p>
-                                        {/* <p className={`${textStyles} text-left `}>
+                                {orderFound?.clients ? (
+                                    <>
+                                        <Dialog.Description
+                                            className={`${descriptionsStyles}`}
+                                        >
+                                            Dados do cliente
+                                        </Dialog.Description>
+
+                                        <div>
+                                            <p
+                                                className={`${textStyles} text-left `}
+                                            >
+                                                Nome:{' '}
+                                                <strong>
+                                                    {' '}
+                                                    {orderFound?.clients?.name}
+                                                </strong>
+                                            </p>
+                                            <p
+                                                className={`${textStyles} font-sans text-left `}
+                                            >
+                                                Telefone:{' '}
+                                                <strong>
+                                                    {' '}
+                                                    {
+                                                        orderFound?.clients
+                                                            .contacts?.phone
+                                                    }{' '}
+                                                </strong>
+                                            </p>
+                                            {/* <p className={`${textStyles} text-left `}>
                                             Email:<strong>    {orderFound?.clients.contacts?.email}</strong>
                                            
                                         </p> */}
-                                        <p className={`${textStyles}`}>
-                                            Endereço:
-                                            <strong>
-
-                                                {address.logradouro},
-                                                {
-                                                    orderFound?.clients
-                                                        .addresses?.number
-                                                }
-
-                                            </strong>
-
-                                        </p>
-                                        <p className={`${textStyles}`}>
-                                            Bairro:
-                                            <strong> {address.bairro} </strong>
-
-                                        </p>
-                                        <p className={`${textStyles}`}>
-                                            Cidade:
-                                            <strong>
-
-                                                {address.localidade},
-                                                {address.uf}
-                                            </strong>
-
-                                        </p>
-                                    </div>
-                                </>
-                            ) : null}
-                            <p className={`${textStyles}`}>
-                                Metódo de P. :
-                                <strong>
-                                    {' '}{orderFound?.payment_methods.name}
-                                </strong>
-
-                            </p>
-
-                            <Dialog.Description
-                                className={`${descriptionsStyles}`}
-                            >
-                                Detalhes do pedido
-                            </Dialog.Description>
-
-                            <table className="mb-2 w-full">
-                                <thead>
-                                    <tr>
-                                        <td className={`${textStyles} `}>
-                                            Qnt
-                                        </td>
-                                        <td className={`${textStyles}`}>
-                                            Item
-                                        </td>
-                                        <td className={`${textStyles} w-24`}>
-                                            Preço
-                                        </td>
-                                        <td
-                                            className={`${textStyles} w-24 hideButtonToPrint`}
-                                        >
-                                            Obs.
-                                        </td>
-                                        {/* {thereAnyObservation ? (
-                                        ) : null} */}
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {result.map((product) => {
-                                        const orderProductByProductId =
-                                            orderProductFiltered.find(
-                                                (op) =>
-                                                    op.product_id === product.id
-                                            );
-
-                                        if (product === undefined) {
-                                            return;
-                                        }
-                                        return (
-                                            <tr key={product.id}>
-                                                <td className={`${textStyles}`}>
-                                                    <strong>
-                                                        {product.count}
-                                                    </strong>
-                                                </td>
-                                                <td className={`${textStyles}`}>
-                                                    <strong>
-                                                        {product.name}
-                                                    </strong>
-                                                </td>
-                                                <td className={`${textStyles}`}>
-                                                    <strong>
-                                                        R$ {product.price}
-                                                    </strong>
-                                                </td>
-                                                <td
-                                                    className={`${textStyles} hideButtonToPrint`}
-                                                >
-                                                    <strong>
-                                                        <DropdownMenuObservation
-                                                            orderProduct={
-                                                                orderProductByProductId!
-                                                            }
-                                                            additionals={
-                                                                additionals
-                                                            }
-                                                        />
-                                                    </strong>
-                                                </td>
-                                                {/* {orderProductByProductId?.observation ? (
-                                                ): null} */}
-                                            </tr>
-                                        );
-                                    })}
-                                </tbody>
-                            </table>
-
-                            <div>
-                                <p className="grid grid-cols-2 items-center gap-10">
-                                    <span className={`${textStyles}`}>
-                                        sub-total:
-                                    </span>
-                                    <span className={`${textStyles}`}>
-                                        <strong>
-                                            R$
-                                            {totalPriceOfProducts +
-                                                totalAdditionalPrice}
-                                        </strong>
-                                    </span>
+                                            <p className={`${textStyles}`}>
+                                                Endereço:
+                                                <strong>
+                                                    {address.logradouro},
+                                                    {
+                                                        orderFound?.clients
+                                                            .addresses?.number
+                                                    }
+                                                </strong>
+                                            </p>
+                                            <p className={`${textStyles}`}>
+                                                Bairro:
+                                                <strong>
+                                                    {' '}
+                                                    {address.bairro}{' '}
+                                                </strong>
+                                            </p>
+                                            <p className={`${textStyles}`}>
+                                                Cidade:
+                                                <strong>
+                                                    {address.localidade},
+                                                    {address.uf}
+                                                </strong>
+                                            </p>
+                                        </div>
+                                    </>
+                                ) : null}
+                                <p className={`${textStyles}`}>
+                                    Metódo de P. :
+                                    <strong>
+                                        {' '}
+                                        {orderFound?.payment_methods.name}
+                                    </strong>
                                 </p>
-                                {orderFound?.delivery_fees ? (
+
+                                <Dialog.Description
+                                    className={`${descriptionsStyles}`}
+                                >
+                                    Detalhes do pedido
+                                </Dialog.Description>
+
+                                <table className="mb-2 w-full">
+                                    <thead>
+                                        <tr>
+                                            <td className={`${textStyles} `}>
+                                                Qnt
+                                            </td>
+                                            <td className={`${textStyles}`}>
+                                                Item
+                                            </td>
+                                            <td
+                                                className={`${textStyles} w-24`}
+                                            >
+                                                Preço
+                                            </td>
+                                            <td
+                                                className={`${textStyles} w-24 hideButtonToPrint`}
+                                            >
+                                                Obs.
+                                            </td>
+                                            {/* {thereAnyObservation ? (
+                                        ) : null} */}
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {result.map((product) => {
+                                            const orderProductByProductId =
+                                                orderProductFiltered.find(
+                                                    (op) =>
+                                                        op.product_id ===
+                                                        product.id
+                                                );
+
+                                            if (product === undefined) {
+                                                return;
+                                            }
+                                            return (
+                                                <tr key={product.id}>
+                                                    <td
+                                                        className={`${textStyles}`}
+                                                    >
+                                                        <strong>
+                                                            {product.count}
+                                                        </strong>
+                                                    </td>
+                                                    <td
+                                                        className={`${textStyles}`}
+                                                    >
+                                                        <strong>
+                                                            {product.name}
+                                                        </strong>
+                                                    </td>
+                                                    <td
+                                                        className={`${textStyles}`}
+                                                    >
+                                                        <strong>
+                                                            R$ {product.price}
+                                                        </strong>
+                                                    </td>
+                                                    <td
+                                                        className={`${textStyles} hideButtonToPrint`}
+                                                    >
+                                                        <strong>
+                                                            <DropdownMenuObservation
+                                                                orderProduct={
+                                                                    orderProductByProductId!
+                                                                }
+                                                                additionals={
+                                                                    additionals
+                                                                }
+                                                            />
+                                                        </strong>
+                                                    </td>
+                                                    {/* {orderProductByProductId?.observation ? (
+                                                ): null} */}
+                                                </tr>
+                                            );
+                                        })}
+                                    </tbody>
+                                </table>
+
+                                <div>
                                     <p className="grid grid-cols-2 items-center gap-10">
-                                        <span className={`${textStyles} `}>
-                                            Taxa de entrega:
+                                        <span className={`${textStyles}`}>
+                                            sub-total:
                                         </span>
                                         <span className={`${textStyles}`}>
                                             <strong>
                                                 R$
-                                                {orderFound?.delivery_fees.fee}
+                                                {totalPriceOfProducts +
+                                                    totalAdditionalPrice}
                                             </strong>
                                         </span>
                                     </p>
-                                ) : null}
+                                    {orderFound?.delivery_fees ? (
+                                        <p className="grid grid-cols-2 items-center gap-10">
+                                            <span className={`${textStyles} `}>
+                                                Taxa de entrega:
+                                            </span>
+                                            <span className={`${textStyles}`}>
+                                                <strong>
+                                                    R$
+                                                    {
+                                                        orderFound
+                                                            ?.delivery_fees.fee
+                                                    }
+                                                </strong>
+                                            </span>
+                                        </p>
+                                    ) : null}
 
-                                <p className="grid grid-cols-2 items-center gap-10">
-                                    <span className={`${textStyles}`}>
-                                        Total a pagar:
-                                    </span>
-                                    <span className={`${textStyles} w-`}>
-                                        <strong>
-                                            R$
-                                            {totalPriceOfProducts +
-                                                (orderFound?.delivery_fees
-                                                    ? orderFound.delivery_fees
-                                                        .fee
-                                                    : 0) +
-                                                totalAdditionalPrice}
-                                        </strong>
-                                    </span>
-                                </p>
-                            </div>
+                                    <p className="grid grid-cols-2 items-center gap-10">
+                                        <span className={`${textStyles}`}>
+                                            Total a pagar:
+                                        </span>
+                                        <span className={`${textStyles} w-`}>
+                                            <strong>
+                                                R$
+                                                {totalPriceOfProducts +
+                                                    (orderFound?.delivery_fees
+                                                        ? orderFound
+                                                              .delivery_fees.fee
+                                                        : 0) +
+                                                    totalAdditionalPrice}
+                                            </strong>
+                                        </span>
+                                    </p>
+                                </div>
 
-                            <div className="flex flex-1 flex-col items-center justify-end gap-3 mt-5 hideButtonToPrint">
-                                {!ordersGroupedByOrderStatus["em análise"] ? null :
-                                    ordersGroupedByOrderStatus["em análise"].some(o => o.id === orderFound?.id)
-                                        ? (
-                                            <ReactToPrint
-                                                copyStyles={true}
-                                                content={() => printComponent.current}
-                                                onAfterPrint={() =>
-                                                    moveToEmProduçãoCard(
-                                                        orderFound?.id!
-                                                    )
-                                                }
-                                                trigger={() => {
-                                                    return (
-                                                        <CardapioDigitalButton
-                                                            name="Imprimir e aceitar o pedido"
-                                                            w="w-full"
-                                                            h="h-10"
-                                                        />
-                                                    );
-                                                }}
-                                            />
-                                        ) : null}
-                                <ReactToPrint
-                                    content={() => printComponent.current}
-                                    trigger={() => {
-                                        return (
-                                            <CardapioDigitalButton
-                                                name="Imprimir"
-                                                w="w-full"
-                                                h="h-10"
-                                            />
-                                        );
-                                    }}
-                                />
-                            </div>
+                                <div className="flex flex-1 flex-col items-center justify-end gap-3 mt-5 hideButtonToPrint">
+                                    {!ordersGroupedByOrderStatus[
+                                        'em análise'
+                                    ] ? null : ordersGroupedByOrderStatus[
+                                          'em análise'
+                                      ].some((o) => o.id === orderFound?.id) ? (
+                                        <ReactToPrint
+                                            copyStyles={true}
+                                            content={() =>
+                                                printComponent.current
+                                            }
+                                            onAfterPrint={() =>
+                                                moveToEmProduçãoCard(
+                                                    orderFound?.id!
+                                                )
+                                            }
+                                            trigger={() => {
+                                                return (
+                                                    <CardapioDigitalButton
+                                                        name="Imprimir e aceitar o pedido"
+                                                        w="w-full"
+                                                        h="h-10"
+                                                    />
+                                                );
+                                            }}
+                                        />
+                                    ) : null}
+                                    <ReactToPrint
+                                        content={() => printComponent.current}
+                                        trigger={() => {
+                                            return (
+                                                <CardapioDigitalButton
+                                                    name="Imprimir"
+                                                    w="w-full"
+                                                    h="h-10"
+                                                />
+                                            );
+                                        }}
+                                    />
+                                </div>
 
-                            <Dialog.Close
-                                asChild
-                                onClick={() =>
-                                    ordersDispatch(showModalAction())
-                                }
-                            >
-                                <button
-                                    className={`absolute top-3 right-3 hideButtonToPrint`}
-                                    aria-label="Close"
+                                <Dialog.Close
+                                    asChild
+                                    onClick={() =>
+                                        ordersDispatch(showModalAction())
+                                    }
                                 >
-                                    <FiX className="w-6 h-6" />
-                                </button>
-                            </Dialog.Close>
-                        </Dialog.Content>
+                                    <button
+                                        className={`absolute top-3 right-3 hideButtonToPrint`}
+                                        aria-label="Close"
+                                    >
+                                        <FiX className="w-6 h-6" />
+                                    </button>
+                                </Dialog.Close>
+                            </Dialog.Content>
+                        </div>
                     </Dialog.Portal>
                 </Dialog.Root>
             </div>

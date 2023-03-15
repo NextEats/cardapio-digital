@@ -8,11 +8,7 @@ import {
 } from '../../../../reducers/statusReducer/action';
 import { iStatusReducer } from '../../../../reducers/statusReducer/reducer';
 import { supabase, whatsappRestApi } from '../../../../server/api';
-import {
-    iInsertOrdersProducts,
-    iInsertProducts,
-    iOrdersWithFKData,
-} from '../../../../types/types';
+import { iInsertOrdersProducts, iInsertProducts, iOrdersWithFKData, } from '../../../../types/types';
 
 interface iAddressData {
     bairro: string;
@@ -93,9 +89,9 @@ export default function NewRequests({
     }
 
     return (
-        <div className="flex flex-1 flex-col min-h-[230px] bg-white w-auto shadow-sm px-6 pt-2 rounded-md ">
-            <h2 className="text-base font-bold mb-4">Novos pedidos </h2>
-            <div className="w-full overflow-auto  scrollbar-custom">
+        <div className="flex flex-1 flex-col min-h-[150px] max-h-[270px] bg-white w-auto shadow-sm px-6 pt-2 rounded-md ">
+            <h2 className="text-base font-bold mb-4">Novos pedidos</h2>
+            <div className="w-full overflow-auto scrollbar-custom">
                 <table className="w-full ">
                     <tbody className="w-full border-collapse ">
                         {ordersGroupedByOrderStatus['em análise']?.map(
@@ -135,8 +131,11 @@ export default function NewRequests({
                                                 height={26}
                                             />
                                         </td>
-                                        <td className="text-left h-4 text-sm font-medium p-2">
-                                            {order.clients?.name}
+                                        <td className={`${tdStyle}text-left h-4 text-sm font-medium p-2`}>
+                                            #{order.number.toString().padStart(4, '0')}
+                                        </td>
+                                        <td className={`${tdStyle}text-left h-4 text-sm font-medium p-2`}>
+                                            {order.clients.name}
                                         </td>
                                         <td
                                             className={`${tdStyle} w-16 hidden 3xs:table-cell`}

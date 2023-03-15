@@ -1,8 +1,9 @@
+import { tSelectWithOptions } from '@/src/fetch/productSelects/getProductSelectWithOptions';
 import SelectComponent from './SelectComponent';
 
 interface iProductOptions {
     product_id: string;
-    productSelects: any;
+    productSelects: tSelectWithOptions[];
     selectOption: any;
 }
 
@@ -13,7 +14,7 @@ export default function ProductOptions({
 }: iProductOptions) {
     return (
         <div>
-            {productSelects.map((select: any, selectIndex: any) => (
+            {productSelects.map((select: tSelectWithOptions, selectIndex: number) => (
                 <SelectComponent
                     select={select}
                     key={selectIndex}

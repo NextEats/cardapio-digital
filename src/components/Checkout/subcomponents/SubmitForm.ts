@@ -1,4 +1,4 @@
-import { supabase, whatsappRestApi } from '@/src/server/api';
+import { api, supabase, whatsappRestApi } from '@/src/server/api';
 import {
     iAddress,
     iCashBox,
@@ -6,6 +6,7 @@ import {
     iContact,
     iOrder,
 } from '@/src/types/types';
+import { resolveAny } from 'dns';
 
 export async function SubmitForm({
     cep,
@@ -15,7 +16,9 @@ export async function SubmitForm({
     products,
     restaurant,
     payment_method,
+    change_value
 }: any) {
+
     try {
         const { data: currentCashBoxData } = await supabase
             .from('cash_boxes')
@@ -30,13 +33,7 @@ export async function SubmitForm({
             return;
         }
 
-        const { data: addressData } = await supabase
-            .from('addresses')
-            .insert({
-                cep,
-                number: Number(number),
-            })
-            .select('*');
+        const { data: addressData } = await supabase.from('addresses').insert({ cep, number: Number(number), }).select('*');
 
         const address = addressData![0] as unknown as iAddress['data'];
 
@@ -58,6 +55,10 @@ export async function SubmitForm({
 
         const client = clientData![0] as unknown as iClient['data'];
 
+        const orderDataByCashBoxId = await supabase.from('orders').select('*').eq('restaurant_id', restaurant.id)
+
+        const orderPosition = orderDataByCashBoxId.data ? orderDataByCashBoxId?.data.length + 1 : 1
+
         const { data: orderData } = await supabase
             .from('orders')
             .insert({
@@ -67,6 +68,8 @@ export async function SubmitForm({
                 cash_box_id: currentCashBox.id,
                 order_status_id: 2,
                 payment_method_id: payment_method,
+                number: orderPosition,
+                change_value
             })
             .select('*');
 

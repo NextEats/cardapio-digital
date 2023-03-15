@@ -12,6 +12,8 @@ import { iStatusReducer } from '../../../../reducers/statusReducer/reducer';
 import {
     iInsertOrdersProducts,
     iInsertProducts,
+    iOrdersTables,
+    iOrdersTablesWithFkData,
     iOrdersWithFKData,
 } from '../../../../types/types';
 
@@ -22,6 +24,7 @@ interface IOrderStatusCardProps {
     ordersGroupedByOrderStatus: { [key: string]: iOrdersWithFKData[] };
     ordersProducts: iInsertOrdersProducts['data'];
     products: iInsertProducts['data'];
+    ordersTables: iOrdersTablesWithFkData[];
 }
 
 export default function OrderStatusCard({
@@ -30,6 +33,7 @@ export default function OrderStatusCard({
     ordersGroupedByOrderStatus,
     ordersProducts,
     products,
+    ordersTables,
 }: IOrderStatusCardProps) {
     const restaurant = useContext(AdminContext).restaurant;
 
@@ -106,7 +110,7 @@ export default function OrderStatusCard({
     }
 
     return (
-        <div className="flex flex-1 max-h-[240px]  lg:w-full flex-col shadow-sm px-4 pt-2 pb-4 scrollbar-custom">
+        <div className="flex flex-1 min-h-[150px] max-h-[270px] lg:w-full flex-col shadow-sm px-4 pt-2 pb-4 scrollbar-custom">
             <div className=" flex items-center justify-between mb-4">
                 <h2 className="text-base font-bold"> {statusName} </h2>
                 <span className="text-md font-medium">{''}</span>
@@ -119,6 +123,9 @@ export default function OrderStatusCard({
                             if (!order) {
                                 return;
                             }
+
+                            const ordersTablesFound = ordersTables.find(ot => ot.orders.id === order.id)
+
                             const ordersProductsFiltered =
                                 ordersProducts.filter(
                                     (op) => op.order_id === order.id!
@@ -147,16 +154,17 @@ export default function OrderStatusCard({
                                             height={26}
                                         />
                                     </td>
-                                    <td className="text-left text-sm font-medium px-2  max-w-20 truncate 2xs:table-cell md:hidden xl:table-cell">
+                                    <td className="text-left text-sm font-medium px-2  max-w-20 truncate 2xs:table-cell  xl:table-cell">
+                                        #{order.number.toString().padStart(4, '0')}
+                                    </td>
+                                    <td className={`${tdStyle} pl-2 text-left text-sm font-medium px-2  max-w-20 truncate 2xs:table-cell  xl:table-cell`}>
                                         {order.clients ? (
                                             <span className="">
-                                                {' '}
-                                                {order.clients.name}{' '}
+                                                {order.clients.name}
                                             </span>
                                         ) : (
                                             <span className="text-green-400 ">
-                                                {' '}
-                                                Mesa{' '}
+                                                {ordersTablesFound?.tables.name}
                                             </span>
                                         )}
                                     </td>

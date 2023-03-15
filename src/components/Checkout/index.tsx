@@ -37,8 +37,8 @@ export default function Checkout() {
     }
 
     return (
-        <div className="overflow-auto w-screen h-screen fixed bg-white z-[500] flex justify-center items-center">
-            <div className="w-full max-w-[600px] px-2">
+        <div className="overflow-y-hidden w-screen h-screen fixed bg-white z-[500] flex justify-center items-center">
+            <div className="w-full max-w-[600px] h-screen overflow-y-auto px-2 py-12">
                 <CurrentStepComponent />
             </div>
         </div>

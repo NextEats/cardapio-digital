@@ -1,23 +1,29 @@
+import { getOrdersProductsData } from '@/src/helpers/getOrdersProductsData';
 import { api, supabase } from '@/src/server/api';
-import { iAdditionals, iCashBox, iCashBoxes, iOrdersProducts, iOrdersWithFKData, iProducts, iUserDetails } from '@/src/types/types';
-import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
+import {
+    iAdditionals,
+    iCashBox,
+    iOrdersProducts,
+    iOrdersWithFKData,
+    iProducts,
+    iUserDetails,
+} from '@/src/types/types';
+import * as Dialog from '@radix-ui/react-dialog';
+import { useUser } from '@supabase/auth-helpers-react';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
-import * as Dialog from '@radix-ui/react-dialog';
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
 import { FiX } from 'react-icons/fi';
-import { getOrdersProductsData } from '@/src/helpers/getOrdersProductsData';
 import ReactToPrint from 'react-to-print';
 import { CardapioDigitalButton } from '../../cardapio-digital/CardapioDigitalButton';
-import { createServerSupabaseClient } from '@supabase/auth-helpers-nextjs';
-import { useUser } from '@supabase/auth-helpers-react';
 
 interface iCashClosingReportModalProps {
-    setOpenCashBoxClosingReportModal: Dispatch<SetStateAction<boolean>>
-    openCashBoxClosingReportModal: boolean
+    setOpenCashBoxClosingReportModal: Dispatch<SetStateAction<boolean>>;
+    openCashBoxClosingReportModal: boolean;
     ordersGroupedByOrderStatus: { [key: string]: iOrdersWithFKData[] };
     restaurantId: number;
     cashBoxState: iCashBox['data'] | undefined;
-    billing: number
+    billing: number;
 }
 
 export default function CashClosingReportModal({
@@ -26,47 +32,56 @@ export default function CashClosingReportModal({
     cashBoxState,
     billing,
     openCashBoxClosingReportModal,
-    setOpenCashBoxClosingReportModal
+    setOpenCashBoxClosingReportModal,
 }: iCashClosingReportModalProps) {
-
-    const [ordersProducts, setOrdersProducts] = useState<iOrdersProducts["data"]>([])
-    const [additionals, setAdditionals] = useState<iAdditionals["data"]>([])
-    const [products, setProducts] = useState<iProducts["data"]>([])
-    const [usersData, setUsersData] = useState<iUserDetails["data"] | null>(null)
-    const CashBoxReportComponent = useRef<HTMLDivElement>(null)
+    const [ordersProducts, setOrdersProducts] = useState<
+        iOrdersProducts['data']
+    >([]);
+    const [additionals, setAdditionals] = useState<iAdditionals['data']>([]);
+    const [products, setProducts] = useState<iProducts['data']>([]);
+    const [usersData, setUsersData] = useState<iUserDetails['data'] | null>(
+        null
+    );
+    const CashBoxReportComponent = useRef<HTMLDivElement>(null);
 
     const user = useUser();
 
-    const moment = new Date()
-    const cashBoxOpenedAt = new Date(cashBoxState?.opened_at!)
+    const moment = new Date();
+    const cashBoxOpenedAt = new Date(cashBoxState?.opened_at!);
 
     useEffect(() => {
         async function getDatas() {
-            const ordersProductsData = await api.get(`api/orders_products`)
-            setOrdersProducts(ordersProductsData.data)
-            const additionalsData = await api.get(`api/additionals/${restaurantId}`)
-            setAdditionals(additionalsData.data)
-            const productsData = await api.get(`api/products/${restaurantId}`)
-            setProducts(productsData.data)
-            const getUserData = await supabase.from("user_details").select().eq('user_id', user?.id)
-            if (getUserData.data)
-                setUsersData(getUserData.data[0])
+            const ordersProductsData = await api.get(`api/orders_products`);
+            setOrdersProducts(ordersProductsData.data);
+            const additionalsData = await api.get(
+                `api/additionals/${restaurantId}`
+            );
+            setAdditionals(additionalsData.data);
+            const productsData = await api.get(`api/products/${restaurantId}`);
+            setProducts(productsData.data);
+            const getUserData = await supabase
+                .from('user_details')
+                .select()
+                .eq('user_id', user?.id);
+            if (getUserData.data) setUsersData(getUserData.data[0]);
         }
-        getDatas()
-    }, [restaurantId, user])
+        getDatas();
+    }, [restaurantId, user]);
     async function handleCloseCashBox() {
         if (
             ordersGroupedByOrderStatus['em análise'] ||
             ordersGroupedByOrderStatus['em produção'] ||
             ordersGroupedByOrderStatus['a caminho']
         ) {
-            alert('Para fechar o caixa, todos os pedidos precisam ser entregues.');
+            alert(
+                'Para fechar o caixa, todos os pedidos precisam ser entregues.'
+            );
             return;
         }
         const cashBox = await api.post('api/cash_boxes/close', {
             restaurant_id: restaurantId,
         });
-        setOpenCashBoxClosingReportModal(false)
+        setOpenCashBoxClosingReportModal(false);
     }
 
     interface Payment {
@@ -76,7 +91,7 @@ export default function CashClosingReportModal({
 
     function getPaymentTotals(orders: iOrdersWithFKData[]): Payment[] {
         const paymentTotals: Payment[] = [];
-        if (!orders) return []
+        if (!orders) return [];
         orders.forEach((order) => {
             const paymentMethod = order.payment_methods.name;
             const orderValue = getOrderValue(order);
@@ -86,7 +101,10 @@ export default function CashClosingReportModal({
             );
 
             if (paymentTotalIndex === -1) {
-                paymentTotals.push({ payment_method: paymentMethod, value: orderValue });
+                paymentTotals.push({
+                    payment_method: paymentMethod,
+                    value: orderValue,
+                });
             } else {
                 paymentTotals[paymentTotalIndex].value += orderValue;
             }
@@ -96,61 +114,128 @@ export default function CashClosingReportModal({
     }
 
     function getOrderValue(order: iOrdersWithFKData): number {
-
-        const ordersProductFiltered = ordersProducts.filter((op) => op.order_id === order.id);
+        const ordersProductFiltered = ordersProducts.filter(
+            (op) => op.order_id === order.id
+        );
 
         const totalPriceOfOrder = getOrdersProductsData({
             ordersProducts: ordersProductFiltered,
             additionals,
             products,
-        }).reduce((acc, item) => acc + item.totalPrice, 0)
+        }).reduce((acc: number, item: any) => acc + item.totalPrice, 0);
 
-        const deliveryFees = order.delivery_fees ? order.delivery_fees.fee : 0
-        return deliveryFees + totalPriceOfOrder/* adicionar valor do pedido */;
+        const deliveryFees = order.delivery_fees ? order.delivery_fees.fee : 0;
+        return deliveryFees + totalPriceOfOrder /* adicionar valor do pedido */;
     }
+
+    const textStyles = 'text-[10px]';
 
     return (
         <div className="flex items-center gap-3">
             <Dialog.Root open={openCashBoxClosingReportModal}>
-                <Dialog.Trigger>
-                </Dialog.Trigger>
+                <Dialog.Trigger></Dialog.Trigger>
 
                 <Dialog.Portal>
-                    <Dialog.Overlay onClick={() => setOpenCashBoxClosingReportModal(false)} className="w-screen h-screen flex items-center justify-center bg-black fixed inset-0 z-10 opacity-40 transition-all duration-300 ease-in-out" />
-                    <Dialog.Content ref={CashBoxReportComponent} className="hideShadowToPrint fixed top-[14vh] right-1/2 z-20 translate-x-1/2 rounded-lg w-[298px] bg-white shadow-md p-6" >
+                    <Dialog.Overlay
+                        onClick={() => setOpenCashBoxClosingReportModal(false)}
+                        className="w-screen h-screen flex items-center justify-center bg-black fixed inset-0 z-10 opacity-40 transition-all duration-300 ease-in-out"
+                    />
+                    <Dialog.Content
+                        ref={CashBoxReportComponent}
+                        className="hideShadowToPrint fixed top-[14vh] right-1/2 z-20 translate-x-1/2 rounded-lg w-[298px] bg-white shadow-md p-6"
+                    >
                         <Dialog.Title className="text-base w-full uppercase text-center font-semibold mb-6">
-                            Extrato e Caixa
+                            Extrato de Caixa
                         </Dialog.Title>
 
-                        <div className='max-w-full'>
-                            <p className=''> Usuário: {usersData ? usersData.name : null}</p>
-                            <p className='mb-2'>Email: {user?.email}</p>
+                        <div className="max-w-full">
+                            <p className={`${textStyles}`}>
+                                Usuário:{' '}
+                                <span className="font-bold">
+                                    {usersData ? usersData.name : null}
+                                </span>
+                            </p>
+                            <p className={`${textStyles} mb-2`}>
+                                Email:{' '}
+                                <span className="font-bold">{user?.email}</span>
+                            </p>
 
-                            {cashBoxState ?
-                                <p>Data de abertura:  {format(cashBoxOpenedAt, 'P', { locale: ptBR })}{' '}{format(cashBoxOpenedAt, 'HH')} {':'} {format(cashBoxOpenedAt, 'mm')}</p>
+                            {cashBoxState ? (
+                                <p className={`${textStyles}`}>
+                                    Data de abertura:{' '}
+                                    <span className="font-bold">
+                                        {format(cashBoxOpenedAt, 'P', {
+                                            locale: ptBR,
+                                        })}{' '}
+                                        {format(cashBoxOpenedAt, 'HH')} {':'}{' '}
+                                        {format(cashBoxOpenedAt, 'mm')}
+                                    </span>
+                                </p>
+                            ) : null}
+                            <p className={`${textStyles}`}>
+                                Saldo abertura:{' '}
+                                <span className="font-bold">0,00</span>
+                            </p>
+                            <p className={`${textStyles}`}>
+                                Data de fechamento:{' '}
+                                <span className="font-bold">
+                                    {format(moment, 'P', { locale: ptBR })}{' '}
+                                    {format(moment, 'HH')} {':'}
+                                    {format(moment, 'mm')}
+                                </span>
+                            </p>
+                            <p className={`${textStyles}`}>
+                                Saldo fechamento:{' '}
+                                <span className="font-bold">
+                                    {billing.toLocaleString('pt-BR', {
+                                        minimumFractionDigits: 2,
+                                        maximumFractionDigits: 2,
+                                    })}
+                                </span>
+                            </p>
+                            <hr className="my-2" />
+                            <h3 className="text-xs w-full uppercase text-center font-bold my-3">
+                                Valores totais do caixa
+                            </h3>
+
+                            <p className="text-base font-semibold mb-2">
+                                Entradas
+                            </p>
+                            {cashBoxState
+                                ? getPaymentTotals(
+                                      ordersGroupedByOrderStatus['entregue']
+                                  ).map((paymentMethods, index) => {
+                                      return (
+                                          <p
+                                              key={index}
+                                              className={`${textStyles}  font-medium`}
+                                          >
+                                              {' '}
+                                              {paymentMethods.payment_method}:
+                                              R${' '}
+                                              {paymentMethods.value.toLocaleString(
+                                                  'pt-BR',
+                                                  {
+                                                      maximumFractionDigits: 2,
+                                                      minimumFractionDigits: 2,
+                                                  }
+                                              )}{' '}
+                                          </p>
+                                      );
+                                  })
                                 : null}
-                            <p>Saldo abertura: 0,00</p>
-                            <p>Data de fechamento:  {format(moment, 'P', { locale: ptBR })}{' '}{format(moment, 'HH')} {':'} {format(moment, 'mm')}</p>
-                            <p>Saldo fechamento: {billing.toLocaleString('pt-BR', {
-                                minimumFractionDigits: 2, maximumFractionDigits: 2
-                            })}</p>
-
-                            <h3 className='text-base w-full uppercase text-center font-semibold my-3'>Valores totais do caixa</h3>
-
-                            <p className='text-lg font-semibold mb-2'>Entradas</p>
-                            {cashBoxState ? getPaymentTotals(ordersGroupedByOrderStatus['entregue']).map((paymentMethods, index) => {
-                                return <p key={index} className='text-sm font-medium'> {paymentMethods.payment_method}: R$ {paymentMethods.value.toLocaleString('pt-BR', {
-                                    maximumFractionDigits: 2, minimumFractionDigits: 2
-                                })} </p>
-                            }) : null}
                         </div>
 
-
-                        <Dialog.Close className="fixed top-3 right-3 text-gray-600 hideButtonToPrint" onClick={() => setOpenCashBoxClosingReportModal(false)} >
+                        <Dialog.Close
+                            className="fixed top-3 right-3 text-gray-600 hideButtonToPrint"
+                            onClick={() =>
+                                setOpenCashBoxClosingReportModal(false)
+                            }
+                        >
                             <FiX size={22} />
                         </Dialog.Close>
 
-                        <div className='flex flex-col items-center gap-3 w-full mt-6 hideButtonToPrint'>
+                        <div className="flex flex-col items-center gap-3 w-full mt-6 hideButtonToPrint">
                             <ReactToPrint
                                 copyStyles={true}
                                 content={() => CashBoxReportComponent.current}
@@ -166,7 +251,6 @@ export default function CashClosingReportModal({
                                 }}
                             />
 
-
                             <ReactToPrint
                                 copyStyles={true}
                                 content={() => CashBoxReportComponent.current}
@@ -180,10 +264,15 @@ export default function CashClosingReportModal({
                                     );
                                 }}
                             />
+                            <CardapioDigitalButton
+                                onClick={() => handleCloseCashBox()}
+                                name="Fechar caixa"
+                                w="w-full"
+                                h="h-8"
+                            />
                         </div>
                     </Dialog.Content>
                 </Dialog.Portal>
-
             </Dialog.Root>
         </div>
     );

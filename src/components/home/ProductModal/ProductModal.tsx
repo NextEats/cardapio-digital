@@ -13,12 +13,11 @@ import { iCashBox } from '@/src/types/types';
 import Additionals from './components/Additionals';
 import ProductOptions from './components/ProductOptions';
 import SubmitButtons from './components/SubmitButtons';
+import { clearAdditionals } from '@/src/reducers/AdditionalsReducer/actions/clearAdditionals';
 
 export default function ProductModal() {
     const { selectedProduct, productReducer } = useContext(DigitalMenuContext);
-    const { productSelects, selectOption } = useProductSelectsWithOptions(
-        selectedProduct!.state!
-    );
+    const { productSelects, selectOption } = useProductSelectsWithOptions(selectedProduct!.state!);
 
     const restaurant = useContext(DigitalMenuContext).restaurant;
 
@@ -37,7 +36,6 @@ export default function ProductModal() {
         useAdditionals(selectedProduct?.state ? selectedProduct?.state : '0');
 
 
-
     if (!productData || !selectedProduct?.state) {
         return <></>;
     }
@@ -49,6 +47,7 @@ export default function ProductModal() {
         setProductData(undefined);
         selectedProduct?.set(undefined);
         body?.classList.remove('overflow-hidden');
+        additionalsDispatch(clearAdditionals())
     }
 
     async function handleSubmit(e: MouseEvent) {
@@ -97,6 +96,13 @@ export default function ProductModal() {
         setObservation('');
         closeModal();
     }
+    const allOptionsSelected = productSelects.every(select => {
+        let atLeastOneOptionSelected = false;
+        select.options.forEach(option => {
+            if (option.selected) atLeastOneOptionSelected = true
+        });
+        return atLeastOneOptionSelected;
+    });
 
     return (
         <>
@@ -107,7 +113,7 @@ export default function ProductModal() {
                 }}
             ></div>
             <div
-                className={`max-w-[645px] pb-9 px-8 bg-white top-0 right-0 z-[200] fixed overflow-auto shadow-2xl h-screen`}
+                className={`max-w-[645px] pb-24 px-8 bg-white top-0 right-0 z-[200] fixed overflow-auto shadow-2xl h-screen`}
             >
                 <div className="sticky">
                     <BsArrowLeftCircle
@@ -157,8 +163,11 @@ export default function ProductModal() {
                             placeholder="Observações"
                         ></textarea>
                     </form>
-
-                    <SubmitButtons handleSubmit={handleSubmit} />
+                    {productSelects && allOptionsSelected ?
+                        <SubmitButtons handleSubmit={handleSubmit} />
+                        :
+                        <SubmitButtons handleSubmit={() => alert("Para finalizar o produto, selecione ao menos uma opção de cada ingrediente.")} />
+                    }
                 </div>
             </div>
         </>

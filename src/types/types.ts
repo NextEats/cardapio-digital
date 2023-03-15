@@ -387,6 +387,7 @@ export type iOrdersWithFKData = iOrder['data'] & {
 export type iOrdersTablesWithFkData = iOrdersTable['data'] & {
     orders: {
         id: number;
+        cash_boxes: iCashBox["data"],
         order_status: iOrderStatus['data'];
     };
     tables: iTable['data'];

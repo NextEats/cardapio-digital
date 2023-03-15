@@ -180,6 +180,12 @@ export default function CashClosingReportModal({
                                     );
                                 }}
                             />
+                            <CardapioDigitalButton
+                                onClick={() => handleCloseCashBox()}
+                                name="Fechar caixa"
+                                w="w-full"
+                                h="h-8"
+                            />
                         </div>
                     </Dialog.Content>
                 </Dialog.Portal>

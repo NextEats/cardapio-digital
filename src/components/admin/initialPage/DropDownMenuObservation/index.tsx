@@ -73,7 +73,6 @@ export function DropdownMenuObservation({ orderProduct, additionals }: iDropdown
                                     {orders!.map(s => {
                                         return <div key={s.id} className="mb-3">
                                             <h3 className='text-sm font-normal mb-1'>{s.name}</h3>
-
                                             <div className='grid grid-cols-3'>
                                                 {
                                                     s.options.map(o => {

@@ -26,7 +26,6 @@ export default function ProductList() {
                     );
                 })}
             </div>
-            <div className="h-[300px]"></div>
         </div>
     );
 }

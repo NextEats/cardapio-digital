@@ -1,4 +1,4 @@
-import { supabase, whatsappRestApi } from '@/src/server/api';
+import { supabase } from '@/src/server/api';
 import {
     iAddress,
     iCashBox,
@@ -15,6 +15,7 @@ export async function SubmitForm({
     products,
     restaurant,
     payment_method,
+    change_value,
 }: any) {
     try {
         const { data: currentCashBoxData } = await supabase
@@ -32,10 +33,7 @@ export async function SubmitForm({
 
         const { data: addressData } = await supabase
             .from('addresses')
-            .insert({
-                cep,
-                number: Number(number),
-            })
+            .insert({ cep, number: Number(number) })
             .select('*');
 
         const address = addressData![0] as unknown as iAddress['data'];
@@ -58,6 +56,25 @@ export async function SubmitForm({
 
         const client = clientData![0] as unknown as iClient['data'];
 
+        const orders = await supabase
+            .from('orders')
+            .select('*')
+            .eq('restaurant_id', restaurant.id);
+
+        const orderPosition = orders.data ? orders?.data.length + 1 : 1;
+
+        console.log('restaurant', restaurant);
+
+        // try {
+        //     const distance = await getDistanceBetweenTwoCEPs(
+        //         restaurant.addresses.cep,
+        //         cep
+        //     );
+        //     console.log('distance', distance);
+        // } catch (err) {
+        //     console.error(err);
+        // }
+
         const { data: orderData } = await supabase
             .from('orders')
             .insert({
@@ -66,7 +83,9 @@ export async function SubmitForm({
                 order_type_id: 1,
                 cash_box_id: currentCashBox.id,
                 order_status_id: 2,
+                delivery_fee_id: 1,
                 payment_method_id: payment_method,
+                number: orderPosition,
             })
             .select('*');
 
@@ -100,42 +119,6 @@ export async function SubmitForm({
                     .select('*');
             }
         });
-
-        const isPayingUsingPix = payment_method == 1;
-
-        if (isPayingUsingPix) {
-            try {
-                await whatsappRestApi({
-                    method: 'post',
-                    url: '/send-message',
-                    data: {
-                        id: restaurant!.slug,
-                        number: '55' + whatsapp,
-                        message: `*${
-                            restaurant!.name
-                        }*\n\n✅ _Seu pedido foi recebido com sucesso e começará a ser preparado em breve! Você receberá aqui todas as atualizações.\n\n Pague através da chave pix: *INSIRA CHAVE PIX*`,
-                    },
-                });
-            } catch (err) {
-                console.error(err);
-            }
-        } else {
-            try {
-                await whatsappRestApi({
-                    method: 'post',
-                    url: '/send-message',
-                    data: {
-                        id: restaurant!.slug,
-                        number: '55' + whatsapp,
-                        message: `*${
-                            restaurant!.name
-                        }*\n\n✅ _Seu pedido foi recebido com sucesso e começará a ser preparado em breve! Você receberá aqui todas as atualizações.`,
-                    },
-                });
-            } catch (err) {
-                console.error(err);
-            }
-        }
     } catch (error) {
         console.error(error);
     }

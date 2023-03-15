@@ -123,12 +123,10 @@ export default function ContactInfoForm({ setCurrentStep }: any) {
                     >
                         WhatsApp (com DDD)
                     </label>
-                    <input
-                        {...register('whatsapp', { required: true })}
-                        id="whatsapp"
-                        type="number"
-                        className={`appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${errors.whatsapp && 'border-red-500'
-                            }`}
+                    <InputMask
+                        mask="(99) 99999-9999"
+                        className={`appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${errors.whatsapp && 'border-red-500'}`}
+                        {...register('whatsapp', { required: true, setValueAs: (v) => parseInt(v.replace(/\D/g, '')) })}
                     />
                     {errors.whatsapp && (
                         <p className="text-red-500 text-xs italic">
@@ -275,7 +273,7 @@ export default function ContactInfoForm({ setCurrentStep }: any) {
                 {watchingChangeNeed === "Sim" ? (
                     <div>
                         <label className='flex flex-col'>Valor Total das Cédulas?
-                            <input type="number" min={0} {...register('change_value')} className='border-2' />
+                            <input type="number" {...register('change_value')} className='border-2' />
                         </label>
                     </div>
                 ) : null

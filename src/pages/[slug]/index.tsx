@@ -81,17 +81,17 @@ export default function CardapioDigital({ data }: { data: iDigitalMenuData }) {
             <DigitalMenuModals />
             <DigitalMenuContent />
 
-            <footer className='flex flex-col items-center bg-slate-200 justify-center py-5'>
+            <footer className='flex flex-col items-center gap-3 bg-slate-200 justify-center py-5'>
                 <p className='text-sm font-semibold'>Platafora de delivery desenvolvido por: </p>
                 <div className='flex items-center gap-2'>
                     <Image
                         className=''
-                        src={'/LogoPequeno_Laranja.png'}
-                        alt=''
-                        width={70}
-                        height={70}
+                        src={'/LogoLaranja.png'}
+                        alt='asdasd'
+                        width={160}
+                        height={160}
                     />
-                    <span className='text-2xl font-bold '>NextEats</span>
+                    {/* <span className='text-2xl font-bold '>NextEats</span> */}
                 </div>
                 <span className='text-sm text-gray-500'>versão 1.0.0</span>
             </footer>

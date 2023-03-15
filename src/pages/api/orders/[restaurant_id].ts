@@ -16,6 +16,7 @@ export default async function orders(
         order_id,
         order_status_id,
         payment_method_id,
+        number,
     } = body;
 
     switch (method) {
@@ -37,7 +38,8 @@ export default async function orders(
                     Number(cash_box_id),
                     Number(client_id),
                     Number(order_status_id),
-                    Number(payment_method_id)
+                    Number(payment_method_id),
+                    Number(number)
                 );
                 res.status(200).send(order);
             } catch (err) {

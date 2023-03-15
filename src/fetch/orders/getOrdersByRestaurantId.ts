@@ -9,6 +9,7 @@ export async function getOrdersByRestaurantIdFetch(
     .select(
       `
     id,
+    number,
     created_at,
     cash_box_id,
     payment_methods (

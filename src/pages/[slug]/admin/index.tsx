@@ -18,9 +18,13 @@ import {
     iInsertContacts,
     iInsertOrderStatuss,
     iOrdersProducts,
+    iOrdersTables,
+    iOrdersTablesWithFkData,
     iOrdersWithFKData,
     iProducts,
+    iProductSelects,
     iRestaurantWithFKData,
+    iSelects,
 } from '../../../types/types';
 
 import { getAddressesFetch } from 'src/fetch/addresses/getAddresses';
@@ -41,6 +45,9 @@ import { addNewUnderReviewAction } from '@/src/reducers/statusReducer/action';
 import { api, supabase } from '@/src/server/api';
 import { createServerSupabaseClient } from '@supabase/auth-helpers-nextjs';
 import 'react-toastify/dist/ReactToastify.css';
+import { getProductSelectsFetch } from '@/src/fetch/productSelects/getProductSelects';
+import { getSelectsByRestaurantIdFetch } from '@/src/fetch/selects/getSelectsByRestaurantId';
+import { getOrdersTablesFetch } from '@/src/fetch/ordersTables/getOrdersTables';
 
 interface iAdminHomePageProps {
     ordersData: iOrdersWithFKData[];
@@ -52,6 +59,8 @@ interface iAdminHomePageProps {
     addresses: iInsertAddresses['data'];
     cashBoxes: iCashBoxes['data'];
     additionals: iAdditionals['data'];
+    selects: iSelects["data"];
+    ordersTables: iOrdersTablesWithFkData[];
     restaurant: iRestaurantWithFKData;
 }
 
@@ -70,10 +79,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
             },
         };
     } else {
-        const { data: userDetailsData } = await supabase
-            .from('user_details')
-            .select(
-                `
+        const { data: userDetailsData } = await supabase.from('user_details').select(
+            `
                     id,
                     restaurant_id,
                     user_id,
@@ -83,8 +90,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
                         slug
                     )
             `
-            )
-            .eq('user_id', session.user.id);
+        ).eq('user_id', session.user.id);
         if (userDetailsData) {
             const userDetailsTypedData = userDetailsData[0] as unknown as {
                 id: number;
@@ -111,6 +117,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
             addresses: await getAddressesFetch(),
             cashBoxes: await getCashBoxesByRestaurantIdFetch(restaurant.id),
             additionals: await getAdditionalsByRestaurantIdFetch(restaurant.id),
+            selects: await getSelectsByRestaurantIdFetch(restaurant.id),
+            ordersTables: await getOrdersTablesFetch(),
             restaurant,
         },
     };
@@ -122,6 +130,8 @@ export default function AdminHomepage({
     products,
     cashBoxes,
     additionals,
+    selects,
+    ordersTables,
     restaurant,
 }: iAdminHomePageProps) {
     const [ordersProducts, setOrdersProducts] =
@@ -180,9 +190,9 @@ export default function AdminHomepage({
             const selectedProduct = productIds.map(
                 (productId) =>
                     products[
-                        products.findIndex(
-                            (product) => productId === product.id
-                        )
+                    products.findIndex(
+                        (product) => productId === product.id
+                    )
                     ]
             );
 
@@ -324,7 +334,7 @@ export default function AdminHomepage({
 
     return (
         <AdminWrapper>
-            <div className="flex flex-col gap-8">
+            <div className="flex flex-col gap-4">
                 <CashBoxButtons
                     cashBoxState={cashBoxState}
                     restaurantId={restaurant.id}
@@ -332,28 +342,6 @@ export default function AdminHomepage({
                     cashBoxes={cashBoxes}
                     billing={billing()}
                 />
-
-                <div className="grid 2xs:grid-cols-2 lg:grid-cols-3 gap-3">
-                    <Card
-                        color="red"
-                        name="Faturamento"
-                        value={`${billing()}`}
-                    />
-                    <Card
-                        color="green"
-                        name="Pedidos"
-                        value={
-                            ordersGroupedByOrderStatus['entregue']
-                                ? `${ordersGroupedByOrderStatus['entregue'].length}`
-                                : '0'
-                        }
-                    />
-                    <Card
-                        color="yellow"
-                        name="Produtos no Cardápio"
-                        value={products.length.toString()}
-                    />
-                </div>
 
                 <NewRequests
                     dispatch={ordersDispatch}
@@ -363,42 +351,45 @@ export default function AdminHomepage({
                     products={products}
                 />
 
-                <div className=" md:grid md:grid-cols-3 gap-4">
-                    <OrderStatusCard
-                        statusName="Em produção"
-                        dispatch={ordersDispatch}
-                        ordersState={ordersState}
-                        ordersGroupedByOrderStatus={ordersGroupedByOrderStatus}
-                        ordersProducts={ordersProducts}
-                        products={products}
-                    />
-                    <OrderStatusCard
-                        statusName="A caminho"
-                        dispatch={ordersDispatch}
-                        ordersState={ordersState}
-                        ordersGroupedByOrderStatus={ordersGroupedByOrderStatus}
-                        ordersProducts={ordersProducts}
-                        products={products}
-                    />
-                    <OrderStatusCard
-                        statusName="Entregue"
-                        dispatch={ordersDispatch}
-                        ordersState={ordersState}
-                        ordersGroupedByOrderStatus={ordersGroupedByOrderStatus}
-                        ordersProducts={ordersProducts}
-                        products={products}
-                    />
-                </div>
+                <OrderStatusCard
+                    ordersTables={ordersTables}
+                    statusName="Em produção"
+                    dispatch={ordersDispatch}
+                    ordersState={ordersState}
+                    ordersGroupedByOrderStatus={ordersGroupedByOrderStatus}
+                    ordersProducts={ordersProducts}
+                    products={products}
+                />
+                <OrderStatusCard
+                    statusName="A caminho"
+                    ordersTables={ordersTables}
+                    dispatch={ordersDispatch}
+                    ordersState={ordersState}
+                    ordersGroupedByOrderStatus={ordersGroupedByOrderStatus}
+                    ordersProducts={ordersProducts}
+                    products={products}
+                />
+                <OrderStatusCard
+                    statusName="Entregue"
+                    ordersTables={ordersTables}
+                    dispatch={ordersDispatch}
+                    ordersState={ordersState}
+                    ordersGroupedByOrderStatus={ordersGroupedByOrderStatus}
+                    ordersProducts={ordersProducts}
+                    products={products}
+                />
 
                 {ordersState.isOpenOrderModal ? (
                     <OrderModal
                         printComponent={printComponent}
+                        ordersTables={ordersTables}
                         ordersState={ordersState}
                         ordersGroupedByOrderStatus={ordersGroupedByOrderStatus}
                         restaurant={restaurant}
                         ordersProducts={ordersProducts}
                         products={products}
                         additionals={additionals}
+                        selects={selects}
                         ordersDispatch={ordersDispatch}
                     />
                 ) : null}

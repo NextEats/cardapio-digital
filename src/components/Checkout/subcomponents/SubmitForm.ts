@@ -17,13 +17,11 @@ export async function SubmitForm({
     payment_method,
     change_value,
 }: any) {
-    console.log('orderDataByCashBoxId 1');
     try {
         const { data: currentCashBoxData } = await supabase
             .from('cash_boxes')
             .select('*')
             .match({ restaurant_id: restaurant!.id, is_open: true });
-        console.log('orderDataByCashBoxId 2');
 
         const currentCashBox =
             currentCashBoxData![0] as unknown as iCashBox['data'];
@@ -32,7 +30,6 @@ export async function SubmitForm({
             alert('O Pedido só pode ser feito se o caixa estiver aberto.');
             return;
         }
-        console.log('orderDataByCashBoxId 3');
 
         const { data: addressData } = await supabase
             .from('addresses')
@@ -82,6 +79,7 @@ export async function SubmitForm({
                 delivery_fee_id: 1,
                 payment_method_id: payment_method,
                 number: orderPosition,
+                change_value,
             })
             .select('*');
 

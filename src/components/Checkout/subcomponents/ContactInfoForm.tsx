@@ -1,7 +1,6 @@
 import { DigitalMenuContext } from '@/src/contexts/DigitalMenuContext';
 import { calculateTotalOrderPrice } from '@/src/helpers/calculateTotalOrderPrice';
-import { api, supabase } from '@/src/server/api';
-import { iAdditional, iAdditionals, iProducts } from '@/src/types/types';
+import { supabase } from '@/src/server/api';
 import cep from 'cep-promise';
 import { useContext, useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
@@ -33,47 +32,50 @@ export default function ContactInfoForm({ setCurrentStep }: any) {
 
     const restaurant = useContext(DigitalMenuContext).restaurant;
     const products = useContext(DigitalMenuContext).productReducer!;
-    const watchingPaymentMethod = Number(watch('payment_method'))
-    const watchingChangeNeed = watch('change_need')
-    const change_value = watch('change_value')
+    const watchingPaymentMethod = Number(watch('payment_method'));
+    const watchingChangeNeed = watch('change_need');
+    const change_value = watch('change_value');
 
     const onSubmit: SubmitHandler<ContactFormValues> = async ({
         cep,
         name,
         number,
         whatsapp,
-        payment_method
+        payment_method,
     }) => {
-        const chenge = watchingPaymentMethod === 5 && watchingChangeNeed ? await calculateChangeValue({ products }) : null
+        const chenge =
+            watchingPaymentMethod === 5 && watchingChangeNeed
+                ? await calculateChangeValue({ products })
+                : null;
         await SubmitForm({
-            cep,
+            cep: cep.replace('-', ''),
             name,
             number,
             whatsapp,
             products,
             restaurant,
             payment_method,
-            change_value: chenge !== null ? chenge : 0
+            change_value: chenge !== null ? chenge : 0,
         });
 
         setCurrentStep('thank_you');
     };
 
     async function calculateChangeValue({ products }: any) {
+        const orderPrice = await calculateTotalOrderPrice({
+            products,
+            restaurantId: restaurant?.id,
+        });
+        const change = change_value - orderPrice!;
 
-        const orderPrice = await calculateTotalOrderPrice({ products, restaurantId: restaurant?.id })
-        const change = change_value - orderPrice!
-
-        return change
+        return change;
     }
 
     useEffect(() => {
         async function fetchActivePaymentMethods() {
             const { data, error } = await supabase
                 .from('payment_methods_restaurants')
-                .select(
-                    'id, payment_method_id, restaurant_id, enabled, payment_methods ( id, name )'
-                )
+                .select('*, payment_methods ( * )')
                 .match({ restaurant_id: restaurant!.id, enabled: true });
 
             if (data && !error) {
@@ -91,12 +93,11 @@ export default function ContactInfoForm({ setCurrentStep }: any) {
         }
 
         fetchActivePaymentMethods();
-
     }, [restaurant]);
 
     return (
         <form onSubmit={handleSubmit(onSubmit)} className="">
-            <div className="w-full flex justify-center">
+            <div className="w-full flex justify-center ">
                 <span className="text-center text-2xl font-semibold">
                     Digite seus Dados
                 </span>
@@ -113,8 +114,9 @@ export default function ContactInfoForm({ setCurrentStep }: any) {
                         {...register('name')}
                         id="name"
                         type="text"
-                        className={`appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${errors.name && 'border-red-500'
-                            }`}
+                        className={`appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${
+                            errors.name && 'border-red-500'
+                        }`}
                     />
                 </div>
                 <div className="mb-4">
@@ -126,8 +128,13 @@ export default function ContactInfoForm({ setCurrentStep }: any) {
                     </label>
                     <InputMask
                         mask="(99) 99999-9999"
-                        className={`appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${errors.whatsapp && 'border-red-500'}`}
-                        {...register('whatsapp', { required: true, setValueAs: (v) => parseInt(v.replace(/\D/g, '')) })}
+                        className={`appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${
+                            errors.whatsapp && 'border-red-500'
+                        }`}
+                        {...register('whatsapp', {
+                            required: true,
+                            setValueAs: (v) => parseInt(v.replace(/\D/g, '')),
+                        })}
                     />
                     {errors.whatsapp && (
                         <p className="text-red-500 text-xs italic">
@@ -146,8 +153,9 @@ export default function ContactInfoForm({ setCurrentStep }: any) {
                         {...register('cep', { required: true })}
                         id="cep"
                         type="text"
-                        className={`appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${errors.cep && 'border-red-500'
-                            }`}
+                        className={`appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${
+                            errors.cep && 'border-red-500'
+                        }`}
                         mask="99999-999"
                         onBlur={async () => {
                             const values = getValues();
@@ -182,8 +190,9 @@ export default function ContactInfoForm({ setCurrentStep }: any) {
                         {...register('neighborhood')}
                         id="neighborhood"
                         type="text"
-                        className={`bg-[#00000019] appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${errors.neighborhood && 'border-red-500'
-                            }`}
+                        className={`bg-[#00000019] appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${
+                            errors.neighborhood && 'border-red-500'
+                        }`}
                         disabled
                     />
                 </div>
@@ -198,8 +207,9 @@ export default function ContactInfoForm({ setCurrentStep }: any) {
                         {...register('street')}
                         id="street"
                         type="text"
-                        className={`bg-[#00000019] appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${errors.street && 'border-red-500'
-                            }`}
+                        className={`bg-[#00000019] appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${
+                            errors.street && 'border-red-500'
+                        }`}
                         disabled
                     />
                 </div>
@@ -214,8 +224,9 @@ export default function ContactInfoForm({ setCurrentStep }: any) {
                         {...register('number', { required: true })}
                         id="number"
                         type="text"
-                        className={`appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${errors.number && 'border-red-500'
-                            }`}
+                        className={`appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${
+                            errors.number && 'border-red-500'
+                        }`}
                     />
                     {errors.number && (
                         <p className="text-red-500 text-xs italic">
@@ -233,8 +244,9 @@ export default function ContactInfoForm({ setCurrentStep }: any) {
                     <select
                         {...register('payment_method', { required: true })}
                         id="payment_method"
-                        className={`appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${errors.payment_method && 'border-red-500'
-                            }`}
+                        className={`appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${
+                            errors.payment_method && 'border-red-500'
+                        }`}
                     >
                         <option
                             disabled={true}
@@ -262,28 +274,35 @@ export default function ContactInfoForm({ setCurrentStep }: any) {
                 </div>
 
                 {watchingPaymentMethod === 5 ? (
-                    <div className='flex items-center gap-1 mb-2'>
+                    <div className="flex items-center gap-1 mb-2">
                         <input
-                            className='h-5 w-5'
-                            {...register('change_need')} type="checkbox" />
-                        <label className='text-lg'>Preciso de troco</label>
+                            className="h-5 w-5"
+                            {...register('change_need')}
+                            type="checkbox"
+                        />
+                        <label className="text-lg">Preciso de troco</label>
                     </div>
-                ) : null
-                }
+                ) : null}
 
                 {watchingChangeNeed && watchingPaymentMethod === 5 ? (
                     <div>
-                        <label htmlFor='change_value' className='block text-gray-700 font-bold mb-2'>Valor Total das Cédulas?</label>
+                        <label
+                            htmlFor="change_value"
+                            className="block text-gray-700 font-bold mb-2"
+                        >
+                            Valor Total das Cédulas?
+                        </label>
                         <input
                             {...register('change_value')}
-                            className={`appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${errors.whatsapp && 'border-red-500'}`}
-                            id='change_value'
+                            className={`appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${
+                                errors.whatsapp && 'border-red-500'
+                            }`}
+                            id="change_value"
                             min={1}
                             type="number"
                         />
                     </div>
-                ) : null
-                }
+                ) : null}
 
                 <div className="flex w-full gap-x-2 mt-16">
                     <button

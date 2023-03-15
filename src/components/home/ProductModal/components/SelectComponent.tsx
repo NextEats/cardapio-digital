@@ -32,8 +32,7 @@ export default function SelectComponent({
             )}
 
             <div className="flex mt-8 flex-wrap gap-2">
-                {select.options?.map((option: iProductOption["data"], optionIndex) => {
-                    // if (option.is_default_value) handleOptionClick(optionIndex)
+                {select.options?.map((option: any, optionIndex) => {
                     return (
                         <div
                             key={option.id}
@@ -48,7 +47,7 @@ export default function SelectComponent({
                                 }
                             >
                                 <div
-                                    className={`w-[130px] h-[130px] rounded-lg relative cursor-pointer ${option.is_default_value
+                                    className={`w-[130px] h-[130px] rounded-lg relative cursor-pointer ${option.selected
                                         ? 'selected'
                                         : 'unselected'
                                         }`}

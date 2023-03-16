@@ -193,7 +193,8 @@ export default function OrderStatusCard({
                                             >
                                                 <AiFillEye className="text-xl text-white" />
                                             </button>
-                                            {statusName !== 'Entregue' ? (
+                                            {statusName !== 'Entregue' && order.order_types.name !== "Mesa" ? (
+                                                
                                                 <button
                                                     onClick={() =>
                                                         switchStatus(order.id!)
@@ -202,7 +203,7 @@ export default function OrderStatusCard({
                                                 >
                                                     <BiArrowFromLeft className="text-xl text-white" />
                                                 </button>
-                                            ) : null}
+                                        ) : null}
                                         </div>
                                     </td>
                                 </tr>

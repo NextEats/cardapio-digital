@@ -178,7 +178,7 @@ export function OrderModal({
                             translate-x-1/2 -translate-y-1/2  rounded-md p-6"
                         >
                             <Dialog.Title className="text-xl font-bold text-center">
-                                Next Eats
+                                Next Eats - {orderFound?.order_types.name}
                             </Dialog.Title>
 
                             <Dialog.Description

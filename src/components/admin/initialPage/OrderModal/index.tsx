@@ -152,14 +152,6 @@ export function OrderModal({
         ordersDispatch(showModalAction());
     }
 
-    function handleAfterPrint(event: { wasCancelled: boolean }) {
-        if (event.wasCancelled) {
-            console.error('A impressão foi cancelada');
-        } else {
-            console.error('A impressão foi concluída com sucesso');
-        }
-    }
-
     return (
         <>
             <div>
@@ -208,7 +200,6 @@ export function OrderModal({
                                     <p className={`${textStyles}`}>
                                         Nº do pedido:{' '}
                                         <strong>
-                                            {' '}
                                             #
                                             {orderFound?.number
                                                 .toString()
@@ -253,12 +244,10 @@ export function OrderModal({
                                             >
                                                 Nome:{' '}
                                                 <strong>
-                                                    {' '}
                                                     {orderFound?.clients?.name}
                                                 </strong>{' '}
                                                 - Telefone:{' '}
                                                 <strong>
-                                                    {' '}
                                                     {
                                                         orderFound?.clients
                                                             .contacts?.phone
@@ -303,7 +292,7 @@ export function OrderModal({
 
                                 <div>
                                     {orderFound?.payment_methods.name !==
-                                    'MESA' ? (
+                                        'MESA' ? (
                                         <p className="grid grid-cols-2 items-center gap-10">
                                             <span className={`${textStyles}`}>
                                                 Sub-Total:
@@ -321,17 +310,14 @@ export function OrderModal({
                                     {orderFound?.delivery_fees ? (
                                         <p className="grid grid-cols-2 items-center gap-10">
                                             <span className={`${textStyles} `}>
-                                                {' '}
                                                 Taxa de entrega:
                                             </span>
                                             <span className={`${textStyles}`}>
                                                 <strong>
-                                                    {' '}
                                                     R${' '}
                                                     {
-                                                        orderFound
-                                                            ?.delivery_fees.fee
-                                                    }{' '}
+                                                        orderFound?.delivery_fees.fee
+                                                    }
                                                 </strong>
                                             </span>
                                         </p>
@@ -339,7 +325,6 @@ export function OrderModal({
 
                                     <p className="grid grid-cols-2 items-center gap-10">
                                         <span className={`${textStyles}`}>
-                                            {' '}
                                             Total a pagar:{' '}
                                         </span>
                                         <span className={`${textStyles} w-`}>
@@ -347,9 +332,7 @@ export function OrderModal({
                                                 R${' '}
                                                 {totalPriceOfProducts +
                                                     (orderFound?.delivery_fees
-                                                        ? orderFound
-                                                              .delivery_fees.fee
-                                                        : 0) +
+                                                        ? orderFound.delivery_fees.fee : 0) +
                                                     totalAdditionalPrice}
                                             </strong>
                                         </span>
@@ -360,18 +343,14 @@ export function OrderModal({
                                     {!ordersGroupedByOrderStatus[
                                         'em análise'
                                     ] ? null : ordersGroupedByOrderStatus[
-                                          'em análise'
-                                      ].some((o) => o.id === orderFound?.id) ? (
+                                        'em análise'
+                                    ].some((o) => o.id === orderFound?.id) ? (
                                         <ReactToPrint
                                             copyStyles={true}
-                                            content={() =>
-                                                printComponent.current
-                                            }
+                                            content={() => printComponent.current}
                                             onAfterPrint={() => {
                                                 printProductionOrder();
-                                                moveToEmProduçãoCard(
-                                                    orderFound?.id!
-                                                );
+                                                moveToEmProduçãoCard(orderFound?.id!);
                                             }}
                                             trigger={() => {
                                                 return (
@@ -388,9 +367,7 @@ export function OrderModal({
                                         content={() => printComponent.current}
                                         onAfterPrint={() => {
                                             printProductionOrder();
-                                            moveToEmProduçãoCard(
-                                                orderFound?.id!
-                                            );
+                                            moveToEmProduçãoCard(orderFound?.id!);
                                         }}
                                         trigger={() => {
                                             return (

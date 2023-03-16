@@ -98,6 +98,7 @@ export default function TableModal() {
         }
 
         window.location.reload();
+
     }
 
     async function handleFinishProduction() {

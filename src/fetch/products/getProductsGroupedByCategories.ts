@@ -26,8 +26,6 @@ export async function getProductsGroupedByCategories(restaurantId: number) {
         []
     );
 
-    console.log(flatProducts);
-
     return flatProducts;
 }
 

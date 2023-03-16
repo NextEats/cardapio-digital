@@ -25,8 +25,6 @@ export default function ProductsDetails({
     result,
     productsFiltered,
 }: iProductsDetailsProps) {
-    console.log('aasd');
-    console.log('productsFiltered', productsFiltered);
 
     const textStyles =
         'text-[10px] leading-[14px] font-semibold text-black text-left leading-6';
@@ -35,7 +33,7 @@ export default function ProductsDetails({
     return (
         <div className="mb-2 w-full">
             <div>
-                {productsFiltered!.map((product) => {
+                {productsFiltered!.map((product, index) => {
                     const orderProductByProductId = orderProductFiltered.find(
                         (op) =>
                             op.product_id === product.id &&
@@ -49,18 +47,18 @@ export default function ProductsDetails({
 
                     const selectsDada = orderProductByProductId.selects_data as
                         | {
-                              id: number;
-                              max_selected_options: number;
-                              name: string;
-                              options: {
-                                  id: number;
-                                  is_default_value: boolean;
-                                  name: string;
-                                  picture_url: string;
-                                  select_id: number;
-                                  selected: boolean;
-                              }[];
-                          }[]
+                            id: number;
+                            max_selected_options: number;
+                            name: string;
+                            options: {
+                                id: number;
+                                is_default_value: boolean;
+                                name: string;
+                                picture_url: string;
+                                select_id: number;
+                                selected: boolean;
+                            }[];
+                        }[]
                         | undefined
                         | null;
 
@@ -73,44 +71,38 @@ export default function ProductsDetails({
                     const additionalsDataFiltered =
                         additionalsData !== null
                             ? additionalsData.reduce(
-                                  (
-                                      acc: {
-                                          additional: iAdditional['data'];
-                                          quantity: number;
-                                      }[],
-                                      item
-                                  ) => {
-                                      if (
-                                          additionals.some(
-                                              (a) => a.id === item.additional_id
-                                          )
-                                      ) {
-                                          return [
-                                              ...acc,
-                                              {
-                                                  additional:
-                                                      additionals[
-                                                          additionals.findIndex(
-                                                              (a) =>
-                                                                  a.id ===
-                                                                  item.additional_id
-                                                          )
-                                                      ],
-                                                  quantity: item.quantity,
-                                              },
-                                          ];
-                                      }
-                                      return [...acc];
-                                  },
-                                  []
-                              )
+                                (
+                                    acc: {
+                                        additional: iAdditional['data'];
+                                        quantity: number;
+                                    }[], item
+                                ) => {
+                                    if (
+                                        additionals.some(
+                                            (a) => a.id === item.additional_id
+                                        )
+                                    ) {
+                                        return [
+                                            ...acc,
+                                            {
+                                                additional:
+                                                    additionals[
+                                                    additionals.findIndex((a) => a.id === item.additional_id)],
+                                                quantity: item.quantity,
+                                            },
+                                        ];
+                                    }
+                                    return [...acc];
+                                },
+                                []
+                            )
                             : [];
 
                     if (product === undefined) {
                         return;
                     }
                     return (
-                        <div key={product.id} className="w-full">
+                        <div key={index} className="w-full">
                             <div
                                 className={`w-full flex items-center justify-between ${textStyles} mt-1`}
                             >

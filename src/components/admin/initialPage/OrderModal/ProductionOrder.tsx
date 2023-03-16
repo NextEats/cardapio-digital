@@ -3,18 +3,13 @@ import ProductsDetails from './ProductsDetails';
 export default function ProductionOrder({
     productionOrder,
     printProductionOrder,
-    restaurant,
     orderFound,
-    orderDateFormated,
     ordersTablesFound,
-    address,
     additionals,
     result,
     orderProductFiltered,
-    totalPriceOfProducts,
     selects,
     productsFiltered,
-    totalAdditionalPrice,
 }: any) {
     return (
         <div className="fixed bg-white z-[-1000] hidden">
@@ -25,17 +20,12 @@ export default function ProductionOrder({
             >
                 <ProductionOrderContent
                     productsFiltered={productsFiltered}
-                    restaurant={restaurant}
                     orderFound={orderFound}
-                    orderDateFormated={orderDateFormated}
                     ordersTablesFound={ordersTablesFound}
-                    address={address}
                     additionals={additionals}
                     result={result}
                     orderProductFiltered={orderProductFiltered}
-                    totalPriceOfProducts={totalPriceOfProducts}
                     selects={selects}
-                    totalAdditionalPrice={totalAdditionalPrice}
                 />
             </div>
             <button onClick={printProductionOrder}>Print this out!</button>
@@ -44,17 +34,12 @@ export default function ProductionOrder({
 }
 
 function ProductionOrderContent({
-    restaurant,
     orderFound,
-    orderDateFormated,
     ordersTablesFound,
-    address,
     additionals,
     result,
     orderProductFiltered,
-    totalPriceOfProducts,
     selects,
-    totalAdditionalPrice,
     productsFiltered,
 }: any) {
     const textStyles =

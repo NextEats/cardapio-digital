@@ -13,7 +13,7 @@ export interface iProductsDetailsProps {
 }
 
 export default function ProductsDetails({ additionals, orderProductFiltered, result }: iProductsDetailsProps) {
-    const textStyles = 'text-[10px] leading-[14px] font-semibold text-black text-left leading-6';
+    const textStyles = 'text-[12px] leading-[14px] font-semibold text-black text-left leading-6';
     return (<div className="mb-2 w-full">
         <div>
             {result.map((product) => {
@@ -78,7 +78,7 @@ export default function ProductsDetails({ additionals, orderProductFiltered, res
                         <div className='ml-2'>
                             {
                                 additionalsDataFiltered.map((additional) => {
-                                    return <div key={additional.additional.id} className="flex items-center justify-between pr-2 text-[10px] font-normal">
+                                    return <div key={additional.additional.id} className="flex items-center justify-between pr-2 text-[12px] font-normal">
                                         <span> {additional.quantity} - {additional.additional.name} </span>
                                         <span className='text-green-500'> R$ {additional.additional.price * additional.quantity}</span>
                                     </div>

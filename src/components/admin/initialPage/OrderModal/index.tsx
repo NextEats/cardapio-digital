@@ -62,7 +62,7 @@ export function OrderModal({
 
     const descriptionsStyles =
         'text-sm font-semibold text-black text-center mb-3 mt-1';
-    const textStyles = 'text-[10px] leading-[14px] font-semibold text-black text-left leading-6';
+    const textStyles = 'text-[12px] leading-[14px] font-semibold text-black text-left leading-6';
 
     const orderFound = ordersState.orders.find((order) => order.id === ordersState.orderId);
 

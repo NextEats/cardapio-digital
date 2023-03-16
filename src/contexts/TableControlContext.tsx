@@ -116,7 +116,7 @@ export default function TableContextProvider({
         tableReducer,
         tableReducerDefaultValues
     );
-    console.log(tableState);
+
     const [tables, setTables] = useState<iTables['data']>([]);
 
     const [viewProduct, setViewProduct] = useState<iProduct['data'] | null>(

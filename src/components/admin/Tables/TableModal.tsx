@@ -2,10 +2,11 @@ import { TableContext } from '@/src/contexts/TableControlContext';
 import { filterOptionsSelected } from '@/src/helpers/filterOptionsSelected';
 import { api, supabase } from '@/src/server/api';
 import * as Dialog from '@radix-ui/react-dialog';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { BsCheckCircle, BsGear } from 'react-icons/bs';
 import { FiX } from 'react-icons/fi';
 import { GiTable } from 'react-icons/gi';
+import { QuantitySelector } from '../../QuantitySelector';
 import { CardapioDigitalButton } from '../cardapio-digital/CardapioDigitalButton';
 import CustomerAtTheTable from './CustomerAtTheTable';
 import FinishServicePopover from './FinishServicePopover';
@@ -76,14 +77,15 @@ export default function TableModal() {
             const selects_data = filterOptionsSelected({
                 productsOptionsSelected: ps.productSelects ? ps.productSelects : [],
             });
-
-            const ordersProductsData = await api.post(`api/orders_products/`, {
-                order_id: orderData.data.id,
-                table_id: openedTableModal?.id,
-                product_id: ps.product?.id,
-                selects_data,
-                additionals_data,
-            });
+            for (let i = 0; i < ps.quantity; i++) {
+                const ordersProductsData = await api.post(`api/orders_products/`, {
+                    order_id: orderData.data.id,
+                    table_id: openedTableModal?.id,
+                    product_id: ps.product?.id,
+                    selects_data,
+                    additionals_data,
+                });
+            }
         });
         const ordersTablesData = await api.post(`api/orders_tables/`, {
             order_id: orderData.data.id,
@@ -112,23 +114,6 @@ export default function TableModal() {
         });
         window.location.reload();
     }
-    // async function handleFinishService() {
-    //     const ordersDelievered = ordersTables.filter(
-    //         (ot) => ot.has_been_paid === false
-    //     );
-    //     // if(ordersInProduction.some( o => o.orders.order_status.status_name === 'em produção')) {
-    //     //     alert("Para finalizar o serviço, todos os pedidos em produção precisam ser entregues.")
-    //     //     return
-    //     // }
-    //     ordersDelievered.forEach(async (o) => {
-    //         const ordersTableData = await api.put(`api/orders_tables/`, {
-    //             order_table_id: o.id,
-    //             has_been_paid: true,
-    //         });
-    //     });
-    //     await updateTable(false, false, openedTableModal?.id!);
-    //     window.location.reload();
-    // }
 
     const enableFinishServiceButton = ordersTables.some(
         (o) =>

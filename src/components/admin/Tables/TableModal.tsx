@@ -34,13 +34,10 @@ export default function TableModal() {
             return;
         }
 
-        const orderDataByCashBoxId = await supabase
-            .from('orders')
-            .select('*')
-            .match({
-                restaurant_id: restaurant!.id,
-                cash_box_id: foundCashBoxes.id,
-            });
+        const orderDataByCashBoxId = await supabase.from('orders').select('*').match({
+            restaurant_id: restaurant!.id,
+            cash_box_id: foundCashBoxes.id,
+        });
 
         const orderPosition = orderDataByCashBoxId.data
             ? orderDataByCashBoxId?.data.length + 1

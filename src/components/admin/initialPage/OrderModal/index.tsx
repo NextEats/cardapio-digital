@@ -127,37 +127,21 @@ export function OrderModal({
     const result = Object.entries(countProducts).map(
         ([name, { id, count, price }]) => ({ id, name, count, price })
     );
-    const totalPriceOfProducts = result.reduce(
-        (acc, product) => acc + product.price,
-        0
-    );
 
-    const totalAdditionalPrice = getOrdersProductsData({
+    const totalOrderPrice = getOrdersProductsData({
         ordersProducts: orderProductFiltered as iOrdersProducts['data'],
         additionals,
         products: products as iProducts['data'],
-    }).reduce((acc, item) => acc + item.totalAdditionalsPriceByProduct, 0);
+    }).reduce((acc, item) => acc + item.totalPrice, 0)
+
 
     const orderDateFormated = format(
-        new Date(`${orderFound?.created_at}`),
-        'P',
-        { locale: ptBR }
+        new Date(`${orderFound?.created_at}`), 'P', { locale: ptBR }
     );
 
     async function moveToEmProduçãoCard(orderId: number) {
-        await supabase
-            .from('orders')
-            .update({ order_status_id: 3 })
-            .eq('id', orderId);
+        await supabase.from('orders').update({ order_status_id: 3 }).eq('id', orderId);
         ordersDispatch(showModalAction());
-    }
-
-    function handleAfterPrint(event: { wasCancelled: boolean }) {
-        if (event.wasCancelled) {
-            console.error('A impressão foi cancelada');
-        } else {
-            console.error('A impressão foi concluída com sucesso');
-        }
     }
 
     return (
@@ -182,17 +166,13 @@ export function OrderModal({
                                     productsFiltered={productsFiltered}
                                     productionOrder={productionOrder}
                                     printProductionOrder={printProductionOrder}
-                                    restaurant={restaurant}
                                     orderFound={orderFound}
                                     orderDateFormated={orderDateFormated}
                                     ordersTablesFound={ordersTablesFound}
-                                    address={address}
-                                    additionals={additionals}
                                     result={result}
+                                    additionals={additionals}
                                     orderProductFiltered={orderProductFiltered}
-                                    totalPriceOfProducts={totalPriceOfProducts}
                                     selects={selects}
-                                    totalAdditionalPrice={totalAdditionalPrice}
                                 />
 
                                 <h2 className="text-center uppercase text-black font-semibold text-sm">
@@ -208,7 +188,6 @@ export function OrderModal({
                                     <p className={`${textStyles}`}>
                                         Nº do pedido:{' '}
                                         <strong>
-                                            {' '}
                                             #
                                             {orderFound?.number
                                                 .toString()
@@ -303,7 +282,7 @@ export function OrderModal({
 
                                 <div>
                                     {orderFound?.payment_methods.name !==
-                                    'MESA' ? (
+                                        'MESA' ? (
                                         <p className="grid grid-cols-2 items-center gap-10">
                                             <span className={`${textStyles}`}>
                                                 Sub-Total:
@@ -311,8 +290,7 @@ export function OrderModal({
                                             <span className={`${textStyles}`}>
                                                 <strong>
                                                     R$
-                                                    {totalPriceOfProducts +
-                                                        totalAdditionalPrice}
+                                                    {totalOrderPrice}
                                                 </strong>
                                             </span>
                                         </p>
@@ -339,19 +317,15 @@ export function OrderModal({
 
                                     <p className="grid grid-cols-2 items-center gap-10">
                                         <span className={`${textStyles}`}>
-                                            {' '}
                                             Total a pagar:{' '}
                                         </span>
                                         <span className={`${textStyles} w-`}>
                                             <strong>
                                                 R${' '}
-                                                {totalPriceOfProducts +
-                                                    (orderFound?.delivery_fees
-                                                        ? orderFound
-                                                              .delivery_fees.fee
-                                                        : 0) +
-                                                    totalAdditionalPrice}
+                                                {totalOrderPrice +
+                                                    (orderFound?.delivery_fees ? orderFound.delivery_fees.fee : 0)}
                                             </strong>
+
                                         </span>
                                     </p>
                                 </div>
@@ -360,8 +334,8 @@ export function OrderModal({
                                     {!ordersGroupedByOrderStatus[
                                         'em análise'
                                     ] ? null : ordersGroupedByOrderStatus[
-                                          'em análise'
-                                      ].some((o) => o.id === orderFound?.id) ? (
+                                        'em análise'
+                                    ].some((o) => o.id === orderFound?.id) ? (
                                         <ReactToPrint
                                             copyStyles={true}
                                             content={() =>

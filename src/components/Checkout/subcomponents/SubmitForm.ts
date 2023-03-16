@@ -1,4 +1,9 @@
-import { api, supabase, whatsappRestApi } from '@/src/server/api';
+import {
+    distanceFeeApi,
+    serverURL,
+    supabase,
+    whatsappRestApi,
+} from '@/src/server/api';
 import {
     iAddress,
     iCashBox,
@@ -6,20 +11,47 @@ import {
     iContact,
     iOrder,
 } from '@/src/types/types';
-import { resolveAny } from 'dns';
 
 export async function SubmitForm({
-    cep,
     name,
     number,
+    cep,
     whatsapp,
     products,
     restaurant,
     payment_method,
-    change_value
+    change_value,
 }: any) {
-
     try {
+        const distance_fee = await distanceFeeApi.post('/calcular-distancia', {
+            start: restaurant.addresses.cep,
+            end: cep,
+        });
+
+        console.log('distance_fee', distance_fee);
+        console.log('restaurant.addresses.cep', restaurant.addresses.cep);
+        console.log('cep', cep);
+
+        const { data: delivery_fees_data } = await supabase
+            .from('delivery_fees')
+            .select('*')
+            .eq('restaurant_id', restaurant?.id);
+
+        const foundDeliveryFee = delivery_fees_data!.find((df) => {
+            return (
+                parseFloat(distance_fee.data.distance) <= df.end_km! &&
+                parseFloat(distance_fee.data.distance) >= df.start_km!
+            );
+        });
+
+        if (!foundDeliveryFee) {
+            alert(
+                'Sinto muito, o endereço digitado está fora do alcance de nossos entregadores!'
+            );
+            window.location.href = serverURL + restaurant.slug;
+            return;
+        }
+
         const { data: currentCashBoxData } = await supabase
             .from('cash_boxes')
             .select('*')
@@ -33,7 +65,10 @@ export async function SubmitForm({
             return;
         }
 
-        const { data: addressData } = await supabase.from('addresses').insert({ cep, number: Number(number), }).select('*');
+        const { data: addressData } = await supabase
+            .from('addresses')
+            .insert({ cep, number: Number(number) })
+            .select('*');
 
         const address = addressData![0] as unknown as iAddress['data'];
 
@@ -55,30 +90,49 @@ export async function SubmitForm({
 
         const client = clientData![0] as unknown as iClient['data'];
 
-        const orderDataByCashBoxId = await supabase.from('orders').select('*').eq('restaurant_id', restaurant.id)
-
-        const orderPosition = orderDataByCashBoxId.data ? orderDataByCashBoxId?.data.length + 1 : 1
-
-        const { data: orderData } = await supabase
+        const orderDataByCashBoxId = await supabase
             .from('orders')
-            .insert({
-                restaurant_id: restaurant!.id,
-                client_id: client.id,
-                order_type_id: 1,
-                cash_box_id: currentCashBox.id,
-                order_status_id: 2,
-                payment_method_id: payment_method,
-                number: orderPosition,
-                change_value
-            })
-            .select('*');
+            .select('*')
+            .eq('restaurant_id', restaurant?.id);
 
-        const order = orderData![0] as unknown as iOrder['data'];
+        const orderPosition = orderDataByCashBoxId.data
+            ? orderDataByCashBoxId?.data.length + 1
+            : 1;
 
-        products.state.forEach(async (product: any) => {
-            console.log('quantity', product.quantity);
-            if (product.quantity) {
-                for (let i = 0; i < product.quantity; i++) {
+        if (distance_fee.data.distance > 12) {
+            const { data: orderData } = await supabase
+                .from('orders')
+                .insert({
+                    restaurant_id: restaurant!.id,
+                    client_id: client.id,
+                    order_type_id: 1,
+                    cash_box_id: currentCashBox.id,
+                    order_status_id: 2,
+                    delivery_fee_id: 18,
+                    payment_method_id: payment_method,
+                    number: orderPosition,
+                    change_value,
+                })
+                .select('*');
+
+            const order = orderData![0] as unknown as iOrder['data'];
+
+            products.state.forEach(async (product: any) => {
+                console.log('quantity', product.quantity);
+                if (product.quantity) {
+                    for (let i = 0; i < product.quantity; i++) {
+                        const { data: ordersProductsData } = await supabase
+                            .from('orders_products')
+                            .insert({
+                                order_id: order.id,
+                                product_id: product.id,
+                                selects_data: product.selects,
+                                observation: product.observation,
+                                additionals_data: product.additionals,
+                            })
+                            .select('*');
+                    }
+                } else {
                     const { data: ordersProductsData } = await supabase
                         .from('orders_products')
                         .insert({
@@ -90,33 +144,129 @@ export async function SubmitForm({
                         })
                         .select('*');
                 }
-            } else {
-                const { data: ordersProductsData } = await supabase
-                    .from('orders_products')
-                    .insert({
-                        order_id: order.id,
-                        product_id: product.id,
-                        selects_data: product.selects,
-                        observation: product.observation,
-                        additionals_data: product.additionals,
-                    })
-                    .select('*');
-            }
-        });
-        try {
-            await whatsappRestApi({
-                method: 'post',
-                url: '/send-message',
-                data: {
-                    id: restaurant!.slug,
-                    number: '55' + whatsapp,
-                    message:
-                        'O seu pedido foi recebido com sucesso pelo restaurante ' +
-                        restaurant!.name,
-                },
             });
-        } catch (err) {
-            console.error(err);
+
+            const isPayingUsingPix = payment_method == 1;
+
+            if (isPayingUsingPix) {
+                try {
+                    await whatsappRestApi({
+                        method: 'post',
+                        url: '/send-message',
+                        data: {
+                            id: restaurant!.slug,
+                            number: '55' + whatsapp,
+                            message: `*${
+                                restaurant!.name
+                            }*\n\n✅ _Seu pedido foi recebido com sucesso e começará a ser preparado em breve! Você receberá aqui todas as atualizações._\n\n_*Pague através da chave pix: ${
+                                restaurant!.pix
+                            }*_\n\n_Assim que fizer a transferência, envie o comprovante aqui_`,
+                        },
+                    });
+                } catch (err) {
+                    console.error(err);
+                }
+            } else {
+                try {
+                    await whatsappRestApi({
+                        method: 'post',
+                        url: '/send-message',
+                        data: {
+                            id: restaurant!.slug,
+                            number: '55' + whatsapp,
+                            message: `*${
+                                restaurant!.name
+                            }*\n\n✅ _Seu pedido foi recebido com sucesso e começará a ser preparado em breve! Você receberá aqui todas as atualizações.`,
+                        },
+                    });
+                } catch (err) {
+                    console.error(err);
+                }
+            }
+        } else {
+            const { data: orderData } = await supabase
+                .from('orders')
+                .insert({
+                    restaurant_id: restaurant!.id,
+                    client_id: client.id,
+                    order_type_id: 1,
+                    cash_box_id: currentCashBox.id,
+                    order_status_id: 2,
+                    delivery_fee_id: foundDeliveryFee.id,
+                    payment_method_id: payment_method,
+                    number: orderPosition,
+                    change_value,
+                })
+                .select('*');
+
+            const order = orderData![0] as unknown as iOrder['data'];
+
+            products.state.forEach(async (product: any) => {
+                console.log('quantity', product.quantity);
+                if (product.quantity) {
+                    for (let i = 0; i < product.quantity; i++) {
+                        const { data: ordersProductsData } = await supabase
+                            .from('orders_products')
+                            .insert({
+                                order_id: order.id,
+                                product_id: product.id,
+                                selects_data: product.selects,
+                                observation: product.observation,
+                                additionals_data: product.additionals,
+                            })
+                            .select('*');
+                    }
+                } else {
+                    const { data: ordersProductsData } = await supabase
+                        .from('orders_products')
+                        .insert({
+                            order_id: order.id,
+                            product_id: product.id,
+                            selects_data: product.selects,
+                            observation: product.observation,
+                            additionals_data: product.additionals,
+                        })
+                        .select('*');
+                }
+            });
+
+            const isPayingUsingPix = payment_method == 1;
+
+            if (isPayingUsingPix) {
+                try {
+                    await whatsappRestApi({
+                        method: 'post',
+                        url: '/send-message',
+                        data: {
+                            id: restaurant!.slug,
+                            number: '55' + whatsapp,
+                            message: `*${
+                                restaurant!.name
+                            }*\n\n✅ _Seu pedido foi recebido com sucesso e começará a ser preparado em breve! Você receberá aqui todas as atualizações._\n\n_*Pague através da chave pix: ${
+                                restaurant!.pix
+                            }*_\n\n_Assim que fizer a transferência, envie o comprovante aqui_`,
+                        },
+                    });
+                } catch (err) {
+                    console.error(err);
+                }
+            } else {
+                try {
+                    await whatsappRestApi({
+                        method: 'post',
+                        url: '/send-message',
+                        data: {
+                            id: restaurant!.slug,
+                            number: '55' + whatsapp,
+                            message: `*${
+                                restaurant!.name
+                            }*\n\n✅ _Seu pedido foi recebido com sucesso e começará a ser preparado em breve! Você receberá aqui todas as atualizações.`,
+                        },
+                    });
+                } catch (err) {
+                    console.error(err);
+                }
+            }
         }
     } catch (error) {
         console.error(error);

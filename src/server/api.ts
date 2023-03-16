@@ -13,11 +13,19 @@ import {
 const dev = process.env.NODE_ENV !== 'production';
 
 export const serverURL = dev
-    ? 'http://localhost:3000'
+    ? 'http://localhost:3000/'
     : 'https://www.nexteats.com.br/';
 
 export const whatsappRestApi = axios.create({
     baseURL: 'https://whatsapp-rest-api.herokuapp.com/',
+    timeout: 100000,
+    headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,PATCH,OPTIONS',
+    },
+});
+export const distanceFeeApi = axios.create({
+    baseURL: 'https://distancia-entre-ceps.herokuapp.com/',
     timeout: 100000,
     headers: {
         'Access-Control-Allow-Origin': '*',

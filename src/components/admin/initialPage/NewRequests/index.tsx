@@ -8,7 +8,11 @@ import {
 } from '../../../../reducers/statusReducer/action';
 import { iStatusReducer } from '../../../../reducers/statusReducer/reducer';
 import { supabase, whatsappRestApi } from '../../../../server/api';
-import { iInsertOrdersProducts, iInsertProducts, iOrdersWithFKData, } from '../../../../types/types';
+import {
+    iInsertOrdersProducts,
+    iInsertProducts,
+    iOrdersWithFKData,
+} from '../../../../types/types';
 
 interface iAddressData {
     bairro: string;
@@ -88,6 +92,12 @@ export default function NewRequests({
         dispatch(getModalDataAction(orderId));
     }
 
+    ordersGroupedByOrderStatus['em análise']?.sort((a, b) => {
+        return a.number - b.number;
+    });
+
+    console.log(ordersGroupedByOrderStatus);
+
     return (
         <div className="flex flex-1 flex-col min-h-[150px] max-h-[270px] bg-white w-auto shadow-sm px-6 pt-2 rounded-md ">
             <h2 className="text-base font-bold mb-4">Novos pedidos</h2>
@@ -131,23 +141,30 @@ export default function NewRequests({
                                                 height={26}
                                             />
                                         </td>
-                                        <td className={`${tdStyle}text-left h-4 text-sm font-medium p-2`}>
-                                            #{order.number.toString().padStart(4, '0')}
+                                        <td
+                                            className={`${tdStyle}text-left h-4 text-sm font-medium p-2`}
+                                        >
+                                            #
+                                            {order.number
+                                                .toString()
+                                                .padStart(4, '0')}
                                         </td>
-                                        <td className={`${tdStyle}text-left h-4 text-sm font-medium p-2`}>
+                                        <td
+                                            className={`${tdStyle}text-left h-4 text-sm font-medium p-2  hidden 3xs:table-cell`}
+                                        >
                                             {order.clients.name}
                                         </td>
                                         <td
-                                            className={`${tdStyle} w-16 hidden 3xs:table-cell`}
+                                            className={`${tdStyle} w-16 hidden sm:table-cell md:hiden 2xl:table-cell`}
                                         >
                                             {productsFiltered.length}
                                         </td>
-                                        <td
+                                        {/* <td
                                             className={`${tdStyle} hidden 3xs:table-cell`}
                                         >
                                             R$ {totalProductsPrice}
-                                        </td>
-                                        {phone ? (
+                                        </td> */}
+                                        {/* {phone ? (
                                             <td
                                                 className={`${tdStyle} w-auto text-ellipsis whitespace-nowrap overflow-hidden hidden sm:table-cell`}
                                             >
@@ -161,7 +178,7 @@ export default function NewRequests({
                                                         phone.length
                                                     )}
                                             </td>
-                                        ) : null}
+                                        ) : null} */}
                                         <td className={`${tdStyle}`}>
                                             <div className="flex items-center justify-center gap-2">
                                                 <button

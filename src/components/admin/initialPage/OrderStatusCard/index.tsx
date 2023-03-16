@@ -12,7 +12,6 @@ import { iStatusReducer } from '../../../../reducers/statusReducer/reducer';
 import {
     iInsertOrdersProducts,
     iInsertProducts,
-    iOrdersTables,
     iOrdersTablesWithFkData,
     iOrdersWithFKData,
 } from '../../../../types/types';
@@ -109,6 +108,10 @@ export default function OrderStatusCard({
         dispatch(getModalDataAction(orderId));
     }
 
+    orders?.sort((a, b) => {
+        return a.number - b.number;
+    });
+
     return (
         <div className="flex flex-1 min-h-[150px] max-h-[270px] lg:w-full flex-col shadow-sm px-4 pt-2 pb-4 scrollbar-custom">
             <div className=" flex items-center justify-between mb-4">
@@ -116,7 +119,7 @@ export default function OrderStatusCard({
                 <span className="text-md font-medium">{''}</span>
             </div>
 
-            <div className="w-full overflow-auto  scrollbar-custom">
+            <div className="w-full overflow-auto scrollbar-custom">
                 <table className="w-full  ">
                     <tbody className="w-full border-collapse">
                         {orders?.map((order) => {
@@ -124,7 +127,9 @@ export default function OrderStatusCard({
                                 return;
                             }
 
-                            const ordersTablesFound = ordersTables.find(ot => ot.orders.id === order.id)
+                            const ordersTablesFound = ordersTables.find(
+                                (ot) => ot.orders.id === order.id
+                            );
 
                             const ordersProductsFiltered =
                                 ordersProducts.filter(
@@ -155,9 +160,14 @@ export default function OrderStatusCard({
                                         />
                                     </td>
                                     <td className="text-left text-sm font-medium px-2  max-w-20 truncate 2xs:table-cell  xl:table-cell">
-                                        #{order.number.toString().padStart(4, '0')}
+                                        #
+                                        {order.number
+                                            .toString()
+                                            .padStart(4, '0')}
                                     </td>
-                                    <td className={`${tdStyle} pl-2 text-left text-sm font-medium px-2  max-w-20 truncate 2xs:table-cell  xl:table-cell`}>
+                                    <td
+                                        className={`${tdStyle}  pl-2 text-left text-sm font-medium px-2 max-w-20 truncate xl:table-cell hidden 3xs:table-cell`}
+                                    >
                                         {order.clients ? (
                                             <span className="">
                                                 {order.clients.name}
@@ -169,7 +179,7 @@ export default function OrderStatusCard({
                                         )}
                                     </td>
                                     <td
-                                        className={`${tdStyle} px-5  hidden sm:table-cell md:hiden 2xl:table-cell`}
+                                        className={`${tdStyle} px-5 hidden sm:table-cell md:hiden 2xl:table-cell`}
                                     >
                                         {productsFiltered.length}
                                     </td>

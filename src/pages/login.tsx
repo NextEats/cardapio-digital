@@ -38,9 +38,15 @@ const LoginPage = () => {
                 userDetailsData![0] as unknown as tUserDetails;
 
             if (userDetailsTypedData?.restaurants.slug) {
-                await Router.replace(
-                    `/${userDetailsTypedData?.restaurants.slug}/admin`
-                );
+                if (userDetailsTypedData.is_waiter) {
+                    await Router.replace(
+                        `/${userDetailsTypedData?.restaurants.slug}/admin/table-control`
+                    );
+                } else {
+                    await Router.replace(
+                        `/${userDetailsTypedData?.restaurants.slug}/admin`
+                    );
+                }
             }
         }
 

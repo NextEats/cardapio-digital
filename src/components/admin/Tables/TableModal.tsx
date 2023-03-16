@@ -97,7 +97,7 @@ export default function TableModal() {
             await updateTable(false, true, openedTableModal?.id!);
         }
 
-        // window.location.reload();
+         window.location.reload();
     }
 
     async function handleFinishProduction() {

@@ -181,7 +181,7 @@ export default function TableModal() {
 
                         <div className="w-full h-[2px] bg-gray-300 my-2"></div>
 
-                        <div className='flex flex-col lg:flex-row items-center gap-8'>
+                        <div className='flex flex-col lg:flex-row gap-8'>
 
                             <div className="flex flex-col flex-1 gap-4 max-h-[350px] overflow-auto scrollbar-custom">
                                 {tableState.productsSelected

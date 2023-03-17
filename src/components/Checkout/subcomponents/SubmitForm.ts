@@ -126,7 +126,6 @@ export async function SubmitForm({
         const order = orderData![0] as unknown as iOrder['data'];
 
         products.state.forEach(async (product: any) => {
-            console.log('quantity', product.quantity);
             if (product.quantity) {
                 for (let i = 0; i < product.quantity; i++) {
                     const { data: ordersProductsData } = await supabase

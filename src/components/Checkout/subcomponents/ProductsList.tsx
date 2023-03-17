@@ -1,20 +1,13 @@
 import { DigitalMenuContext } from '@/src/contexts/DigitalMenuContext';
-import { calculateTotalOrderPrice } from '@/src/helpers/calculateTotalOrderPrice';
-import { useContext, useMemo, useState } from 'react';
+import { useContext } from 'react';
 import ProductListItem from './ProductListItem';
 
 export default function ProductsList({
     handleCloseModal,
     setCurrentStep,
 }: any) {
-    const restaurant = useContext(DigitalMenuContext).restaurant;
     const products = useContext(DigitalMenuContext).productReducer!;
-    const [orderPrice, setOrderPrice] = useState(0)
 
-    useMemo(async () => {
-        const price = await calculateTotalOrderPrice(({ products, restaurantId: restaurant?.id }))
-        setOrderPrice(price ? price : 0)
-    }, [products, restaurant?.id])
     return (
         <>
             <div className="w-full flex justify-center">
@@ -27,10 +20,7 @@ export default function ProductsList({
                     return <ProductListItem product={product} key={index} />;
                 })}
             </div>
-            <div className="flex sm:flex-row flex-col gap-y-2 justify-center w-full gap-x-2 mt-6">
-                <div className='flex items-center gap-1 text-xl font-bold text-green-500'>
-                    R$ <p>{orderPrice.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
-                </div>
+            <div className="flex sm:flex-row flex-col gap-y-2 justify-center w-full gap-x-2 mt-4">
                 <button
                     onClick={handleCloseModal}
                     className="font-semibold text-sm uppercase shadow border border-indigo-600 bg-white text-indigo-600 hover:text-white hover:bg-indigo-600 focus:shadow-outline focus:outline-none py-3 px-10 rounded"

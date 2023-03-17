@@ -6,6 +6,7 @@ import { useContext, useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import InputMask from 'react-input-mask';
 import { SubmitForm } from './SubmitForm';
+import InputWithLabel from '../../InputWithLabel';
 
 export default function ContactInfoForm({ setCurrentStep }: any) {
     type ContactFormValues = {
@@ -16,7 +17,7 @@ export default function ContactInfoForm({ setCurrentStep }: any) {
         whatsapp: string;
         name: string;
         payment_method: number;
-        change_need: boolean;
+        change_need: string;
         change_value: number;
     };
 
@@ -72,19 +73,6 @@ export default function ContactInfoForm({ setCurrentStep }: any) {
 
         return change;
     }
-
-    const handleDeactivateButton = () => {
-        console.log('HandlingButton');
-        const submitBtn = document.querySelector(
-            '#submitBtn'
-        ) as HTMLButtonElement;
-        submitBtn.disabled = true;
-        // submitBtn.classList.add('pointer-events-none, bg-red-600');
-
-        setTimeout(() => {
-            submitBtn.disabled = false;
-        }, 1000);
-    };
 
     useEffect(() => {
         async function fetchActivePaymentMethods() {
@@ -299,7 +287,7 @@ export default function ContactInfoForm({ setCurrentStep }: any) {
                     </div>
                 ) : null}
 
-                {watchingChangeNeed && watchingPaymentMethod === 5 ? (
+                {watchingChangeNeed === "Sim" ? (
                     <div>
                         <label
                             htmlFor="change_value"

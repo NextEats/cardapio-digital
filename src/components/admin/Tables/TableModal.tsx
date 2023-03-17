@@ -3,11 +3,12 @@ import { filterOptionsSelected } from '@/src/helpers/filterOptionsSelected';
 import { api, supabase } from '@/src/server/api';
 import * as Dialog from '@radix-ui/react-dialog';
 import { useContext } from 'react';
-import { BsCheckCircle, BsGear } from 'react-icons/bs';
+import { BsGear } from 'react-icons/bs';
 import { FiX } from 'react-icons/fi';
 import { GiTable } from 'react-icons/gi';
 import { CardapioDigitalButton } from '../cardapio-digital/CardapioDigitalButton';
 import CustomerAtTheTable from './CustomerAtTheTable';
+import FinishServicePopover from './FinishServicePopover';
 import ProductsTableModal from './ProductsTableModal';
 import TableConfigModal from './TableConfigModal';
 
@@ -34,10 +35,13 @@ export default function TableModal() {
             return;
         }
 
-        const orderDataByCashBoxId = await supabase.from('orders').select('*').match({
-            restaurant_id: restaurant!.id,
-            cash_box_id: foundCashBoxes.id,
-        });
+        const orderDataByCashBoxId = await supabase
+            .from('orders')
+            .select('*')
+            .match({
+                restaurant_id: restaurant!.id,
+                cash_box_id: foundCashBoxes.id,
+            });
 
         const orderPosition = orderDataByCashBoxId.data
             ? orderDataByCashBoxId?.data.length + 1
@@ -74,15 +78,18 @@ export default function TableModal() {
                     ? ps.productSelects
                     : [],
             });
-            console.log(selects_data);
-
-            const ordersProductsData = await api.post(`api/orders_products/`, {
-                order_id: orderData.data.id,
-                table_id: openedTableModal?.id,
-                product_id: ps.product?.id,
-                selects_data,
-                additionals_data,
-            });
+            for (let i = 0; i < ps.quantity; i++) {
+                const ordersProductsData = await api.post(
+                    `api/orders_products/`,
+                    {
+                        order_id: orderData.data.id,
+                        table_id: openedTableModal?.id,
+                        product_id: ps.product?.id,
+                        selects_data,
+                        additionals_data,
+                    }
+                );
+            }
         });
         const ordersTablesData = await api.post(`api/orders_tables/`, {
             order_id: orderData.data.id,
@@ -111,23 +118,6 @@ export default function TableModal() {
         });
         window.location.reload();
     }
-    async function handleFinishService() {
-        const ordersDelievered = ordersTables.filter(
-            (ot) => ot.has_been_paid === false
-        );
-        // if(ordersInProduction.some( o => o.orders.order_status.status_name === 'em produção')) {
-        //     alert("Para finalizar o serviço, todos os pedidos em produção precisam ser entregues.")
-        //     return
-        // }
-        ordersDelievered.forEach(async (o) => {
-            const ordersTableData = await api.put(`api/orders_tables/`, {
-                order_table_id: o.id,
-                has_been_paid: true,
-            });
-        });
-        await updateTable(false, false, openedTableModal?.id!);
-        window.location.reload();
-    }
 
     const enableFinishServiceButton = ordersTables.some(
         (o) =>
@@ -145,18 +135,16 @@ export default function TableModal() {
                 <Dialog.Portal>
                     <Dialog.Overlay
                         onClick={() => setOpenedTableModal(null)}
-                        className="w-screen h-screen flex items-center justify-center bg-black fixed inset-0 z-10 opacity-40 transition-all duration-300 ease-in-out"
+                        className="w-screen h-screen flex items-center justify-center bg-black fixed inset-0 opacity-40 transition-all duration-300 ease-in-out"
                     />
-                    <Dialog.Content className="fixed top-[14vh] right-1/2 z-20 translate-x-1/2 rounded-lg w-[350px] sm:w-[600px] lg:w-[900px] bg-white shadow-md p-6">
+                    <Dialog.Content className="fixed top-[14vh] right-1/2 z-20   translate-x-1/2 rounded-lg w-[350px] sm:w-[600px] lg:w-[900px] bg-white shadow-md p-6">
                         <Dialog.Title className="flex items-center justify-between text-base w-full text-center font-semibold mb-2 sm:mb-6 mt-3">
                             <div className="flex items-center justify-start gap-3">
                                 <GiTable className="text-gray-350" size={32} />
                                 <span className="text-lg font-bold ">
-                                    {' '}
                                     {openedTableModal?.name}{' '}
                                 </span>
                                 <span className="text-bsse font-semibold text-green-500">
-                                    {' '}
                                     R${' '}
                                     {tableData.tableBill.toLocaleString(
                                         'pt-BR',
@@ -169,12 +157,8 @@ export default function TableModal() {
                             </div>
                             <div className="flex items-center gap-3">
                                 {openedTableModal?.is_occupied &&
-                                    !enableFinishServiceButton ? (
-                                    <BsCheckCircle
-                                        size={24}
-                                        className="text-blue-500 cursor-pointer"
-                                        onClick={() => handleFinishService()}
-                                    />
+                                !enableFinishServiceButton ? (
+                                    <FinishServicePopover />
                                 ) : null}
                                 <BsGear
                                     size={24}
@@ -206,56 +190,56 @@ export default function TableModal() {
                         <div className=" flex flex-col lg:grid lg:grid-cols-2 gap-4 max-h-[350px] overflow-auto p-2 scrollbar-custom">
                             {tableState.productsSelected
                                 ? tableState.productsSelected.map(
-                                    (orderProductData, index) => {
-                                        if (orderProductData.product === null)
-                                            return;
-                                        if (
-                                            orderProductData.table_id !==
-                                            openedTableModal!.id
-                                        )
-                                            return;
-                                        return (
-                                            <CustomerAtTheTable
-                                                key={index}
-                                                orderStatus="em análise"
-                                                orderProductData={
-                                                    orderProductData
-                                                }
-                                            />
-                                        );
-                                    }
-                                )
+                                      (orderProductData, index) => {
+                                          if (orderProductData.product === null)
+                                              return;
+                                          if (
+                                              orderProductData.table_id !==
+                                              openedTableModal!.id
+                                          )
+                                              return;
+                                          return (
+                                              <CustomerAtTheTable
+                                                  key={index}
+                                                  orderStatus="em análise"
+                                                  orderProductData={
+                                                      orderProductData
+                                                  }
+                                              />
+                                          );
+                                      }
+                                  )
                                 : null}
                             {tableData.productsDeliveredData
                                 ? tableData.productsDeliveredData.map(
-                                    (orderProductData, index) => {
-                                        return (
-                                            <CustomerAtTheTable
-                                                key={index}
-                                                orderStatus={'entregue'}
-                                                orderProductData={
-                                                    orderProductData
-                                                }
-                                            />
-                                        );
-                                    }
-                                )
+                                      (orderProductData, index) => {
+                                          return (
+                                              <CustomerAtTheTable
+                                                  key={index}
+                                                  orderStatus={'entregue'}
+                                                  orderProductData={
+                                                      orderProductData
+                                                  }
+                                              />
+                                          );
+                                      }
+                                  )
                                 : null}
 
                             {tableData.productsInProductionData
                                 ? tableData.productsInProductionData.map(
-                                    (orderProductData, index) => {
-                                        return (
-                                            <CustomerAtTheTable
-                                                key={index}
-                                                orderStatus="em produção"
-                                                orderProductData={
-                                                    orderProductData
-                                                }
-                                            />
-                                        );
-                                    }
-                                )
+                                      (orderProductData, index) => {
+                                          return (
+                                              <CustomerAtTheTable
+                                                  key={index}
+                                                  orderStatus="em produção"
+                                                  orderProductData={
+                                                      orderProductData
+                                                  }
+                                              />
+                                          );
+                                      }
+                                  )
                                 : null}
                         </div>
 
@@ -263,7 +247,7 @@ export default function TableModal() {
                             <div className="w-full flex items-center justify-end gap-3 mt-4 ">
                                 {tableData.productsInProductionData !==
                                     undefined &&
-                                    tableData.productsInProductionData?.length >
+                                tableData.productsInProductionData?.length >
                                     0 ? (
                                     <CardapioDigitalButton
                                         name="Entregar Pedido"

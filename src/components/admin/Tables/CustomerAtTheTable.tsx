@@ -3,9 +3,10 @@ import { iOrdersProductsData } from '@/src/helpers/getOrdersProductsData';
 import { removeProductAction } from '@/src/reducers/tableReducer/action';
 import { iTableSelectingProductData } from '@/src/reducers/tableReducer/reducer';
 import { iProduct } from '@/src/types/types';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { BsCheckCircle } from 'react-icons/bs';
 import { FiTrash2 } from 'react-icons/fi';
+import { QuantitySelector } from '../../QuantitySelector';
 
 interface iCustomerAtTheTableProps {
     orderProductData: iOrdersProductsData | iTableSelectingProductData;
@@ -17,7 +18,6 @@ export default function CustomerAtTheTable({
     orderStatus,
 }: iCustomerAtTheTableProps) {
     const { tableDispatch, tableData } = useContext(TableContext);
-
     // const totalProductPrice = 
 
     return (

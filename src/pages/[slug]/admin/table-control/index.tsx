@@ -3,8 +3,10 @@ import Tables from '@/src/components/admin/Tables/';
 import TableContextProvider from '@/src/contexts/TableControlContext';
 import { getAdditionalsByRestaurantIdFetch } from '@/src/fetch/additionals/getAdditionals';
 import { getCashBoxesByRestaurantIdFetch } from '@/src/fetch/cashBoxes/getCashBoxesByRestaurantId';
+import { getOrdersByRestaurantIdFetch } from '@/src/fetch/orders/getOrdersByRestaurantId';
 import { getOrdersProductsFetch } from '@/src/fetch/ordersProducts/getOrdersProducts';
 import { getOrdersTablesFetch } from '@/src/fetch/ordersTables/getOrdersTables';
+import { getPaymentMethodsRestaurantsByRestaurantIdFetch } from '@/src/fetch/paymentMethodsRestaurants/getPaymentMethodsRestaurantsByRestaurantId';
 import { getProductAdditionalsFetch } from '@/src/fetch/productAdditionals/getProductAdditionals';
 import { getProductOptionsFetch } from '@/src/fetch/productOptions/getProductOptions';
 import { getProductsByRestaurantIdFetch } from '@/src/fetch/products/getProductsByRestaurantId';
@@ -14,8 +16,10 @@ import { getSelectsByRestaurantIdFetch } from '@/src/fetch/selects/getSelectsByR
 import {
     iAdditionals,
     iCashBoxes,
+    iOrders,
     iOrdersProducts,
     iOrdersTablesWithFkData,
+    iPaymentMethodsRestaurantsWithFKData,
     iProductAdditionals,
     iProductCategories,
     iProductOptions,
@@ -33,9 +37,11 @@ interface iAdminHomePageProps {
     productAdditionals: iProductAdditionals['data'];
     products: iProducts['data'];
     ordersProducts: iOrdersProducts['data'];
+    orders: iOrders["data"]
     categories: iProductCategories['data'];
     ordersTables: iOrdersTablesWithFkData[];
     cashBoxes: iCashBoxes['data'];
+    paymentMethod: iPaymentMethodsRestaurantsWithFKData[]
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
@@ -51,11 +57,13 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
             productOptions: await getProductOptionsFetch(),
             selects: await getSelectsByRestaurantIdFetch(restaurant.id),
             ordersProducts: await getOrdersProductsFetch(),
+            orders: await getOrdersByRestaurantIdFetch(restaurant.id),
             categories: await getProductsCategoriesByRestaurantIdFetch(
                 restaurant.id
             ),
             ordersTables: await getOrdersTablesFetch(),
             cashBoxes: await getCashBoxesByRestaurantIdFetch(restaurant.id),
+            paymentMethod: await getPaymentMethodsRestaurantsByRestaurantIdFetch(restaurant.id),
         },
     };
 };
@@ -65,12 +73,14 @@ export default function TableControl({
     products,
     productAdditionals,
     ordersProducts,
+    orders,
     categories,
     ordersTables,
     selects,
     productOptions,
     additionals,
     cashBoxes,
+    paymentMethod,
 }: iAdminHomePageProps) {
     return (
         <AdminWrapper>
@@ -79,12 +89,14 @@ export default function TableControl({
                 productAdditionals={productAdditionals}
                 selects={selects}
                 ordersProducts={ordersProducts}
+                orders={orders}
                 categories={categories}
                 ordersTables={ordersTables}
                 restaurant={restaurant}
                 additionals={additionals}
                 productOptions={productOptions}
                 cashBoxes={cashBoxes}
+                paymentMethod={paymentMethod}
             >
                 <div className="flex flex-col gap-8">
                     <Tables />

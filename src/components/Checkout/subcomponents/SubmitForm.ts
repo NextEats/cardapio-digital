@@ -12,6 +12,19 @@ import {
     iOrder,
 } from '@/src/types/types';
 
+async function returnDistanceInMeters(start: string, end: string) {
+    try {
+        const { data } = await distanceFeeApi.post('/calcular-distancia', {
+            start,
+            end,
+        });
+
+        return data.distance / 1000;
+    } catch (err) {
+        console.log(err);
+    }
+}
+
 export async function SubmitForm({
     name,
     number,
@@ -23,14 +36,10 @@ export async function SubmitForm({
     change_value,
 }: any) {
     try {
-        const distance_fee = await distanceFeeApi.post('/calcular-distancia', {
-            start: restaurant.addresses.cep,
-            end: cep,
-        });
-
-        console.log('distance_fee', distance_fee);
-        console.log('restaurant.addresses.cep', restaurant.addresses.cep);
-        console.log('cep', cep);
+        const distance_in_km = await returnDistanceInMeters(
+            restaurant.address_string,
+            cep + ' ' + number
+        );
 
         const { data: delivery_fees_data } = await supabase
             .from('delivery_fees')
@@ -38,9 +47,9 @@ export async function SubmitForm({
             .eq('restaurant_id', restaurant?.id);
 
         const foundDeliveryFee = delivery_fees_data!.find((df) => {
+            console.log(distance_in_km!, df.end_km!, df.start_km!);
             return (
-                parseFloat(distance_fee.data.distance) <= df.end_km! &&
-                parseFloat(distance_fee.data.distance) >= df.start_km!
+                distance_in_km! <= df.end_km! && distance_in_km! >= df.start_km!
             );
         });
 
@@ -99,40 +108,27 @@ export async function SubmitForm({
             ? orderDataByCashBoxId?.data.length + 1
             : 1;
 
-        if (distance_fee.data.distance > 12) {
-            const { data: orderData } = await supabase
-                .from('orders')
-                .insert({
-                    restaurant_id: restaurant!.id,
-                    client_id: client.id,
-                    order_type_id: 1,
-                    cash_box_id: currentCashBox.id,
-                    order_status_id: 2,
-                    delivery_fee_id: 18,
-                    payment_method_id: payment_method,
-                    number: orderPosition,
-                    change_value,
-                })
-                .select('*');
+        const { data: orderData } = await supabase
+            .from('orders')
+            .insert({
+                restaurant_id: restaurant!.id,
+                client_id: client.id,
+                order_type_id: 1,
+                cash_box_id: currentCashBox.id,
+                order_status_id: 2,
+                delivery_fee_id: foundDeliveryFee.id,
+                payment_method_id: payment_method,
+                number: orderPosition,
+                change_value,
+            })
+            .select('*');
 
-            const order = orderData![0] as unknown as iOrder['data'];
+        const order = orderData![0] as unknown as iOrder['data'];
 
-            products.state.forEach(async (product: any) => {
-                console.log('quantity', product.quantity);
-                if (product.quantity) {
-                    for (let i = 0; i < product.quantity; i++) {
-                        const { data: ordersProductsData } = await supabase
-                            .from('orders_products')
-                            .insert({
-                                order_id: order.id,
-                                product_id: product.id,
-                                selects_data: product.selects,
-                                observation: product.observation,
-                                additionals_data: product.additionals,
-                            })
-                            .select('*');
-                    }
-                } else {
+        products.state.forEach(async (product: any) => {
+            console.log('quantity', product.quantity);
+            if (product.quantity) {
+                for (let i = 0; i < product.quantity; i++) {
                     const { data: ordersProductsData } = await supabase
                         .from('orders_products')
                         .insert({
@@ -144,128 +140,55 @@ export async function SubmitForm({
                         })
                         .select('*');
                 }
-            });
-
-            const isPayingUsingPix = payment_method == 1;
-
-            if (isPayingUsingPix) {
-                try {
-                    await whatsappRestApi({
-                        method: 'post',
-                        url: '/send-message',
-                        data: {
-                            id: restaurant!.slug,
-                            number: '55' + whatsapp,
-                            message: `*${
-                                restaurant!.name
-                            }*\n\n✅ _Seu pedido foi recebido com sucesso e começará a ser preparado em breve! Você receberá aqui todas as atualizações._\n\n_*Pague através da chave pix: ${
-                                restaurant!.pix
-                            }*_\n\n_Assim que fizer a transferência, envie o comprovante aqui_`,
-                        },
-                    });
-                } catch (err) {
-                    console.error(err);
-                }
             } else {
-                try {
-                    await whatsappRestApi({
-                        method: 'post',
-                        url: '/send-message',
-                        data: {
-                            id: restaurant!.slug,
-                            number: '55' + whatsapp,
-                            message: `*${
-                                restaurant!.name
-                            }*\n\n✅ _Seu pedido foi recebido com sucesso e começará a ser preparado em breve! Você receberá aqui todas as atualizações.`,
-                        },
-                    });
-                } catch (err) {
-                    console.error(err);
-                }
+                const { data: ordersProductsData } = await supabase
+                    .from('orders_products')
+                    .insert({
+                        order_id: order.id,
+                        product_id: product.id,
+                        selects_data: product.selects,
+                        observation: product.observation,
+                        additionals_data: product.additionals,
+                    })
+                    .select('*');
+            }
+        });
+
+        const isPayingUsingPix = payment_method == 1;
+
+        if (isPayingUsingPix) {
+            try {
+                await whatsappRestApi({
+                    method: 'post',
+                    url: '/send-message',
+                    data: {
+                        id: restaurant!.slug,
+                        number: '55' + whatsapp,
+                        message: `*${
+                            restaurant!.name
+                        }*\n\n✅ _Seu pedido foi recebido com sucesso e começará a ser preparado em breve! Você receberá aqui todas as atualizações._\n\n_*Pague através da chave pix: ${
+                            restaurant!.pix
+                        }*_\n\n_Assim que fizer a transferência, envie o comprovante aqui_`,
+                    },
+                });
+            } catch (err) {
+                console.error(err);
             }
         } else {
-            const { data: orderData } = await supabase
-                .from('orders')
-                .insert({
-                    restaurant_id: restaurant!.id,
-                    client_id: client.id,
-                    order_type_id: 1,
-                    cash_box_id: currentCashBox.id,
-                    order_status_id: 2,
-                    delivery_fee_id: foundDeliveryFee.id,
-                    payment_method_id: payment_method,
-                    number: orderPosition,
-                    change_value,
-                })
-                .select('*');
-
-            const order = orderData![0] as unknown as iOrder['data'];
-
-            products.state.forEach(async (product: any) => {
-                console.log('quantity', product.quantity);
-                if (product.quantity) {
-                    for (let i = 0; i < product.quantity; i++) {
-                        const { data: ordersProductsData } = await supabase
-                            .from('orders_products')
-                            .insert({
-                                order_id: order.id,
-                                product_id: product.id,
-                                selects_data: product.selects,
-                                observation: product.observation,
-                                additionals_data: product.additionals,
-                            })
-                            .select('*');
-                    }
-                } else {
-                    const { data: ordersProductsData } = await supabase
-                        .from('orders_products')
-                        .insert({
-                            order_id: order.id,
-                            product_id: product.id,
-                            selects_data: product.selects,
-                            observation: product.observation,
-                            additionals_data: product.additionals,
-                        })
-                        .select('*');
-                }
-            });
-
-            const isPayingUsingPix = payment_method == 1;
-
-            if (isPayingUsingPix) {
-                try {
-                    await whatsappRestApi({
-                        method: 'post',
-                        url: '/send-message',
-                        data: {
-                            id: restaurant!.slug,
-                            number: '55' + whatsapp,
-                            message: `*${
-                                restaurant!.name
-                            }*\n\n✅ _Seu pedido foi recebido com sucesso e começará a ser preparado em breve! Você receberá aqui todas as atualizações._\n\n_*Pague através da chave pix: ${
-                                restaurant!.pix
-                            }*_\n\n_Assim que fizer a transferência, envie o comprovante aqui_`,
-                        },
-                    });
-                } catch (err) {
-                    console.error(err);
-                }
-            } else {
-                try {
-                    await whatsappRestApi({
-                        method: 'post',
-                        url: '/send-message',
-                        data: {
-                            id: restaurant!.slug,
-                            number: '55' + whatsapp,
-                            message: `*${
-                                restaurant!.name
-                            }*\n\n✅ _Seu pedido foi recebido com sucesso e começará a ser preparado em breve! Você receberá aqui todas as atualizações.`,
-                        },
-                    });
-                } catch (err) {
-                    console.error(err);
-                }
+            try {
+                await whatsappRestApi({
+                    method: 'post',
+                    url: '/send-message',
+                    data: {
+                        id: restaurant!.slug,
+                        number: '55' + whatsapp,
+                        message: `*${
+                            restaurant!.name
+                        }*\n\n✅ _Seu pedido foi recebido com sucesso e começará a ser preparado em breve! Você receberá aqui todas as atualizações.`,
+                    },
+                });
+            } catch (err) {
+                console.error(err);
             }
         }
     } catch (error) {

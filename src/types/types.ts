@@ -353,6 +353,10 @@ export interface iPaymentMethodsRestaurantss {
     >;
 }
 
+export type iPaymentMethodsRestaurantsWithFKData = iPaymentMethodsRestaurants["data"] & {
+    payment_methods: iPaymentMethod["data"]
+}
+
 export type iRestaurantWithFKData = iRestaurant['data'] & {
     addresses: iAddress['data'];
     restaurant_types: iRestaurantType['data'];

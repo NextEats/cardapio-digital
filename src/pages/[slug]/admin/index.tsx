@@ -56,7 +56,7 @@ interface iAdminHomePageProps {
     cashBoxes: iCashBoxes['data'];
     additionals: iAdditionals['data'];
     selects: iSelects['data'];
-    ordersTables: iOrdersTablesWithFkData[];
+    ordersTablesData: iOrdersTablesWithFkData[];
     restaurant: iRestaurantWithFKData;
 }
 
@@ -117,7 +117,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
             cashBoxes: await getCashBoxesByRestaurantIdFetch(restaurant.id),
             additionals: await getAdditionalsByRestaurantIdFetch(restaurant.id),
             selects: await getSelectsByRestaurantIdFetch(restaurant.id),
-            ordersTables: await getOrdersTablesFetch(),
+            ordersTablesData: await getOrdersTablesFetch(),
             restaurant,
         },
     };
@@ -130,11 +130,11 @@ export default function AdminHomepage({
     cashBoxes,
     additionals,
     selects,
-    ordersTables,
+    ordersTablesData,
     restaurant,
 }: iAdminHomePageProps) {
-    const [ordersProducts, setOrdersProducts] =
-        useState<iOrdersProducts['data']>(ordersProductsData);
+    const [ordersTables, setOrdersTables] = useState<iOrdersTablesWithFkData[]>(ordersTablesData);
+    const [ordersProducts, setOrdersProducts] = useState<iOrdersProducts['data']>(ordersProductsData);
     const [orders, setOrders] = useState<iOrdersWithFKData[]>(ordersData);
     const cashBoxOpened = cashBoxes.find((cb) => cb.is_open === true);
     const [cashBoxState, setCashBoxState] = useState<
@@ -189,9 +189,9 @@ export default function AdminHomepage({
             const selectedProduct = productIds.map(
                 (productId) =>
                     products[
-                        products.findIndex(
-                            (product) => productId === product.id
-                        )
+                    products.findIndex(
+                        (product) => productId === product.id
+                    )
                     ]
             );
 
@@ -282,6 +282,8 @@ export default function AdminHomepage({
     async function newOrdersProducts() {
         const getNewOrdersProducts = await getOrdersProductsFetch();
         setOrdersProducts(getNewOrdersProducts);
+        const getNewOrdersTables = await getOrdersTablesFetch();
+        setOrdersTables(getNewOrdersTables);
     }
     const channel = supabase
         .channel('db-orders_products')
@@ -295,8 +297,7 @@ export default function AdminHomepage({
             (payload: any) => {
                 newOrdersProducts();
             }
-        )
-        .subscribe();
+        ).subscribe();
 
     supabase
         .channel('db-cash')

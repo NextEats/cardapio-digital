@@ -3,9 +3,10 @@ import useProductSelectsWithOptions from '@/src/hooks/useProductSelectsWithOptio
 import { addProductAction } from '@/src/reducers/tableReducer/action';
 import * as Dialog from '@radix-ui/react-dialog';
 import Image from 'next/image';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { FiX } from 'react-icons/fi';
 import SelectComponent from '../../home/ProductModal/components/SelectComponent';
+import { QuantitySelector } from '../../QuantitySelector';
 import { CardapioDigitalButton } from '../cardapio-digital/CardapioDigitalButton';
 import TableAdditionals from './TableAdditionals';
 
@@ -15,6 +16,7 @@ export default function ProductModal() {
     const { productSelects, selectOption } = useProductSelectsWithOptions(
         viewProduct ? viewProduct?.id!.toString() : ''
     );
+    const [quantity, setQuantity] = useState(1)
 
     const additionalByProductId = additionals.filter((a) => {
         return productAdditionals.some(
@@ -48,7 +50,6 @@ export default function ProductModal() {
                                     <h2 className=""> {viewProduct?.name} </h2>
                                     <p> {viewProduct?.description} </p>
                                     <span className="">
-                                        {' '}
                                         R$ {viewProduct?.price}{' '}
                                     </span>
                                 </div>
@@ -83,7 +84,7 @@ export default function ProductModal() {
                         <div className="w-full flex items-center justify-end gap-3">
                             <span className="text-lg font-semibold text-green-500">
                                 R$
-                                {tableState.totalPrice.toLocaleString('pt-BR', {
+                                {(tableState.totalPrice * quantity).toLocaleString('pt-BR', {
                                     minimumFractionDigits: 2,
                                     maximumFractionDigits: 2,
                                 })}
@@ -100,12 +101,18 @@ export default function ProductModal() {
                                             {
                                                 product: viewProduct!,
                                                 productSelects,
-                                                table_id: openedTableModal!.id
+                                                table_id: openedTableModal!.id,
+                                                quantity,
                                             }
                                         )
                                     )
                                 }
                                 }
+                            />
+                            <QuantitySelector
+                                value={quantity}
+                                addValue={() => setQuantity(quantity + 1)}
+                                subtractValue={() => setQuantity(quantity - 1)}
                             />
                         </div>
                         <Dialog.Close

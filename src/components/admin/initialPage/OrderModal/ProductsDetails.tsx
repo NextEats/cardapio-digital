@@ -110,7 +110,7 @@ export default function ProductsDetails({
                                     {1} -{' '}
                                     <strong className="">{product.name}</strong>
                                 </span>
-                                <span className="font-bold text-green-500">
+                                <span className="font-bold">
                                     {' '}
                                     R$ {product.price}
                                 </span>
@@ -149,12 +149,10 @@ export default function ProductsDetails({
                                             className="flex items-center justify-between pr-2 text-[10px] font-normal"
                                         >
                                             <span>
-                                                {' '}
                                                 {additional.quantity} -{' '}
                                                 {additional.additional.name}{' '}
                                             </span>
-                                            <span className="text-green-500">
-                                                {' '}
+                                            <span>
                                                 R${' '}
                                                 {additional.additional.price *
                                                     additional.quantity}

@@ -25,14 +25,22 @@ export default function ProductsDetails({
     result,
     productsFiltered,
 }: iProductsDetailsProps) {
+    console.log('additionals', additionals);
+    console.log('orderProductFiltered', orderProductFiltered);
+    console.log('productsFiltered', productsFiltered);
 
-    const textStyles = 'text-[12px] leading-[14px] font-semibold text-black text-left leading-6';
+    const totalPrice = productsFiltered;
+
+    const textStyles =
+        'text-[12px] leading-[14px] font-semibold text-black text-left leading-6';
     let ordersProductsId: number[] = [];
     if (!productsFiltered) return null;
     return (
         <div className="mb-2 w-full">
             <div>
                 {productsFiltered!.map((product, index) => {
+                    console.log(product);
+
                     const orderProductByProductId = orderProductFiltered.find(
                         (op) =>
                             op.product_id === product.id &&
@@ -46,18 +54,18 @@ export default function ProductsDetails({
 
                     const selectsDada = orderProductByProductId.selects_data as
                         | {
-                            id: number;
-                            max_selected_options: number;
-                            name: string;
-                            options: {
-                                id: number;
-                                is_default_value: boolean;
-                                name: string;
-                                picture_url: string;
-                                select_id: number;
-                                selected: boolean;
-                            }[];
-                        }[]
+                              id: number;
+                              max_selected_options: number;
+                              name: string;
+                              options: {
+                                  id: number;
+                                  is_default_value: boolean;
+                                  name: string;
+                                  picture_url: string;
+                                  select_id: number;
+                                  selected: boolean;
+                              }[];
+                          }[]
                         | undefined
                         | null;
 
@@ -70,32 +78,49 @@ export default function ProductsDetails({
                     const additionalsDataFiltered =
                         additionalsData !== null
                             ? additionalsData.reduce(
-                                (
-                                    acc: {
-                                        additional: iAdditional['data'];
-                                        quantity: number;
-                                    }[], item
-                                ) => {
-                                    if (
-                                        additionals.some(
-                                            (a) => a.id === item.additional_id
-                                        )
-                                    ) {
-                                        return [
-                                            ...acc,
-                                            {
-                                                additional:
-                                                    additionals[
-                                                    additionals.findIndex((a) => a.id === item.additional_id)],
-                                                quantity: item.quantity,
-                                            },
-                                        ];
-                                    }
-                                    return [...acc];
-                                },
-                                []
-                            )
+                                  (
+                                      acc: {
+                                          additional: iAdditional['data'];
+                                          quantity: number;
+                                      }[],
+                                      item
+                                  ) => {
+                                      if (
+                                          additionals.some(
+                                              (a) => a.id === item.additional_id
+                                          )
+                                      ) {
+                                          return [
+                                              ...acc,
+                                              {
+                                                  additional:
+                                                      additionals[
+                                                          additionals.findIndex(
+                                                              (a) =>
+                                                                  a.id ===
+                                                                  item.additional_id
+                                                          )
+                                                      ],
+                                                  quantity: item.quantity,
+                                              },
+                                          ];
+                                      }
+                                      return [...acc];
+                                  },
+                                  []
+                              )
                             : [];
+
+                    const totalAdditionalsPrice =
+                        additionalsDataFiltered.reduce((acc, current) => {
+                            return (
+                                acc +
+                                current.additional.price * current.quantity
+                            );
+                        }, 0);
+
+                    const totalProductPriceWithAdditionals =
+                        totalAdditionalsPrice + product.price;
 
                     if (product === undefined) {
                         return;
@@ -111,9 +136,10 @@ export default function ProductsDetails({
                                 </span>
                                 <span className="font-bold">
                                     {' '}
-                                    R$ {product.price}
+                                    R$ {totalProductPriceWithAdditionals}
                                 </span>
                             </div>
+
                             <div className="flex">
                                 {
                                     <>
@@ -151,15 +177,20 @@ export default function ProductsDetails({
                                                 {additional.quantity} -{' '}
                                                 {additional.additional.name}{' '}
                                             </span>
-                                            <span>
-                                                R${' '}
-                                                {additional.additional.price *
-                                                    additional.quantity}
-                                            </span>
                                         </div>
                                     );
                                 })}
                             </div>
+
+                            {/* {orderProductFiltered.length > 0 ? (
+                                    <div>
+                                        <p className={`${textStyles} flex flex-col`}>
+                                            Observações{' '}
+                                            {/* {       .observation} }
+                                        </p>
+                                    </div>
+                                ) : null
+                            */}
                         </div>
                     );
                 })}

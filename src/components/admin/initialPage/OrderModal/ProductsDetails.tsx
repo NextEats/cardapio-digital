@@ -25,6 +25,11 @@ export default function ProductsDetails({
     result,
     productsFiltered,
 }: iProductsDetailsProps) {
+    console.log('additionals', additionals);
+    console.log('orderProductFiltered', orderProductFiltered);
+    console.log('productsFiltered', productsFiltered);
+
+    const totalPrice = productsFiltered;
 
     const textStyles =
         'text-[10px] leading-[14px] font-semibold text-black text-left leading-6';
@@ -47,18 +52,18 @@ export default function ProductsDetails({
 
                     const selectsDada = orderProductByProductId.selects_data as
                         | {
-                            id: number;
-                            max_selected_options: number;
-                            name: string;
-                            options: {
-                                id: number;
-                                is_default_value: boolean;
-                                name: string;
-                                picture_url: string;
-                                select_id: number;
-                                selected: boolean;
-                            }[];
-                        }[]
+                              id: number;
+                              max_selected_options: number;
+                              name: string;
+                              options: {
+                                  id: number;
+                                  is_default_value: boolean;
+                                  name: string;
+                                  picture_url: string;
+                                  select_id: number;
+                                  selected: boolean;
+                              }[];
+                          }[]
                         | undefined
                         | null;
 
@@ -71,32 +76,49 @@ export default function ProductsDetails({
                     const additionalsDataFiltered =
                         additionalsData !== null
                             ? additionalsData.reduce(
-                                (
-                                    acc: {
-                                        additional: iAdditional['data'];
-                                        quantity: number;
-                                    }[], item
-                                ) => {
-                                    if (
-                                        additionals.some(
-                                            (a) => a.id === item.additional_id
-                                        )
-                                    ) {
-                                        return [
-                                            ...acc,
-                                            {
-                                                additional:
-                                                    additionals[
-                                                    additionals.findIndex((a) => a.id === item.additional_id)],
-                                                quantity: item.quantity,
-                                            },
-                                        ];
-                                    }
-                                    return [...acc];
-                                },
-                                []
-                            )
+                                  (
+                                      acc: {
+                                          additional: iAdditional['data'];
+                                          quantity: number;
+                                      }[],
+                                      item
+                                  ) => {
+                                      if (
+                                          additionals.some(
+                                              (a) => a.id === item.additional_id
+                                          )
+                                      ) {
+                                          return [
+                                              ...acc,
+                                              {
+                                                  additional:
+                                                      additionals[
+                                                          additionals.findIndex(
+                                                              (a) =>
+                                                                  a.id ===
+                                                                  item.additional_id
+                                                          )
+                                                      ],
+                                                  quantity: item.quantity,
+                                              },
+                                          ];
+                                      }
+                                      return [...acc];
+                                  },
+                                  []
+                              )
                             : [];
+
+                    const totalAdditionalsPrice =
+                        additionalsDataFiltered.reduce((acc, current) => {
+                            return (
+                                acc +
+                                current.additional.price * current.quantity
+                            );
+                        }, 0);
+
+                    const totalProductPriceWithAdditionals =
+                        totalAdditionalsPrice + product.price;
 
                     if (product === undefined) {
                         return;
@@ -112,7 +134,7 @@ export default function ProductsDetails({
                                 </span>
                                 <span className="font-bold text-green-500">
                                     {' '}
-                                    R$ {product.price}
+                                    R$ {totalProductPriceWithAdditionals}
                                 </span>
                             </div>
                             <div className="flex">
@@ -152,12 +174,6 @@ export default function ProductsDetails({
                                                 {' '}
                                                 {additional.quantity} -{' '}
                                                 {additional.additional.name}{' '}
-                                            </span>
-                                            <span className="text-green-500">
-                                                {' '}
-                                                R${' '}
-                                                {additional.additional.price *
-                                                    additional.quantity}
                                             </span>
                                         </div>
                                     );

@@ -113,7 +113,7 @@ export default function OrderStatusCard({
     });
 
     return (
-        <div className="flex flex-1 min-h-[150px] max-h-[270px] lg:w-full flex-col shadow-sm px-4 pt-2 pb-4 scrollbar-custom">
+        <div className="flex flex-1 min-h-[150px] max-h-[270px] lg:w-full flex-col shadow-sm px-4 pt-2 pb-10 last:mb-6 scrollbar-custom">
             <div className=" flex items-center justify-between mb-4">
                 <h2 className="text-base font-bold"> {statusName} </h2>
                 <span className="text-md font-medium">{''}</span>
@@ -148,7 +148,7 @@ export default function OrderStatusCard({
                             return (
                                 <tr
                                     key={order.id}
-                                    className="w-full h-4 text-center "
+                                    className="w-full h-4 text-center"
                                 >
                                     <td className=" min-w-8 mx-2">
                                         <Image

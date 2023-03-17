@@ -152,7 +152,7 @@ export default function NewRequests({
                                         <td
                                             className={`${tdStyle}text-left h-4 text-sm font-medium p-2  hidden 3xs:table-cell`}
                                         >
-                                            {order.clients.name}
+                                            {order?.clients?.name}
                                         </td>
                                         <td
                                             className={`${tdStyle} w-16 hidden sm:table-cell md:hiden 2xl:table-cell`}

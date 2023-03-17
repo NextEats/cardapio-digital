@@ -91,7 +91,9 @@ export function OrderModal({
             );
             setAddress(res.data);
         };
-        orderFound?.clients ? getAddress() : null;
+        orderFound?.clients && orderFound?.order_types.name === 'Delivery'
+            ? getAddress()
+            : null;
     }, [orderFound]);
 
     const ordersTablesFound = ordersTables.find(
@@ -164,7 +166,7 @@ export function OrderModal({
                             <Dialog.Content
                                 ref={printComponent}
                                 className="bg-white shadow-bd w-[298px] fixed right-1/2 
-                            translate-x-1/2 px-6 pt-3 pb-6"
+                            translate-x-1/2 px-6 pt-3 pb-6 uppercase"
                             >
                                 <ProductionOrder
                                     productsFiltered={productsFiltered}
@@ -180,7 +182,7 @@ export function OrderModal({
                                 />
 
                                 <h2 className="text-center uppercase text-black font-semibold text-sm">
-                                    COMANDA
+                                    COMANDA - {orderFound?.order_types.name}
                                 </h2>
 
                                 <hr className="my-2" />
@@ -246,11 +248,6 @@ export function OrderModal({
                                                     }{' '}
                                                 </strong>
                                             </p>
-
-                                            {/* <p className={`${textStyles} text-left `}>
-                                            Email:<strong>    {orderFound?.clients.contacts?.email}</strong>
-                                           
-                                        </p> */}
                                             <p className={`${textStyles}`}>
                                                 Endereço:{' '}
                                                 <strong>

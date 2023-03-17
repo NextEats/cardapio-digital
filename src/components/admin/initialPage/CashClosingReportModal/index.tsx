@@ -130,6 +130,23 @@ export default function CashClosingReportModal({
 
     const textStyles = 'text-[10px]';
 
+    const totalValueOfDoneOrders = getPaymentTotals(
+        ordersGroupedByOrderStatus['entregue']
+    );
+
+    const canceledOrders = ordersGroupedByOrderStatus['cancelado'];
+
+    const totalValueOfCanceledOrdersGroupedByPaymentMethod =
+        getPaymentTotals(canceledOrders);
+
+    const totalValueOfCanceledOrders =
+        totalValueOfCanceledOrdersGroupedByPaymentMethod.reduce(
+            (acc, current) => {
+                return acc + current.value;
+            },
+            0
+        );
+
     return (
         <div className="flex items-center gap-3">
             <Dialog.Root open={openCashBoxClosingReportModal}>
@@ -202,28 +219,41 @@ export default function CashClosingReportModal({
                                 Entradas
                             </p>
                             {cashBoxState
-                                ? getPaymentTotals(
-                                      ordersGroupedByOrderStatus['entregue']
-                                  ).map((paymentMethods, index) => {
-                                      return (
-                                          <p
-                                              key={index}
-                                              className={`${textStyles}  font-medium`}
-                                          >
-                                              {' '}
-                                              {paymentMethods.payment_method}:
-                                              R${' '}
-                                              {paymentMethods.value.toLocaleString(
-                                                  'pt-BR',
+                                ? totalValueOfDoneOrders.map(
+                                      (paymentMethods, index) => {
+                                          return (
+                                              <p
+                                                  key={index}
+                                                  className={`${textStyles}  font-medium`}
+                                              >
+                                                  {' '}
                                                   {
-                                                      maximumFractionDigits: 2,
-                                                      minimumFractionDigits: 2,
+                                                      paymentMethods.payment_method
                                                   }
-                                              )}{' '}
-                                          </p>
-                                      );
-                                  })
+                                                  : R${' '}
+                                                  {paymentMethods.value.toLocaleString(
+                                                      'pt-BR',
+                                                      {
+                                                          maximumFractionDigits: 2,
+                                                          minimumFractionDigits: 2,
+                                                      }
+                                                  )}{' '}
+                                              </p>
+                                          );
+                                      }
+                                  )
                                 : null}
+                            <hr className="my-2" />
+                            <p className="text-base font-semibold mb-2">
+                                Cancelados
+                            </p>
+                            <p>
+                                {canceledOrders ? (
+                                    <span>
+                                        R$&nbsp;{totalValueOfCanceledOrders}
+                                    </span>
+                                ) : null}
+                            </p>
                         </div>
 
                         <Dialog.Close

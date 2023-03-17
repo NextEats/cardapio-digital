@@ -81,19 +81,6 @@ export default function ContactInfoForm({ setCurrentStep }: any) {
         return change;
     }
 
-    const handleDeactivateButton = () => {
-        console.log('HandlingButton');
-        const submitBtn = document.querySelector(
-            '#submitBtn'
-        ) as HTMLButtonElement;
-        submitBtn.disabled = true;
-        // submitBtn.classList.add('pointer-events-none, bg-red-600');
-
-        setTimeout(() => {
-            submitBtn.disabled = false;
-        }, 1000);
-    };
-
     useEffect(() => {
         async function fetchActivePaymentMethods() {
             const { data, error } = await supabase
@@ -135,8 +122,6 @@ export default function ContactInfoForm({ setCurrentStep }: any) {
         fetchActivePaymentMethods();
     }, [restaurant]);
 
-    console.log(deliveryForm);
-
     return (
         <form onSubmit={handleSubmit(onSubmit)} className="">
             <div className="w-full flex justify-center ">
@@ -146,8 +131,14 @@ export default function ContactInfoForm({ setCurrentStep }: any) {
             </div>
 
             <div className="px-4 mt-12">
+                <label
+                    htmlFor="deliveryForm"
+                    className="block text-gray-700 font-bold mb-2"
+                >
+                    Forma de entrega
+                </label>
                 <select
-                    className="bg-[#4f46e5] p-2 text-white font-bold rounded-xl"
+                    className={`appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline `}
                     {...register('deliveryForm', {
                         required: true,
                         valueAsNumber: true,

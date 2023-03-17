@@ -5,8 +5,10 @@ import { HiShoppingCart } from 'react-icons/hi';
 import ProductsList from '../home/ProductsList';
 import RestaurantHeader from '../home/RestaurantHeader';
 
+import Image from 'next/image';
+
 export default function DigitalMenuContent() {
-    const [orderPrice, setOrderPrice] = useState(0)
+    const [orderPrice, setOrderPrice] = useState(0);
 
     const { productReducer, modals } = useContext(DigitalMenuContext);
     const restaurant = useContext(DigitalMenuContext).restaurant;
@@ -21,9 +23,12 @@ export default function DigitalMenuContent() {
     };
 
     useMemo(async () => {
-        const price = await calculateTotalOrderPrice(({ products: productReducer, restaurantId: restaurant?.id }))
-        setOrderPrice(price ? price : 0)
-    }, [productReducer, restaurant?.id])
+        const price = await calculateTotalOrderPrice({
+            products: productReducer,
+            restaurantId: restaurant?.id,
+        });
+        setOrderPrice(price ? price : 0);
+    }, [productReducer, restaurant?.id]);
 
     return (
         <div className="bg-[#222] flex justify-center min-h-screen min-w-screen">
@@ -37,16 +42,35 @@ export default function DigitalMenuContent() {
                             className="h-12 shadow rounded text-white font-semibold bg-[#ca2a2a] z-[90] flex justify-between items-center px-8 uppercase text-xl cursor-pointer"
                             onClick={handleOpenCheckoutModal}
                         >
-                            <div className='flex justify-center items-center gap-1'>
+                            <div className="flex justify-center items-center gap-1">
                                 <HiShoppingCart className="mr-3" />
                                 <span className="">meu pedido</span>
                             </div>
 
-                            <p className=''> R$ {orderPrice.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
-
+                            <p className="">
+                                {' '}
+                                R${' '}
+                                {orderPrice.toLocaleString('pt-BR', {
+                                    minimumFractionDigits: 2,
+                                    maximumFractionDigits: 2,
+                                })}
+                            </p>
                         </div>
                     </div>
                 )}
+
+                <footer className="flex flex-col items-center gap-3 bg-gray-800 justify-center py-5 mt-32">
+                    <div className="flex items-center gap-2">
+                        <Image
+                            className=""
+                            src={'/LogoLaranja.png'}
+                            alt="asdasd"
+                            width={160}
+                            height={160}
+                        />
+                    </div>
+                    <span className="text-sm text-white">versão 1.0.0</span>
+                </footer>
             </div>
         </div>
     );

@@ -17,17 +17,12 @@ export default function CustomerAtTheTable({
     orderProductData,
     orderStatus,
 }: iCustomerAtTheTableProps) {
-    const { tableDispatch, tableData } = useContext(TableContext);
-    // const totalProductPrice = 
+    const { tableDispatch } = useContext(TableContext);
 
     return (
-        <div className="flex items-center justify-between pl-8">
+        <div className="flex items-center justify-between">
             <div className="flex items-center gap-2 ">
-                {/* <Checkbox.Root className="bg-red-400 flex items-center justify-center border-gray-400">
-                    <Checkbox.Indicator >
-                        <BsCheck />
-                    </Checkbox.Indicator>
-                </Checkbox.Root> */}
+
                 <span
                     className={`text-base font-semibold w-28 sm:w-60 truncate ${orderStatus === 'em produção' ? 'text-blue-500' : orderStatus === 'em análise' ? 'text-red-500' : 'text-green-500'
                         }`}

@@ -66,6 +66,12 @@
     .hideShadowToPrint {
         box-shadow: none;
     }
+    .centerCompontetToPrint {
+        position: fixed;
+        top: 3vh;
+        left: 22%;
+        trasform: translate(-50%, -50%)
+    }
 }
 
 @keyframes fadeIn {

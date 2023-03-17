@@ -1,11 +1,12 @@
 import { Card } from "../../Card";
 
 import { format } from "date-fns"
-import { iProducts, iProductCategories, iOrders, iOrdersProducts, iProduct, iOrdersStatus, iOrderProduct, iOrdersWithFKData, iAdditionals } from "../../../../types/types";
+import { iProducts, iProductCategories, iOrders, iOrdersProducts, iProduct, iOrdersStatus, iOrderProduct, iOrdersWithFKData, iAdditionals, iSelects } from "../../../../types/types";
 import { getOrdersProductsData } from "@/src/helpers/getOrdersProductsData";
 
 interface iGlobalValuesCardProps {
     additionals: iAdditionals['data'];
+    selects: iSelects["data"];
     globalValuesData: {
         ordersGroupedByOrderStatus: { [key: string]: iOrdersWithFKData[] };
         orders: iOrders["data"],
@@ -16,7 +17,7 @@ interface iGlobalValuesCardProps {
     }
 }
 
-export function GlobalValuesCard({ globalValuesData, additionals }: iGlobalValuesCardProps) {
+export function GlobalValuesCard({ globalValuesData, additionals, selects }: iGlobalValuesCardProps) {
 
     const { orders, products, ordersProducts, ordersStatus, ordersGroupedByOrderStatus } = globalValuesData
 
@@ -45,6 +46,7 @@ export function GlobalValuesCard({ globalValuesData, additionals }: iGlobalValue
                 ordersProducts: ordersProductFiltered,
                 additionals,
                 products,
+                selects,
             }).reduce(
                 (acc, item) => acc + item.totalAdditionalsPriceByProduct,
                 0

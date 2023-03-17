@@ -137,6 +137,7 @@ export function OrderModal({
         ordersProducts: orderProductFiltered as iOrdersProducts['data'],
         additionals,
         products: products as iProducts['data'],
+        selects,
     }).reduce((acc, item) => acc + item.totalPrice, 0);
 
     const orderDateFormated = format(

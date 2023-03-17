@@ -182,6 +182,7 @@ export default function TableContextProvider({
             additionals,
             ordersProducts: ordersProductsFiltered,
             products: productsFiltered,
+            selects,
         });
 
         const totalPriceOfAdditionals = ordersProductsDataTable.reduce(
@@ -195,7 +196,7 @@ export default function TableContextProvider({
             productsData: ordersProductsDataTable,
             tableBill: totalPriceOfProducts + totalPriceOfAdditionals,
         };
-    }, [openedTableModal, ordersTables, ordersProducts, products, additionals]);
+    }, [openedTableModal, ordersTables, ordersProducts, products, additionals, selects]);
 
     const tableDeliveredData = useMemo(() => {
         if (!openedTableModal) return;
@@ -235,6 +236,7 @@ export default function TableContextProvider({
             additionals,
             ordersProducts: ordersProductsFiltered,
             products: productsFiltered,
+            selects,
         });
 
         const totalPriceOfAdditionals = ordersProductsDataTable.reduce(
@@ -248,7 +250,7 @@ export default function TableContextProvider({
             productsData: ordersProductsDataTable,
             tableBill: totalPriceOfProducts + totalPriceOfAdditionals,
         };
-    }, [openedTableModal, ordersTables, ordersProducts, products, additionals]);
+    }, [openedTableModal, ordersTables, ordersProducts, products, additionals, selects]);
 
     async function createNewtable(cheirAmount: string, tableName: string) {
         if (tableName === '') {
@@ -332,21 +334,21 @@ export default function TableContextProvider({
                 tableData:
                     tableDeliveredData !== undefined
                         ? {
-                              productsInProductionData:
-                                  tableInProductionData?.productsData,
-                              productsDeliveredData:
-                                  tableDeliveredData.productsData,
-                              tableBill:
-                                  tableInProductionData !== undefined
-                                      ? tableDeliveredData.tableBill +
-                                        tableInProductionData.tableBill
-                                      : tableDeliveredData.tableBill,
-                          }
+                            productsInProductionData:
+                                tableInProductionData?.productsData,
+                            productsDeliveredData:
+                                tableDeliveredData.productsData,
+                            tableBill:
+                                tableInProductionData !== undefined
+                                    ? tableDeliveredData.tableBill +
+                                    tableInProductionData.tableBill
+                                    : tableDeliveredData.tableBill,
+                        }
                         : {
-                              productsInProductionData: undefined,
-                              productsDeliveredData: undefined,
-                              tableBill: 0,
-                          },
+                            productsInProductionData: undefined,
+                            productsDeliveredData: undefined,
+                            tableBill: 0,
+                        },
 
                 additionals,
                 paymentMethod,

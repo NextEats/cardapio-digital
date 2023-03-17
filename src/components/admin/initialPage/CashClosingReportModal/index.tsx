@@ -6,6 +6,7 @@ import {
     iOrdersProducts,
     iOrdersWithFKData,
     iProducts,
+    iSelects,
     iUserDetails,
 } from '@/src/types/types';
 import * as Dialog from '@radix-ui/react-dialog';
@@ -38,6 +39,7 @@ export default function CashClosingReportModal({
         iOrdersProducts['data']
     >([]);
     const [additionals, setAdditionals] = useState<iAdditionals['data']>([]);
+    const [selects, setSelects] = useState<iSelects['data']>([]);
     const [products, setProducts] = useState<iProducts['data']>([]);
     const [usersData, setUsersData] = useState<iUserDetails['data'] | null>(
         null
@@ -64,6 +66,8 @@ export default function CashClosingReportModal({
                 .select()
                 .eq('user_id', user?.id);
             if (getUserData.data) setUsersData(getUserData.data[0]);
+            const selectsData = await api.get(`api/selects/${restaurantId}`);
+            setSelects(selectsData.data as iSelects['data']);
         }
         getDatas();
     }, [restaurantId, user]);
@@ -122,6 +126,7 @@ export default function CashClosingReportModal({
             ordersProducts: ordersProductFiltered,
             additionals,
             products,
+            selects,
         }).reduce((acc: number, item: any) => acc + item.totalPrice, 0);
 
         const deliveryFees = order.delivery_fees ? order.delivery_fees.fee : 0;

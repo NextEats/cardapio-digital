@@ -43,7 +43,7 @@ export default function OrderTableDetails() {
                     className="z-[-2000] fixed bg-white ml-auto shadow-bd w-[298px] text-[12px] shadow-md p-4 hideShadowToPrint centerCompontetToPrint pb-8"
                 >
                     <h2 className="text-center uppercase text-black font-semibold">
-                        COMANDA
+                        COMANDA - {openedTableModal?.name}
                     </h2>
 
                     <div className="flex flex-col gap-2 uppercase">
@@ -56,7 +56,6 @@ export default function OrderTableDetails() {
                                     <strong className="mb-1 flex items-center justify-between">
                                         <span>{productsData.product.name}</span>
                                         <span>
-                                            {' '}
                                             R$ {productsData.totalPrice}
                                         </span>
                                     </strong>
@@ -133,7 +132,7 @@ export default function OrderTableDetails() {
             </div>
             <div className="bg-white ml-auto shadow-bd w-[298px] text-[12px] shadow-md p-4 hideShadowToPrint centerCompontetToPrint lg:max-h-[350px] max-h-[250px] overflow-auto pb-8 scrollbar-custom">
                 <h2 className="text-center uppercase text-black font-semibold">
-                    COMANDA
+                    COMANDA - {openedTableModal?.name}
                 </h2>
 
                 <div className="flex flex-col gap-2 uppercase">

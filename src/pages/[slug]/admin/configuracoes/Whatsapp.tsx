@@ -31,6 +31,8 @@ export default function Whatsapp() {
     }, [restaurant]);
 
     const handleSendMessage = async () => {
+        console.log(restaurant!.whatsapp_number);
+
         try {
             console.log({
                 id: restaurant!.slug,

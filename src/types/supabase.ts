@@ -834,6 +834,26 @@ export interface Database {
           restaurant_id?: number | null
         }
       }
+      restaurant_order_type: {
+        Row: {
+          created_at: string | null
+          id: number
+          order_types_id: number
+          restaurant_id: number
+        }
+        Insert: {
+          created_at?: string | null
+          id?: number
+          order_types_id: number
+          restaurant_id: number
+        }
+        Update: {
+          created_at?: string | null
+          id?: number
+          order_types_id?: number
+          restaurant_id?: number
+        }
+      }
       restaurant_role: {
         Row: {
           created_at: string | null

@@ -1,12 +1,12 @@
 import { DigitalMenuContext } from '@/src/contexts/DigitalMenuContext';
 import { calculateTotalOrderPrice } from '@/src/helpers/calculateTotalOrderPrice';
 import { supabase } from '@/src/server/api';
+import { iRestaurantOrderTypesWithFKData } from '@/src/types/types';
 import cep from 'cep-promise';
-import { useContext, useEffect, useState } from 'react';
-import { SubmitHandler, useForm } from 'react-hook-form';
+import { useContext,useEffect,useState } from 'react';
+import { SubmitHandler,useForm } from 'react-hook-form';
 import InputMask from 'react-input-mask';
 import { SubmitForm } from './SubmitForm';
-import InputWithLabel from '../../InputWithLabel';
 
 export default function ContactInfoForm({ setCurrentStep }: any) {
     type ContactFormValues = {
@@ -19,6 +19,7 @@ export default function ContactInfoForm({ setCurrentStep }: any) {
         payment_method: number;
         change_need: string;
         change_value: number;
+        deliveryForm: number;
     };
 
     const {
@@ -30,13 +31,14 @@ export default function ContactInfoForm({ setCurrentStep }: any) {
         formState: { errors, isLoading },
     } = useForm<ContactFormValues>();
     const [activePaymentMethods, setActivePaymentMethods] = useState<any>();
+    const [restaurantOrderTypes, setRestaurantOrderTypes] = useState<iRestaurantOrderTypesWithFKData[]>([]);
     const [loading, setLoading] = useState(false);
-
     const restaurant = useContext(DigitalMenuContext).restaurant;
     const products = useContext(DigitalMenuContext).productReducer!;
     const watchingPaymentMethod = Number(watch('payment_method'));
     const watchingChangeNeed = watch('change_need');
     const change_value = watch('change_value');
+    const deliveryForm = watch('deliveryForm');
 
     const onSubmit: SubmitHandler<ContactFormValues> = async ({
         cep,
@@ -44,6 +46,7 @@ export default function ContactInfoForm({ setCurrentStep }: any) {
         number,
         whatsapp,
         payment_method,
+        deliveryForm
     }) => {
         const chenge =
             watchingPaymentMethod === 5 && watchingChangeNeed
@@ -51,7 +54,7 @@ export default function ContactInfoForm({ setCurrentStep }: any) {
                 : null;
         setLoading(true);
         await SubmitForm({
-            cep: cep.replace('-', ''),
+            cep: cep?.replace('-', ''),
             name,
             number,
             whatsapp,
@@ -59,8 +62,8 @@ export default function ContactInfoForm({ setCurrentStep }: any) {
             restaurant,
             payment_method,
             change_value: chenge !== null ? chenge : 0,
+            deliveryForm
         });
-
         setCurrentStep('thank_you');
     };
 
@@ -70,7 +73,6 @@ export default function ContactInfoForm({ setCurrentStep }: any) {
             restaurantId: restaurant?.id,
         });
         const change = change_value - orderPrice!;
-
         return change;
     }
 
@@ -88,23 +90,69 @@ export default function ContactInfoForm({ setCurrentStep }: any) {
                         name: elem.payment_methods!.name,
                     };
                 });
-
                 setActivePaymentMethods(formatedData);
             } else {
                 console.error(error);
             }
         }
+        async function fetchOrderTypes() {
+            const { data, error } = await supabase
+                .from('restaurant_order_type')
+                .select('*, restaurants ( * ), order_types ( * )')
+                .eq('restaurant_id', restaurant!.id);
+                
 
+            if (data && !error) {
+                setRestaurantOrderTypes(data as iRestaurantOrderTypesWithFKData[]);
+                console.log(restaurantOrderTypes)
+            } else {
+                console.error(error);
+            }
+        }
+
+        fetchOrderTypes()
         fetchActivePaymentMethods();
     }, [restaurant]);
 
+    console.log('deliveryForm: ', deliveryForm)
+
     return (
-        <form onSubmit={handleSubmit(onSubmit)} className="">
-            <div className="w-full flex justify-center ">
+        <form onSubmit={handleSubmit(onSubmit)}>
+            <div className="px-4 mt-12">
+                <select
+                    className="bg-[#4f46e5] p-2 text-white font-bold rounded-xl"
+                    {...register('deliveryForm', { required: true, valueAsNumber: true })}
+                    name="deliveryForm"
+                    id="deliveryForm"
+                    defaultValue={undefined}
+                >
+                    <option 
+                    disabled={true}
+                    value={undefined}
+                    selected={true}
+                    >
+                        Selecione o tipo de entrega
+                    </option>
+
+                    {restaurantOrderTypes.map((item) => {
+                        return (
+                            <option value={item?.order_types?.id} key={item.id}>
+                                {item?.order_types?.name}
+                            </option>
+                        );
+                    })}
+                </select>
+            </div>
+
+            
+           
+             <div className="w-full flex justify-center ">
                 <span className="text-center text-2xl font-semibold">
                     Digite seus Dados
                 </span>
             </div>
+
+             {!Number.isNaN(deliveryForm) ? (      
             <div className="px-4 mt-12">
                 <div className="mb-4">
                     <label
@@ -122,6 +170,7 @@ export default function ContactInfoForm({ setCurrentStep }: any) {
                         }`}
                     />
                 </div>
+
                 <div className="mb-4">
                     <label
                         className="block text-gray-700 font-bold mb-2"
@@ -134,9 +183,11 @@ export default function ContactInfoForm({ setCurrentStep }: any) {
                         className={`appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${
                             errors.whatsapp && 'border-red-500'
                         }`}
+                        
                         {...register('whatsapp', {
                             required: true,
-                            setValueAs: (v) => parseInt(v.replace(/\D/g, '')),
+                            // setValueAs: (v) => parseInt(v.replace(/\D/g, '')),
+                            // setValueAs: (v) => (v ? parseInt(v.replace(/\D/g, '')) : null),
                         })}
                     />
                     {errors.whatsapp && (
@@ -145,98 +196,104 @@ export default function ContactInfoForm({ setCurrentStep }: any) {
                         </p>
                     )}
                 </div>
-                <div className="mb-4">
-                    <label
-                        className="block text-gray-700 font-bold mb-2"
-                        htmlFor="cep"
-                    >
-                        CEP
-                    </label>
-                    <InputMask
-                        {...register('cep', { required: true })}
-                        id="cep"
-                        type="text"
-                        className={`appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${
-                            errors.cep && 'border-red-500'
-                        }`}
-                        mask="99999-999"
-                        onBlur={async () => {
-                            const values = getValues();
-                            try {
-                                const cepInfo = await cep(values.cep);
-                                if (cepInfo) {
-                                    setValue(
-                                        'neighborhood',
-                                        cepInfo.neighborhood
-                                    );
-                                    setValue('street', cepInfo.street);
-                                }
-                            } catch {
-                                console.error('CEP não encontrado');
-                            }
-                        }}
-                    />
-                    {errors.cep && (
-                        <p className="text-red-500 text-xs italic">
-                            Digite seu CEP
-                        </p>
-                    )}
-                </div>
-                <div className="mb-4">
-                    <label
-                        className="block text-gray-700 font-bold mb-2"
-                        htmlFor="neighborhood"
-                    >
-                        Bairro
-                    </label>
-                    <input
-                        {...register('neighborhood')}
-                        id="neighborhood"
-                        type="text"
-                        className={`bg-[#00000019] appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${
-                            errors.neighborhood && 'border-red-500'
-                        }`}
-                        disabled
-                    />
-                </div>
-                <div className="mb-4">
-                    <label
-                        className="block text-gray-700 font-bold mb-2"
-                        htmlFor="street"
-                    >
-                        Rua
-                    </label>
-                    <input
-                        {...register('street')}
-                        id="street"
-                        type="text"
-                        className={`bg-[#00000019] appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${
-                            errors.street && 'border-red-500'
-                        }`}
-                        disabled
-                    />
-                </div>
-                <div className="mb-4">
-                    <label
-                        className="block text-gray-700 font-bold mb-2"
-                        htmlFor="number"
-                    >
-                        Número
-                    </label>
-                    <input
-                        {...register('number', { required: true })}
-                        id="number"
-                        type="text"
-                        className={`appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${
-                            errors.number && 'border-red-500'
-                        }`}
-                    />
-                    {errors.number && (
-                        <p className="text-red-500 text-xs italic">
-                            Digite seu número
-                        </p>
-                    )}
-                </div>
+
+                {deliveryForm === 1 ? (
+                    <>
+                        <div className="mb-4">
+                            <label
+                                className="block text-gray-700 font-bold mb-2"
+                                htmlFor="cep"
+                            >
+                                CEP
+                            </label>
+                            <InputMask
+                                {...register('cep', { required: true })}
+                                id="cep"
+                                type="text"
+                                className={`appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${
+                                    errors.cep && 'border-red-500'
+                                }`}
+                                mask="99999-999"
+                                onBlur={async () => {
+                                    const values = getValues();
+                                    try {
+                                        const cepInfo = await cep(values.cep);
+                                        if (cepInfo) {
+                                            setValue(
+                                                'neighborhood',
+                                                cepInfo.neighborhood
+                                            );
+                                            setValue('street', cepInfo.street);
+                                        }
+                                    } catch {
+                                        console.error('CEP não encontrado');
+                                    }
+                                }}
+                            />
+                            {errors.cep && (
+                                <p className="text-red-500 text-xs italic">
+                                    Digite seu CEP
+                                </p>
+                            )}
+                        </div>
+
+                        <div className="mb-4">
+                            <label
+                                className="block text-gray-700 font-bold mb-2"
+                                htmlFor="neighborhood"
+                            >
+                                Bairro
+                            </label>
+                            <input
+                                {...register('neighborhood')}
+                                id="neighborhood"
+                                type="text"
+                                className={`bg-[#00000019] appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${
+                                    errors.neighborhood && 'border-red-500'
+                                }`}
+                                disabled
+                            />
+                        </div>
+                        <div className="mb-4">
+                            <label
+                                className="block text-gray-700 font-bold mb-2"
+                                htmlFor="street"
+                            >
+                                Rua
+                            </label>
+                            <input
+                                {...register('street')}
+                                id="street"
+                                type="text"
+                                className={`bg-[#00000019] appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${
+                                    errors.street && 'border-red-500'
+                                }`}
+                                disabled
+                            />
+                        </div>
+                        <div className="mb-4">
+                            <label
+                                className="block text-gray-700 font-bold mb-2"
+                                htmlFor="number"
+                            >
+                                Número
+                            </label>
+                            <input
+                                {...register('number', { required: true })}
+                                id="number"
+                                type="text"
+                                className={`appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${
+                                    errors.number && 'border-red-500'
+                                }`}
+                            />
+                            {errors.number && (
+                                <p className="text-red-500 text-xs italic">
+                                    Digite seu número
+                                </p>
+                            )}
+                        </div>
+                    </>
+                ) : null}
                 <div className="mb-4">
                     <label
                         className="block text-gray-700 font-bold mb-2"
@@ -287,7 +344,7 @@ export default function ContactInfoForm({ setCurrentStep }: any) {
                     </div>
                 ) : null}
 
-                {watchingChangeNeed === "Sim" ? (
+                {watchingChangeNeed === 'Sim' ? (
                     <div>
                         <label
                             htmlFor="change_value"
@@ -325,6 +382,7 @@ export default function ContactInfoForm({ setCurrentStep }: any) {
                     </button>
                 </div>
             </div>
+            ) :  null} 
         </form>
     );
 }

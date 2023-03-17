@@ -34,33 +34,38 @@ export async function SubmitForm({
     restaurant,
     payment_method,
     change_value,
+    deliveryForm
 }: any) {
     try {
-        const distance_in_km = await returnDistanceInMeters(
-            restaurant.address_string,
-            cep + ' ' + number
-        );
+        let foundDeliveryFee
+        if( deliveryForm === 1 ) {
 
-        const { data: delivery_fees_data } = await supabase
-            .from('delivery_fees')
-            .select('*')
-            .eq('restaurant_id', restaurant?.id);
-
-        const foundDeliveryFee = delivery_fees_data!.find((df) => {
+            const distance_in_km = await returnDistanceInMeters(
+                restaurant.address_string,
+                cep + ' ' + number
+                );
+                
+                const { data: delivery_fees_data } = await supabase
+                .from('delivery_fees')
+                .select('*')
+                .eq('restaurant_id', restaurant?.id);
+                
+                foundDeliveryFee = delivery_fees_data!.find((df) => {
             console.log(distance_in_km!, df.end_km!, df.start_km!);
             return (
                 distance_in_km! <= df.end_km! && distance_in_km! >= df.start_km!
             );
         });
-
+        
         if (!foundDeliveryFee) {
             alert(
                 'Sinto muito, o endereço digitado está fora do alcance de nossos entregadores!'
-            );
-            window.location.href = serverURL + restaurant.slug;
+                );
+                window.location.href = serverURL + restaurant.slug;
             return;
         }
-
+    }
+        
         const { data: currentCashBoxData } = await supabase
             .from('cash_boxes')
             .select('*')
@@ -74,13 +79,17 @@ export async function SubmitForm({
             return;
         }
 
-        const { data: addressData } = await supabase
+        let address
+        if( deliveryForm === 1) {
+            const { data: addressData } = await supabase
             .from('addresses')
             .insert({ cep, number: Number(number) })
             .select('*');
+            address = addressData![0] as unknown as iAddress['data'];
+        }
+            
 
-        const address = addressData![0] as unknown as iAddress['data'];
-
+        
         const { data: contactData } = await supabase
             .from('contacts')
             .insert({ phone: whatsapp })
@@ -92,7 +101,7 @@ export async function SubmitForm({
             .from('clients')
             .insert({
                 name,
-                address_id: address.id,
+                address_id: deliveryForm === 1 && address ?  address.id : null,
                 contact_id: contact.id,
             })
             .select('*');
@@ -112,11 +121,11 @@ export async function SubmitForm({
             .from('orders')
             .insert({
                 restaurant_id: restaurant!.id,
-                client_id: client.id,
-                order_type_id: 1,
+                client_id: deliveryForm !== 1 ? client.id : null,
+                order_type_id: deliveryForm,
                 cash_box_id: currentCashBox.id,
                 order_status_id: 2,
-                delivery_fee_id: foundDeliveryFee.id,
+                delivery_fee_id: deliveryForm !== 1 && foundDeliveryFee ? foundDeliveryFee.id : null,
                 payment_method_id: payment_method,
                 number: orderPosition,
                 change_value,
@@ -143,7 +152,7 @@ export async function SubmitForm({
                 const { data: ordersProductsData } = await supabase
                     .from('orders_products')
                     .insert({
-                        order_id: order.id,
+                        order_id:  order.id,
                         product_id: product.id,
                         selects_data: product.selects,
                         observation: product.observation,

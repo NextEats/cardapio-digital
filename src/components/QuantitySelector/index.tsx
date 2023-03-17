@@ -5,7 +5,7 @@ interface iQuantitySelector {
   value: number;
   addValue: Function;
   subtractValue: Function;
-  deleteValue: Function;
+  deleteValue?: Function;
 }
 
 export function QuantitySelector({
@@ -23,6 +23,7 @@ export function QuantitySelector({
   };
 
   const handleDeleteOnClick = () => {
+    if (!deleteValue) return
     deleteValue();
   };
 
@@ -32,8 +33,8 @@ export function QuantitySelector({
         className="w-6 text-md flex items-center justify-center"
         onClick={value == 1 ? handleDeleteOnClick : handleDecrementOnClick}
       >
-        {value == 1 && <FaTrash />}
-        {value > 1 && <FaMinus />}
+        {value == 1 && deleteValue ? <FaTrash /> : null}
+        {value > 1 ? <FaMinus /> : null}
       </button>
       <span className="">{value}</span>
       <button

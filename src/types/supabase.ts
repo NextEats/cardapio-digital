@@ -220,6 +220,7 @@ export interface Database {
           cep: string
           complement: string | null
           created_at: string | null
+          fullstring: string | null
           google_maps_link: string | null
           id: number
           number: number
@@ -229,6 +230,7 @@ export interface Database {
           cep: string
           complement?: string | null
           created_at?: string | null
+          fullstring?: string | null
           google_maps_link?: string | null
           id?: number
           number: number
@@ -238,6 +240,7 @@ export interface Database {
           cep?: string
           complement?: string | null
           created_at?: string | null
+          fullstring?: string | null
           google_maps_link?: string | null
           id?: number
           number?: number
@@ -888,11 +891,13 @@ export interface Database {
       restaurants: {
         Row: {
           address_id: number
+          address_string: string | null
           banner_url: string | null
           created_at: string | null
           id: number
           name: string
           picture_url: string
+          pix: string | null
           restaurant_type_id: number
           slug: string
           whatsapp_number: string | null
@@ -900,11 +905,13 @@ export interface Database {
         }
         Insert: {
           address_id: number
+          address_string?: string | null
           banner_url?: string | null
           created_at?: string | null
           id?: number
           name: string
           picture_url: string
+          pix?: string | null
           restaurant_type_id: number
           slug: string
           whatsapp_number?: string | null
@@ -912,11 +919,13 @@ export interface Database {
         }
         Update: {
           address_id?: number
+          address_string?: string | null
           banner_url?: string | null
           created_at?: string | null
           id?: number
           name?: string
           picture_url?: string
+          pix?: string | null
           restaurant_type_id?: number
           slug?: string
           whatsapp_number?: string | null

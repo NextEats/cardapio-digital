@@ -1,6 +1,6 @@
 import { DigitalMenuContext } from '@/src/contexts/DigitalMenuContext';
-import { api, supabase } from '@/src/server/api';
-import { iAdditionals } from '@/src/types/types';
+import { calculateTotalOrderPrice } from '@/src/helpers/calculateTotalOrderPrice';
+import { supabase } from '@/src/server/api';
 import cep from 'cep-promise';
 import { useContext, useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
@@ -27,13 +27,16 @@ export default function ContactInfoForm({ setCurrentStep }: any) {
         setValue,
         watch,
         getValues,
-        formState: { errors },
+        formState: { errors, isLoading },
     } = useForm<ContactFormValues>();
+    const [activePaymentMethods, setActivePaymentMethods] = useState<any>();
+    const [loading, setLoading] = useState(false);
 
     const restaurant = useContext(DigitalMenuContext).restaurant;
     const products = useContext(DigitalMenuContext).productReducer!;
-    const watchingPaymentMethod = Number(watch('payment_method'))
-    const watchingChangeNeed = watch('change_need')
+    const watchingPaymentMethod = Number(watch('payment_method'));
+    const watchingChangeNeed = watch('change_need');
+    const change_value = watch('change_value');
 
     const onSubmit: SubmitHandler<ContactFormValues> = async ({
         cep,
@@ -41,39 +44,41 @@ export default function ContactInfoForm({ setCurrentStep }: any) {
         number,
         whatsapp,
         payment_method,
-        change_value
     }) => {
-        SubmitForm({
-            cep,
+        const chenge =
+            watchingPaymentMethod === 5 && watchingChangeNeed
+                ? await calculateChangeValue({ products })
+                : null;
+        setLoading(true);
+        await SubmitForm({
+            cep: cep.replace('-', ''),
             name,
             number,
             whatsapp,
             products,
             restaurant,
             payment_method,
-            change_value: calculeChangeValue({ products })
+            change_value: chenge !== null ? chenge : 0,
         });
 
         setCurrentStep('thank_you');
     };
 
-    async function calculeChangeValue({ products }: any) {
-        const { data: additionalData } = await api.get(`api/additionals/${restaurant?.id}`)
+    async function calculateChangeValue({ products }: any) {
+        const orderPrice = await calculateTotalOrderPrice({
+            products,
+            restaurantId: restaurant?.id,
+        });
+        const change = change_value - orderPrice!;
 
-        const additional = additionalData as iAdditionals["data"]
-
-        return 0
+        return change;
     }
-
-    const [activePaymentMethods, setActivePaymentMethods] = useState<any>();
 
     useEffect(() => {
         async function fetchActivePaymentMethods() {
             const { data, error } = await supabase
                 .from('payment_methods_restaurants')
-                .select(
-                    'id, payment_method_id, restaurant_id, enabled, payment_methods ( id, name )'
-                )
+                .select('*, payment_methods ( * )')
                 .match({ restaurant_id: restaurant!.id, enabled: true });
 
             if (data && !error) {
@@ -95,7 +100,7 @@ export default function ContactInfoForm({ setCurrentStep }: any) {
 
     return (
         <form onSubmit={handleSubmit(onSubmit)} className="">
-            <div className="w-full flex justify-center">
+            <div className="w-full flex justify-center ">
                 <span className="text-center text-2xl font-semibold">
                     Digite seus Dados
                 </span>
@@ -112,8 +117,9 @@ export default function ContactInfoForm({ setCurrentStep }: any) {
                         {...register('name')}
                         id="name"
                         type="text"
-                        className={`appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${errors.name && 'border-red-500'
-                            }`}
+                        className={`appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${
+                            errors.name && 'border-red-500'
+                        }`}
                     />
                 </div>
                 <div className="mb-4">
@@ -125,8 +131,13 @@ export default function ContactInfoForm({ setCurrentStep }: any) {
                     </label>
                     <InputMask
                         mask="(99) 99999-9999"
-                        className={`appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${errors.whatsapp && 'border-red-500'}`}
-                        {...register('whatsapp', { required: true, setValueAs: (v) => parseInt(v.replace(/\D/g, '')) })}
+                        className={`appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${
+                            errors.whatsapp && 'border-red-500'
+                        }`}
+                        {...register('whatsapp', {
+                            required: true,
+                            setValueAs: (v) => parseInt(v.replace(/\D/g, '')),
+                        })}
                     />
                     {errors.whatsapp && (
                         <p className="text-red-500 text-xs italic">
@@ -145,8 +156,9 @@ export default function ContactInfoForm({ setCurrentStep }: any) {
                         {...register('cep', { required: true })}
                         id="cep"
                         type="text"
-                        className={`appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${errors.cep && 'border-red-500'
-                            }`}
+                        className={`appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${
+                            errors.cep && 'border-red-500'
+                        }`}
                         mask="99999-999"
                         onBlur={async () => {
                             const values = getValues();
@@ -181,8 +193,9 @@ export default function ContactInfoForm({ setCurrentStep }: any) {
                         {...register('neighborhood')}
                         id="neighborhood"
                         type="text"
-                        className={`bg-[#00000019] appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${errors.neighborhood && 'border-red-500'
-                            }`}
+                        className={`bg-[#00000019] appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${
+                            errors.neighborhood && 'border-red-500'
+                        }`}
                         disabled
                     />
                 </div>
@@ -197,8 +210,9 @@ export default function ContactInfoForm({ setCurrentStep }: any) {
                         {...register('street')}
                         id="street"
                         type="text"
-                        className={`bg-[#00000019] appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${errors.street && 'border-red-500'
-                            }`}
+                        className={`bg-[#00000019] appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${
+                            errors.street && 'border-red-500'
+                        }`}
                         disabled
                     />
                 </div>
@@ -213,8 +227,9 @@ export default function ContactInfoForm({ setCurrentStep }: any) {
                         {...register('number', { required: true })}
                         id="number"
                         type="text"
-                        className={`appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${errors.number && 'border-red-500'
-                            }`}
+                        className={`appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${
+                            errors.number && 'border-red-500'
+                        }`}
                     />
                     {errors.number && (
                         <p className="text-red-500 text-xs italic">
@@ -232,8 +247,9 @@ export default function ContactInfoForm({ setCurrentStep }: any) {
                     <select
                         {...register('payment_method', { required: true })}
                         id="payment_method"
-                        className={`appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${errors.payment_method && 'border-red-500'
-                            }`}
+                        className={`appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${
+                            errors.payment_method && 'border-red-500'
+                        }`}
                     >
                         <option
                             disabled={true}
@@ -261,23 +277,35 @@ export default function ContactInfoForm({ setCurrentStep }: any) {
                 </div>
 
                 {watchingPaymentMethod === 5 ? (
-                    <div>
-                        <p>Metodo de pagamento em dinheiro selecionado</p>
-                        <input  {...register('change_need')} type="checkbox" value="Sim" />
-                        <label>Preciso de troco</label>
+                    <div className="flex items-center gap-1 mb-2">
+                        <input
+                            className="h-5 w-5"
+                            {...register('change_need')}
+                            type="checkbox"
+                        />
+                        <label className="text-lg">Preciso de troco</label>
                     </div>
-                ) : null
-
-                }
+                ) : null}
 
                 {watchingChangeNeed === "Sim" ? (
                     <div>
-                        <label className='flex flex-col'>Valor Total das Cédulas?
-                            <input type="number" {...register('change_value')} className='border-2' />
+                        <label
+                            htmlFor="change_value"
+                            className="block text-gray-700 font-bold mb-2"
+                        >
+                            Valor Total das Cédulas?
                         </label>
+                        <input
+                            {...register('change_value')}
+                            className={`appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${
+                                errors.whatsapp && 'border-red-500'
+                            }`}
+                            id="change_value"
+                            min={1}
+                            type="number"
+                        />
                     </div>
-                ) : null
-                }
+                ) : null}
 
                 <div className="flex w-full gap-x-2 mt-16">
                     <button
@@ -289,8 +317,9 @@ export default function ContactInfoForm({ setCurrentStep }: any) {
                         voltar
                     </button>
                     <button
+                        disabled={loading}
                         type="submit"
-                        className="w-[50%] font-semibold text-sm uppercase shadow bg-indigo-800 hover:bg-indigo-600 focus:shadow-outline focus:outline-none text-white py-3 px-10 rounded"
+                        className="w-[50%] font-semibold disabled:bg-gray-500 text-sm uppercase shadow bg-indigo-800 hover:bg-indigo-600 focus:shadow-outline focus:outline-none text-white py-3 px-10 rounded"
                     >
                         continuar
                     </button>

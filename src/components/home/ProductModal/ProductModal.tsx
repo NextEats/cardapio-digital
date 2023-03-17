@@ -8,6 +8,7 @@ import { getProductWithFKData } from '@/src/fetch/products/getProductWithFKData'
 import { tSelectWithOptions } from '@/src/fetch/productSelects/getProductSelectWithOptions';
 import useAdditionals from '@/src/hooks/useAdditionals';
 import useProductSelectsWithOptions from '@/src/hooks/useProductSelectsWithOptions';
+import { clearAdditionals } from '@/src/reducers/AdditionalsReducer/actions/clearAdditionals';
 import { supabase } from '@/src/server/api';
 import { iCashBox } from '@/src/types/types';
 import Additionals from './components/Additionals';
@@ -36,8 +37,6 @@ export default function ProductModal() {
     const { dispatch: additionalsDispatch, state: additionalsState } =
         useAdditionals(selectedProduct?.state ? selectedProduct?.state : '0');
 
-
-
     if (!productData || !selectedProduct?.state) {
         return <></>;
     }
@@ -49,6 +48,7 @@ export default function ProductModal() {
         setProductData(undefined);
         selectedProduct?.set(undefined);
         body?.classList.remove('overflow-hidden');
+        additionalsDispatch(clearAdditionals());
     }
 
     async function handleSubmit(e: MouseEvent) {
@@ -97,6 +97,13 @@ export default function ProductModal() {
         setObservation('');
         closeModal();
     }
+    const allOptionsSelected = productSelects.every((select) => {
+        let atLeastOneOptionSelected = false;
+        select.options.forEach((option) => {
+            if (option.selected) atLeastOneOptionSelected = true;
+        });
+        return atLeastOneOptionSelected;
+    });
 
     return (
         <>
@@ -140,6 +147,7 @@ export default function ProductModal() {
                         productSelects={productSelects}
                         selectOption={selectOption}
                     />
+
                     <div className="flex flex-col gap-3 mt-12">
                         <Additionals
                             dispatch={additionalsDispatch}
@@ -157,8 +165,17 @@ export default function ProductModal() {
                             placeholder="Observações"
                         ></textarea>
                     </form>
-
-                    <SubmitButtons handleSubmit={handleSubmit} />
+                    {productSelects && allOptionsSelected ? (
+                        <SubmitButtons handleSubmit={handleSubmit} />
+                    ) : (
+                        <SubmitButtons
+                            handleSubmit={() =>
+                                alert(
+                                    'Para finalizar o produto, selecione ao menos uma opção de cada ingrediente.'
+                                )
+                            }
+                        />
+                    )}
                 </div>
             </div>
         </>

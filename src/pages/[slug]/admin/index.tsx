@@ -133,8 +133,10 @@ export default function AdminHomepage({
     ordersTablesData,
     restaurant,
 }: iAdminHomePageProps) {
-    const [ordersTables, setOrdersTables] = useState<iOrdersTablesWithFkData[]>(ordersTablesData);
-    const [ordersProducts, setOrdersProducts] = useState<iOrdersProducts['data']>(ordersProductsData);
+    const [ordersTables, setOrdersTables] =
+        useState<iOrdersTablesWithFkData[]>(ordersTablesData);
+    const [ordersProducts, setOrdersProducts] =
+        useState<iOrdersProducts['data']>(ordersProductsData);
     const [orders, setOrders] = useState<iOrdersWithFKData[]>(ordersData);
     const cashBoxOpened = cashBoxes.find((cb) => cb.is_open === true);
     const [cashBoxState, setCashBoxState] = useState<
@@ -189,9 +191,9 @@ export default function AdminHomepage({
             const selectedProduct = productIds.map(
                 (productId) =>
                     products[
-                    products.findIndex(
-                        (product) => productId === product.id
-                    )
+                        products.findIndex(
+                            (product) => productId === product.id
+                        )
                     ]
             );
 
@@ -298,7 +300,8 @@ export default function AdminHomepage({
             (payload: any) => {
                 newOrdersProducts();
             }
-        ).subscribe();
+        )
+        .subscribe();
 
     supabase
         .channel('db-cash')
@@ -335,7 +338,7 @@ export default function AdminHomepage({
 
     return (
         <AdminWrapper>
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-4 pb-24">
                 <CashBoxButtons
                     cashBoxState={cashBoxState}
                     restaurantId={restaurant.id}

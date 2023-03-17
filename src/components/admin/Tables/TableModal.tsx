@@ -167,7 +167,7 @@ export default function TableModal() {
                         <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:gap-4">
                             <div className="flex items-center gap-3">
                                 <span className="h-4 w-4 bg-green-500 rounded-full"></span>
-                                <span> Pedidos Entregue </span>
+                                <span> Pedidos Entregues </span>
                             </div>
                             <div className="flex items-center gap-3">
                                 <span className="h-4 w-4 bg-blue-500 rounded-full"></span>

@@ -12,6 +12,10 @@ import {
     iOrder,
 } from '@/src/types/types';
 
+function removeNonAlphaNumeric(str: string) {
+    return str.replace(/[^a-zA-Z0-9]/g, '');
+}
+
 async function returnDistanceInMeters(start: string, end: string) {
     try {
         const { data } = await distanceFeeApi.post('/calcular-distancia', {
@@ -36,6 +40,8 @@ export async function SubmitForm({
     change_value,
     deliveryForm,
 }: any) {
+    console.log(removeNonAlphaNumeric(whatsapp));
+
     try {
         let foundDeliveryFee;
         console.log(deliveryForm);
@@ -123,7 +129,7 @@ export async function SubmitForm({
             .from('orders')
             .insert({
                 restaurant_id: restaurant!.id,
-                client_id:  client.id,
+                client_id: client.id,
                 order_type_id: deliveryForm,
                 cash_box_id: currentCashBox.id,
                 order_status_id: 2,
@@ -176,7 +182,7 @@ export async function SubmitForm({
                     url: '/send-message',
                     data: {
                         id: restaurant!.slug,
-                        number: '55' + whatsapp,
+                        number: '55' + removeNonAlphaNumeric(whatsapp),
                         message: `*${
                             restaurant!.name
                         }*\n\n✅ _Seu pedido foi recebido com sucesso e começará a ser preparado em breve! Você receberá aqui todas as atualizações._\n\n_*Pague através da chave pix: ${
@@ -194,7 +200,7 @@ export async function SubmitForm({
                     url: '/send-message',
                     data: {
                         id: restaurant!.slug,
-                        number: '55' + whatsapp,
+                        number: '55' + removeNonAlphaNumeric(whatsapp),
                         message: `*${
                             restaurant!.name
                         }*\n\n✅ _Seu pedido foi recebido com sucesso e começará a ser preparado em breve! Você receberá aqui todas as atualizações.`,

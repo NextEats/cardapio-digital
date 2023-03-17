@@ -240,7 +240,6 @@ export default function CardapioDigital({
                             setEditCategory={setEditCategory}
                         />
 
-                        {/* <MenuProduct  /> */}
                         <div className="flex items-center justify-between mb-5 mt-7">
                             <h2 className="text-xl font-bold text-gray-700 ">
                                 {' '}

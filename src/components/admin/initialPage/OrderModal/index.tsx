@@ -71,17 +71,20 @@ export function OrderModal({
     const orderProductFiltered = ordersProducts.filter(
         (op) => op.order_id === ordersState.orderId
     );
+
+    console.log(orderProductFiltered)
+
     const productsFiltered = orderProductFiltered.map((op) => {
         return products.find((p) => p.id === op?.product_id);
     });
-    const thereAnyObservation = orderProductFiltered.some(
-        (op) => op.observation !== null
-    );
+
     const textStyles = 'text-[12px] leading-[14px] font-semibold text-black text-left leading-6';
 
     const orderFound = ordersState.orders.find(
         (order) => order.id === ordersState.orderId
     );
+
+    console.log(orderFound)
 
     useMemo(() => {
         const getAddress = async () => {
@@ -90,8 +93,10 @@ export function OrderModal({
             );
             setAddress(res.data);
         };
-        orderFound?.clients ? getAddress() : null;
+        orderFound?.clients && orderFound?.order_types.name === "Delivery" ? getAddress() : null;
     }, [orderFound]);
+
+    
 
     const ordersTablesFound = ordersTables.find(
         (ot) => ot.orders.id === orderFound?.id
@@ -158,7 +163,7 @@ export function OrderModal({
                         />
                         <div className="fixed mt-12 right-1/2 translate-x-1/2 p-4 bg-[#fb3d3a] w-[298px] rounded-lg max-h-[80vh]">
                             <Dialog.Title className="text-xl font-bold text-center text-[white] mb-3">
-                            Next Eats - {orderFound?.order_types.name}
+                            Next Eats 
                             </Dialog.Title>
                             <Dialog.Content
                                 ref={printComponent}
@@ -179,9 +184,9 @@ export function OrderModal({
                                 />
 
                                 <h2 className="text-center uppercase text-black font-semibold text-sm">
-                                    COMANDA
+                                    COMANDA - {orderFound?.order_types.name}
                                 </h2>
-
+                                
                                 <hr className="my-2" />
                                 <div>
                                     <p className={`${textStyles} text`}>
@@ -228,7 +233,6 @@ export function OrderModal({
                                 {orderFound?.clients ? (
                                     <>
                                         <hr className="my-2" />
-
                                         <div>
                                             <p
                                                 className={`${textStyles} text-left `}
@@ -280,7 +284,7 @@ export function OrderModal({
                                 />
 
                                 <hr className="my-2" />
-
+                             
                                 <div>
                                     {orderFound?.payment_methods.name !==
                                     'MESA' ? (

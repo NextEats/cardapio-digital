@@ -33,6 +33,9 @@ export default function ProductsDetails({
         <div className="mb-2 w-full">
             <div>
                 {productsFiltered!.map((product, index) => {
+
+                    console.log(product)
+
                     const orderProductByProductId = orderProductFiltered.find(
                         (op) =>
                             op.product_id === product.id &&
@@ -101,6 +104,7 @@ export default function ProductsDetails({
                         return;
                     }
                     return (
+                        
                         <div key={index} className="w-full">
                             <div
                                 className={`w-full flex items-center justify-between ${textStyles} mt-1`}
@@ -114,6 +118,7 @@ export default function ProductsDetails({
                                     R$ {product.price}
                                 </span>
                             </div>
+                            
                             <div className="flex">
                                 {
                                     <>
@@ -160,6 +165,17 @@ export default function ProductsDetails({
                                     );
                                 })}
                             </div>
+
+
+                            {/* {orderProductFiltered.length > 0 ? (
+                                    <div>
+                                        <p className={`${textStyles} flex flex-col`}>
+                                            Observações{' '}
+                                            {/* {       .observation} }
+                                        </p>
+                                    </div>
+                                ) : null
+                            */}
                         </div>
                     );
                 })}

@@ -38,6 +38,7 @@ export async function SubmitForm({
 }: any) {
     try {
         let foundDeliveryFee;
+        console.log(deliveryForm);
         if (deliveryForm === 1) {
             const distance_in_km = await returnDistanceInMeters(
                 restaurant.address_string,
@@ -80,6 +81,7 @@ export async function SubmitForm({
         }
 
         let address;
+
         if (deliveryForm === 1) {
             const { data: addressData } = await supabase
                 .from('addresses')
@@ -99,12 +101,14 @@ export async function SubmitForm({
             .from('clients')
             .insert({
                 name,
-                address_id: deliveryForm === 1 && address ? address.id : null,
+                address_id: address?.id,
                 contact_id: contact.id,
             })
             .select('*');
 
         const client = clientData![0] as unknown as iClient['data'];
+
+        console.log(client);
 
         const orderDataByCashBoxId = await supabase
             .from('orders')
@@ -119,12 +123,12 @@ export async function SubmitForm({
             .from('orders')
             .insert({
                 restaurant_id: restaurant!.id,
-                client_id: deliveryForm !== 1 ? client.id : null,
+                client_id: deliveryForm == 1 ? client.id : null,
                 order_type_id: deliveryForm,
                 cash_box_id: currentCashBox.id,
                 order_status_id: 2,
                 delivery_fee_id:
-                    deliveryForm !== 1 && foundDeliveryFee
+                    deliveryForm == 1 && foundDeliveryFee
                         ? foundDeliveryFee.id
                         : null,
                 payment_method_id: payment_method,

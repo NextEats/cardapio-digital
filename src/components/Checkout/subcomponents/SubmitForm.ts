@@ -123,7 +123,7 @@ export async function SubmitForm({
             .from('orders')
             .insert({
                 restaurant_id: restaurant!.id,
-                client_id: deliveryForm == 1 ? client.id : null,
+                client_id:  client.id,
                 order_type_id: deliveryForm,
                 cash_box_id: currentCashBox.id,
                 order_status_id: 2,

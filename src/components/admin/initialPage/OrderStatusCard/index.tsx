@@ -122,119 +122,129 @@ export default function OrderStatusCard({
     });
 
     return (
-        <div className="flex flex-1 min-h-[150px] max-h-[270px] lg:w-full flex-col shadow-sm px-4 pt-2 pb-10 last:mb-6 scrollbar-custom">
-            <div className=" flex items-center justify-between mb-4">
-                <h2 className="text-base font-bold"> {statusName} </h2>
-                <span className="text-md font-medium">{''}</span>
-            </div>
+        <>
+            <div className="flex flex-1 min-h-[150px] max-h-[270px] lg:w-full flex-col shadow-sm px-4 pt-2 pb-10 last:mb-6 scrollbar-custom">
+                <div className=" flex items-center justify-between mb-4">
+                    <h2 className="text-base font-bold"> {statusName} </h2>
+                    <span className="text-md font-medium">{''}</span>
+                </div>
 
-            <div className="w-full overflow-auto scrollbar-custom">
-                <table className="w-full  ">
-                    <tbody className="w-full border-collapse">
-                        {orders?.map((order) => {
-                            if (!order) {
-                                return;
-                            }
-
-                            const ordersTablesFound = ordersTables.find(
-                                (ot) => ot.orders.id === order.id
-                            );
-
-                            const ordersProductsFiltered =
-                                ordersProducts.filter(
-                                    (op) => op.order_id === order.id!
-                                );
-                            const productsFiltered = ordersProductsFiltered.map(
-                                (op) => {
-                                    return products[
-                                        products.findIndex(
-                                            (p) => op.product_id === p.id
-                                        )
-                                    ];
+                <div className="w-full overflow-auto scrollbar-custom">
+                    <table className="w-full  ">
+                        <tbody className="w-full border-collapse">
+                            {orders?.map((order) => {
+                                if (
+                                    !order ||
+                                    order.order_types.name == 'Mesa'
+                                ) {
+                                    return;
                                 }
-                            );
 
-                            return (
-                                <tr
-                                    key={order.id}
-                                    className="w-full h-4 text-center"
-                                >
-                                    <td className=" min-w-8 mx-2">
-                                        <Image
-                                            src="https://i.ibb.co/d0MYCmv/Design-sem-nome.jpg"
-                                            alt="208c90f0-5596-48a4-a1ce-aebb38cf789d"
-                                            className="rounded-full "
-                                            width={26}
-                                            height={26}
-                                        />
-                                    </td>
-                                    <td className="text-left text-sm font-medium px-2  max-w-20 truncate 2xs:table-cell  xl:table-cell">
-                                        #
-                                        {order.number
-                                            .toString()
-                                            .padStart(4, '0')}
-                                    </td>
-                                    <td
-                                        className={`${tdStyle}  pl-2 text-left text-sm font-medium px-2 max-w-20 truncate xl:table-cell hidden 3xs:table-cell`}
+                                const ordersTablesFound = ordersTables.find(
+                                    (ot) => ot.orders.id === order.id
+                                );
+
+                                const ordersProductsFiltered =
+                                    ordersProducts.filter(
+                                        (op) => op.order_id === order.id!
+                                    );
+
+                                const productsFiltered =
+                                    ordersProductsFiltered.map((op) => {
+                                        return products[
+                                            products.findIndex(
+                                                (p) => op.product_id === p.id
+                                            )
+                                        ];
+                                    });
+
+                                return (
+                                    <tr
+                                        key={order.id}
+                                        className="w-full h-4 text-center"
                                     >
-                                        {order.clients ? (
-                                            <span className="">
-                                                {order.clients.name}
-                                            </span>
-                                        ) : (
-                                            <span className="text-green-400 ">
-                                                {ordersTablesFound?.tables.name}
-                                            </span>
-                                        )}
-                                    </td>
-                                    <td
-                                        className={`${tdStyle} px-5 hidden sm:table-cell md:hiden 2xl:table-cell`}
-                                    >
-                                        {productsFiltered.length}
-                                    </td>
-                                    <td className={`${tdStyle}`}>
-                                        <div className="flex items-center justify-center gap-2">
-                                            <button
-                                                onClick={() =>
-                                                    showModal(order.id!)
-                                                }
-                                                className="w-12 h-6 pb-[1px] rounded-full   text-white text-base font-bold bg-gray-400 cursor-pointer flex items-center justify-center"
-                                            >
-                                                <AiFillEye className="text-xl text-white" />
-                                            </button>
-                                            {statusName !== 'Entregue' &&
-                                            order.order_types.name !==
-                                                'Mesa' ? (
+                                        <td className=" min-w-8 mx-2">
+                                            <Image
+                                                src="https://i.ibb.co/d0MYCmv/Design-sem-nome.jpg"
+                                                alt="208c90f0-5596-48a4-a1ce-aebb38cf789d"
+                                                className="rounded-full "
+                                                width={26}
+                                                height={26}
+                                            />
+                                        </td>
+                                        <td className="text-left text-sm font-medium px-2  max-w-20 truncate 2xs:table-cell  xl:table-cell">
+                                            #
+                                            {order.number
+                                                .toString()
+                                                .padStart(4, '0')}
+                                        </td>
+                                        <td
+                                            className={`${tdStyle}  pl-2 text-left text-sm font-medium px-2 max-w-20 truncate xl:table-cell hidden 3xs:table-cell`}
+                                        >
+                                            {order.clients ? (
+                                                <span className="">
+                                                    {order.clients.name}
+                                                </span>
+                                            ) : (
+                                                <span className="text-green-400 ">
+                                                    {
+                                                        ordersTablesFound
+                                                            ?.tables.name
+                                                    }
+                                                </span>
+                                            )}
+                                        </td>
+                                        <td
+                                            className={`${tdStyle} px-5 hidden sm:table-cell md:hiden 2xl:table-cell`}
+                                        >
+                                            {productsFiltered.length}
+                                        </td>
+                                        <td className={`${tdStyle}`}>
+                                            <div className="flex items-center justify-center gap-2">
                                                 <button
                                                     onClick={() =>
-                                                        switchStatus(order.id!)
+                                                        showModal(order.id!)
                                                     }
-                                                    className="w-12 h-6 pb-[1px] rounded-full  bg-green-400 text-white text-base font-bold flex items-center justify-center"
+                                                    className="w-12 h-6 pb-[1px] rounded-full   text-white text-base font-bold bg-gray-400 cursor-pointer flex items-center justify-center"
                                                 >
-                                                    <BiArrowFromLeft className="text-xl text-white" />
+                                                    <AiFillEye className="text-xl text-white" />
                                                 </button>
-                                            ) : null}
+                                                {statusName !== 'Entregue' &&
+                                                order.order_types.name !==
+                                                    'Mesa' ? (
+                                                    <button
+                                                        onClick={() =>
+                                                            switchStatus(
+                                                                order.id!
+                                                            )
+                                                        }
+                                                        className="w-12 h-6 pb-[1px] rounded-full  bg-green-400 text-white text-base font-bold flex items-center justify-center"
+                                                    >
+                                                        <BiArrowFromLeft className="text-xl text-white" />
+                                                    </button>
+                                                ) : null}
 
-                                            {statusName !== 'Entregue' ? (
-                                                <button
-                                                    className="bg-red-600 w-12 h-6 pb-[1px] rounded-full   text-white text-base font-bold flex items-center justify-center"
-                                                    onClick={() => {
-                                                        handleCancelOrder(
-                                                            order.id!
-                                                        );
-                                                    }}
-                                                >
-                                                    <FiX color="white" />
-                                                </button>
-                                            ) : null}
-                                        </div>
-                                    </td>
-                                </tr>
-                            );
-                        })}
-                    </tbody>
-                </table>
+                                                {statusName !== 'Entregue' ? (
+                                                    <button
+                                                        className="bg-red-600 w-12 h-6 pb-[1px] rounded-full   text-white text-base font-bold flex items-center justify-center"
+                                                        onClick={() => {
+                                                            handleCancelOrder(
+                                                                order.id!
+                                                            );
+                                                        }}
+                                                    >
+                                                        <FiX color="white" />
+                                                    </button>
+                                                ) : null}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                );
+                            })}
+                        </tbody>
+                    </table>
+                </div>
             </div>
-        </div>
+        </>
     );
 }

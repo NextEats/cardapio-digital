@@ -40,7 +40,7 @@ export default function OrderTableDetails() {
             <div className="hidden">
                 <div
                     ref={printOrderTableComponent}
-                    className="z-[-2000] fixed bg-white ml-auto shadow-bd w-[298px] text-[12px] shadow-md p-4 hideShadowToPrint centerCompontetToPrint"
+                    className="z-[-2000] fixed bg-white ml-auto shadow-bd w-[298px] text-[12px] shadow-md p-4 hideShadowToPrint centerCompontetToPrint pb-8"
                 >
                     <h2 className="text-center uppercase text-black font-semibold">
                         COMANDA
@@ -53,8 +53,12 @@ export default function OrderTableDetails() {
                                     key={productsData.product.id}
                                     className="flex flex-col"
                                 >
-                                    <strong className="mb-1 ">
-                                        {productsData.product.name}
+                                    <strong className="mb-1 flex items-center justify-between">
+                                        <span>{productsData.product.name}</span>
+                                        <span>
+                                            {' '}
+                                            R$ {productsData.totalPrice}
+                                        </span>
                                     </strong>
                                     {productsData.selects.length > 0 ? (
                                         <div className="flex">
@@ -97,8 +101,8 @@ export default function OrderTableDetails() {
                                                     }{' '}
                                                     -{' '}
                                                     {additional.additional.name}{' '}
-                                                    -{' '}
-                                                    <span className="font-semibold">
+                                                    -
+                                                    <span className="font-semibold ml-auto">
                                                         R${' '}
                                                         {
                                                             additional.totalPriceOfAdditionals
@@ -109,7 +113,7 @@ export default function OrderTableDetails() {
                                         }
                                     )}
 
-                                    <hr className="my-2" />
+                                    <hr className="my-2 h-[2px] bg-black" />
                                 </div>
                             );
                         })}
@@ -127,7 +131,7 @@ export default function OrderTableDetails() {
                     </div>
                 </div>
             </div>
-            <div className="bg-white ml-auto shadow-bd w-[298px] text-[12px] shadow-md p-4 hideShadowToPrint centerCompontetToPrint max-h-[350px] overflow-auto">
+            <div className="bg-white ml-auto shadow-bd w-[298px] text-[12px] shadow-md p-4 hideShadowToPrint centerCompontetToPrint lg:max-h-[350px] max-h-[250px] overflow-auto pb-8 scrollbar-custom">
                 <h2 className="text-center uppercase text-black font-semibold">
                     COMANDA
                 </h2>
@@ -139,8 +143,9 @@ export default function OrderTableDetails() {
                                 key={productsData.product.id}
                                 className="flex flex-col"
                             >
-                                <strong className="mb-1 ">
-                                    {productsData.product.name}
+                                <strong className="mb-1 flex items-center justify-between">
+                                    <span>{productsData.product.name}</span>
+                                    <span> R$ {productsData.totalPrice}</span>
                                 </strong>
                                 {productsData.selects.length > 0 ? (
                                     <div className="flex">
@@ -188,7 +193,7 @@ export default function OrderTableDetails() {
                                     }
                                 )}
 
-                                <hr className="my-2" />
+                                <hr className="my-2 h-[2px] bg-black" />
                             </div>
                         );
                     })}

@@ -205,6 +205,7 @@ export default function AdminHomepage({
                 ordersProducts: ordersProductFiltered,
                 additionals,
                 products,
+                selects,
             }).reduce(
                 (acc, item) => acc + item.totalAdditionalsPriceByProduct,
                 0

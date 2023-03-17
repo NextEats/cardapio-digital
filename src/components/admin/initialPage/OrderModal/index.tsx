@@ -131,6 +131,7 @@ export function OrderModal({
         ordersProducts: orderProductFiltered as iOrdersProducts['data'],
         additionals,
         products: products as iProducts['data'],
+        selects,
     }).reduce((acc, item) => acc + item.totalPrice, 0);
 
     const orderDateFormated = format(
@@ -158,7 +159,7 @@ export function OrderModal({
                         />
                         <div className="fixed mt-12 right-1/2 translate-x-1/2 p-4 bg-[#fb3d3a] w-[298px] rounded-lg max-h-[80vh]">
                             <Dialog.Title className="text-xl font-bold text-center text-[white] mb-3">
-                            Next Eats - {orderFound?.order_types.name}
+                                Next Eats - {orderFound?.order_types.name}
                             </Dialog.Title>
                             <Dialog.Content
                                 ref={printComponent}

@@ -114,7 +114,7 @@ export default function ProductModal() {
                 }}
             ></div>
             <div
-                className={`max-w-[645px] pb-24 px-8 bg-white top-0 right-0 z-[200] fixed overflow-auto shadow-2xl h-screen`}
+                className={`max-w-[645px] pb-9 px-8 bg-white top-0 right-0 z-[200] fixed overflow-auto shadow-2xl h-screen`}
             >
                 <div className="sticky">
                     <BsArrowLeftCircle

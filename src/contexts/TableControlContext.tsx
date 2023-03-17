@@ -116,7 +116,6 @@ export default function TableContextProvider({
         tableReducer,
         tableReducerDefaultValues
     );
-
     const [tables, setTables] = useState<iTables['data']>([]);
 
     const [viewProduct, setViewProduct] = useState<iProduct['data'] | null>(
@@ -204,8 +203,7 @@ export default function TableContextProvider({
             return (
                 ot.tables.id === openedTableModal.id &&
                 ot.has_been_paid === false &&
-                ot.orders.order_status.status_name === 'entregue' &&
-                ot.orders.cash_boxes.is_open === true
+                ot.orders.order_status.status_name === 'entregue'
             );
         });
 
@@ -334,21 +332,21 @@ export default function TableContextProvider({
                 tableData:
                     tableDeliveredData !== undefined
                         ? {
-                            productsInProductionData:
-                                tableInProductionData?.productsData,
-                            productsDeliveredData:
-                                tableDeliveredData.productsData,
-                            tableBill:
-                                tableInProductionData !== undefined
-                                    ? tableDeliveredData.tableBill +
-                                    tableInProductionData.tableBill
-                                    : tableDeliveredData.tableBill,
-                        }
+                              productsInProductionData:
+                                  tableInProductionData?.productsData,
+                              productsDeliveredData:
+                                  tableDeliveredData.productsData,
+                              tableBill:
+                                  tableInProductionData !== undefined
+                                      ? tableDeliveredData.tableBill +
+                                        tableInProductionData.tableBill
+                                      : tableDeliveredData.tableBill,
+                          }
                         : {
-                            productsInProductionData: undefined,
-                            productsDeliveredData: undefined,
-                            tableBill: 0,
-                        },
+                              productsInProductionData: undefined,
+                              productsDeliveredData: undefined,
+                              tableBill: 0,
+                          },
 
                 additionals,
                 paymentMethod,

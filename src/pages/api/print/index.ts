@@ -1,25 +1,22 @@
-
-import { NextApiRequest, NextApiResponse } from "next";
-import { ThermalPrinter, PrinterTypes, CharacterSet, BreakLine } from 'node-thermal-printer';
+import { NextApiRequest, NextApiResponse } from 'next';
+import { ThermalPrinter } from 'node-thermal-printer';
 
 let printer = new ThermalPrinter({
     type: undefined,
     interface: '/dev/usb/lp0',
     removeSpecialCharacters: false,
-    lineCharacter: "=",
+    lineCharacter: '=',
     options: {
-        timeout: 5000
-    }
+        timeout: 5000,
+    },
 });
 
-
 export default async function print(req: NextApiRequest, res: NextApiResponse) {
-    const { method, query, body } = req
-    const restaurant_id = Number(query.restaurant_id)
-    const { id, name } = body
+    const { method, query, body } = req;
+    const restaurant_id = Number(query.restaurant_id);
+    const { id, name } = body;
 
     try {
-
         printer.alignCenter();
         printer.println('Hello, world!');
         printer.println('Yan Tu é o cara!');
@@ -52,4 +49,3 @@ export default async function print(req: NextApiRequest, res: NextApiResponse) {
     //         res.status(404).end();
     // }
 }
-

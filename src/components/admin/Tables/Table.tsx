@@ -31,7 +31,7 @@ export default function Table({ table }: iTableProps) {
 
     return (
         <div
-            className={`flex flex-1 flex-col border-l-8 rounded-md bg-white shadow-md py-2 pr-3 pl-4 ${tableBorderStatusColor} `}
+            className={`flex flex-1 flex-col border-l-8 rounded-md pb-5 bg-white shadow-md py-2 pr-3 pl-4 ${tableBorderStatusColor} `}
         >
             <div className="flex flex-1 items-center justify-end ">
                 <span className="text-sm font-medium flex items-center text-gray-500">

@@ -77,8 +77,7 @@ export function OrderModal({
     const thereAnyObservation = orderProductFiltered.some(
         (op) => op.observation !== null
     );
-    const textStyles =
-        'text-[10px] leading-[14px] font-semibold text-black text-left leading-6';
+    const textStyles = 'text-[12px] leading-[14px] font-semibold text-black text-left leading-6';
 
     const orderFound = ordersState.orders.find(
         (order) => order.id === ordersState.orderId
@@ -159,7 +158,7 @@ export function OrderModal({
                         />
                         <div className="fixed mt-12 right-1/2 translate-x-1/2 p-4 bg-[#fb3d3a] w-[298px] rounded-lg max-h-[80vh]">
                             <Dialog.Title className="text-xl font-bold text-center text-[white] mb-3">
-                                Next Eats
+                            Next Eats - {orderFound?.order_types.name}
                             </Dialog.Title>
                             <Dialog.Content
                                 ref={printComponent}

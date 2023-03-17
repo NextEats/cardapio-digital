@@ -26,8 +26,7 @@ export default function ProductsDetails({
     productsFiltered,
 }: iProductsDetailsProps) {
 
-    const textStyles =
-        'text-[10px] leading-[14px] font-semibold text-black text-left leading-6';
+    const textStyles = 'text-[12px] leading-[14px] font-semibold text-black text-left leading-6';
     let ordersProductsId: number[] = [];
     if (!productsFiltered) return null;
     return (

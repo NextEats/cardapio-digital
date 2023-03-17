@@ -46,13 +46,13 @@ function ProductionOrderContent({
         'text-[10px] leading-[14px] font-semibold text-black text-left leading-6';
 
     return (
-        <>
+        <div className="uppercase">
             <h2 className="text-center uppercase text-black font-semibold text-sm">
                 PRODUÇÃO
             </h2>
 
             <hr className="my-2" />
-            <div>
+            <div className="uppercase">
                 <p className={`${textStyles}`}>
                     Nº do pedido:{' '}
                     <strong>
@@ -87,6 +87,6 @@ function ProductionOrderContent({
                 orderProductFiltered={orderProductFiltered}
                 selects={selects}
             />
-        </>
+        </div>
     );
 }

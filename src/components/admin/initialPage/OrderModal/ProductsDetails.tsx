@@ -32,13 +32,15 @@ export default function ProductsDetails({
     const totalPrice = productsFiltered;
 
     const textStyles =
-        'text-[10px] leading-[14px] font-semibold text-black text-left leading-6';
+        'text-[12px] leading-[14px] font-semibold text-black text-left leading-6';
     let ordersProductsId: number[] = [];
     if (!productsFiltered) return null;
     return (
         <div className="mb-2 w-full">
             <div>
                 {productsFiltered!.map((product, index) => {
+                    console.log(product);
+
                     const orderProductByProductId = orderProductFiltered.find(
                         (op) =>
                             op.product_id === product.id &&
@@ -132,11 +134,12 @@ export default function ProductsDetails({
                                     {1} -{' '}
                                     <strong className="">{product.name}</strong>
                                 </span>
-                                <span className="font-bold text-green-500">
+                                <span className="font-bold">
                                     {' '}
                                     R$ {totalProductPriceWithAdditionals}
                                 </span>
                             </div>
+
                             <div className="flex">
                                 {
                                     <>
@@ -171,7 +174,6 @@ export default function ProductsDetails({
                                             className="flex items-center justify-between pr-2 text-[10px] font-normal"
                                         >
                                             <span>
-                                                {' '}
                                                 {additional.quantity} -{' '}
                                                 {additional.additional.name}{' '}
                                             </span>
@@ -179,6 +181,16 @@ export default function ProductsDetails({
                                     );
                                 })}
                             </div>
+
+                            {/* {orderProductFiltered.length > 0 ? (
+                                    <div>
+                                        <p className={`${textStyles} flex flex-col`}>
+                                            Observações{' '}
+                                            {/* {       .observation} }
+                                        </p>
+                                    </div>
+                                ) : null
+                            */}
                         </div>
                     );
                 })}

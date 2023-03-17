@@ -71,18 +71,21 @@ export function OrderModal({
     const orderProductFiltered = ordersProducts.filter(
         (op) => op.order_id === ordersState.orderId
     );
+
+    console.log(orderProductFiltered);
+
     const productsFiltered = orderProductFiltered.map((op) => {
         return products.find((p) => p.id === op?.product_id);
     });
-    const thereAnyObservation = orderProductFiltered.some(
-        (op) => op.observation !== null
-    );
+
     const textStyles =
-        'text-[10px] leading-[14px] font-semibold text-black text-left leading-6';
+        'text-[12px] leading-[14px] font-semibold text-black text-left leading-6';
 
     const orderFound = ordersState.orders.find(
         (order) => order.id === ordersState.orderId
     );
+
+    console.log(orderFound);
 
     useMemo(() => {
         const getAddress = async () => {
@@ -231,7 +234,6 @@ export function OrderModal({
                                 {orderFound?.clients ? (
                                     <>
                                         <hr className="my-2" />
-
                                         <div>
                                             <p
                                                 className={`${textStyles} text-left `}

@@ -376,7 +376,6 @@ export type iPaymentMethodsRestaurantsWithFKData =
     iPaymentMethodsRestaurants['data'] & {
         payment_methods: iPaymentMethod['data'];
     };
-
 export type iRestaurantOrderTypesWithFKData = iRestaurantOrderType['data'] & {
     restaurants: iRestaurant['data'];
     order_types: iOrderTypes['data'];

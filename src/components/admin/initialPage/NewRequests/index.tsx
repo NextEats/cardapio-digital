@@ -1,7 +1,10 @@
 import { AdminContext } from '@/src/contexts/adminContext';
+import { updateOrderFetch } from '@/src/fetch/orders/updateOrder';
 import Image from 'next/image';
 import { Dispatch, useContext, useState } from 'react';
 import { AiFillEye, AiOutlineCheck } from 'react-icons/ai';
+import { FiX } from 'react-icons/fi';
+
 import {
     getModalDataAction,
     showModalAction,
@@ -58,6 +61,14 @@ export default function NewRequests({
     const tdStyle =
         'border-collapse border-l-2 px-2 border-gray-300 text-sm font-medium';
 
+    const handleCancelOrder = (orderId: any) =>  {
+        updateOrderFetch(
+            {
+                order_id: orderId,
+                order_status_id: 5,
+        })
+    }
+
     async function moveToEmProduçãoCard(orderId: number) {
         const { data: orderWithUpdatedStatus } = await supabase
             .from('orders')
@@ -96,10 +107,8 @@ export default function NewRequests({
         return a.number - b.number;
     });
 
-    console.log(ordersGroupedByOrderStatus);
-
     return (
-        <div className="flex flex-1 flex-col min-h-[150px] max-h-[270px] bg-white w-auto shadow-sm px-6 pt-2 rounded-md ">
+        <div className="flex flex-1 flex-col min-h-[150px] max-h-[230px] bg-white w-auto shadow-sm px-6 pt-2 rounded-md ">
             <h2 className="text-base font-bold mb-4">Novos pedidos</h2>
             <div className="w-full overflow-auto scrollbar-custom">
                 <table className="w-full ">
@@ -126,6 +135,8 @@ export default function NewRequests({
 
                                 const phone =
                                     order.clients?.contacts.phone?.toString();
+
+                                
 
                                 return (
                                     <tr
@@ -185,7 +196,7 @@ export default function NewRequests({
                                                     onClick={() =>
                                                         showModal(order.id!)
                                                     }
-                                                    className="rounded-full pl-[1px] w-8 h-6 bg-gray-400 cursor-pointer flex items-center justify-center"
+                                                    className="w-12 h-6 pb-[1px] rounded-full   text-white text-base font-bold bg-gray-400 cursor-pointer flex items-center justify-center"
                                                 >
                                                     <AiFillEye className="text-xl text-white" />
                                                 </button>
@@ -199,6 +210,15 @@ export default function NewRequests({
                                                 >
                                                     <AiOutlineCheck className="w-4 h-4 " />
                                                 </button>
+                                                
+                                                <button
+                                                className="bg-red-600 w-12 h-6 pb-[1px] rounded-full   text-white text-base font-bold flex items-center justify-center"
+                                                onClick={
+                                                    () => {handleCancelOrder(order.id!)}
+                                                }
+                                            >
+                                                <FiX color="white"/> 
+                                            </button>
                                             </div>
                                         </td>
                                     </tr>

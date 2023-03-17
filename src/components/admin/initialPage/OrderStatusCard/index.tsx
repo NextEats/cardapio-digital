@@ -1,4 +1,5 @@
 import { AdminContext } from '@/src/contexts/adminContext';
+import { updateOrderFetch } from '@/src/fetch/orders/updateOrder';
 import {
     getModalDataAction,
     showModalAction,
@@ -8,6 +9,7 @@ import Image from 'next/image';
 import { Dispatch, useContext } from 'react';
 import { AiFillEye } from 'react-icons/ai';
 import { BiArrowFromLeft } from 'react-icons/bi';
+import { FiX } from 'react-icons/fi';
 import { iStatusReducer } from '../../../../reducers/statusReducer/reducer';
 import {
     iInsertOrdersProducts,
@@ -46,6 +48,13 @@ export default function OrderStatusCard({
 
     const tdStyle =
         'border-collapse border-l-2 px-2 border-gray-300 text-sm font-medium';
+
+    const handleCancelOrder = (orderId: any) => {
+        updateOrderFetch({
+            order_id: orderId,
+            order_status_id: 5,
+        });
+    };
 
     async function switchStatus(orderId: number) {
         if (statusName === 'Em produção') {
@@ -189,18 +198,33 @@ export default function OrderStatusCard({
                                                 onClick={() =>
                                                     showModal(order.id!)
                                                 }
-                                                className="rounded-full pl-[1px] w-8 h-6 bg-gray-400 cursor-pointer flex items-center justify-center"
+                                                className="w-12 h-6 pb-[1px] rounded-full   text-white text-base font-bold bg-gray-400 cursor-pointer flex items-center justify-center"
                                             >
                                                 <AiFillEye className="text-xl text-white" />
                                             </button>
-                                            {statusName !== 'Entregue' ? (
+                                            {statusName !== 'Entregue' &&
+                                            order.order_types.name !==
+                                                'Mesa' ? (
                                                 <button
                                                     onClick={() =>
                                                         switchStatus(order.id!)
                                                     }
-                                                    className=" w-12 h-6 pb-[1px] rounded-full  bg-green-400 text-white text-base font-bold flex items-center justify-center"
+                                                    className="w-12 h-6 pb-[1px] rounded-full  bg-green-400 text-white text-base font-bold flex items-center justify-center"
                                                 >
                                                     <BiArrowFromLeft className="text-xl text-white" />
+                                                </button>
+                                            ) : null}
+
+                                            {statusName !== 'Entregue' ? (
+                                                <button
+                                                    className="bg-red-600 w-12 h-6 pb-[1px] rounded-full   text-white text-base font-bold flex items-center justify-center"
+                                                    onClick={() => {
+                                                        handleCancelOrder(
+                                                            order.id!
+                                                        );
+                                                    }}
+                                                >
+                                                    <FiX color="white" />
                                                 </button>
                                             ) : null}
                                         </div>

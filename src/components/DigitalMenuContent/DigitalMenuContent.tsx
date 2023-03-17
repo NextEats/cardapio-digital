@@ -1,17 +1,17 @@
 import { DigitalMenuContext } from '@/src/contexts/DigitalMenuContext';
-import { calculateTotalOrderPrice } from '@/src/helpers/calculateTotalOrderPrice';
 import { useContext, useMemo, useState } from 'react';
 import { HiShoppingCart } from 'react-icons/hi';
 import ProductsList from '../home/ProductsList';
 import RestaurantHeader from '../home/RestaurantHeader';
 
+import { calculateTotalOrderPrice } from '@/src/helpers/calculateTotalOrderPrice';
 import Image from 'next/image';
 
 export default function DigitalMenuContent() {
     const [orderPrice, setOrderPrice] = useState(0);
 
-    const { productReducer, modals } = useContext(DigitalMenuContext);
-    const restaurant = useContext(DigitalMenuContext).restaurant;
+    const { productReducer, modals, restaurant } =
+        useContext(DigitalMenuContext);
 
     const handleOpenCheckoutModal = () => {
         modals?.set((prev) => {
@@ -39,7 +39,7 @@ export default function DigitalMenuContent() {
                 {productReducer?.state?.length > 0 && (
                     <div className="fixed bottom-6 max-w-7xl w-full px-6 h-12">
                         <div
-                            className="h-12 shadow rounded text-white font-semibold bg-[#ca2a2a] z-[90] flex justify-between items-center px-8 uppercase text-xl cursor-pointer"
+                            className="px-5 h-12 shadow rounded text-white font-semibold bg-[#ca2a2a] z-[90] flex justify-center items-center uppercase text-xl cursor-pointer"
                             onClick={handleOpenCheckoutModal}
                         >
                             <div className="flex justify-center items-center gap-1">
@@ -47,7 +47,7 @@ export default function DigitalMenuContent() {
                                 <span className="">meu pedido</span>
                             </div>
 
-                            <p className="">
+                            <p className="ml-auto">
                                 {' '}
                                 R${' '}
                                 {orderPrice.toLocaleString('pt-BR', {

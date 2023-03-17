@@ -39,8 +39,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 export default function CardapioDigital({ data }: { data: iDigitalMenuData }) {
     const { restaurant, groupedProducts } = data;
 
-    console.log(groupedProducts);
-
     const [showModalsState, setShowModalsState] = useState<iShowModalsState>({
         checkout: false,
         operatingTime: false,

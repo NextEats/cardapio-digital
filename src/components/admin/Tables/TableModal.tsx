@@ -133,7 +133,7 @@ export default function TableModal() {
                         onClick={() => setOpenedTableModal(null)}
                         className="w-screen h-screen flex items-center justify-center bg-black fixed inset-0 opacity-40 transition-all duration-300 ease-in-out"
                     />
-                    <Dialog.Content className="fixed top-[14vh] right-1/2 z-20 translate-x-1/2 rounded-lg w-[350px] sm:w-[600px] lg:w-[900px] bg-white shadow-md p-6 overflow-auto max-h-[80vh]">
+                    <Dialog.Content className="fixed top-[4vh] right-1/2 z-20 translate-x-1/2 rounded-lg w-[350px] sm:w-[600px] lg:w-[900px] bg-white shadow-md p-6 overflow-auto max-h-[90vh]">
                         <Dialog.Title className="flex items-center justify-between text-base w-full text-center font-semibold mb-1 sm:mb-6 mt-3">
                             <div className="flex items-center justify-start gap-3">
                                 <GiTable className="text-gray-350" size={32} />

@@ -36,7 +36,7 @@ export default function ProductsDetails({
     let ordersProductsId: number[] = [];
     if (!productsFiltered) return null;
     return (
-        <div className="mb-2 w-full">
+        <div className="mb-2 w-full uppercase">
             <div>
                 {productsFiltered!.map((product, index) => {
                     console.log(product);

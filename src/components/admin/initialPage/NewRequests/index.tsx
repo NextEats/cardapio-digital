@@ -1,3 +1,4 @@
+import { removeNonAlphaNumeric } from '@/src/components/Checkout/subcomponents/SubmitForm';
 import { AdminContext } from '@/src/contexts/adminContext';
 import { updateOrderFetch } from '@/src/fetch/orders/updateOrder';
 import Image from 'next/image';
@@ -61,13 +62,12 @@ export default function NewRequests({
     const tdStyle =
         'border-collapse border-l-2 px-2 border-gray-300 text-sm font-medium';
 
-    const handleCancelOrder = (orderId: any) =>  {
-        updateOrderFetch(
-            {
-                order_id: orderId,
-                order_status_id: 5,
-        })
-    }
+    const handleCancelOrder = (orderId: any) => {
+        updateOrderFetch({
+            order_id: orderId,
+            order_status_id: 5,
+        });
+    };
 
     async function moveToEmProduçãoCard(orderId: number) {
         const { data: orderWithUpdatedStatus } = await supabase
@@ -88,7 +88,11 @@ export default function NewRequests({
                 url: '/send-message',
                 data: {
                     id: restaurant!.slug,
-                    number: '55' + whatsappNumber.clients.contacts.phone,
+                    number:
+                        '55' +
+                        removeNonAlphaNumeric(
+                            whatsappNumber.clients.contacts.phone
+                        ),
                     message:
                         'O seu pedido foi aprovado e já começou a ser preparado!',
                 },
@@ -135,8 +139,6 @@ export default function NewRequests({
 
                                 const phone =
                                     order.clients?.contacts.phone?.toString();
-
-                                
 
                                 return (
                                     <tr
@@ -210,15 +212,17 @@ export default function NewRequests({
                                                 >
                                                     <AiOutlineCheck className="w-4 h-4 " />
                                                 </button>
-                                                
+
                                                 <button
-                                                className="bg-red-600 w-12 h-6 pb-[1px] rounded-full   text-white text-base font-bold flex items-center justify-center"
-                                                onClick={
-                                                    () => {handleCancelOrder(order.id!)}
-                                                }
-                                            >
-                                                <FiX color="white"/> 
-                                            </button>
+                                                    className="bg-red-600 w-12 h-6 pb-[1px] rounded-full   text-white text-base font-bold flex items-center justify-center"
+                                                    onClick={() => {
+                                                        handleCancelOrder(
+                                                            order.id!
+                                                        );
+                                                    }}
+                                                >
+                                                    <FiX color="white" />
+                                                </button>
                                             </div>
                                         </td>
                                     </tr>

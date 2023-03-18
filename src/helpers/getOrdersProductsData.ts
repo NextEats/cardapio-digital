@@ -20,6 +20,9 @@ export interface iOrdersProductsData {
     totalPrice: number;
     totalAdditionalsPriceByProduct: number
     selects: ss;
+    observation: string | null;
+    id: number;
+    orderId: number;
 }
 
 
@@ -63,8 +66,6 @@ export function getOrdersProductsData({ ordersProducts, additionals, products, s
             if (!findSelectById) return sAcc;
             return [...sAcc, { ...findSelectById, options: sItem.options }];
         }, []);
-        console.log(selectsDataFiltered)
-
 
         const productFound = products.find(p => p.id === item.product_id)
 
@@ -75,6 +76,9 @@ export function getOrdersProductsData({ ordersProducts, additionals, products, s
                 totalPrice: productFound.price + totalAdditionalsPriceByProduct,
                 totalAdditionalsPriceByProduct,
                 selects: selectsDataFiltered,
+                observation: item.observation,
+                id: item.id,
+                orderId: item.order_id
             }]
         }
         return acc

@@ -15,6 +15,8 @@ export interface iTableSelectingProductData {
     product: iProduct['data'] | null;
     table_id: number;
     quantity: number;
+    observation: string;
+    // id: number ;
     // optionsSelected: iProductOptions["data"]
 }
 
@@ -90,6 +92,8 @@ export function tableReducer(state: iTableReducer, action: any) {
                 totalPrice: state.totalPrice * action.payload.quantity,
                 table_id: action.payload.table_id,
                 quantity: action.payload.quantity,
+                observation: action.payload.observation,
+                // id: 0
             });
 
             return {
@@ -127,5 +131,7 @@ export const tableReducerDefaultValues = {
     totalPrice: 0,
     productsSelected: [],
     table_id: 0,
-    quantity: 0
+    quantity: 0,
+    observation: '',
+    // id: 0
 };

@@ -80,7 +80,8 @@ export default function OrderStatusCard({
                         data: {
                             id: restaurant!.slug,
                             number: '55' + order.clients.contacts.phone,
-                            message: 'O seu pedido está pronto para retirada!',
+                            message:
+                                '😊 O seu pedido está pronto para retirada!',
                         },
                     });
                 } catch (err) {
@@ -94,7 +95,7 @@ export default function OrderStatusCard({
                         data: {
                             id: restaurant!.slug,
                             number: '55' + order.clients.contacts.phone,
-                            message: 'O seu pedido está a caminho!',
+                            message: '🏍 O seu pedido está a caminho!',
                         },
                     });
                 } catch (err) {
@@ -125,7 +126,7 @@ export default function OrderStatusCard({
                             removeNonAlphaNumeric(
                                 whatsappNumber.clients.contacts.phone
                             ),
-                        message: 'O seu pedido foi entregue com sucesso!',
+                        message: '☑ O seu pedido foi entregue com sucesso!',
                     },
                 });
             } catch (err) {

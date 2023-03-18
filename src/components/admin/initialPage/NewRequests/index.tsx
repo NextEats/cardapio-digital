@@ -93,7 +93,7 @@ export default function NewRequests({
                             whatsappNumber.clients.contacts.phone
                         ),
                     message:
-                        'O seu pedido foi aprovado e já começou a ser preparado!',
+                        '😊✅ Olá! O seu pedido foi aprovado e já começou a ser preparado!',
                 },
             });
         } catch (err) {

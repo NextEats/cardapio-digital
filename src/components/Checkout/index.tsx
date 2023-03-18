@@ -10,6 +10,9 @@ export default function Checkout() {
     const { modals } = useContext(DigitalMenuContext);
 
     const [currentStep, setCurrentStep] = useState<tSteps>('products_list');
+    const [deliveryFee, setDeliveryFee] = useState<number | undefined>(
+        undefined
+    );
 
     const handleCloseModal = () => {
         modals?.set((prev) => {
@@ -30,9 +33,14 @@ export default function Checkout() {
                     />
                 );
             case 'contact_info':
-                return <ContactInfoForm setCurrentStep={setCurrentStep} />;
+                return (
+                    <ContactInfoForm
+                        setCurrentStep={setCurrentStep}
+                        setDeliveryFee={setDeliveryFee}
+                    />
+                );
             case 'thank_you':
-                return <ThankYouPage />;
+                return <ThankYouPage deliveryFee={deliveryFee} />;
         }
     }
 

@@ -68,20 +68,38 @@ export default function OrderStatusCard({
                 return;
             }
 
-            const whatsappNumber = orderWithUpdatedStatus[0] as unknown as any;
+            const order = orderWithUpdatedStatus[0] as unknown as any;
 
-            try {
-                await whatsappRestApi({
-                    method: 'post',
-                    url: '/send-message',
-                    data: {
-                        id: restaurant!.slug,
-                        number: '55' + whatsappNumber.clients.contacts.phone,
-                        message: 'O seu pedido esta a caminho!',
-                    },
-                });
-            } catch (err) {
-                console.error(err);
+            const isTakeout = order.order_type_id == 2;
+
+            if (isTakeout) {
+                try {
+                    await whatsappRestApi({
+                        method: 'post',
+                        url: '/send-message',
+                        data: {
+                            id: restaurant!.slug,
+                            number: '55' + order.clients.contacts.phone,
+                            message: 'O seu pedido está pronto para retirada!',
+                        },
+                    });
+                } catch (err) {
+                    console.error(err);
+                }
+            } else {
+                try {
+                    await whatsappRestApi({
+                        method: 'post',
+                        url: '/send-message',
+                        data: {
+                            id: restaurant!.slug,
+                            number: '55' + order.clients.contacts.phone,
+                            message: 'O seu pedido está a caminho!',
+                        },
+                    });
+                } catch (err) {
+                    console.error(err);
+                }
             }
         } else if (statusName === 'A caminho') {
             const { data: orderWithUpdatedStatus } = await supabase

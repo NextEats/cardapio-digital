@@ -91,6 +91,8 @@ export default function AdditionalsReducer(
                 }
                 return { ...state };
             }
+        case 'CLEAR_ADDITIONALS':
+            return { ...state, quantityAdditionals: [] };
         default:
             return state;
     }

@@ -259,6 +259,12 @@ export function OrderModal({
                                                         orderFound?.clients
                                                             .addresses?.number
                                                     }{' '}
+                                                    -{' '}
+                                                    {
+                                                        orderFound?.clients
+                                                            .addresses
+                                                            ?.complement
+                                                    }
                                                     - {address.bairro} -{' '}
                                                     {address.localidade},{' '}
                                                     {address.uf}

@@ -94,6 +94,10 @@ export default function OrderTableDetails() {
                                             );
                                         }
                                     )}
+                                    
+                                    {productsData.observation ?
+                                    <p><strong>Obs.:</strong> {productsData.observation}</p>
+                                    : null}
 
                                     <hr className="my-2 h-[2px] bg-black" />
                                 </div>

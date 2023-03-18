@@ -6,7 +6,6 @@ import {
     showModalAction,
 } from '@/src/reducers/statusReducer/action';
 import { supabase, whatsappRestApi } from '@/src/server/api';
-import Image from 'next/image';
 import { Dispatch, useContext } from 'react';
 import { AiFillEye } from 'react-icons/ai';
 import { BiArrowFromLeft } from 'react-icons/bi';
@@ -168,15 +167,6 @@ export default function OrderStatusCard({
                                         key={order.id}
                                         className="w-full h-4 text-center"
                                     >
-                                        <td className=" min-w-8 mx-2">
-                                            <Image
-                                                src="https://i.ibb.co/d0MYCmv/Design-sem-nome.jpg"
-                                                alt="208c90f0-5596-48a4-a1ce-aebb38cf789d"
-                                                className="rounded-full "
-                                                width={26}
-                                                height={26}
-                                            />
-                                        </td>
                                         <td className="text-left text-sm font-medium px-2  max-w-20 truncate 2xs:table-cell  xl:table-cell">
                                             #
                                             {order.number

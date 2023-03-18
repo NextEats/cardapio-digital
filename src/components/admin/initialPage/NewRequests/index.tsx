@@ -1,7 +1,6 @@
 import { removeNonAlphaNumeric } from '@/src/components/Checkout/subcomponents/SubmitForm';
 import { AdminContext } from '@/src/contexts/adminContext';
 import { updateOrderFetch } from '@/src/fetch/orders/updateOrder';
-import Image from 'next/image';
 import { Dispatch, useContext, useState } from 'react';
 import { AiFillEye, AiOutlineCheck } from 'react-icons/ai';
 import { FiX } from 'react-icons/fi';
@@ -145,15 +144,6 @@ export default function NewRequests({
                                         key={order.id!}
                                         className="w-full h-4 text-center"
                                     >
-                                        <td>
-                                            <Image
-                                                src="https://i.ibb.co/d0MYCmv/Design-sem-nome.jpg"
-                                                alt="208c90f0-5596-48a4-a1ce-aebb38cf789d"
-                                                className="rounded-full"
-                                                width={26}
-                                                height={26}
-                                            />
-                                        </td>
                                         <td
                                             className={`${tdStyle}text-left h-4 text-sm font-medium p-2`}
                                         >

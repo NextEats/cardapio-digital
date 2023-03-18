@@ -1,12 +1,11 @@
 import { TableContext } from '@/src/contexts/TableControlContext';
 import { iOrdersProductsData } from '@/src/helpers/getOrdersProductsData';
+import ordersStatus from '@/src/pages/api/order_status';
 import { removeProductAction } from '@/src/reducers/tableReducer/action';
 import { iTableSelectingProductData } from '@/src/reducers/tableReducer/reducer';
-import { iProduct } from '@/src/types/types';
-import { useContext, useState } from 'react';
-import { BsCheckCircle } from 'react-icons/bs';
+import { supabase } from '@/src/server/api';
+import { useContext } from 'react';
 import { FiTrash2 } from 'react-icons/fi';
-import { QuantitySelector } from '../../QuantitySelector';
 
 interface iCustomerAtTheTableProps {
     orderProductData: iOrdersProductsData | iTableSelectingProductData;
@@ -17,7 +16,34 @@ export default function CustomerAtTheTable({
     orderProductData,
     orderStatus,
 }: iCustomerAtTheTableProps) {
-    const { tableDispatch } = useContext(TableContext);
+    const { tableDispatch, openedTableModal } = useContext(TableContext);
+
+    async function handleDeleteProduct() {
+        const ordersProductsId = (orderProductData as iOrdersProductsData).id
+        const ordersProductsOrderId = (orderProductData as iOrdersProductsData).orderId
+        switch (orderStatus) {
+            case "em análise":
+                tableDispatch(removeProductAction(
+                    orderProductData.product ? orderProductData.product.id : 0))
+                break
+            case "em produção":
+                const getOrdersProduct = await supabase.from("orders_products").select().eq("order_id", ordersProductsOrderId);
+                if (getOrdersProduct.data && getOrdersProduct.data.length <= 1) {
+                    console.log("ordersProductsId", ordersProductsId)
+                    console.log("getOrdersProduct.data", getOrdersProduct.data)
+                    console.log("ordersProductsOrderId", ordersProductsOrderId)
+                    await supabase.from("orders_products").delete().eq("id", ordersProductsId);
+                    await supabase.from("orders_tables").delete().match({ table_id: openedTableModal?.id, order_id: getOrdersProduct.data[0].order_id });
+                    await supabase.from("orders").delete().eq("id", getOrdersProduct.data[0].order_id);
+                } else {
+                    await supabase.from("orders_products").delete().eq("id", ordersProductsId);
+                }
+                window.location.reload()
+                break
+            default:
+                break
+        }
+    }
 
     return (
         <div className="flex items-center justify-between">
@@ -38,15 +64,13 @@ export default function CustomerAtTheTable({
                         maximumFractionDigits: 2,
                     })}
                 </span>
-                {orderStatus === 'em análise' ?
+                {orderStatus !== "entregue" ?
                     <FiTrash2
                         size={24}
                         className="text-red-400 cursor-pointer"
-                        onClick={() =>
-                            tableDispatch(removeProductAction(
-                                orderProductData.product ? orderProductData.product.id : 0))
-                        }
-                    /> : null}
+                        onClick={() => handleDeleteProduct()}
+                    />
+                    : null}
             </div>
         </div>
     );

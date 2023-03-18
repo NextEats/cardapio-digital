@@ -47,10 +47,10 @@ export default function OrderTableDetails() {
                     </h2>
 
                     <div className="flex flex-col gap-2 uppercase">
-                        {ordersProductsOfTheTable.map((productsData) => {
+                        {ordersProductsOfTheTable.map((productsData, pIndex) => {
                             return (
                                 <div
-                                    key={productsData.product.id}
+                                    key={pIndex}
                                     className="flex flex-col"
                                 >
                                     <strong className="mb-1 flex items-center justify-between">
@@ -70,15 +70,7 @@ export default function OrderTableDetails() {
                                                             psIndex
                                                         ) => {
                                                             return productSelects.options.map(
-                                                                (
-                                                                    option,
-                                                                    index
-                                                                ) => {
-                                                                    return (
-                                                                        option.name +
-                                                                        ' | '
-                                                                    );
-                                                                }
+                                                                (option, index) => (option.name + ' | ')
                                                             );
                                                         }
                                                     )}
@@ -88,24 +80,15 @@ export default function OrderTableDetails() {
                                     ) : null}
 
                                     {productsData.additionalsData.map(
-                                        (additional) => {
+                                        (additional, aIndex) => {
                                             return (
                                                 <span
-                                                    key={
-                                                        additional.additional.id
-                                                    }
+                                                    key={aIndex}
                                                 >
-                                                    {
-                                                        additional.quantityOfAdditionals
-                                                    }{' '}
-                                                    -{' '}
-                                                    {additional.additional.name}{' '}
-                                                    -
+                                                    {additional.quantityOfAdditionals}{' '}
+                                                    -{' '}{additional.additional.name}{' '}-
                                                     <span className="font-semibold ml-auto">
-                                                        R${' '}
-                                                        {
-                                                            additional.totalPriceOfAdditionals
-                                                        }
+                                                        R${' '}{additional.totalPriceOfAdditionals}
                                                     </span>
                                                 </span>
                                             );
@@ -136,10 +119,10 @@ export default function OrderTableDetails() {
                 </h2>
 
                 <div className="flex flex-col gap-2 uppercase">
-                    {ordersProductsOfTheTable.map((productsData) => {
+                    {ordersProductsOfTheTable.map((productsData, pIndex) => {
                         return (
                             <div
-                                key={productsData.product.id}
+                                key={pIndex}
                                 className="flex flex-col"
                             >
                                 <strong className="mb-1 flex items-center justify-between">
@@ -152,10 +135,7 @@ export default function OrderTableDetails() {
                                             |&nbsp;
                                             <span>
                                                 {productsData.selects.map(
-                                                    (
-                                                        productSelects,
-                                                        psIndex
-                                                    ) => {
+                                                    (productSelects, psIndex) => {
                                                         return productSelects.options.map(
                                                             (option, index) => {
                                                                 return (
@@ -172,10 +152,10 @@ export default function OrderTableDetails() {
                                 ) : null}
 
                                 {productsData.additionalsData.map(
-                                    (additional) => {
+                                    (additional, aIndex) => {
                                         return (
                                             <span
-                                                key={additional.additional.id}
+                                                key={aIndex}
                                             >
                                                 {
                                                     additional.quantityOfAdditionals
@@ -191,6 +171,9 @@ export default function OrderTableDetails() {
                                         );
                                     }
                                 )}
+                                {productsData.observation ?
+                                    <p><strong>Obs.:</strong> {productsData.observation}</p>
+                                    : null}
 
                                 <hr className="my-2 h-[2px] bg-black" />
                             </div>

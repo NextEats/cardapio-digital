@@ -87,6 +87,7 @@ export default function TableModal() {
                         product_id: ps.product?.id,
                         selects_data,
                         additionals_data,
+                        observation: ps.observation,
                     }
                 );
             }
@@ -133,7 +134,7 @@ export default function TableModal() {
                         onClick={() => setOpenedTableModal(null)}
                         className="w-screen h-screen flex items-center justify-center bg-black fixed inset-0 opacity-40 transition-all duration-300 ease-in-out"
                     />
-                    <Dialog.Content className="fixed top-[4vh] right-1/2 z-20 translate-x-1/2 rounded-lg w-[350px] sm:w-[600px] lg:w-[900px] bg-white shadow-md p-6 overflow-auto max-h-[90vh]">
+                    <Dialog.Content className="fixed top-[7vh] right-1/2 z-20 translate-x-1/2 rounded-lg w-[350px] sm:w-[600px] lg:w-[900px] bg-white shadow-md p-6 overflow-auto max-h-[90vh]">
                         <Dialog.Title className="flex items-center justify-between text-base w-full text-center font-semibold mb-1 sm:mb-6 mt-3">
                             <div className="flex items-center justify-start gap-3">
                                 <GiTable className="text-gray-350" size={32} />
@@ -183,59 +184,59 @@ export default function TableModal() {
                             <div className="flex flex-col flex-1 gap-4 max-h-[150px] lg:max-h-[350px] overflow-auto scrollbar-custom">
                                 {tableState.productsSelected
                                     ? tableState.productsSelected.map(
-                                          (orderProductData, index) => {
-                                              if (
-                                                  orderProductData.product ===
-                                                  null
-                                              )
-                                                  return;
-                                              if (
-                                                  orderProductData.table_id !==
-                                                  openedTableModal!.id
-                                              )
-                                                  return;
-                                              return (
-                                                  <CustomerAtTheTable
-                                                      key={index}
-                                                      orderStatus="em análise"
-                                                      orderProductData={
-                                                          orderProductData
-                                                      }
-                                                  />
-                                              );
-                                          }
-                                      )
+                                        (orderProductData, index) => {
+                                            if (
+                                                orderProductData.product ===
+                                                null
+                                            )
+                                                return;
+                                            if (
+                                                orderProductData.table_id !==
+                                                openedTableModal!.id
+                                            )
+                                                return;
+                                            return (
+                                                <CustomerAtTheTable
+                                                    key={index}
+                                                    orderStatus="em análise"
+                                                    orderProductData={
+                                                        orderProductData
+                                                    }
+                                                />
+                                            );
+                                        }
+                                    )
                                     : null}
                                 {tableData.productsDeliveredData
                                     ? tableData.productsDeliveredData.map(
-                                          (orderProductData, index) => {
-                                              return (
-                                                  <CustomerAtTheTable
-                                                      key={index}
-                                                      orderStatus={'entregue'}
-                                                      orderProductData={
-                                                          orderProductData
-                                                      }
-                                                  />
-                                              );
-                                          }
-                                      )
+                                        (orderProductData, index) => {
+                                            return (
+                                                <CustomerAtTheTable
+                                                    key={index}
+                                                    orderStatus={'entregue'}
+                                                    orderProductData={
+                                                        orderProductData
+                                                    }
+                                                />
+                                            );
+                                        }
+                                    )
                                     : null}
 
                                 {tableData.productsInProductionData
                                     ? tableData.productsInProductionData.map(
-                                          (orderProductData, index) => {
-                                              return (
-                                                  <CustomerAtTheTable
-                                                      key={index}
-                                                      orderStatus="em produção"
-                                                      orderProductData={
-                                                          orderProductData
-                                                      }
-                                                  />
-                                              );
-                                          }
-                                      )
+                                        (orderProductData, index) => {
+                                            return (
+                                                <CustomerAtTheTable
+                                                    key={index}
+                                                    orderStatus="em produção"
+                                                    orderProductData={
+                                                        orderProductData
+                                                    }
+                                                />
+                                            );
+                                        }
+                                    )
                                     : null}
                             </div>
 
@@ -245,7 +246,7 @@ export default function TableModal() {
                             <div className="w-full flex items-center justify-end gap-3 mt-4 ">
                                 {tableData.productsInProductionData !==
                                     undefined &&
-                                tableData.productsInProductionData?.length >
+                                    tableData.productsInProductionData?.length >
                                     0 ? (
                                     <CardapioDigitalButton
                                         name="Entregar Pedido"

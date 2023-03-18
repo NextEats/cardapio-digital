@@ -1,3 +1,4 @@
+import { removeNonAlphaNumeric } from '@/src/components/Checkout/subcomponents/SubmitForm';
 import { AdminContext } from '@/src/contexts/adminContext';
 import { updateOrderFetch } from '@/src/fetch/orders/updateOrder';
 import {
@@ -102,7 +103,11 @@ export default function OrderStatusCard({
                     url: '/send-message',
                     data: {
                         id: restaurant!.slug,
-                        number: '55' + whatsappNumber.clients.contacts.phone,
+                        number:
+                            '55' +
+                            removeNonAlphaNumeric(
+                                whatsappNumber.clients.contacts.phone
+                            ),
                         message: 'O seu pedido foi entregue com sucesso!',
                     },
                 });

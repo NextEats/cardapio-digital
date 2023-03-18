@@ -34,17 +34,28 @@ function ThankYouPage({ deliveryFee }: iThankYouPage) {
                             Você receberá uma confirmação em breve.
                         </p>
 
-                        <div className="h-7 text-lg font-semibold text-[#313131]">
-                            Valor total do pedido:{' '}
-                            <span>R$&nbsp;{orderPrice}</span>
-                        </div>
+                        {deliveryFee ? (
+                            <div className="h-7 text-center w-full my-4 text-lg font-semibold text-[#313131]">
+                                Sub total: <span>R$&nbsp;{orderPrice}</span>
+                            </div>
+                        ) : null}
 
                         {deliveryFee ? (
-                            <div className="h-7 text-lg font-semibold text-[#313131]">
-                                Valor da taxa de entrega:{' '}
+                            <div className="h-7 text-center w-full my-4 text-lg font-semibold text-[#313131]">
+                                Taxa de Entrega:{' '}
                                 <span>R$&nbsp;{deliveryFee}</span>
                             </div>
                         ) : null}
+
+                        <div className="h-7 text-center w-full my-4 text-lg font-semibold text-[#313131]">
+                            Valor Total:{' '}
+                            <span>
+                                R$&nbsp;
+                                {deliveryFee
+                                    ? deliveryFee + orderPrice
+                                    : orderPrice}
+                            </span>
+                        </div>
 
                         <div className="mt-6">
                             <Link

@@ -182,7 +182,7 @@ export async function SubmitForm({
                     number: '55' + removeNonAlphaNumeric(whatsapp),
                     message: `*${
                         restaurant!.name
-                    }*\n\n✅ _Seu pedido foi recebido com sucesso e começará a ser preparado em breve!_ Você receberá aqui todas as atualizações.`,
+                    }*\n\n☺✅ _Seu pedido foi recebido com sucesso e começará a ser preparado em breve!_ Você receberá aqui todas as atualizações.`,
                 },
             });
         } catch (err) {
@@ -200,7 +200,7 @@ export async function SubmitForm({
                     data: {
                         id: restaurant!.slug,
                         number: '55' + removeNonAlphaNumeric(whatsapp),
-                        message: `O valor da taxa de entrega é: R$ ${foundDeliveryFee?.fee}`,
+                        message: `🏍 O valor da taxa de entrega é: R$ ${foundDeliveryFee?.fee}`,
                     },
                 });
             } catch (err) {
@@ -218,7 +218,7 @@ export async function SubmitForm({
                         number: '55' + removeNonAlphaNumeric(whatsapp),
                         message: `Pague através da chave pix: _*${
                             restaurant!.pix
-                        }*_\n\n_Assim que fizer a transferência, envie o comprovante aqui_`,
+                        }*_\n\n😊☑ _Assim que fizer a transferência, envie o comprovante aqui_`,
                     },
                 });
             } catch (err) {

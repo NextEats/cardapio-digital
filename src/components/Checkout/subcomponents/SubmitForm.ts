@@ -30,6 +30,7 @@ async function returnDistanceInMeters(start: string, end: string) {
 }
 
 export async function SubmitForm({
+    setDeliveryFee,
     name,
     number,
     cep,
@@ -39,12 +40,11 @@ export async function SubmitForm({
     payment_method,
     change_value,
     deliveryForm,
+    complement,
 }: any) {
-    console.log(removeNonAlphaNumeric(whatsapp));
-
     try {
         let foundDeliveryFee;
-        console.log(deliveryForm);
+
         if (deliveryForm === 1) {
             const distance_in_km = await returnDistanceInMeters(
                 restaurant.address_string,
@@ -91,7 +91,7 @@ export async function SubmitForm({
         if (deliveryForm === 1) {
             const { data: addressData } = await supabase
                 .from('addresses')
-                .insert({ cep, number: Number(number) })
+                .insert({ cep, number, complement })
                 .select('*');
             address = addressData![0] as unknown as iAddress['data'];
         }
@@ -173,7 +173,40 @@ export async function SubmitForm({
             }
         });
 
+        try {
+            await whatsappRestApi({
+                method: 'post',
+                url: '/send-message',
+                data: {
+                    id: restaurant!.slug,
+                    number: '55' + removeNonAlphaNumeric(whatsapp),
+                    message: `*${
+                        restaurant!.name
+                    }*\n\n☺✅ _Seu pedido foi recebido com sucesso e começará a ser preparado em breve!_ Você receberá aqui todas as atualizações.`,
+                },
+            });
+        } catch (err) {
+            console.error(err);
+        }
+
+        const isDelivery = deliveryForm == 1;
         const isPayingUsingPix = payment_method == 1;
+
+        if (isDelivery) {
+            try {
+                await whatsappRestApi({
+                    method: 'post',
+                    url: '/send-message',
+                    data: {
+                        id: restaurant!.slug,
+                        number: '55' + removeNonAlphaNumeric(whatsapp),
+                        message: `🏍 O valor da taxa de entrega é: R$ ${foundDeliveryFee?.fee}`,
+                    },
+                });
+            } catch (err) {
+                console.error(err);
+            }
+        }
 
         if (isPayingUsingPix) {
             try {
@@ -183,33 +216,17 @@ export async function SubmitForm({
                     data: {
                         id: restaurant!.slug,
                         number: '55' + removeNonAlphaNumeric(whatsapp),
-                        message: `*${
-                            restaurant!.name
-                        }*\n\n✅ _Seu pedido foi recebido com sucesso e começará a ser preparado em breve! Você receberá aqui todas as atualizações._\n\n_*Pague através da chave pix: ${
+                        message: `Pague através da chave pix: _*${
                             restaurant!.pix
-                        }*_\n\n_Assim que fizer a transferência, envie o comprovante aqui_`,
-                    },
-                });
-            } catch (err) {
-                console.error(err);
-            }
-        } else {
-            try {
-                await whatsappRestApi({
-                    method: 'post',
-                    url: '/send-message',
-                    data: {
-                        id: restaurant!.slug,
-                        number: '55' + removeNonAlphaNumeric(whatsapp),
-                        message: `*${
-                            restaurant!.name
-                        }*\n\n✅ _Seu pedido foi recebido com sucesso e começará a ser preparado em breve! Você receberá aqui todas as atualizações.`,
+                        }*_\n\n😊☑ _Assim que fizer a transferência, envie o comprovante aqui_`,
                     },
                 });
             } catch (err) {
                 console.error(err);
             }
         }
+
+        setDeliveryFee(foundDeliveryFee?.fee);
     } catch (error) {
         console.error(error);
     }

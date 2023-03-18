@@ -8,13 +8,17 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import InputMask from 'react-input-mask';
 import { SubmitForm } from './SubmitForm';
 
-export default function ContactInfoForm({ setCurrentStep }: any) {
+export default function ContactInfoForm({
+    setCurrentStep,
+    setDeliveryFee,
+}: any) {
     type ContactFormValues = {
         cep: string;
         neighborhood: string;
         street: string;
         number: string;
         whatsapp: string;
+        complement: string;
         name: string;
         payment_method: number;
         change_need: string;
@@ -49,6 +53,7 @@ export default function ContactInfoForm({ setCurrentStep }: any) {
         whatsapp,
         payment_method,
         deliveryForm,
+        complement,
     }) => {
         const chenge =
             watchingPaymentMethod === 5 && watchingChangeNeed
@@ -56,6 +61,7 @@ export default function ContactInfoForm({ setCurrentStep }: any) {
                 : null;
         setLoading(true);
         await SubmitForm({
+            setDeliveryFee,
             cep: cep?.replace('-', ''),
             name,
             number,
@@ -63,6 +69,7 @@ export default function ContactInfoForm({ setCurrentStep }: any) {
             products,
             restaurant,
             payment_method,
+            complement,
             change_value: chenge !== null ? chenge : 0,
             deliveryForm,
         });
@@ -291,6 +298,24 @@ export default function ContactInfoForm({ setCurrentStep }: any) {
                                         Digite seu número
                                     </p>
                                 )}
+                            </div>
+                            <div className="mb-4">
+                                <label
+                                    className="block text-gray-700 font-bold mb-2"
+                                    htmlFor="complement"
+                                >
+                                    Complemento
+                                </label>
+                                <input
+                                    {...register('complement', {
+                                        required: false,
+                                    })}
+                                    id="complement"
+                                    type="text"
+                                    className={`appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${
+                                        errors.complement && 'border-red-500'
+                                    }`}
+                                />
                             </div>
                         </>
                     ) : null}

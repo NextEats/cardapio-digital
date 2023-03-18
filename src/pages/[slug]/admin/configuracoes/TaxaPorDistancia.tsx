@@ -12,7 +12,8 @@ export default function TaxaPorDistancia() {
             const { data: deliveryFees, error } = await supabase
                 .from('delivery_fees')
                 .select('*')
-                .eq('restaurant_id', restaurant!.id);
+                .eq('restaurant_id', restaurant!.id)
+                .order('start_km', { ascending: true });
 
             if (error) {
                 console.error(error);

@@ -48,7 +48,7 @@ export default function Whatsapp() {
                     id: restaurant!.slug,
                     number: restaurant!.whatsapp_number,
                     message:
-                        'O sistema de cardápio digital da NextEats foi configurado com sucesso para este número.',
+                        '😎 O sistema de cardápio digital da NextEats foi configurado com sucesso para este número.',
                 },
             });
 

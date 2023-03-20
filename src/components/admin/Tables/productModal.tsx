@@ -4,13 +4,33 @@ import { addProductAction } from '@/src/reducers/tableReducer/action';
 import * as Dialog from '@radix-ui/react-dialog';
 import Image from 'next/image';
 import { useContext, useState } from 'react';
+import { BsFillCheckCircleFill } from 'react-icons/bs';
 import { FiX } from 'react-icons/fi';
 import SelectComponent from '../../home/ProductModal/components/SelectComponent';
 import { QuantitySelector } from '../../QuantitySelector';
 import { CardapioDigitalButton } from '../cardapio-digital/CardapioDigitalButton';
 import TableAdditionals from './TableAdditionals';
+import * as zod from 'zod'
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+
+const productInformationValidationSchema = zod.object({
+    observation: zod.string(),
+})
+
+type NewProductInformationFormData = zod.infer<
+    typeof productInformationValidationSchema
+>;
+
 
 export default function ProductModal() {
+    const { register, handleSubmit, reset, setValue, getValues } =
+        useForm<NewProductInformationFormData>({
+            resolver: zodResolver(productInformationValidationSchema),
+            defaultValues: {
+                observation: ''
+            },
+        });
     const { viewProduct, setViewProduct, tableState, tableDispatch, setIsOpenedProductTableModal, openedTableModal, additionals, productAdditionals } =
         useContext(TableContext);
     const { productSelects, selectOption } = useProductSelectsWithOptions(
@@ -24,6 +44,25 @@ export default function ProductModal() {
         );
     });
 
+    function handleConfirmProduct() {
+        const observation = getValues("observation")
+
+        setViewProduct(null)
+        setIsOpenedProductTableModal(false)
+        tableDispatch(
+            addProductAction(
+                {
+                    product: viewProduct!,
+                    productSelects,
+                    table_id: openedTableModal!.id,
+                    quantity,
+                    observation,
+                }
+            )
+        )
+        reset()
+    }
+
     return (
         <div>
             <Dialog.Root open={viewProduct !== null}>
@@ -33,10 +72,8 @@ export default function ProductModal() {
                         onClick={() => setViewProduct(null)}
                         className="w-screen h-screen flex items-center justify-center bg-black fixed inset-0 z-10 opacity-40 transition-all duration-300 ease-in-out"
                     />
-                    <Dialog.Content className="fixed top-[14vh] right-1/2 z-20 translate-x-1/2 rounded-lg w-[350px] 2xs:w-[435px] sm:w-[600px] lg:w-[900px] h-[550px] bg-white shadow-md p-6">
-                        <Dialog.Title className="text-base w-full flex items-center text-center font-semibold mb-3">
-                            {/* <input type='text' onChange={handleFilter} placeholder="pesquisar" className='mb-3 w-[50%]' /> */}
-                        </Dialog.Title>
+                    <Dialog.Content className="fixed top-[7vh] right-1/2 z-20 translate-x-1/2 rounded-lg w-[350px] 2xs:w-[435px] sm:w-[600px] lg:w-[900px] h-[566px] bg-white shadow-md p-6 pt-10">
+
                         <div className=" max-h-[452px] xs:max-h-[452px] overflow-auto mb-3 scrollbar-custom pr-2 py-2">
                             <div className="flex flex-col sm:grid sm:grid-cols-2 gap-10">
                                 <div className="flex flex-col gap-3">
@@ -47,11 +84,24 @@ export default function ProductModal() {
                                         height={200}
                                         src={viewProduct?.picture_url!}
                                     />
-                                    <h2 className=""> {viewProduct?.name} </h2>
-                                    <p> {viewProduct?.description} </p>
-                                    <span className="">
-                                        R$ {viewProduct?.price}{' '}
-                                    </span>
+                                    <div className=''>
+
+                                        <h2 className="flex items-center justify-between text-lg font-bold">
+                                            <span>{viewProduct?.name}</span>
+                                            <span className="text-green-500">
+                                                R$ {viewProduct?.price}{' '}
+                                            </span>
+                                        </h2>
+                                        <p className='mb-2'> {viewProduct?.description} </p>
+
+                                        <form className="w-full mt-12 h-24 mb-8 relative">
+                                            <textarea
+                                                {...register("observation")}
+                                                className=" scrollbar-custom w-full h-full resize-none rounded-sm bg-[#f6f6f6] shadow-sm text-base outline-none p-4"
+                                                placeholder="Observações"
+                                            ></textarea>
+                                        </form>
+                                    </div>
                                 </div>
 
                                 <div className="flex flex-col gap-3 ">
@@ -94,18 +144,8 @@ export default function ProductModal() {
                                 h="h-9"
                                 w="w-44"
                                 onClick={() => {
-                                    setViewProduct(null)
-                                    setIsOpenedProductTableModal(false)
-                                    tableDispatch(
-                                        addProductAction(
-                                            {
-                                                product: viewProduct!,
-                                                productSelects,
-                                                table_id: openedTableModal!.id,
-                                                quantity,
-                                            }
-                                        )
-                                    )
+                                    handleConfirmProduct()
+
                                 }
                                 }
                             />

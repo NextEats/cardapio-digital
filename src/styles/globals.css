@@ -71,6 +71,10 @@
         left: 50%;
         transform: translate(-50%, 0);
     }
+    .removeOverflowToPrint {
+        overflow: hidden;
+        height: auto;
+    }
 }
 
 @keyframes fadeIn {

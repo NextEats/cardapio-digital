@@ -429,14 +429,7 @@ export interface iUserDetails {
     data: Database['public']['Tables']['user_details']['Row'];
 }
 
-export type tUserDetails = {
-    id: number;
-    restaurant_id: number;
-    user_id: string;
-    is_waiter: boolean;
-    restaurants: {
-        id: number;
-        name: string;
-        slug: string;
+export type tUserDetailsWithFKData =
+    Database['public']['Tables']['user_details']['Row'] & {
+        restaurants: Database['public']['Tables']['restaurants']['Row'];
     };
-};

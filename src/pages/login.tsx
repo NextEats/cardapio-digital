@@ -7,7 +7,7 @@ import Image from 'next/image';
 import nexteats_logo_orange from '@/src/assets/nexteats_logo_orange.png';
 import { supabase } from '@/src/server/api';
 import { useRouter } from 'next/router';
-import { tUserDetails } from '../types/types';
+import { tUserDetailsWithFKData } from '../types/types';
 
 const LoginPage = () => {
     const supabaseClient = useSupabaseClient();
@@ -35,7 +35,7 @@ const LoginPage = () => {
                 .eq('user_id', user?.id);
 
             const userDetailsTypedData =
-                userDetailsData![0] as unknown as tUserDetails;
+                userDetailsData![0] as unknown as tUserDetailsWithFKData;
 
             if (userDetailsTypedData?.restaurants.slug) {
                 if (userDetailsTypedData.is_waiter) {

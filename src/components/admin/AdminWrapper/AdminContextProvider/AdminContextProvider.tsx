@@ -1,8 +1,9 @@
 import { AdminContext } from '@/src/contexts/adminContext';
+import { useUserAndDetails } from '@/src/hooks/User';
 import { serverURL } from '@/src/server/api';
 import { iRestaurantWithFKData } from '@/src/types/types';
 import { useRouter } from 'next/router';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 interface iAdminContextProvider {
     children: JSX.Element;
@@ -17,6 +18,17 @@ export default function AdminContextProvider({
 
     const router = useRouter();
     const { slug } = router.query;
+    const { user, userDetails } = useUserAndDetails();
+
+    useEffect(() => {
+        if (!restaurant) {
+            return;
+        }
+
+        if (!user || userDetails?.restaurant_id !== restaurant.id) {
+            router.replace(`/login`);
+        }
+    });
 
     useMemo(() => {
         async function fetchRestaurantData() {
@@ -35,7 +47,13 @@ export default function AdminContextProvider({
     }, [slug]);
 
     return (
-        <AdminContext.Provider value={{ restaurant: restaurant }}>
+        <AdminContext.Provider
+            value={{
+                restaurant: restaurant,
+                userDetails: userDetails,
+                user: user,
+            }}
+        >
             {children}
         </AdminContext.Provider>
     );

@@ -1,11 +1,14 @@
 import { AdminContext } from '@/src/contexts/adminContext';
 import { useUserAndDetails } from '@/src/hooks/User';
 import useWindowSize, { Size } from '@/src/hooks/WindowResize';
-import { SetStateAction, useContext, useMemo } from 'react';
+import restaurants from '@/src/pages/api/restaurants/all';
+import { supabase } from '@/src/server/api';
+import { SetStateAction, useContext, useMemo, useState } from 'react';
 import { FaChartBar, FaCog, FaHome, FaUtensils } from 'react-icons/fa';
 import { GiTable } from 'react-icons/gi';
 import { IoMdExit } from 'react-icons/io';
 import SidebarListItem from '../../SidebarListItem';
+import { useRouter } from 'next/router'
 
 interface iSidebar {
   isSidebarOpen: boolean;
@@ -16,22 +19,35 @@ export default function Sidebar({
   isSidebarOpen,
   setIsSidebarOpenState,
 }: iSidebar) {
-  const { restaurant } = useContext(AdminContext);
+  // const { restaurant } = useContext(AdminContext);
 
-  const windowSize: Size = useWindowSize();
+  const router = useRouter()
+  const slug = router.query.slug
 
-  const { user, userDetails } = useUserAndDetails();
 
+  // const windowSize: Size = useWindowSize();
 
-  useMemo(() => {
-    if (windowSize.width) {
-      if (windowSize.width < 1024) {
-        setIsSidebarOpenState(false);
-      } else {
-        setIsSidebarOpenState(true);
-      }
-    }
-  }, [windowSize, setIsSidebarOpenState]);
+  // const { user, userDetails } = useUserAndDetails();
+  // const [slug, setSlug] = useState("")
+
+  // useMemo(async () => {
+  //   const restaurant = await supabase.from('restaurants').select("*").eq("slug", restaurantSlug)
+  //   if (restaurant.data === null) return
+  //   setSlug(restaurant.data[0].slug)
+  // }, [restaurantSlug])
+  // console.log(slug)
+  // useMemo(() => {
+  //   const {data } = 
+  // },[])
+  // useMemo(() => {
+  //   if (windowSize.width) {
+  //     if (windowSize.width < 1024) {
+  //       setIsSidebarOpenState(false);
+  //     } else {
+  //       setIsSidebarOpenState(true);
+  //     }
+  //   }
+  // }, [windowSize, setIsSidebarOpenState]);
 
   return (
     <div
@@ -39,34 +55,39 @@ export default function Sidebar({
         }`}
     >
       <ul className="flex flex-col mt-5">
-        {userDetails?.is_waiter === false && (
-          <>
-            <SidebarListItem
-              name="Página Inicial"
-              icon={<FaHome className="mr-4 h-8 w-8" />}
-              path={`/${restaurant?.slug}/admin`}
-            />
-            <SidebarListItem
-              name="Produtos"
-              icon={<FaUtensils className="mr-4 h-8 w-8" />}
-              path={`/${restaurant?.slug}/admin/cardapio-digital`}
-            />
-            <SidebarListItem
-              name="Relatórios"
-              icon={<FaChartBar className="mr-4 h-8 w-8" />}
-              path={`/${restaurant?.slug}/admin/relatorios`}
-            />
-            <SidebarListItem
-              name="Configurações"
-              icon={<FaCog className="mr-4 h-8 w-8" />}
-              path={`/${restaurant?.slug}/admin/configuracoes`}
-            />
-          </>
-        )}
+        {/* {userDetails?.is_waiter === false && ( */}
+        <>
+          <SidebarListItem
+            name="Página Inicial"
+            icon={<FaHome className="mr-4 h-8 w-8" />}
+            path={`/${slug}/admin`}
+          />
+          <SidebarListItem
+            name="Produtos2"
+            icon={<FaUtensils className="mr-4 h-8 w-8" />}
+            path={`/${slug}/admin/cardapio-digital`}
+          />
+          <SidebarListItem
+            name="Produtos"
+            icon={<FaUtensils className="mr-4 h-8 w-8" />}
+            path={`/${slug}/admin/products`}
+          />
+          <SidebarListItem
+            name="Relatórios"
+            icon={<FaChartBar className="mr-4 h-8 w-8" />}
+            path={`/${slug}/admin/relatorios`}
+          />
+          <SidebarListItem
+            name="Configurações"
+            icon={<FaCog className="mr-4 h-8 w-8" />}
+            path={`/${slug}/admin/configuracoes`}
+          />
+        </>
+        {/* )} */}
         <SidebarListItem
           name="Controle de Mesas"
           icon={<GiTable className="mr-4 h-8 w-8" />}
-          path={`/${restaurant?.slug}/admin/table-control`}
+          path={`/${slug}/admin/table-control`}
         />
         <SidebarListItem
           name="Sair"

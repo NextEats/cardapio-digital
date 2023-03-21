@@ -8,16 +8,17 @@ import InputMask from 'react-input-mask';
 
 export default function Geral() {
 
-    type uploadedFile = {
+    type IUploadedFile = {
         path: string
     }
-    type imagePublicUrl = {
+    type IimagePublicUrl = {
         data: {
             publicUrl: string
         }
     }
     
     const [inputChangeLogo, setInputChangeLogo] = useState(false);
+    const [imageSrc, setImageSrc] = useState('');
 
     const {
         register,
@@ -27,12 +28,12 @@ export default function Geral() {
     const { restaurant } = useContext(AdminContext);
 
     const onSubmit = async (data: any, e: any) => {
-        let imagePublicUrl : imagePublicUrl = {
+        let imagePublicUrl : IimagePublicUrl = {
             data: {
                 publicUrl: ''
             }
         }
-        let uploadedFile : uploadedFile = {
+        let uploadedFile : IUploadedFile = {
             path: ''
         }
 
@@ -46,7 +47,6 @@ export default function Geral() {
         const imageAlreadySaved = imageList!.find((image) => image.name === file.name);
 
         if (!imageAlreadySaved) { 
-            console.log("não existe")
             const { data, error: uploadError } = await supabase
             .storage.
             from('restaurant-pictures').
@@ -61,11 +61,13 @@ export default function Geral() {
             .storage
             .from('restaurant-pictures')
             .getPublicUrl(uploadedFile.path);
+            setImageSrc(imagePublicUrl.data.publicUrl);
         }else{
             imagePublicUrl = await supabase
             .storage
             .from('restaurant-pictures')
             .getPublicUrl(imageAlreadySaved!.name);
+            setImageSrc(imagePublicUrl.data.publicUrl);
         }
 
         async function updateRestaurant() {
@@ -94,7 +96,7 @@ export default function Geral() {
             <form onSubmit={handleSubmit(onSubmit)}>
                 <div className="flex flex-col gap-y-5">
                     <Image
-                        src={restaurant.picture_url}
+                        src={imageSrc}
                         alt={restaurant.picture_url}
                         width={100}
                         height={100}

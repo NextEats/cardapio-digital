@@ -33,6 +33,8 @@ export async function getRestaurantBySlugFetch(
     `
     )
     .eq('slug', slug);
+    
+  console.log(error)
 
   const typedData = data![0] as unknown as iRestaurantWithFKData;
 

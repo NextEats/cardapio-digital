@@ -55,6 +55,38 @@ export default function PaymentMethods() {
         paymentMethodId: number,
         enabled: boolean
     ) {
+
+        const { data: paymentMethodList } = await supabase
+            .from('payment_methods_restaurants')
+            .select('*').eq('restaurant_id', restaurant!.id)
+        
+        const paymentMethodAlreadyEnabled = paymentMethodList!.find((item) => item.payment_method_id === paymentMethodId)
+
+        if(paymentMethodAlreadyEnabled){
+        const { error } = await supabase
+            .from('payment_methods_restaurants')
+            .update({
+                enabled,
+            })
+            .match({
+                restaurant_id: restaurant!.id,
+                payment_method_id: paymentMethodId,
+            });
+            if (error) {
+                console.error(error);
+            } else {
+                if (enabled) {
+                    setEnabledPaymentMethods([
+                        ...enabledPaymentMethods,
+                        paymentMethodId,
+                    ]);
+                } else {
+                    setEnabledPaymentMethods(
+                        enabledPaymentMethods.filter((id) => id !== paymentMethodId)
+                    );
+                }
+            }
+       }else{
         const { error } = await supabase
             .from('payment_methods_restaurants')
             .upsert({
@@ -66,20 +98,21 @@ export default function PaymentMethods() {
                 restaurant_id: restaurant!.id,
                 payment_method_id: paymentMethodId,
             });
-        if (error) {
-            console.error(error);
-        } else {
-            if (enabled) {
-                setEnabledPaymentMethods([
-                    ...enabledPaymentMethods,
-                    paymentMethodId,
-                ]);
+            if (error) {
+                console.error(error);
             } else {
-                setEnabledPaymentMethods(
-                    enabledPaymentMethods.filter((id) => id !== paymentMethodId)
-                );
+                if (enabled) {
+                    setEnabledPaymentMethods([
+                        ...enabledPaymentMethods,
+                        paymentMethodId,
+                    ]);
+                } else {
+                    setEnabledPaymentMethods(
+                        enabledPaymentMethods.filter((id) => id !== paymentMethodId)
+                    );
+                }
             }
-        }
+       }
     }
 
     return (

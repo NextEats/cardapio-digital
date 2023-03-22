@@ -257,7 +257,21 @@ export default function TableContextProvider({
             alert('O nome da mesa é obrigatório');
             return;
         }
-        const novaMessa: iTables['data'] = await api.post(
+
+        const tableList = await api.get(
+            'api/table_control/' + restaurant.id,
+        );
+
+        console.log(tableList)
+
+        const tableAlreadyExists = tableList.data.find((table: any) => table.name.toLowerCase().replace(/\s/g, "") === tableName.toLowerCase().replace(/\s/g, ""));
+        
+        if (tableAlreadyExists) {
+            alert('Essa mesa já existe');
+            return;
+        }
+
+        const novaMesa: iTables['data'] = await api.post(
             'api/table_control/' + restaurant.id,
             {
                 chair_ammount: cheirAmount,

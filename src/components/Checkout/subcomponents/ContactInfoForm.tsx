@@ -45,6 +45,7 @@ export default function ContactInfoForm({
     const watchingChangeNeed = watch('change_need');
     const change_value = watch('change_value');
     const deliveryForm = watch('deliveryForm');
+    const [storageCompliment, setStorageCompliment] = useState();
 
     const onSubmit: SubmitHandler<ContactFormValues> = async ({
         cep,
@@ -53,6 +54,8 @@ export default function ContactInfoForm({
         whatsapp,
         payment_method,
         deliveryForm,
+        neighborhood,
+        street,
         complement,
     }) => {
         const chenge =
@@ -60,6 +63,13 @@ export default function ContactInfoForm({
                 ? await calculateChangeValue({ products })
                 : null;
         setLoading(true);
+
+        localStorage.setItem('cep', cep);
+        localStorage.setItem('neighborhood', neighborhood);
+        localStorage.setItem('street', street);
+        localStorage.setItem('number', number);
+        localStorage.setItem('complement', complement);
+
         await SubmitForm({
             setDeliveryFee,
             cep: cep?.replace('-', ''),
@@ -73,6 +83,7 @@ export default function ContactInfoForm({
             change_value: chenge !== null ? chenge : 0,
             deliveryForm,
         });
+        
         setCurrentStep('thank_you');
     };
 
@@ -123,6 +134,10 @@ export default function ContactInfoForm({
         fetchOrderTypes();
         fetchActivePaymentMethods();
     }, [restaurant]);
+
+    // useEffect(()=> {
+    //     setStorageCompliment(localStorage.getItem('complement'))
+    // }, [])
 
     return (
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -213,6 +228,7 @@ export default function ContactInfoForm({
                                     {...register('cep', { required: true })}
                                     id="cep"
                                     type="text"
+                                    defaultValue={localStorage.getItem('cep') ? localStorage.getItem('cep') : ''}
                                     className={`appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${
                                         errors.cep && 'border-red-500'
                                     }`}
@@ -253,6 +269,7 @@ export default function ContactInfoForm({
                                 </label>
                                 <input
                                     {...register('neighborhood')}
+                                    defaultValue={localStorage.getItem('neighborhood') ? localStorage.getItem('neighborhood') : ''}
                                     id="neighborhood"
                                     type="text"
                                     className={`bg-[#00000019] appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${
@@ -270,6 +287,7 @@ export default function ContactInfoForm({
                                 </label>
                                 <input
                                     {...register('street')}
+                                    defaultValue={localStorage.getItem('street') !== null ? localStorage.getItem('street') : ''}
                                     id="street"
                                     type="text"
                                     className={`bg-[#00000019] appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${
@@ -287,6 +305,7 @@ export default function ContactInfoForm({
                                 </label>
                                 <input
                                     {...register('number', { required: true })}
+                                    defaultValue={localStorage.getItem('number') ? localStorage.getItem('number') : ''}
                                     id="number"
                                     type="text"
                                     className={`appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${
@@ -310,6 +329,7 @@ export default function ContactInfoForm({
                                     {...register('complement', {
                                         required: false,
                                     })}
+                                    defaultValue={localStorage.getItem('compliment') ? localStorage.getItem('compliment') : ''}
                                     id="complement"
                                     type="text"
                                     className={`appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${

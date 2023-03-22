@@ -228,7 +228,7 @@ export default function ContactInfoForm({
                                     {...register('cep', { required: true })}
                                     id="cep"
                                     type="text"
-                                    defaultValue={localStorage.getItem('cep') ? localStorage.getItem('cep') : ''}
+                                    defaultValue={localStorage.getItem('cep') ? localStorage.getItem('cep') as string : ''}
                                     className={`appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${
                                         errors.cep && 'border-red-500'
                                     }`}
@@ -269,7 +269,7 @@ export default function ContactInfoForm({
                                 </label>
                                 <input
                                     {...register('neighborhood')}
-                                    defaultValue={localStorage.getItem('neighborhood') ? localStorage.getItem('neighborhood') : ''}
+                                    defaultValue={localStorage.getItem('neighborhood') ? localStorage.getItem('neighborhood') as string : ''}
                                     id="neighborhood"
                                     type="text"
                                     className={`bg-[#00000019] appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${
@@ -287,7 +287,7 @@ export default function ContactInfoForm({
                                 </label>
                                 <input
                                     {...register('street')}
-                                    defaultValue={localStorage.getItem('street') !== null ? localStorage.getItem('street') : ''}
+                                    defaultValue={localStorage.getItem('street') !== null ? localStorage.getItem('street') as string : ''}
                                     id="street"
                                     type="text"
                                     className={`bg-[#00000019] appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${
@@ -305,7 +305,7 @@ export default function ContactInfoForm({
                                 </label>
                                 <input
                                     {...register('number', { required: true })}
-                                    defaultValue={localStorage.getItem('number') ? localStorage.getItem('number') : ''}
+                                    defaultValue={localStorage.getItem('number') ? localStorage.getItem('number') as string : ''}
                                     id="number"
                                     type="text"
                                     className={`appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${
@@ -329,7 +329,7 @@ export default function ContactInfoForm({
                                     {...register('complement', {
                                         required: false,
                                     })}
-                                    defaultValue={localStorage.getItem('compliment') ? localStorage.getItem('compliment') : ''}
+                                    defaultValue={localStorage.getItem('compliment') ? localStorage.getItem('compliment') as string : ''}
                                     id="complement"
                                     type="text"
                                     className={`appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${

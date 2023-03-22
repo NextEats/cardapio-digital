@@ -9,8 +9,8 @@ interface iThankYouPage {
 
 function ThankYouPage({ deliveryFee }: iThankYouPage) {
     const { restaurant } = useContext(DigitalMenuContext);
-    const products = useContext(DigitalMenuContext).productReducer!;
 
+    const products = useContext(DigitalMenuContext).productReducer!;
     const [orderPrice, setOrderPrice] = useState(0);
 
     useMemo(async () => {

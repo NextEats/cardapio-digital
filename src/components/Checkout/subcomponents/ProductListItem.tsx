@@ -9,7 +9,7 @@ export default function ProductListItem({ product }: any) {
 
     const data = useProductDataForId(product.id);
 
-    if (!data) {
+    if (!data || !state) {
         return null;
     }
 
@@ -19,7 +19,7 @@ export default function ProductListItem({ product }: any) {
 
     const returnCurrentQuantity = () => {
         const thisProduct = state.find((elem: any) => elem.id === product.id);
-        return thisProduct.quantity;
+        return thisProduct!.quantity;
     };
 
     return (

@@ -3,19 +3,21 @@ import { useUserAndDetails } from '@/src/hooks/User';
 import { serverURL } from '@/src/server/api';
 import { iRestaurantWithFKData } from '@/src/types/types';
 import { useRouter } from 'next/router';
-import { useEffect, useMemo, useState } from 'react';
+import { SetStateAction, useEffect, useMemo } from 'react';
 
 interface iAdminContextProvider {
     children: JSX.Element;
+    restaurant: iRestaurantWithFKData | undefined;
+    setRestaurant: React.Dispatch<
+        SetStateAction<iRestaurantWithFKData | undefined>
+    >;
 }
 
 export default function AdminContextProvider({
     children,
+    restaurant,
+    setRestaurant,
 }: iAdminContextProvider) {
-    const [restaurant, setRestaurant] = useState<
-        iRestaurantWithFKData | undefined
-    >(undefined);
-
     const router = useRouter();
     const { slug } = router.query;
     const { user, userDetails } = useUserAndDetails();

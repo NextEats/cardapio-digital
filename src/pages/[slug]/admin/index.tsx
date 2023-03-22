@@ -104,20 +104,44 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         }
     }
 
-    // const restaurant = await getRestaurantBySlugFetch(context.query.slug);
     const restaurant: any = await getRestaurantBySlugFetch(context.query.slug);
+
+    const [
+        ordersData,
+        ordersProductsData,
+        products,
+        clients,
+        contacts,
+        addresses,
+        cashBoxes,
+        additionals,
+        selects,
+        ordersTablesData,
+    ] = await Promise.all([
+        getOrdersByRestaurantIdFetch(restaurant.id),
+        getOrdersProductsFetch(),
+        getProductsByRestaurantIdFetch(restaurant.id),
+        getclientsFetch(),
+        getContactsFetch(),
+        getAddressesFetch(),
+        getCashBoxesByRestaurantIdFetch(restaurant.id),
+        getAdditionalsByRestaurantIdFetch(restaurant.id),
+        getSelectsByRestaurantIdFetch(restaurant.id),
+        getOrdersTablesFetch(),
+    ]);
+
     return {
         props: {
-            ordersData: await getOrdersByRestaurantIdFetch(restaurant.id),
-            ordersProductsData: await getOrdersProductsFetch(),
-            products: await getProductsByRestaurantIdFetch(restaurant.id),
-            clients: await getclientsFetch(),
-            contacts: await getContactsFetch(),
-            addresses: await getAddressesFetch(),
-            cashBoxes: await getCashBoxesByRestaurantIdFetch(restaurant.id),
-            additionals: await getAdditionalsByRestaurantIdFetch(restaurant.id),
-            selects: await getSelectsByRestaurantIdFetch(restaurant.id),
-            ordersTablesData: await getOrdersTablesFetch(),
+            ordersData,
+            ordersProductsData,
+            products,
+            clients,
+            contacts,
+            addresses,
+            cashBoxes,
+            additionals,
+            selects,
+            ordersTablesData,
             restaurant,
         },
     };

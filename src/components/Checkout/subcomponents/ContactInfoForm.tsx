@@ -327,7 +327,7 @@ export default function ContactInfoForm({
                                     {...register('complement', {
                                         required: false,
                                     })}
-                                    defaultValue={localStorage.getItem('compliment') ? localStorage.getItem('compliment') as string : ''}
+                                    defaultValue={localStorage.getItem('complement') ? localStorage.getItem('complement') as string : ''}
                                     id="complement"
                                     type="text"
                                     className={`appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${

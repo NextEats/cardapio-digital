@@ -51,9 +51,6 @@ export default function Geral() {
 
     const onSubmit = async (data: iRestaurantData) => {
 
-        console.log(data)
-        console.log(data.restaurantLogo)
-
         const oldImageUrl = restaurant?.picture_url 
         const oldImageUrlArray = oldImageUrl!.split('/');  
         const oldImageName = oldImageUrlArray.at(-1)

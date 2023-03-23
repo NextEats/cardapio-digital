@@ -5,9 +5,10 @@ import { useContext, useMemo, useState } from 'react';
 
 interface iThankYouPage {
     deliveryFee: number | undefined;
+    orderNumber: number;
 }
 
-function ThankYouPage({ deliveryFee }: iThankYouPage) {
+function ThankYouPage({ deliveryFee, orderNumber }: iThankYouPage) {
     const { restaurant } = useContext(DigitalMenuContext);
 
     const products = useContext(DigitalMenuContext).productReducer!;
@@ -22,7 +23,7 @@ function ThankYouPage({ deliveryFee }: iThankYouPage) {
     }, [products, restaurant?.id]);
 
     return (
-        <div className="min-h-screen bg-gray-100 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+        <div className="fixed top-0 left-0 w-screen z-[6000] min-h-screen bg-gray-100 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
             <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
                 <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
                     <div className="sm:mx-auto sm:w-full sm:max-w-md">
@@ -33,6 +34,13 @@ function ThankYouPage({ deliveryFee }: iThankYouPage) {
                             Seu pedido foi recebido e está sendo processado.
                             Você receberá uma confirmação em breve.
                         </p>
+
+                        <div className="h-7 text-center w-full my-4 text-lg font-semibold text-[#313131]">
+                            Número do pedido:{' '}
+                            <span className="font-bold">
+                                #{orderNumber ? orderNumber : null}
+                            </span>
+                        </div>
 
                         {deliveryFee ? (
                             <div className="h-7 text-center w-full my-4 text-lg font-semibold text-[#313131]">

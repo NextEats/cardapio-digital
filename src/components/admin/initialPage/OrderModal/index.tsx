@@ -71,18 +71,21 @@ export function OrderModal({
     const orderProductFiltered = ordersProducts.filter(
         (op) => op.order_id === ordersState.orderId
     );
+
+    console.log(orderProductFiltered);
+
     const productsFiltered = orderProductFiltered.map((op) => {
         return products.find((p) => p.id === op?.product_id);
     });
-    const thereAnyObservation = orderProductFiltered.some(
-        (op) => op.observation !== null
-    );
+
     const textStyles =
-        'text-[10px] leading-[14px] font-semibold text-black text-left leading-6';
+        'text-[12px] leading-[14px] font-semibold text-black text-left leading-6';
 
     const orderFound = ordersState.orders.find(
         (order) => order.id === ordersState.orderId
     );
+
+    console.log(orderFound);
 
     useMemo(() => {
         const getAddress = async () => {
@@ -91,7 +94,9 @@ export function OrderModal({
             );
             setAddress(res.data);
         };
-        orderFound?.clients ? getAddress() : null;
+        orderFound?.clients && orderFound?.order_types.name === 'Delivery'
+            ? getAddress()
+            : null;
     }, [orderFound]);
 
     const ordersTablesFound = ordersTables.find(
@@ -132,15 +137,20 @@ export function OrderModal({
         ordersProducts: orderProductFiltered as iOrdersProducts['data'],
         additionals,
         products: products as iProducts['data'],
-    }).reduce((acc, item) => acc + item.totalPrice, 0)
-
+        selects,
+    }).reduce((acc, item) => acc + item.totalPrice, 0);
 
     const orderDateFormated = format(
-        new Date(`${orderFound?.created_at}`), 'P', { locale: ptBR }
+        new Date(`${orderFound?.created_at}`),
+        'P',
+        { locale: ptBR }
     );
 
     async function moveToEmProduçãoCard(orderId: number) {
-        await supabase.from('orders').update({ order_status_id: 3 }).eq('id', orderId);
+        await supabase
+            .from('orders')
+            .update({ order_status_id: 3 })
+            .eq('id', orderId);
         ordersDispatch(showModalAction());
     }
 
@@ -160,7 +170,7 @@ export function OrderModal({
                             <Dialog.Content
                                 ref={printComponent}
                                 className="bg-white shadow-bd w-[298px] fixed right-1/2 
-                            translate-x-1/2 px-6 pt-3 pb-6"
+                            translate-x-1/2 px-6 pt-3 pb-6 uppercase"
                             >
                                 <ProductionOrder
                                     productsFiltered={productsFiltered}
@@ -176,7 +186,7 @@ export function OrderModal({
                                 />
 
                                 <h2 className="text-center uppercase text-black font-semibold text-sm">
-                                    COMANDA
+                                    COMANDA - {orderFound?.order_types.name}
                                 </h2>
 
                                 <hr className="my-2" />
@@ -225,30 +235,22 @@ export function OrderModal({
                                 {orderFound?.clients ? (
                                     <>
                                         <hr className="my-2" />
-
                                         <div>
                                             <p
                                                 className={`${textStyles} text-left `}
                                             >
                                                 Nome:{' '}
                                                 <strong>
-                                                    {' '}
                                                     {orderFound?.clients?.name}
                                                 </strong>{' '}
                                                 - Telefone:{' '}
                                                 <strong>
-                                                    {' '}
                                                     {
                                                         orderFound?.clients
                                                             .contacts?.phone
                                                     }{' '}
                                                 </strong>
                                             </p>
-
-                                            {/* <p className={`${textStyles} text-left `}>
-                                            Email:<strong>    {orderFound?.clients.contacts?.email}</strong>
-                                           
-                                        </p> */}
                                             <p className={`${textStyles}`}>
                                                 Endereço:{' '}
                                                 <strong>
@@ -257,6 +259,12 @@ export function OrderModal({
                                                         orderFound?.clients
                                                             .addresses?.number
                                                     }{' '}
+                                                    -{' '}
+                                                    {
+                                                        orderFound?.clients
+                                                            .addresses
+                                                            ?.complement
+                                                    }
                                                     - {address.bairro} -{' '}
                                                     {address.localidade},{' '}
                                                     {address.uf}
@@ -282,7 +290,7 @@ export function OrderModal({
 
                                 <div>
                                     {orderFound?.payment_methods.name !==
-                                        'MESA' ? (
+                                    'MESA' ? (
                                         <p className="grid grid-cols-2 items-center gap-10">
                                             <span className={`${textStyles}`}>
                                                 Sub-Total:
@@ -299,17 +307,15 @@ export function OrderModal({
                                     {orderFound?.delivery_fees ? (
                                         <p className="grid grid-cols-2 items-center gap-10">
                                             <span className={`${textStyles} `}>
-                                                {' '}
                                                 Taxa de entrega:
                                             </span>
                                             <span className={`${textStyles}`}>
                                                 <strong>
-                                                    {' '}
                                                     R${' '}
                                                     {
                                                         orderFound
                                                             ?.delivery_fees.fee
-                                                    }{' '}
+                                                    }
                                                 </strong>
                                             </span>
                                         </p>
@@ -323,9 +329,11 @@ export function OrderModal({
                                             <strong>
                                                 R${' '}
                                                 {totalOrderPrice +
-                                                    (orderFound?.delivery_fees ? orderFound.delivery_fees.fee : 0)}
+                                                    (orderFound?.delivery_fees
+                                                        ? orderFound
+                                                              .delivery_fees.fee
+                                                        : 0)}
                                             </strong>
-
                                         </span>
                                     </p>
                                 </div>
@@ -334,8 +342,8 @@ export function OrderModal({
                                     {!ordersGroupedByOrderStatus[
                                         'em análise'
                                     ] ? null : ordersGroupedByOrderStatus[
-                                        'em análise'
-                                    ].some((o) => o.id === orderFound?.id) ? (
+                                          'em análise'
+                                      ].some((o) => o.id === orderFound?.id) ? (
                                         <ReactToPrint
                                             copyStyles={true}
                                             content={() =>

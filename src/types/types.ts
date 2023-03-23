@@ -140,7 +140,26 @@ export interface iAdditionalCategories {
     data: Array<Database['public']['Tables']['additional_categories']['Row']>;
 }
 
+export interface iRestaurantOrderType {
+    data: Database['public']['Tables']['restaurant_order_type']['Row'];
+}
+
+export interface iRestaurantOrderTypes {
+    data: Array<Database['public']['Tables']['restaurant_order_type']['Row']>;
+}
+
 // ==================   INSERTS  =====================
+
+export interface iInsertRestaurantOrderType {
+    data: Database['public']['Tables']['restaurant_order_type']['Insert'];
+}
+
+export interface iInsertRestaurantOrderTypes {
+    data: Array<
+        Database['public']['Tables']['restaurant_order_type']['Insert']
+    >;
+}
+
 export interface iInsertDeliveryFee {
     data: Database['public']['Tables']['delivery_fees']['Insert'];
 }
@@ -353,6 +372,15 @@ export interface iPaymentMethodsRestaurantss {
     >;
 }
 
+export type iPaymentMethodsRestaurantsWithFKData =
+    iPaymentMethodsRestaurants['data'] & {
+        payment_methods: iPaymentMethod['data'];
+    };
+export type iRestaurantOrderTypesWithFKData = iRestaurantOrderType['data'] & {
+    restaurants: iRestaurant['data'];
+    order_types: iOrderTypes['data'];
+};
+
 export type iRestaurantWithFKData = iRestaurant['data'] & {
     addresses: iAddress['data'];
     restaurant_types: iRestaurantType['data'];
@@ -387,7 +415,7 @@ export type iOrdersWithFKData = iOrder['data'] & {
 export type iOrdersTablesWithFkData = iOrdersTable['data'] & {
     orders: {
         id: number;
-        cash_boxes: iCashBox["data"],
+        cash_boxes: iCashBox['data'];
         order_status: iOrderStatus['data'];
     };
     tables: iTable['data'];
@@ -401,14 +429,7 @@ export interface iUserDetails {
     data: Database['public']['Tables']['user_details']['Row'];
 }
 
-export type tUserDetails = {
-    id: number;
-    restaurant_id: number;
-    user_id: string;
-    is_waiter: boolean;
-    restaurants: {
-        id: number;
-        name: string;
-        slug: string;
+export type tUserDetailsWithFKData =
+    Database['public']['Tables']['user_details']['Row'] & {
+        restaurants: Database['public']['Tables']['restaurants']['Row'];
     };
-};

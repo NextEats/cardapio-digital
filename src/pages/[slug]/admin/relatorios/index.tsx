@@ -22,8 +22,10 @@ import {
     iOrdersWithFKData,
     iProductCategories,
     iProducts,
+    iSelects,
 } from '../../../../types/types';
 import { getAdditionalsByRestaurantIdFetch } from '@/src/fetch/additionals/getAdditionals';
+import { getSelectsByRestaurantIdFetch } from '@/src/fetch/selects/getSelectsByRestaurantId';
 
 interface DailyRevenue {
     date: Date;
@@ -37,6 +39,7 @@ interface iReportsProps {
     ordersProducts: iOrdersProducts['data'];
     ordersStatus: iOrdersStatus['data'];
     additionals: iAdditionals['data'];
+    selects: iSelects["data"];
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
@@ -49,6 +52,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     const ordersStatus = await getOrderStatusFetch();
     const ordersProducts = await getOrdersProductsFetch();
     const additionals = await getAdditionalsByRestaurantIdFetch(restaurant.id);
+    const selects = await getSelectsByRestaurantIdFetch(restaurant.id);
 
     return {
         props: {
@@ -58,6 +62,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
             productCategories,
             ordersStatus,
             additionals,
+            selects,
         },
     };
 };
@@ -69,6 +74,7 @@ export default function Reports({
     ordersProducts,
     ordersStatus,
     additionals,
+    selects,
 }: iReportsProps) {
     const ordersGroupedByOrderStatus = orders.reduce(
         (acc: { [key: string]: iOrdersWithFKData[] }, obj) => {
@@ -215,7 +221,7 @@ export default function Reports({
                     />
                     {/* <button onClick={handleFilterClick}>Filter</button> */}
                 </div>
-                <GlobalValuesCard additionals={additionals} globalValuesData={globalValuesData} />
+                <GlobalValuesCard additionals={additionals} selects={selects} globalValuesData={globalValuesData} />
 
                 <div className="xl:grid  xl:grid-cols-xlcharts xl:max-w-full gap-5 xl: mb-8">
                     {/* <LineChart

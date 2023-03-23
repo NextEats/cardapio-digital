@@ -26,12 +26,12 @@ export default function Tables() {
                     onClick={() => setIsOpenedCreateTableModal(true)}
                 />
             </div>
-            <span className='flex flex-1 items-center justify-end m-2'>
+            <span className="flex flex-1 items-center justify-end m-2">
                 {<InactiveTablesModal />}
             </span>
-            <div className="flex flex-col  sm:grid sm:grid-cols-2 xl:grid-cols-3 1280px gap-5">
+            <div className="flex flex-col  sm:grid sm:grid-cols-2 xl:grid-cols-3 1280px gap-5 pb-24">
                 {tables.map((t, index) => {
-                    if (t.is_active === true) return
+                    if (t.is_active === true) return;
                     return (
                         <button
                             key={index}

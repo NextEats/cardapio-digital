@@ -37,8 +37,6 @@ export default function TableAdditionals() {
         );
     });
 
-    console.log(productAdditionals)
-
     return (
         <>
             {additionalByProductId.map((additional) => {

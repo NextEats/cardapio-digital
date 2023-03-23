@@ -51,7 +51,7 @@ export function DoughnutChart({ globalValuesData }: iDoughnuCgart) {
             'Em análise',
             'Em produção',
             'A caminho',
-            'Emtregue',
+            'Entregue',
             'Cancelado',
         ],
         data: [

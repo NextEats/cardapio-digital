@@ -21,8 +21,10 @@ import { api } from '../server/api';
 import {
     iAdditionals,
     iCashBoxes,
+    iOrders,
     iOrdersProducts,
     iOrdersTablesWithFkData,
+    iPaymentMethodsRestaurantsWithFKData,
     iProduct,
     iProductAdditionals,
     iProductCategories,
@@ -66,7 +68,9 @@ interface iTableContextProps {
     ordersTables: iOrdersTablesWithFkData[];
     restaurant: iRestaurant['data'];
     tableDispatch: Dispatch<any>;
+    orders: iOrders["data"]
     tableState: iTableReducer;
+    paymentMethod: iPaymentMethodsRestaurantsWithFKData[]
     updateTable: (
         is_active: boolean,
         is_occupied: boolean,
@@ -84,9 +88,11 @@ interface iTableContextProviderProps {
     products: iProducts['data'];
     productAdditionals: iProductAdditionals['data'];
     ordersProducts: iOrdersProducts['data'];
+    orders: iOrders["data"]
     categories: iProductCategories['data'];
     ordersTables: iOrdersTablesWithFkData[];
     cashBoxes: iCashBoxes['data'];
+    paymentMethod: iPaymentMethodsRestaurantsWithFKData[]
 }
 
 export const TableContext = createContext({} as iTableContextProps);
@@ -100,15 +106,16 @@ export default function TableContextProvider({
     additionals,
     productOptions,
     selects,
+    orders,
     cashBoxes,
     categories,
     ordersTables,
+    paymentMethod
 }: iTableContextProviderProps) {
     const [tableState, tableDispatch] = useReducer(
         tableReducer,
         tableReducerDefaultValues
     );
-    console.log(tableState);
     const [tables, setTables] = useState<iTables['data']>([]);
 
     const [viewProduct, setViewProduct] = useState<iProduct['data'] | null>(
@@ -175,6 +182,7 @@ export default function TableContextProvider({
             additionals,
             ordersProducts: ordersProductsFiltered,
             products: productsFiltered,
+            selects,
         });
 
         const totalPriceOfAdditionals = ordersProductsDataTable.reduce(
@@ -188,7 +196,7 @@ export default function TableContextProvider({
             productsData: ordersProductsDataTable,
             tableBill: totalPriceOfProducts + totalPriceOfAdditionals,
         };
-    }, [openedTableModal, ordersTables, ordersProducts, products, additionals]);
+    }, [openedTableModal, ordersTables, ordersProducts, products, additionals, selects]);
 
     const tableDeliveredData = useMemo(() => {
         if (!openedTableModal) return;
@@ -196,8 +204,7 @@ export default function TableContextProvider({
             return (
                 ot.tables.id === openedTableModal.id &&
                 ot.has_been_paid === false &&
-                ot.orders.order_status.status_name === 'entregue' &&
-                ot.orders.cash_boxes.is_open === true
+                ot.orders.order_status.status_name === 'entregue'
             );
         });
 
@@ -229,6 +236,7 @@ export default function TableContextProvider({
             additionals,
             ordersProducts: ordersProductsFiltered,
             products: productsFiltered,
+            selects,
         });
 
         const totalPriceOfAdditionals = ordersProductsDataTable.reduce(
@@ -242,7 +250,7 @@ export default function TableContextProvider({
             productsData: ordersProductsDataTable,
             tableBill: totalPriceOfProducts + totalPriceOfAdditionals,
         };
-    }, [openedTableModal, ordersTables, ordersProducts, products, additionals]);
+    }, [openedTableModal, ordersTables, ordersProducts, products, additionals, selects]);
 
     async function createNewtable(cheirAmount: string, tableName: string) {
         if (tableName === '') {
@@ -322,6 +330,7 @@ export default function TableContextProvider({
                 viewProduct,
                 products,
                 productAdditionals,
+                orders,
                 tableData:
                     tableDeliveredData !== undefined
                         ? {
@@ -342,6 +351,7 @@ export default function TableContextProvider({
                         },
 
                 additionals,
+                paymentMethod,
                 productOptions,
                 selects,
                 cashBoxes,

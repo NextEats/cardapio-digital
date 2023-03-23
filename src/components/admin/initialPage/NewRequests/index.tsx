@@ -1,7 +1,10 @@
+import { removeNonAlphaNumeric } from '@/src/components/Checkout/subcomponents/SubmitForm';
 import { AdminContext } from '@/src/contexts/adminContext';
-import Image from 'next/image';
+import { updateOrderFetch } from '@/src/fetch/orders/updateOrder';
 import { Dispatch, useContext, useState } from 'react';
 import { AiFillEye, AiOutlineCheck } from 'react-icons/ai';
+import { FiX } from 'react-icons/fi';
+
 import {
     getModalDataAction,
     showModalAction,
@@ -58,6 +61,13 @@ export default function NewRequests({
     const tdStyle =
         'border-collapse border-l-2 px-2 border-gray-300 text-sm font-medium';
 
+    const handleCancelOrder = (orderId: any) => {
+        updateOrderFetch({
+            order_id: orderId,
+            order_status_id: 5,
+        });
+    };
+
     async function moveToEmProduçãoCard(orderId: number) {
         const { data: orderWithUpdatedStatus } = await supabase
             .from('orders')
@@ -77,9 +87,13 @@ export default function NewRequests({
                 url: '/send-message',
                 data: {
                     id: restaurant!.slug,
-                    number: '55' + whatsappNumber.clients.contacts.phone,
+                    number:
+                        '55' +
+                        removeNonAlphaNumeric(
+                            whatsappNumber.clients.contacts.phone
+                        ),
                     message:
-                        'O seu pedido foi aprovado e já começou a ser preparado!',
+                        '😊✅ Olá! O seu pedido foi aprovado e já começou a ser preparado!',
                 },
             });
         } catch (err) {
@@ -96,10 +110,8 @@ export default function NewRequests({
         return a.number - b.number;
     });
 
-    console.log(ordersGroupedByOrderStatus);
-
     return (
-        <div className="flex flex-1 flex-col min-h-[150px] max-h-[270px] bg-white w-auto shadow-sm px-6 pt-2 rounded-md ">
+        <div className="flex flex-1 flex-col min-h-[150px] max-h-[230px] bg-white w-auto shadow-sm px-6 pt-2 rounded-md ">
             <h2 className="text-base font-bold mb-4">Novos pedidos</h2>
             <div className="w-full overflow-auto scrollbar-custom">
                 <table className="w-full ">
@@ -132,15 +144,6 @@ export default function NewRequests({
                                         key={order.id!}
                                         className="w-full h-4 text-center"
                                     >
-                                        <td>
-                                            <Image
-                                                src="https://i.ibb.co/d0MYCmv/Design-sem-nome.jpg"
-                                                alt="208c90f0-5596-48a4-a1ce-aebb38cf789d"
-                                                className="rounded-full"
-                                                width={26}
-                                                height={26}
-                                            />
-                                        </td>
                                         <td
                                             className={`${tdStyle}text-left h-4 text-sm font-medium p-2`}
                                         >
@@ -152,7 +155,7 @@ export default function NewRequests({
                                         <td
                                             className={`${tdStyle}text-left h-4 text-sm font-medium p-2  hidden 3xs:table-cell`}
                                         >
-                                            {order.clients.name}
+                                            {order?.clients?.name}
                                         </td>
                                         <td
                                             className={`${tdStyle} w-16 hidden sm:table-cell md:hiden 2xl:table-cell`}
@@ -185,7 +188,7 @@ export default function NewRequests({
                                                     onClick={() =>
                                                         showModal(order.id!)
                                                     }
-                                                    className="rounded-full pl-[1px] w-8 h-6 bg-gray-400 cursor-pointer flex items-center justify-center"
+                                                    className="w-12 h-6 pb-[1px] rounded-full   text-white text-base font-bold bg-gray-400 cursor-pointer flex items-center justify-center"
                                                 >
                                                     <AiFillEye className="text-xl text-white" />
                                                 </button>
@@ -198,6 +201,17 @@ export default function NewRequests({
                                                     className=" w-10 h-6 pb-[1px] rounded-full  bg-green-400 text-white text-base font-bold flex items-center justify-center"
                                                 >
                                                     <AiOutlineCheck className="w-4 h-4 " />
+                                                </button>
+
+                                                <button
+                                                    className="bg-red-600 w-12 h-6 pb-[1px] rounded-full   text-white text-base font-bold flex items-center justify-center"
+                                                    onClick={() => {
+                                                        handleCancelOrder(
+                                                            order.id!
+                                                        );
+                                                    }}
+                                                >
+                                                    <FiX color="white" />
                                                 </button>
                                             </div>
                                         </td>

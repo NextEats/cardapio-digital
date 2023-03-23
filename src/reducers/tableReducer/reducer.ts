@@ -14,6 +14,9 @@ export interface iTableSelectingProductData {
     productSelects: tSelectWithOptions[];
     product: iProduct['data'] | null;
     table_id: number;
+    quantity: number;
+    observation: string;
+    // id: number ;
     // optionsSelected: iProductOptions["data"]
 }
 
@@ -47,10 +50,9 @@ export function tableReducer(state: iTableReducer, action: any) {
         case tableReducerAction.CHANGEADDITIONALQUANTITY:
             const additional =
                 state.quantityAdditionals[
-                    state.quantityAdditionals.findIndex(
-                        (aq) => aq.additionalId === action.payload.additionalId
-                    )
-                ];
+                state.quantityAdditionals.findIndex(
+                    (aq) => aq.additionalId === action.payload.additionalId
+                )];
             if (action.payload.isIncrement) {
                 state.quantityAdditionals[
                     state.quantityAdditionals.findIndex(
@@ -87,8 +89,11 @@ export function tableReducer(state: iTableReducer, action: any) {
                 selects: state.selects,
                 product: action.payload.product,
                 productSelects: action.payload.productSelects,
-                totalPrice: state.totalPrice,
+                totalPrice: state.totalPrice * action.payload.quantity,
                 table_id: action.payload.table_id,
+                quantity: action.payload.quantity,
+                observation: action.payload.observation,
+                // id: 0
             });
 
             return {
@@ -126,4 +131,7 @@ export const tableReducerDefaultValues = {
     totalPrice: 0,
     productsSelected: [],
     table_id: 0,
+    quantity: 0,
+    observation: '',
+    // id: 0
 };

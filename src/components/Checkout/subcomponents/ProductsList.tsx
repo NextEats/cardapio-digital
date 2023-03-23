@@ -9,12 +9,16 @@ export default function ProductsList({
 }: any) {
     const restaurant = useContext(DigitalMenuContext).restaurant;
     const products = useContext(DigitalMenuContext).productReducer!;
-    const [orderPrice, setOrderPrice] = useState(0)
 
+    const [orderPrice, setOrderPrice] = useState(0);
     useMemo(async () => {
-        const price = await calculateTotalOrderPrice(({ products, restaurantId: restaurant?.id }))
-        setOrderPrice(price ? price : 0)
-    }, [products, restaurant?.id])
+        const price = await calculateTotalOrderPrice({
+            products,
+            restaurantId: restaurant?.id,
+        });
+        setOrderPrice(price ? price : 0);
+    }, [products, restaurant?.id]);
+
     return (
         <>
             <div className="w-full flex justify-center">
@@ -28,8 +32,14 @@ export default function ProductsList({
                 })}
             </div>
             <div className="flex sm:flex-row flex-col gap-y-2 justify-center w-full gap-x-2 mt-6">
-                <div className='flex items-center gap-1 text-xl font-bold text-green-500'>
-                    R$ <p>{orderPrice.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+                <div className="flex items-center gap-1 text-xl font-bold text-green-500">
+                    R${' '}
+                    <p>
+                        {orderPrice.toLocaleString('pt-BR', {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2,
+                        })}
+                    </p>
                 </div>
                 <button
                     onClick={handleCloseModal}

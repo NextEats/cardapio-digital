@@ -2,12 +2,12 @@ import { supabase } from '../../server/api';
 import { iRestaurantWithFKData } from '../../types/types';
 
 export async function getRestaurantBySlugFetch(
-    slug: string | string[] | undefined
+  slug: string | string[] | undefined
 ) {
-    const { data, error } = await supabase
-        .from('restaurants')
-        .select(
-            `
+  const { data, error } = await supabase
+    .from('restaurants')
+    .select(
+      `
       *,
       restaurant_types (
         id,
@@ -31,10 +31,10 @@ export async function getRestaurantBySlugFetch(
         weekdays (id, name)
       )
     `
-        )
-        .eq('slug', slug);
+    )
+    .eq('slug', slug);
 
-    const typedData = data![0] as unknown as iRestaurantWithFKData;
+  const typedData = data![0] as unknown as iRestaurantWithFKData;
 
-    return typedData;
+  return typedData;
 }

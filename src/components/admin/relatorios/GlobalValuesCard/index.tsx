@@ -1,11 +1,13 @@
 import { Card } from "../../Card";
 
 import { format } from "date-fns"
-import { iProducts, iProductCategories, iOrders, iOrdersProducts, iProduct, iOrdersStatus, iOrderProduct, iOrdersWithFKData, iAdditionals } from "../../../../types/types";
+import { iProducts, iProductCategories, iOrders, iOrdersProducts, iProduct, iOrdersStatus, iOrderProduct, iOrdersWithFKData, iAdditionals, iSelects } from "../../../../types/types";
 import { getOrdersProductsData } from "@/src/helpers/getOrdersProductsData";
+import { useEffect, useState } from "react";
 
 interface iGlobalValuesCardProps {
     additionals: iAdditionals['data'];
+    selects: iSelects["data"];
     globalValuesData: {
         ordersGroupedByOrderStatus: { [key: string]: iOrdersWithFKData[] };
         orders: iOrders["data"],
@@ -16,7 +18,19 @@ interface iGlobalValuesCardProps {
     }
 }
 
-export function GlobalValuesCard({ globalValuesData, additionals }: iGlobalValuesCardProps) {
+export function GlobalValuesCard({ globalValuesData, additionals, selects }: iGlobalValuesCardProps) {
+
+    const [billingsVisibility, setBillingsVisibility] = useState(true)
+
+    useEffect(() => {
+        let localstorageVisibility = JSON.parse(localStorage.getItem('billingsVisibility') as string);
+        setBillingsVisibility(!localstorageVisibility)
+    }, [])
+
+    const handleBillingsVisibility = () => {
+        setBillingsVisibility(!billingsVisibility)
+        localStorage.setItem('billingsVisibility', JSON.stringify(billingsVisibility));
+    }
 
     const { orders, products, ordersProducts, ordersStatus, ordersGroupedByOrderStatus } = globalValuesData
 
@@ -45,6 +59,7 @@ export function GlobalValuesCard({ globalValuesData, additionals }: iGlobalValue
                 ordersProducts: ordersProductFiltered,
                 additionals,
                 products,
+                selects,
             }).reduce(
                 (acc, item) => acc + item.totalAdditionalsPriceByProduct,
                 0
@@ -64,12 +79,19 @@ export function GlobalValuesCard({ globalValuesData, additionals }: iGlobalValue
 
     return (
         <>
-            <div className="grid 2xs:grid-cols-2 xl:grid-cols-4 gap-3 mb-8">
-                <Card color="red" name="Faturamento" value={`${billing()}`} />
-                <Card color="green" name="Pedidos" value={`${ordersGroupedByOrderStatus['entregue'] ? ordersGroupedByOrderStatus['entregue'].length : 0}`} />
-                <Card color="yellow" name="Produtos no Cardápio" value={`${products.length}`} />
-                <Card color="blue" name="Ingredientes em Falta" value={"0"} />
-            </div>
+        <div className="grid 2xs:grid-cols-2 xl:grid-cols-4 gap-3 mb-8">
+            <Card  
+                billingsVisibility={billingsVisibility}
+                setBillingsVisibility={setBillingsVisibility}
+                handleBillingsVisibility={handleBillingsVisibility}
+                color="red" 
+                name="Faturamento" 
+                value={`${billing()}`} 
+            />
+            <Card color="green" name="Pedidos" value={`${ordersGroupedByOrderStatus['entregue'] ? ordersGroupedByOrderStatus['entregue'].length : 0}`} />
+            <Card color="yellow" name="Produtos no Cardápio" value={`${products.length}`} />
+            <Card color="blue" name="Ingredientes em Falta" value={"0"} />
+        </div>
         </>
     )
 }

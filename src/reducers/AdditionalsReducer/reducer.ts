@@ -20,13 +20,13 @@ type tAction =
     | { type: 'FETCH_FAILURE'; payload: string }
     | { type: 'ADD_ADDITIONAL'; payload: iAdditionals }
     | {
-        type: 'CHANGEADDITIONALQUANTITY';
-        payload: { isIncrement: boolean; additionalId: number };
-    }
+          type: 'CHANGEADDITIONALQUANTITY';
+          payload: { isIncrement: boolean; additionalId: number };
+      }
     | {
-        type: 'SELECTADDITIONALS';
-        payload: { additional: iAdditional['data'] };
-    };
+          type: 'SELECTADDITIONALS';
+          payload: { additional: iAdditional['data'] };
+      };
 
 export default function AdditionalsReducer(
     state = initialState,
@@ -59,9 +59,9 @@ export default function AdditionalsReducer(
         case 'CHANGEADDITIONALQUANTITY':
             const additional =
                 state.quantityAdditionals[
-                state.quantityAdditionals.findIndex(
-                    (aq) => aq.additionalId === action.payload.additionalId
-                )
+                    state.quantityAdditionals.findIndex(
+                        (aq) => aq.additionalId === action.payload.additionalId
+                    )
                 ];
             if (action.payload.isIncrement) {
                 state.quantityAdditionals[
@@ -92,7 +92,7 @@ export default function AdditionalsReducer(
                 return { ...state };
             }
         case 'CLEAR_ADDITIONALS':
-            return { ...state, quantityAdditionals: [] }
+            return { ...state, quantityAdditionals: [] };
         default:
             return state;
     }

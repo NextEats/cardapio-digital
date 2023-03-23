@@ -56,7 +56,7 @@ interface iAdminHomePageProps {
     cashBoxes: iCashBoxes['data'];
     additionals: iAdditionals['data'];
     selects: iSelects['data'];
-    ordersTables: iOrdersTablesWithFkData[];
+    ordersTablesData: iOrdersTablesWithFkData[];
     restaurant: iRestaurantWithFKData;
 }
 
@@ -104,20 +104,44 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         }
     }
 
-    // const restaurant = await getRestaurantBySlugFetch(context.query.slug);
     const restaurant: any = await getRestaurantBySlugFetch(context.query.slug);
+
+    const [
+        ordersData,
+        ordersProductsData,
+        products,
+        clients,
+        contacts,
+        addresses,
+        cashBoxes,
+        additionals,
+        selects,
+        ordersTablesData,
+    ] = await Promise.all([
+        getOrdersByRestaurantIdFetch(restaurant.id),
+        getOrdersProductsFetch(),
+        getProductsByRestaurantIdFetch(restaurant.id),
+        getclientsFetch(),
+        getContactsFetch(),
+        getAddressesFetch(),
+        getCashBoxesByRestaurantIdFetch(restaurant.id),
+        getAdditionalsByRestaurantIdFetch(restaurant.id),
+        getSelectsByRestaurantIdFetch(restaurant.id),
+        getOrdersTablesFetch(),
+    ]);
+
     return {
         props: {
-            ordersData: await getOrdersByRestaurantIdFetch(restaurant.id),
-            ordersProductsData: await getOrdersProductsFetch(),
-            products: await getProductsByRestaurantIdFetch(restaurant.id),
-            clients: await getclientsFetch(),
-            contacts: await getContactsFetch(),
-            addresses: await getAddressesFetch(),
-            cashBoxes: await getCashBoxesByRestaurantIdFetch(restaurant.id),
-            additionals: await getAdditionalsByRestaurantIdFetch(restaurant.id),
-            selects: await getSelectsByRestaurantIdFetch(restaurant.id),
-            ordersTables: await getOrdersTablesFetch(),
+            ordersData,
+            ordersProductsData,
+            products,
+            clients,
+            contacts,
+            addresses,
+            cashBoxes,
+            additionals,
+            selects,
+            ordersTablesData,
             restaurant,
         },
     };
@@ -130,9 +154,11 @@ export default function AdminHomepage({
     cashBoxes,
     additionals,
     selects,
-    ordersTables,
+    ordersTablesData,
     restaurant,
 }: iAdminHomePageProps) {
+    const [ordersTables, setOrdersTables] =
+        useState<iOrdersTablesWithFkData[]>(ordersTablesData);
     const [ordersProducts, setOrdersProducts] =
         useState<iOrdersProducts['data']>(ordersProductsData);
     const [orders, setOrders] = useState<iOrdersWithFKData[]>(ordersData);
@@ -205,6 +231,7 @@ export default function AdminHomepage({
                 ordersProducts: ordersProductFiltered,
                 additionals,
                 products,
+                selects,
             }).reduce(
                 (acc, item) => acc + item.totalAdditionalsPriceByProduct,
                 0
@@ -282,6 +309,8 @@ export default function AdminHomepage({
     async function newOrdersProducts() {
         const getNewOrdersProducts = await getOrdersProductsFetch();
         setOrdersProducts(getNewOrdersProducts);
+        const getNewOrdersTables = await getOrdersTablesFetch();
+        setOrdersTables(getNewOrdersTables);
     }
     const channel = supabase
         .channel('db-orders_products')
@@ -333,7 +362,7 @@ export default function AdminHomepage({
 
     return (
         <AdminWrapper>
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-4 pb-24">
                 <CashBoxButtons
                     cashBoxState={cashBoxState}
                     restaurantId={restaurant.id}

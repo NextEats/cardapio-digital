@@ -1,9 +1,25 @@
 import { DigitalMenuContext } from '@/src/contexts/DigitalMenuContext';
+import { calculateTotalOrderPrice } from '@/src/helpers/calculateTotalOrderPrice';
 import Link from 'next/link';
-import { useContext } from 'react';
+import { useContext, useMemo, useState } from 'react';
 
-function ThankYouPage() {
+interface iThankYouPage {
+    deliveryFee: number | undefined;
+}
+
+function ThankYouPage({ deliveryFee }: iThankYouPage) {
     const { restaurant } = useContext(DigitalMenuContext);
+
+    const products = useContext(DigitalMenuContext).productReducer!;
+    const [orderPrice, setOrderPrice] = useState(0);
+
+    useMemo(async () => {
+        const price = await calculateTotalOrderPrice({
+            products,
+            restaurantId: restaurant?.id,
+        });
+        setOrderPrice(price ? price : 0);
+    }, [products, restaurant?.id]);
 
     return (
         <div className="min-h-screen bg-gray-100 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
@@ -17,6 +33,30 @@ function ThankYouPage() {
                             Seu pedido foi recebido e está sendo processado.
                             Você receberá uma confirmação em breve.
                         </p>
+
+                        {deliveryFee ? (
+                            <div className="h-7 text-center w-full my-4 text-lg font-semibold text-[#313131]">
+                                Sub total: <span>R$&nbsp;{orderPrice}</span>
+                            </div>
+                        ) : null}
+
+                        {deliveryFee ? (
+                            <div className="h-7 text-center w-full my-4 text-lg font-semibold text-[#313131]">
+                                Taxa de Entrega:{' '}
+                                <span>R$&nbsp;{deliveryFee}</span>
+                            </div>
+                        ) : null}
+
+                        <div className="h-7 text-center w-full my-4 text-lg font-semibold text-[#313131]">
+                            Valor Total:{' '}
+                            <span>
+                                R$&nbsp;
+                                {deliveryFee
+                                    ? deliveryFee + orderPrice
+                                    : orderPrice}
+                            </span>
+                        </div>
+
                         <div className="mt-6">
                             <Link
                                 href={`/${restaurant!.slug}`}

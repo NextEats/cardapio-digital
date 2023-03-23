@@ -6,6 +6,7 @@ import {
     iOrdersProducts,
     iOrdersWithFKData,
     iProducts,
+    iSelects,
     iUserDetails,
 } from '@/src/types/types';
 import * as Dialog from '@radix-ui/react-dialog';
@@ -38,6 +39,7 @@ export default function CashClosingReportModal({
         iOrdersProducts['data']
     >([]);
     const [additionals, setAdditionals] = useState<iAdditionals['data']>([]);
+    const [selects, setSelects] = useState<iSelects['data']>([]);
     const [products, setProducts] = useState<iProducts['data']>([]);
     const [usersData, setUsersData] = useState<iUserDetails['data'] | null>(
         null
@@ -64,6 +66,8 @@ export default function CashClosingReportModal({
                 .select()
                 .eq('user_id', user?.id);
             if (getUserData.data) setUsersData(getUserData.data[0]);
+            const selectsData = await api.get(`api/selects/${restaurantId}`);
+            setSelects(selectsData.data as iSelects['data']);
         }
         getDatas();
     }, [restaurantId, user]);
@@ -122,6 +126,7 @@ export default function CashClosingReportModal({
             ordersProducts: ordersProductFiltered,
             additionals,
             products,
+            selects,
         }).reduce((acc: number, item: any) => acc + item.totalPrice, 0);
 
         const deliveryFees = order.delivery_fees ? order.delivery_fees.fee : 0;
@@ -129,6 +134,23 @@ export default function CashClosingReportModal({
     }
 
     const textStyles = 'text-[10px]';
+
+    const totalValueOfDoneOrders = getPaymentTotals(
+        ordersGroupedByOrderStatus['entregue']
+    );
+
+    const canceledOrders = ordersGroupedByOrderStatus['cancelado'];
+
+    const totalValueOfCanceledOrdersGroupedByPaymentMethod =
+        getPaymentTotals(canceledOrders);
+
+    const totalValueOfCanceledOrders =
+        totalValueOfCanceledOrdersGroupedByPaymentMethod.reduce(
+            (acc, current) => {
+                return acc + current.value;
+            },
+            0
+        );
 
     return (
         <div className="flex items-center gap-3">
@@ -202,28 +224,41 @@ export default function CashClosingReportModal({
                                 Entradas
                             </p>
                             {cashBoxState
-                                ? getPaymentTotals(
-                                      ordersGroupedByOrderStatus['entregue']
-                                  ).map((paymentMethods, index) => {
-                                      return (
-                                          <p
-                                              key={index}
-                                              className={`${textStyles}  font-medium`}
-                                          >
-                                              {' '}
-                                              {paymentMethods.payment_method}:
-                                              R${' '}
-                                              {paymentMethods.value.toLocaleString(
-                                                  'pt-BR',
+                                ? totalValueOfDoneOrders.map(
+                                      (paymentMethods, index) => {
+                                          return (
+                                              <p
+                                                  key={index}
+                                                  className={`${textStyles}  font-medium`}
+                                              >
+                                                  {' '}
                                                   {
-                                                      maximumFractionDigits: 2,
-                                                      minimumFractionDigits: 2,
+                                                      paymentMethods.payment_method
                                                   }
-                                              )}{' '}
-                                          </p>
-                                      );
-                                  })
+                                                  : R${' '}
+                                                  {paymentMethods.value.toLocaleString(
+                                                      'pt-BR',
+                                                      {
+                                                          maximumFractionDigits: 2,
+                                                          minimumFractionDigits: 2,
+                                                      }
+                                                  )}{' '}
+                                              </p>
+                                          );
+                                      }
+                                  )
                                 : null}
+                            <hr className="my-2" />
+                            <p className="text-base font-semibold mb-2">
+                                Cancelados
+                            </p>
+                            <p>
+                                {canceledOrders ? (
+                                    <span>
+                                        R$&nbsp;{totalValueOfCanceledOrders}
+                                    </span>
+                                ) : null}
+                            </p>
                         </div>
 
                         <Dialog.Close

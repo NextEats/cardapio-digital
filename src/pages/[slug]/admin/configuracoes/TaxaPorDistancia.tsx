@@ -8,44 +8,49 @@ export default function TaxaPorDistancia() {
     const [deliveryFees, setDeliveryFees] = useState<any>([]);
 
     useEffect(() => {
+        const fetchDeliveryFees = async () => {
+            const { data: deliveryFees, error } = await supabase
+                .from('delivery_fees')
+                .select('*')
+                .eq('restaurant_id', restaurant!.id)
+                .order('start_km', { ascending: true });
+
+            if (error) {
+                console.error(error);
+            } else {
+                setDeliveryFees(deliveryFees);
+            }
+        };
+
         fetchDeliveryFees();
-    }, []);
+    }, [restaurant]);
 
     if (!restaurant) {
         return null;
     }
-
-    const fetchDeliveryFees = async () => {
-        const { data: deliveryFees, error } = await supabase
-            .from('delivery_fees')
-            .select('*');
-
-        if (error) {
-            console.error(error);
-        } else {
-            setDeliveryFees(deliveryFees);
-        }
-    };
 
     const addDeliveryFee = async (
         startKm: number,
         endKm: number,
         fee: number
     ) => {
-        const { data: newDeliveryFee, error } = await supabase
-            .from('delivery_fees')
+        try {
+            const { data: newDeliveryFee, error } = await supabase
+                .from('delivery_fees')
+                .insert({
+                    fee: fee,
+                    start_km: startKm,
+                    end_km: endKm,
+                    restaurant_id: restaurant.id,
+                })
+                .select('*');
 
-            .insert({
-                fee: fee,
-                start_km: startKm,
-                end_km: endKm,
-                restaurant_id: restaurant.id,
-            })
-            .select('*');
-
-        newDeliveryFee
-            ? setDeliveryFees([...deliveryFees, newDeliveryFee[0]])
-            : null;
+            newDeliveryFee
+                ? setDeliveryFees([...deliveryFees, newDeliveryFee[0]])
+                : null;
+        } catch (err) {
+            console.error(err);
+        }
     };
 
     const deleteDeliveryFee = async (id: number) => {

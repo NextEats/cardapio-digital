@@ -11,9 +11,6 @@ export async function updateRestaurant(pictureUrl: string, data: any, id: any) {
         })
         .eq('id', id);
 
-        // setImageSrc(pictureUrl)
         const newRestaurant = await getRestaurantBySlugFetch(data?.slug)
-        console.log(newRestaurant)
         return newRestaurant.picture_url
-        // window.location.reload();
 }

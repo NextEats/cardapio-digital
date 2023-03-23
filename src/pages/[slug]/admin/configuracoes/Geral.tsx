@@ -1,5 +1,4 @@
 import { AdminContext } from '@/src/contexts/adminContext';
-import { getRestaurantBySlugFetch } from '@/src/fetch/restaurant/getRestaurantBySlug';
 import { updateRestaurant } from '@/src/fetch/restaurant/updateRestaurant';
 import { deleteOldRestaurantImageFromBucket } from '@/src/helpers/deleteOldRestaurantImageFromBucket';
 import { getImagePublicUrl } from '@/src/helpers/getImagePublicUrl';
@@ -13,15 +12,14 @@ import { BiEditAlt } from 'react-icons/bi';
 import InputMask from 'react-input-mask';
 import * as zod from "zod"
 
+const restaurantDataSchema = zod.object({
+    cep: zod.string(),
+    name: zod.string(),
+    slug: zod.string(),
+    restaurantLogo: zod.any()
+})
 
-// const newRestaurantDataSchema = zod.object({
-//     cep: zod.string(),
-//     name: zod.string(),
-//     slug: zod.string(),
-//     restaurantLogo: zod.array(zod.any()),
-// })
-
-// type restaurantData = zod.infer<typeof newRestaurantDataSchema>
+type iRestaurantData = zod.infer<typeof restaurantDataSchema>
 
 export default function Geral() {
 
@@ -35,24 +33,26 @@ export default function Geral() {
         formState: { errors },
         watch, 
         setValue
-    } = useForm({
-        // resolver: zodResolver(newRestaurantDataSchema),
-        // defaultValues: {
-
-        // }
+    } = useForm<iRestaurantData>({
+        resolver: zodResolver(restaurantDataSchema),
+        defaultValues: {
+        }
     });
 
     useEffect(() => {
         setImageSrc(restaurant?.picture_url)
     }, [restaurant?.picture_url])
 
-    const handleImageChange = (data : any) => {
+    const handleImageChange = (data: any) => {
         const file = data[0];
         setImageBlob(URL.createObjectURL(file));
         setValue('restaurantLogo', file)
     }
 
-    const onSubmit = async (data: any) => {
+    const onSubmit = async (data: iRestaurantData) => {
+
+        console.log(data)
+        console.log(data.restaurantLogo)
 
         const oldImageUrl = restaurant?.picture_url 
         const oldImageUrlArray = oldImageUrl!.split('/');  
@@ -67,7 +67,6 @@ export default function Geral() {
         const imageAlreadySaved = imageList!.find((image) => image?.name === file?.name);
         
         if(imageAlreadySaved) {
-            console.log("imagem já salva")
             deleteOldRestaurantImageFromBucket(imageAlreadySaved.name)
         }
 
@@ -86,12 +85,10 @@ export default function Geral() {
             setImageSrc(publicUrl.data.publicUrl);
             const newImageUrl = await updateRestaurant(publicUrl.data.publicUrl, data, restaurant?.id)
             restaurant!.picture_url = newImageUrl;
-            console.log('newImageUrl: ', newImageUrl)
             setImageSrc(newImageUrl)
         }
 
         if(!imageAlreadySaved) {
-            console.log("apagando imagem antiga")
             deleteOldRestaurantImageFromBucket(oldImageName)
         }
     };

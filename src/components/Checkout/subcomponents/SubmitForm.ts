@@ -16,7 +16,7 @@ export function removeNonAlphaNumeric(str: string) {
     return str.replace(/[^a-zA-Z0-9]/g, '');
 }
 
-async function returnDistanceInMeters(start: string, end: string) {
+export async function returnDistanceInMeters(start: string, end: string) {
     try {
         const { data } = await distanceFeeApi.post('/calcular-distancia', {
             start,

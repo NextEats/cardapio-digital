@@ -2,12 +2,16 @@ import CloseModalButton from '@/src/components/CloseModalButton';
 import { DigitalMenuContext } from '@/src/contexts/DigitalMenuContext';
 import { calculateTotalOrderPrice } from '@/src/helpers/calculateTotalOrderPrice';
 import useProductsInCheckout from '@/src/hooks/useProductsInCheckout';
+import { supabase } from '@/src/server/api';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { FormEvent, useContext, useEffect, useMemo, useState } from 'react';
+import { FormEvent, useContext, useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import * as zod from 'zod';
 import Button from '../Button';
-import { SubmitForm } from '../Checkout/subcomponents/SubmitForm';
+import {
+    returnDistanceInMeters,
+    SubmitForm,
+} from '../Checkout/subcomponents/SubmitForm';
 import DynamicProductsList from '../DynamicProductsList';
 import RestaurantInfoHeader from '../RestaurantInfoHeader';
 import SubmitOrderForm from '../SubmitOrderForm';
@@ -59,15 +63,19 @@ export default function Cart() {
     const [subtotalPrice, setSubtotalPrice] = useState<number>(0);
     const [deliveryFee, setDeliveryFee] = useState<number>(0);
 
-    useMemo(async () => {
-        const price = await calculateTotalOrderPrice({
-            products,
-            restaurantId: restaurant?.id,
+    useEffect(() => {
+        async function getTotalPrice() {
+            const price = await calculateTotalOrderPrice({
+                products,
+                restaurantId: restaurant?.id,
+            });
+            console.log('price', price);
+            setSubtotalPrice(price ? price : 0);
+        }
+
+        getTotalPrice().catch((error) => {
+            console.error(error);
         });
-
-        console.log('price', price);
-
-        setSubtotalPrice(price ? price : 0);
     }, [products, restaurant?.id]);
 
     const [currentSelectedTab, setCurrentSelectedTab] =
@@ -86,13 +94,62 @@ export default function Cart() {
         setValue('deliveryForm', 1);
     }, [setValue]);
 
+    const cep = watch('cep');
+    const number = watch('number');
+
+    useEffect(() => {
+        async function getDeliveryFee(cep: string, number: string) {
+            let foundDeliveryFee;
+
+            if (!restaurant!.address_string) {
+                console.error(
+                    "O parâmetro 'address_string' não foi configurado corretamente para este restaurante!"
+                );
+                setDeliveryFee(0);
+                return null;
+            }
+
+            const distance_in_km = await returnDistanceInMeters(
+                restaurant!.address_string,
+                cep + ' ' + number
+            );
+
+            const { data: delivery_fees_data } = await supabase
+                .from('delivery_fees')
+                .select('*')
+                .eq('restaurant_id', restaurant?.id);
+
+            foundDeliveryFee = delivery_fees_data!.find((df) => {
+                console.log(distance_in_km!, df.end_km!, df.start_km!);
+                return (
+                    distance_in_km! <= df.end_km! &&
+                    distance_in_km! >= df.start_km!
+                );
+            });
+
+            if (!foundDeliveryFee) {
+                setDeliveryFee(0);
+                return;
+            }
+
+            setDeliveryFee(foundDeliveryFee.fee);
+        }
+
+        async function fetchData() {
+            await getDeliveryFee(watch('cep').toString(), watch('number'));
+        }
+
+        fetchData();
+    }, [cep, number, restaurant, watch]);
+
     useEffect(() => {
         console.log('useEffect');
 
         if (getValues('deliveryForm') == 2) {
             const doesNameInputIsFilled = !!getValues('name');
-            const doesPaymentMethodInputIsFilled = !!getValues('name');
-            const doesWhatsAppNumberInputIsFilled = !!getValues('name');
+            const doesPaymentMethodInputIsFilled = !!getValues('paymentMethod');
+            const doesWhatsAppNumberInputIsFilled =
+                !!getValues('whatsappNumber');
 
             const isAllRequiredFieldsFilled =
                 doesNameInputIsFilled &&
@@ -114,7 +171,7 @@ export default function Cart() {
 
             setIsReadyToSubmit(isAllRequiredFieldsFilled);
         }
-    });
+    }, [getValues]);
 
     if (!restaurant) {
         handleCloseModal();
@@ -158,7 +215,7 @@ export default function Cart() {
                 ></div>
                 <form
                     // onSubmit={handleSubmit(handleFinishOrder)}
-                    className="h-[95vh] overflow-y-auto px-2 pb-10 bg-white shadow-md max-w-[500px] w-[95%] z-[2000]"
+                    className="h-[95vh] overflow-y-auto px-2 pb-10 bg-white rounded-xl shadow-md max-w-[500px] w-[95%] z-[2000]"
                 >
                     <CloseModalButton
                         className="ml-auto mr-4 mt-4"
@@ -181,12 +238,15 @@ export default function Cart() {
                                         <span>R$ {subtotalPrice}</span>
                                     </div>
                                 ) : null}
-                                {`${watch('deliveryForm')}` == '1' ? (
+                                {`${watch('deliveryForm')}` == '1' &&
+                                watch('cep') &&
+                                watch('number') &&
+                                deliveryFee ? (
                                     <div className="my-2 flex flex-row justify-between w-full">
                                         <span className="font-semibold">
                                             Taxa de Entrega
                                         </span>
-                                        <span>R$ 10</span>
+                                        <span>R$ {deliveryFee}</span>
                                     </div>
                                 ) : null}
 

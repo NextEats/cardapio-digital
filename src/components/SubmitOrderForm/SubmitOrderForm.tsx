@@ -83,23 +83,28 @@ export default function SubmitOrderForm({
                 <ModalTriggerButtons
                     Icon={FaRegUser}
                     text="Nome"
-                    filled={getValues('name') ? true : false}
+                    filled={watch('name') ? true : false}
                 />
                 <ModalTriggerButtons
                     Icon={FaWhatsapp}
                     text="Telefone"
-                    filled={getValues('whatsappNumber') ? true : false}
+                    filled={
+                        watch('whatsappNumber') &&
+                        watch('whatsappNumber') !== ''
+                            ? true
+                            : false
+                    }
                 />
                 <ModalTriggerButtons
                     Icon={FaMoneyBillAlt}
                     text="Método de Pagamento"
-                    filled={getValues('paymentMethod') ? true : false}
+                    filled={watch('paymentMethod') ? true : false}
                 />
                 {watch('deliveryForm') == '1' ? (
                     <ModalTriggerButtons
                         Icon={HiOutlineLocationMarker}
                         text="Endereço de Entrega"
-                        filled={getValues('cep') ? true : false}
+                        filled={watch('cep') ? true : false}
                     />
                 ) : null}
             </div>

@@ -7,15 +7,17 @@ import { WeekdayOperatingTime } from '../WeekdayOperatingTime';
 export default function DigitalMenuModals() {
     const { modals, selectedProduct } = useContext(DigitalMenuContext);
 
-    const body = document.querySelector('body');
-
     useEffect(() => {
-        if (modals?.state.checkout === true) {
-            body?.classList.add('overflow-hidden');
-        } else {
-            body?.classList.remove('overflow-hidden');
+        if (document) {
+            const body = document.querySelector('body');
+
+            if (modals?.state.checkout === true) {
+                body?.classList.add('overflow-hidden');
+            } else {
+                body?.classList.remove('overflow-hidden');
+            }
         }
-    }, [modals?.state.checkout, body?.classList]);
+    }, [modals?.state.checkout]);
 
     return (
         <>

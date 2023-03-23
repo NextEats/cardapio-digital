@@ -108,7 +108,7 @@ export default function ModalTriggerButtons({
             </div>
             {isModalOpen ? (
                 <div className="top-0 left-0 fixed w-screen h-screen flex justify-center items-center z-[5000]">
-                    <div className="bg-white z-[6000] w-[450px] py-8 px-6 rounded ">
+                    <div className="bg-white z-[6000] w-[450px] py-8 px-6 rounded-xl">
                         <div className="flex flex-row justify-between items-center">
                             <span className="font-semibold text-lg text-[#000000aa]">
                                 Preencha suas Informações

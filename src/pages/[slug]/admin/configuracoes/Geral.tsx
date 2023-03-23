@@ -1,11 +1,24 @@
 import { AdminContext } from '@/src/contexts/adminContext';
 import { supabase } from '@/src/server/api';
 import Image from 'next/image';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { BiEditAlt } from 'react-icons/bi';
 import InputMask from 'react-input-mask';
 
 export default function Geral() {
+
+    type uploadedFile = {
+        path: string
+    }
+    type imagePublicUrl = {
+        data: {
+            publicUrl: string
+        }
+    }
+    
+    const [inputChangeLogo, setInputChangeLogo] = useState(false);
+
     const {
         register,
         handleSubmit,
@@ -13,18 +26,64 @@ export default function Geral() {
     } = useForm();
     const { restaurant } = useContext(AdminContext);
 
-    const onSubmit = (data: any, e: any) => {
+    const onSubmit = async (data: any, e: any) => {
+        let imagePublicUrl : imagePublicUrl = {
+            data: {
+                publicUrl: ''
+            }
+        }
+        let uploadedFile : uploadedFile = {
+            path: ''
+        }
+
+        const file = data.restaurantLogo[0];
+
+        const { data: imageList } = await supabase
+        .storage.
+        from('restaurant-pictures').
+        list();
+
+        const imageAlreadySaved = imageList!.find((image) => image.name === file.name);
+
+        if (!imageAlreadySaved) { 
+            console.log("não existe")
+            const { data, error: uploadError } = await supabase
+            .storage.
+            from('restaurant-pictures').
+            upload(`${file.name}`, file);
+
+            if (uploadError) {
+                console.log(uploadError);
+                return;
+            }
+            uploadedFile = data;
+            imagePublicUrl = await supabase
+            .storage
+            .from('restaurant-pictures')
+            .getPublicUrl(uploadedFile.path);
+        }else{
+            imagePublicUrl = await supabase
+            .storage
+            .from('restaurant-pictures')
+            .getPublicUrl(imageAlreadySaved!.name);
+        }
+
         async function updateRestaurant() {
             await supabase
                 .from('restaurants')
                 .update({
                     name: data.name,
                     slug: data.slug,
+                    picture_url: imagePublicUrl.data.publicUrl,
                 })
                 .eq('id', restaurant?.id);
         }
         updateRestaurant();
     };
+
+    const handleRestaurantLogoChange = () => {
+        setInputChangeLogo(!inputChangeLogo)
+    }
 
     if (!restaurant) {
         return <></>;
@@ -40,6 +99,13 @@ export default function Geral() {
                         width={100}
                         height={100}
                     />
+
+                    <BiEditAlt className='cursor-pointer m-2' onClick={handleRestaurantLogoChange}/>
+
+                    {inputChangeLogo ? (
+                        <input {...register('restaurantLogo')} type="file" />
+                    ) : null}
+
                     <label className="w-full">
                         <span className="text-sm font-semibold text-[#4b4b4b]">
                             Nome do Estabelecimento

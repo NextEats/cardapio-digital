@@ -1,30 +1,45 @@
-import { useState } from "react";
+import { useState } from 'react';
 
-import Navbar from "./Navbar";
-import Sidebar from "./Sidebar";
+import Navbar from './Navbar';
+import Sidebar from './Sidebar';
 
-import AdminContextProvider from "./AdminContextProvider";
+import { iRestaurantWithFKData } from '@/src/types/types';
+import Head from 'next/head';
+import AdminContextProvider from './AdminContextProvider';
 
 export default function AdminWrapper({ children }: { children: JSX.Element }) {
-  const [isSidebarOpenState, setIsSidebarOpenState] = useState(true);
+    const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
-  return (
-    <AdminContextProvider>
-      <div className="fixed bg-white-200">
-        <Navbar
-          toogleSidebar={() => setIsSidebarOpenState(!isSidebarOpenState)}
-        />
-        <Sidebar isSidebarOpen={isSidebarOpenState} setIsSidebarOpenState={setIsSidebarOpenState} />
-        <div
-          className={`absolute transition-[left] h-[calc(100vh-64px)] overflow-auto duration-500 ease-in-out p-5 ${
-            isSidebarOpenState
-              ? "left-64 w-[calc(100vw-260px)]"
-              : "left-0 w-full"
-          }`}
+    const [restaurant, setRestaurant] = useState<
+        iRestaurantWithFKData | undefined
+    >(undefined);
+
+    return (
+        <AdminContextProvider
+            restaurant={restaurant}
+            setRestaurant={setRestaurant}
         >
-          {children}
-        </div>
-      </div>
-    </AdminContextProvider>
-  );
+            <>
+                <Head>
+                    <link rel="icon" href={restaurant?.picture_url} />
+                    <title>Admin - {restaurant?.name}</title>
+                </Head>
+                <div className="fixed bg-white-200">
+                    <Navbar
+                        toogleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
+                    />
+                    <Sidebar isSidebarOpen={isSidebarOpen} />
+                    <div
+                        className={`absolute transition-[left] h-[calc(100vh-64px)] overflow-auto duration-500 ease-in-out p-5 ${
+                            isSidebarOpen
+                                ? 'left-64 w-[calc(100vw-260px)]'
+                                : 'left-0 w-full'
+                        }`}
+                    >
+                        {children}
+                    </div>
+                </div>
+            </>
+        </AdminContextProvider>
+    );
 }

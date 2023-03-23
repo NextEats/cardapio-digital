@@ -40,6 +40,7 @@ export async function calculateTotalOrderPrice({
     restaurantId: number | undefined;
 }) {
     if (!restaurantId) return 0;
+
     const { data: additionalData } = await api.get(
         `api/additionals/${restaurantId}`
     );

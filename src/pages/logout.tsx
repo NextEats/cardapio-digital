@@ -3,17 +3,6 @@ import { useEffect } from 'react';
 
 import { useRouter } from 'next/router';
 
-export type tUserDetails = {
-    id: number;
-    restaurant_id: number;
-    user_id: string;
-    restaurants: {
-        id: number;
-        name: string;
-        slug: string;
-    };
-};
-
 export default function Logout() {
     const supabaseClient = useSupabaseClient();
     const user = useUser();

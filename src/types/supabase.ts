@@ -914,6 +914,7 @@ export interface Database {
           address_string: string | null
           banner_url: string | null
           created_at: string | null
+          has_access_to_table_control: boolean | null
           id: number
           name: string
           picture_url: string
@@ -928,6 +929,7 @@ export interface Database {
           address_string?: string | null
           banner_url?: string | null
           created_at?: string | null
+          has_access_to_table_control?: boolean | null
           id?: number
           name: string
           picture_url: string
@@ -942,6 +944,7 @@ export interface Database {
           address_string?: string | null
           banner_url?: string | null
           created_at?: string | null
+          has_access_to_table_control?: boolean | null
           id?: number
           name?: string
           picture_url?: string

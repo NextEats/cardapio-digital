@@ -124,7 +124,7 @@ export default function ContactInfoForm({
 
         fetchOrderTypes();
         fetchActivePaymentMethods();
-    }, [restaurant]);
+    });
 
     return (
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -169,7 +169,9 @@ export default function ContactInfoForm({
                             Nome
                         </label>
                         <input
-                            {...register('name')}
+                            {...register('name', {
+                                required: true,
+                            })}
                             id="name"
                             type="text"
                             className={`appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${

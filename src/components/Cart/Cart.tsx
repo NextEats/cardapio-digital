@@ -64,6 +64,9 @@ export default function Cart() {
             products,
             restaurantId: restaurant?.id,
         });
+
+        console.log('price', price);
+
         setSubtotalPrice(price ? price : 0);
     }, [products, restaurant?.id]);
 

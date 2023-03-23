@@ -55,6 +55,8 @@ export default function ContactInfoForm({
         deliveryForm,
         complement,
     }) => {
+        console.log('payment_method', payment_method);
+
         const chenge =
             watchingPaymentMethod === 5 && watchingChangeNeed
                 ? await calculateChangeValue({ products })
@@ -330,15 +332,12 @@ export default function ContactInfoForm({
                         <select
                             {...register('payment_method', { required: true })}
                             id="payment_method"
+                            defaultValue=""
                             className={`appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${
                                 errors.payment_method && 'border-red-500'
                             }`}
                         >
-                            <option
-                                disabled={true}
-                                value={undefined}
-                                selected={true}
-                            >
+                            <option disabled={true} value="" selected={true}>
                                 Selecione um método de pagamento
                             </option>
                             {activePaymentMethods &&

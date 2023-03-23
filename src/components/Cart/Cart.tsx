@@ -8,14 +8,11 @@ import { FormEvent, useContext, useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import * as zod from 'zod';
 import Button from '../Button';
-import {
-    returnDistanceInMeters,
-    SubmitForm,
-} from '../Checkout/subcomponents/SubmitForm';
-import ThankYouPage from '../Checkout/subcomponents/ThankYou';
 import DynamicProductsList from '../DynamicProductsList';
 import RestaurantInfoHeader from '../RestaurantInfoHeader';
 import SubmitOrderForm from '../SubmitOrderForm';
+import { returnDistanceInMeters, SubmitForm } from './SubmitForm';
+import ThankYouPage from './ThankYou';
 
 export type tTabs = 'delivery' | 'takeout';
 

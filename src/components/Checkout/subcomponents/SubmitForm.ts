@@ -30,6 +30,7 @@ export async function returnDistanceInMeters(start: string, end: string) {
 }
 
 export async function SubmitForm({
+    setOrderNumber,
     setDeliveryFee,
     name,
     number,
@@ -144,6 +145,7 @@ export async function SubmitForm({
             .select('*');
 
         const order = orderData![0] as unknown as iOrder['data'];
+        setOrderNumber(order.number);
 
         products.state.forEach(async (product: any) => {
             if (product.quantity) {

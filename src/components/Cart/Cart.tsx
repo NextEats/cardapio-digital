@@ -12,6 +12,7 @@ import {
     returnDistanceInMeters,
     SubmitForm,
 } from '../Checkout/subcomponents/SubmitForm';
+import ThankYouPage from '../Checkout/subcomponents/ThankYou';
 import DynamicProductsList from '../DynamicProductsList';
 import RestaurantInfoHeader from '../RestaurantInfoHeader';
 import SubmitOrderForm from '../SubmitOrderForm';
@@ -33,6 +34,10 @@ const newOrderFormValidationSchema = zod.object({
 type NewOrderFormData = zod.infer<typeof newOrderFormValidationSchema>;
 
 export default function Cart() {
+    const [orderNumber, setOrderNumber] = useState<number | undefined>(
+        undefined
+    );
+    const [isDone, setIsDone] = useState(false);
     const [isReadyToSubmit, setIsReadyToSubmit] = useState(false);
 
     const newOrderForm = useForm<NewOrderFormData>({
@@ -143,8 +148,6 @@ export default function Cart() {
     }, [cep, number, restaurant, watch]);
 
     useEffect(() => {
-        console.log('useEffect');
-
         if (getValues('deliveryForm') == 2) {
             const doesNameInputIsFilled = !!getValues('name');
             const doesPaymentMethodInputIsFilled = !!getValues('paymentMethod');
@@ -171,7 +174,7 @@ export default function Cart() {
 
             setIsReadyToSubmit(isAllRequiredFieldsFilled);
         }
-    }, [getValues]);
+    });
 
     if (!restaurant) {
         handleCloseModal();
@@ -192,6 +195,7 @@ export default function Cart() {
         } = getValues();
         console.log(getValues());
         SubmitForm({
+            setOrderNumber,
             setDeliveryFee,
             name,
             number,
@@ -204,7 +208,14 @@ export default function Cart() {
             deliveryForm: Number(deliveryForm),
             complement,
         });
+        setIsDone(true);
     };
+
+    if (isDone && orderNumber) {
+        return (
+            <ThankYouPage deliveryFee={deliveryFee} orderNumber={orderNumber} />
+        );
+    }
 
     return (
         <div className="w-screen h-screen flex justify-center items-center fixed z-[2000]">
@@ -213,10 +224,7 @@ export default function Cart() {
                     onClick={handleCloseModal}
                     className="bg-black opacity-90 h-full fixed w-screen cursor-pointer"
                 ></div>
-                <form
-                    // onSubmit={handleSubmit(handleFinishOrder)}
-                    className="h-[95vh] overflow-y-auto px-2 pb-10 bg-white rounded-xl shadow-md max-w-[500px] w-[95%] z-[2000]"
-                >
+                <form className="h-[95vh] overflow-y-auto px-2 pb-10 bg-white rounded-xl shadow-md max-w-[500px] w-[95%] z-[2000]">
                     <CloseModalButton
                         className="ml-auto mr-4 mt-4"
                         handleCloseModal={handleCloseModal}

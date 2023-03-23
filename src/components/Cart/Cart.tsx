@@ -115,7 +115,7 @@ export default function Cart() {
 
     if (!restaurant) {
         handleCloseModal();
-        return;
+        return null;
     }
 
     const handleFinishOrder = (e: FormEvent) => {

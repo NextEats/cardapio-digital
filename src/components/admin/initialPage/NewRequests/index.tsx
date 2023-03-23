@@ -1,4 +1,4 @@
-import { removeNonAlphaNumeric } from '@/src/components/Checkout/subcomponents/SubmitForm';
+import { removeNonAlphaNumeric } from '@/src/components/Cart/SubmitForm';
 import { AdminContext } from '@/src/contexts/adminContext';
 import { updateOrderFetch } from '@/src/fetch/orders/updateOrder';
 import { Dispatch, useContext, useState } from 'react';

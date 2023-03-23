@@ -62,8 +62,7 @@ export default function ModalTriggerButtons({
     };
 
     const { register, setValue, watch, getValues } = useFormContext();
-    const name = watch('name');
-    console.log(name);
+
     const handleSubmitModal = async () => {
         // const values = getValues()
         if (text === 'Nome') {
@@ -326,6 +325,7 @@ export default function ModalTriggerButtons({
                                                 {...register('number', {
                                                     required: true,
                                                 })}
+                                                value={watch('number')}
                                                 type="text"
                                                 className="pl-2 text-lg h-10 w-full  focus:outline-none border-b-2 border-[#3d3d3d] focus:border-[#FC3B1D]"
                                                 placeholder="334"

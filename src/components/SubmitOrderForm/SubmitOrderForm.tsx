@@ -38,14 +38,14 @@ export default function SubmitOrderForm({
                     })}
                     className="hidden"
                     value={1}
-                    checked={watch('deliveryForm') === '1'}
+                    checked={watch('deliveryForm') == 1}
                 />
                 <label
                     htmlFor={'entrega'}
                     className={
                         formTabClassesInactive +
                         `${
-                            watch('deliveryForm') === '1'
+                            watch('deliveryForm') == 1
                                 ? 'border-b-[#FC3B1D]'
                                 : 'border-b-gray-400'
                         }`
@@ -62,14 +62,14 @@ export default function SubmitOrderForm({
                     })}
                     className="hidden"
                     value={2}
-                    checked={watch('deliveryForm') === '2'}
+                    checked={watch('deliveryForm') == 2}
                 />
                 <label
                     htmlFor={'retirada'}
                     className={
                         formTabClassesInactive +
                         `${
-                            watch('deliveryForm') === '2'
+                            watch('deliveryForm') == 2
                                 ? 'border-b-[#FC3B1D]'
                                 : 'border-b-gray-400'
                         }`
@@ -95,18 +95,12 @@ export default function SubmitOrderForm({
                     text="Método de Pagamento"
                     filled={getValues('paymentMethod') ? true : false}
                 />
-                {watch('deliveryForm') === '1' ? (
-                    <div className="transition duration-300">
-                        <ModalTriggerButtons
-                            Icon={HiOutlineLocationMarker}
-                            text="Endereço de Entrega"
-                            filled={
-                                getValues('cep') && getValues('number')
-                                    ? true
-                                    : false
-                            }
-                        />
-                    </div>
+                {watch('deliveryForm') == '1' ? (
+                    <ModalTriggerButtons
+                        Icon={HiOutlineLocationMarker}
+                        text="Endereço de Entrega"
+                        filled={getValues('cep') ? true : false}
+                    />
                 ) : null}
             </div>
         </div>

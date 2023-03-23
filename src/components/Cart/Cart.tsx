@@ -3,7 +3,7 @@ import { DigitalMenuContext } from '@/src/contexts/DigitalMenuContext';
 import { calculateTotalOrderPrice } from '@/src/helpers/calculateTotalOrderPrice';
 import useProductsInCheckout from '@/src/hooks/useProductsInCheckout';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { FormEvent, useContext, useMemo, useState } from 'react';
+import { FormEvent, useContext, useEffect, useMemo, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import * as zod from 'zod';
 import Button from '../Button';
@@ -29,6 +29,8 @@ const newOrderFormValidationSchema = zod.object({
 type NewOrderFormData = zod.infer<typeof newOrderFormValidationSchema>;
 
 export default function Cart() {
+    const [isReadyToSubmit, setIsReadyToSubmit] = useState(false);
+
     const newOrderForm = useForm<NewOrderFormData>({
         resolver: zodResolver(newOrderFormValidationSchema),
         defaultValues: {
@@ -46,6 +48,7 @@ export default function Cart() {
 
     const {
         getValues,
+        setValue,
         watch,
         formState: { errors },
     } = newOrderForm;
@@ -75,6 +78,40 @@ export default function Cart() {
             };
         });
     };
+
+    useEffect(() => {
+        setValue('deliveryForm', 1);
+    }, [setValue]);
+
+    useEffect(() => {
+        console.log('useEffect');
+
+        if (getValues('deliveryForm') == 2) {
+            const doesNameInputIsFilled = !!getValues('name');
+            const doesPaymentMethodInputIsFilled = !!getValues('name');
+            const doesWhatsAppNumberInputIsFilled = !!getValues('name');
+
+            const isAllRequiredFieldsFilled =
+                doesNameInputIsFilled &&
+                doesPaymentMethodInputIsFilled &&
+                doesWhatsAppNumberInputIsFilled;
+
+            console.log('isAllRequiredFieldsFilled', isAllRequiredFieldsFilled);
+
+            setIsReadyToSubmit(isAllRequiredFieldsFilled);
+        } else {
+            const isAllRequiredFieldsFilled =
+                !!getValues('name') &&
+                !!getValues('cep') &&
+                !!getValues('paymentMethod') &&
+                !!getValues('number') &&
+                !!getValues('whatsappNumber');
+
+            console.log(isAllRequiredFieldsFilled);
+
+            setIsReadyToSubmit(isAllRequiredFieldsFilled);
+        }
+    });
 
     if (!restaurant) {
         handleCloseModal();
@@ -108,7 +145,7 @@ export default function Cart() {
             complement,
         });
     };
-    console.log('{watch(deliveryForm)', watch('deliveryForm'));
+
     return (
         <div className="w-screen h-screen flex justify-center items-center fixed z-[2000]">
             <FormProvider {...newOrderForm}>
@@ -133,7 +170,7 @@ export default function Cart() {
                     {subtotalPrice !== 0 ? (
                         <div className="px-4 mt-7">
                             <div className="px-5">
-                                {`${watch('deliveryForm')}` === '1' ? (
+                                {`${watch('deliveryForm')}` == '1' ? (
                                     <div className="my-2 flex flex-row justify-between w-full">
                                         <span className="font-semibold">
                                             Subtotal
@@ -141,7 +178,7 @@ export default function Cart() {
                                         <span>R$ {subtotalPrice}</span>
                                     </div>
                                 ) : null}
-                                {`${watch('deliveryForm')}` === '1' ? (
+                                {`${watch('deliveryForm')}` == '1' ? (
                                     <div className="my-2 flex flex-row justify-between w-full">
                                         <span className="font-semibold">
                                             Taxa de Entrega
@@ -155,7 +192,7 @@ export default function Cart() {
                                     <span>
                                         R${' '}
                                         {deliveryFee &&
-                                        `${watch('deliveryForm')}` === '1'
+                                        watch('deliveryForm') == 1
                                             ? subtotalPrice + deliveryFee
                                             : subtotalPrice}
                                     </span>
@@ -163,10 +200,9 @@ export default function Cart() {
                             </div>
                             <div className="mt-7">
                                 <Button
-                                    text="confirmar pedido"
-                                    // type="submit"
-                                    // disabled={errors}
+                                    text={'confirmar pedido'}
                                     onClick={handleFinishOrder}
+                                    disabled={!isReadyToSubmit}
                                 />
                             </div>
                         </div>

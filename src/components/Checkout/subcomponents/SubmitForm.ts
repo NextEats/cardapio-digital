@@ -11,6 +11,7 @@ import {
     iContact,
     iOrder,
 } from '@/src/types/types';
+import { toast } from 'react-toastify';
 
 export function removeNonAlphaNumeric(str: string) {
     return str.replace(/[^a-zA-Z0-9]/g, '');
@@ -65,10 +66,15 @@ export async function SubmitForm({
             });
 
             if (!foundDeliveryFee) {
-                alert(
-                    'Sinto muito, o endereço digitado está fora do alcance de nossos entregadores!'
-                );
-                window.location.href = serverURL + restaurant.slug;
+                toast.error('Sinto muito, o endereço digitado está fora do alcance de nossos entregadores!'
+                ,{
+                    theme: "light",
+                    position: "top-center"
+                })
+
+                setTimeout(() => {
+                    window.location.href = serverURL + restaurant.slug;
+                }, 6000)
                 return;
             }
         }
@@ -82,7 +88,10 @@ export async function SubmitForm({
             currentCashBoxData![0] as unknown as iCashBox['data'];
 
         if (!currentCashBox) {
-            alert('O Pedido só pode ser feito se o caixa estiver aberto.');
+            toast.error('O Pedido só pode ser feito se o caixa estiver aberto.'
+            , {
+                theme: "light",
+            })
             return;
         }
 

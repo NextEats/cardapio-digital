@@ -8,6 +8,7 @@ import {
     useReducer,
     useState,
 } from 'react';
+import { toast } from 'react-toastify';
 import {
     getOrdersProductsData,
     iOrdersProductsData,
@@ -254,7 +255,11 @@ export default function TableContextProvider({
 
     async function createNewtable(cheirAmount: string, tableName: string) {
         if (tableName === '') {
-            alert('O nome da mesa é obrigatório');
+            // alert('O nome da mesa é obrigatório');
+            toast.error('O nome da mesa é obrigatório.'
+            , {
+                theme: "light",
+            })
             return;
         }
 
@@ -262,12 +267,12 @@ export default function TableContextProvider({
             'api/table_control/' + restaurant.id,
         );
 
-        console.log(tableList)
-
         const tableAlreadyExists = tableList.data.find((table: any) => table.name.toLowerCase().replace(/\s/g, "") === tableName.toLowerCase().replace(/\s/g, ""));
         
         if (tableAlreadyExists) {
-            alert('Essa mesa já existe');
+            toast.error('Essa mesa já existe. Por favor escolha outro nome.', {
+                theme: "light",
+            })
             return;
         }
 

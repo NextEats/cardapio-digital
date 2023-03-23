@@ -45,7 +45,6 @@ export default function ContactInfoForm({
     const watchingChangeNeed = watch('change_need');
     const change_value = watch('change_value');
     const deliveryForm = watch('deliveryForm');
-    const [storageCompliment, setStorageCompliment] = useState();
 
     const onSubmit: SubmitHandler<ContactFormValues> = async ({
         cep,
@@ -64,11 +63,13 @@ export default function ContactInfoForm({
                 : null;
         setLoading(true);
 
-        localStorage.setItem('cep', cep);
-        localStorage.setItem('neighborhood', neighborhood);
-        localStorage.setItem('street', street);
-        localStorage.setItem('number', number);
-        localStorage.setItem('complement', complement);
+        if(deliveryForm === 1) {
+            localStorage.setItem('cep', cep);
+            localStorage.setItem('neighborhood', neighborhood);
+            localStorage.setItem('street', street);
+            localStorage.setItem('number', number);
+            complement ? localStorage.setItem('complement', complement) : null
+        }
 
         await SubmitForm({
             setDeliveryFee,
@@ -135,9 +136,6 @@ export default function ContactInfoForm({
         fetchActivePaymentMethods();
     }, [restaurant]);
 
-    // useEffect(()=> {
-    //     setStorageCompliment(localStorage.getItem('complement'))
-    // }, [])
 
     return (
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -269,7 +267,7 @@ export default function ContactInfoForm({
                                 </label>
                                 <input
                                     {...register('neighborhood')}
-                                    defaultValue={localStorage.getItem('neighborhood') ? localStorage.getItem('neighborhood') as string : ''}
+                                    defaultValue={localStorage.getItem('neighborhood') ? localStorage.getItem('neighborhood') as string : ' '}
                                     id="neighborhood"
                                     type="text"
                                     className={`bg-[#00000019] appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${

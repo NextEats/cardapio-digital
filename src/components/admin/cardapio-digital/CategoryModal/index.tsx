@@ -10,6 +10,7 @@ import Image from 'next/image';
 import { Dispatch, FormEvent, SetStateAction, useEffect, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { FiX } from 'react-icons/fi';
+import { toast } from 'react-toastify';
 import * as zod from 'zod';
 
 const newCategoryFormValidationSchema = zod.object({
@@ -73,13 +74,21 @@ export function CategoryModal({
     async function handleNewCategory() {
         const productCategory = getValues('productCategory');
         if (!productCategory) {
-            alert('O nome da categoria não pode ser vazio.');
+            // alert('O nome da categoria não pode ser vazio.');
+            toast.error('O nome da categoria não pode ser vazio.'
+            ,{
+                theme: "light",
+            })
             return;
         }
         if (categoryOrdervalue <= 0) {
-            alert(
-                'Insira somente valores acima de 0 para a ordem da categoria.'
-            );
+            // alert(
+            //     'Insira somente valores acima de 0 para a ordem da categoria.'
+            // );
+            toast.error('Insira somente valores acima de 0 para a ordem da categoria.'
+            , {
+                theme: "light",
+            })
             return;
         }
         if (
@@ -87,9 +96,13 @@ export function CategoryModal({
                 (c) => c.category_order === categoryOrdervalue
             )
         ) {
-            alert(
-                'Já existe uma categoria nessa posição, por favor escolha outro número.'
-            );
+            // alert(
+            //     'Já existe uma categoria nessa posição, por favor escolha outro número.'
+            // );
+            toast.error('Já existe uma categoria nessa posição, por favor escolha outro número.'
+            , {
+                theme: "light",
+            })
             return;
         }
         await supabase.from('product_categories').insert({
@@ -105,13 +118,21 @@ export function CategoryModal({
     async function updateCategory() {
         const productCategory = getValues('productCategory');
         if (!productCategory) {
-            alert('O nome da categoria não pode ser vazio.');
+            // alert('O nome da categoria não pode ser vazio.');
+            toast.error('O nome da categoria não pode ser vazio.'
+            , {
+                theme: "light",
+            })
             return;
         }
         if (categoryOrdervalue <= 0) {
-            alert(
-                'Insira somente valores acima de 0 para a ordem da categoria.'
-            );
+            // alert(
+            //     'Insira somente valores acima de 0 para a ordem da categoria.'
+            // );
+            toast.error('Insira somente valores acima de 0 para a ordem da categoria.'
+            , {
+                theme: "light",
+            })
             return;
         }
         if (
@@ -119,9 +140,10 @@ export function CategoryModal({
                 (c) => c.category_order === categoryOrdervalue
             )
         ) {
-            alert(
-                'Já existe uma categoria nessa posição, por favor escolha outro número.'
-            );
+            toast.error('Já existe uma categoria nessa posição, por favor escolha outro número.'
+            , {
+                theme: "light",
+            })
             return;
         }
         await supabase

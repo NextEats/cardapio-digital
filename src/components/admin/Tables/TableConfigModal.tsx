@@ -9,6 +9,7 @@ import * as RadioGroup from '@radix-ui/react-radio-group';
 import RadioGroupItem from "./RadioGroupItem";
 import { CardapioDigitalButton } from "../cardapio-digital/CardapioDigitalButton";
 import { api } from "@/src/server/api";
+import { toast } from "react-toastify";
 
 interface iTableConfigModalProps {
 }
@@ -21,7 +22,10 @@ export default function TableConfigModal({ }: iTableConfigModalProps) {
     async function handleUpdateTable() {
 
         if (tableData.productsInProductionData !== undefined && tableData.productsInProductionData.length > 0) {
-            alert("A mesa só pode ser fechada ou inativada se todos os pedidos estiverem sido entregue.")
+            // alert("A mesa só pode ser fechada ou inativada se todos os pedidos estiverem sido entregues.")
+            toast.error('A mesa só pode ser fechada ou inativada se todos os pedidos estiverem sido entregues.', {
+                theme: "light",
+            })
             return
         }
 
@@ -41,7 +45,10 @@ export default function TableConfigModal({ }: iTableConfigModalProps) {
 
     async function handleDeleteTable() {
         if (tableData.productsInProductionData !== undefined && tableData.productsInProductionData.length > 0) {
-            alert("A mesa só pode ser excluída se todos os pedidos estiverem sido entregue.")
+            // alert("A mesa só pode ser excluída se todos os pedidos estiverem sido entregue.")
+            toast.error('A mesa só pode ser excluída se todos os pedidos estiverem sido entregue.', {
+                theme: "light",
+            })
             return
         }
         await deleteTable()

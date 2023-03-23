@@ -6,6 +6,7 @@ import { useContext, useRef } from 'react';
 import { BsGear } from 'react-icons/bs';
 import { FiX } from 'react-icons/fi';
 import { GiTable } from 'react-icons/gi';
+import { toast } from 'react-toastify';
 import { CardapioDigitalButton } from '../cardapio-digital/CardapioDigitalButton';
 import CustomerAtTheTable from './CustomerAtTheTable';
 import OrderTableDetails from './OrderTableDetails';
@@ -31,7 +32,10 @@ export default function TableModal() {
     async function handleFinishOrder() {
         const foundCashBoxes = cashBoxes.find((c) => c.is_open === true);
         if (foundCashBoxes === undefined) {
-            alert('O Pedido só pode ser feito se o caixa estiver aberto.');
+            // alert('O Pedido só pode ser feito se o caixa estiver aberto.');
+            toast.error('O Pedido só pode ser feito se o caixa estiver aberto.', {
+                theme: "light",
+            })
             return;
         }
 

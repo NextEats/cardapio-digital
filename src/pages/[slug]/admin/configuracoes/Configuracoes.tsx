@@ -17,7 +17,13 @@ export default function Config() {
   const [currentSection, setCurrentSection] =
     useState<iCurrentSection>("general");
 
+
+     // https://cceilpiizkukiqfodhec.supabase.co/storage/v1/object/public/restaurant-pictures/bonzi%20buddy.jpg
+
+     
+
   return (
+    
     <AdminWrapper>
       <>
         <ConfigCategoriesMenu

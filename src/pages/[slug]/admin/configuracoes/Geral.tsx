@@ -1,5 +1,7 @@
 import { AdminContext } from '@/src/contexts/adminContext';
 import { getRestaurantBySlugFetch } from '@/src/fetch/restaurant/getRestaurantBySlug';
+import { updateRestaurant } from '@/src/fetch/restaurant/updateRestaurant';
+import { deleteOldRestaurantImageFromBucket } from '@/src/helpers/deleteOldRestaurantImageFromBucket';
 import { getImagePublicUrl } from '@/src/helpers/getImagePublicUrl';
 import { serverURL, supabase } from '@/src/server/api';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -11,11 +13,6 @@ import { BiEditAlt } from 'react-icons/bi';
 import InputMask from 'react-input-mask';
 import * as zod from "zod"
 
-type iImagePublicUrl = {
-    data: {
-        publicUrl: string
-    }
-}
 
 // const newRestaurantDataSchema = zod.object({
 //     cep: zod.string(),
@@ -29,10 +26,8 @@ type iImagePublicUrl = {
 export default function Geral() {
 
     const { restaurant } = useContext(AdminContext);
-    const [inputChangeLogo, setInputChangeLogo] = useState(false);
     const [imageSrc, setImageSrc] = useState(restaurant?.picture_url);
     const [imageBlob, setImageBlob] = useState('');
-    const [imagePublicUrl, setImagePublicUrl] = useState<iImagePublicUrl>({} as iImagePublicUrl);
 
     const {
         register,
@@ -58,6 +53,10 @@ export default function Geral() {
     }
 
     const onSubmit = async (data: any) => {
+
+        const oldImageUrl = restaurant?.picture_url 
+        const oldImageUrlArray = oldImageUrl!.split('/');  
+        const oldImageName = oldImageUrlArray.at(-1)
         const file = data?.restaurantLogo;
 
         const { data: imageList } = await supabase
@@ -67,48 +66,35 @@ export default function Geral() {
 
         const imageAlreadySaved = imageList!.find((image) => image?.name === file?.name);
         
-        if (!imageAlreadySaved) { 
-            const { data, error: uploadError } = await supabase
-            .storage.
-            from('restaurant-pictures').
-            upload(`${file?.name}`, file);
-
-            if (uploadError) {
-                console.log(uploadError);
-            }
-
-            const publicUrl = getImagePublicUrl(data?.path as string)
-
-            if(publicUrl){
-                setImageSrc(publicUrl.data.publicUrl);
-                updateRestaurant(publicUrl.data.publicUrl)
-            }
-        }else{
-            const publicUrl = getImagePublicUrl(imageAlreadySaved.name)
-
-            if(publicUrl){
-                setImageSrc(publicUrl.data.publicUrl);
-                updateRestaurant(publicUrl.data.publicUrl)
-            }
+        if(imageAlreadySaved) {
+            console.log("imagem já salva")
+            deleteOldRestaurantImageFromBucket(imageAlreadySaved.name)
         }
 
-        async function updateRestaurant(pictureUrl: string) {
-            await supabase
-                .from('restaurants')
-                .update({
-                    name: data.name,
-                    slug: data.slug,
-                    picture_url: pictureUrl,
-                })
-                .eq('id', restaurant?.id);
-                setImageSrc(pictureUrl)
-                window.location.reload();
+        const { data: savedFile, error: uploadError } = await supabase
+        .storage.
+        from('restaurant-pictures').
+        upload(`${file?.name}`, file);
+
+        if (uploadError) {
+            console.log(uploadError);
+        }
+
+        const publicUrl = getImagePublicUrl(savedFile?.path as string)
+
+        if(publicUrl){
+            setImageSrc(publicUrl.data.publicUrl);
+            const newImageUrl = await updateRestaurant(publicUrl.data.publicUrl, data, restaurant?.id)
+            restaurant!.picture_url = newImageUrl;
+            console.log('newImageUrl: ', newImageUrl)
+            setImageSrc(newImageUrl)
+        }
+
+        if(!imageAlreadySaved) {
+            console.log("apagando imagem antiga")
+            deleteOldRestaurantImageFromBucket(oldImageName)
         }
     };
-
-    const handleRestaurantLogoChange = () => {
-        setInputChangeLogo(!inputChangeLogo)
-    }
 
     if (!restaurant) {
         return <p>Carregando Restaurante</p>;
@@ -120,14 +106,14 @@ export default function Geral() {
                 <div className="flex flex-col gap-y-5">
                     <div className='flex justify-start'>
                         <Image
-                        src={imageBlob ? imageBlob : restaurant?.picture_url}
-                        alt={restaurant?.picture_url}
-                        width={100}
-                        height={100}
+                            src={imageBlob ? imageBlob : (imageSrc ? imageSrc : restaurant.picture_url)}
+                            alt={restaurant?.picture_url}
+                            width={100}
+                            height={100}
                         />
 
                         <label htmlFor="editImage" className="cursor-pointer w-fit">
-                            <BiEditAlt className='cursor-pointer m-2' fontSize={'1.5em'} onClick={handleRestaurantLogoChange}/>
+                            <BiEditAlt className='cursor-pointer m-2' fontSize={'1.5em'}/>
                         </label>
                     
                         <input id='editImage' {...register('restaurantLogo')} onChange={(e) => handleImageChange(e.target.files)} className="hidden" type="file" />

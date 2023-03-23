@@ -130,6 +130,7 @@ export default function ModalTriggerButtons({
                                             {...register('name', {
                                                 required: true,
                                             })}
+                                            value={watch('name')}
                                             type="text"
                                             className="text-lg h-10 w-full  focus:outline-none border-b-2 border-[#3d3d3d] focus:border-[#FC3B1D]"
                                             placeholder="Carlos da Silva Costa"

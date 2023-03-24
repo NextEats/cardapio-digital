@@ -74,7 +74,6 @@ export default function CashClosingReportModal({
     async function handleCloseCashBox() {
         if (
             ordersGroupedByOrderStatus['em análise'] ||
-            ordersGroupedByOrderStatus['em produção'] ||
             ordersGroupedByOrderStatus['a caminho']
         ) {
             alert(

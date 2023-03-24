@@ -9,7 +9,7 @@ interface iCashBoxButtons {
     ordersGroupedByOrderStatus: { [key: string]: iOrdersWithFKData[] };
     restaurantId: number;
     cashBoxState: iCashBox['data'] | undefined;
-    billing: number
+    billing: number;
 }
 
 export default function CashBoxButtons({
@@ -20,7 +20,8 @@ export default function CashBoxButtons({
     billing,
 }: iCashBoxButtons) {
     const [openCashBoxState, setOpenCashBoxState] = useState(false);
-    const [openCashBoxClosingReportModal, setOpenCashBoxClosingReportModal] = useState(false);
+    const [openCashBoxClosingReportModal, setOpenCashBoxClosingReportModal] =
+        useState(false);
 
     async function handleOpenCashBox() {
         const cashBox = await api.post('api/cash_boxes/open', {
@@ -32,13 +33,14 @@ export default function CashBoxButtons({
     async function openCashBoxReportToCloseCashBox() {
         if (
             ordersGroupedByOrderStatus['em análise'] ||
-            ordersGroupedByOrderStatus['em produção'] ||
             ordersGroupedByOrderStatus['a caminho']
         ) {
-            alert('Para fechar o caixa, todos os pedidos precisam ser entregues.');
+            alert(
+                'Para fechar o caixa, todos os pedidos precisam ser entregues.'
+            );
             return;
         }
-        setOpenCashBoxClosingReportModal(true)
+        setOpenCashBoxClosingReportModal(true);
     }
 
     return (
@@ -63,7 +65,9 @@ export default function CashBoxButtons({
                 ordersGroupedByOrderStatus={ordersGroupedByOrderStatus}
                 restaurantId={restaurantId}
                 openCashBoxClosingReportModal={openCashBoxClosingReportModal}
-                setOpenCashBoxClosingReportModal={setOpenCashBoxClosingReportModal}
+                setOpenCashBoxClosingReportModal={
+                    setOpenCashBoxClosingReportModal
+                }
                 billing={billing}
             />
         </div>

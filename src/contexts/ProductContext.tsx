@@ -1,19 +1,28 @@
 import {
     createContext,
+    Dispatch,
     ReactNode,
+    SetStateAction,
+    useState,
 } from 'react';
 import {
+    iProductCategories,
     iProductsWithFKData,
     iRestaurant,
 } from '../types/types';
 
 interface iProductContextProps {
     products: iProductsWithFKData[];
+    productSelected: iProductsWithFKData[]
+    setProductSelected: Dispatch<SetStateAction<iProductsWithFKData[]>>
+    categories: iProductCategories["data"]
+
 }
 interface iProductContextProviderProps {
     children: ReactNode;
     restaurant: iRestaurant['data'];
     products: iProductsWithFKData[];
+    categories: iProductCategories["data"]
 
 }
 
@@ -23,13 +32,18 @@ export default function ProductContextProvider({
     children,
     restaurant,
     products,
+    categories,
 }: iProductContextProviderProps) {
-
+    const [productSelected, setProductSelected] = useState<iProductsWithFKData[]>([])
 
     return (
         <ProductContext.Provider
             value={{
-                products
+                // ferchs
+                products,
+                categories,
+                productSelected,
+                setProductSelected,
             }}
         >
             {children}

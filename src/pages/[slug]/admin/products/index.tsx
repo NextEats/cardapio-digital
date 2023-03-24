@@ -3,15 +3,17 @@ import { CategoryCard } from '@/src/components/admin/ProductsData/CategoryCard';
 import ProductContextProvider from '@/src/contexts/ProductContext';
 import { getProductsByRestaurantIdFetch } from '@/src/fetch/products/getProductsByRestaurantId';
 import { getProductWithFKDataByRestaurantIdFetch } from '@/src/fetch/products/getProductWithFKDataByRestaurantId';
+import { getProductsCategoriesByRestaurantIdFetch } from '@/src/fetch/productsCategories/getProductsCategoriesByRestaurantId';
 import { getRestaurantBySlugFetch } from '@/src/fetch/restaurant/getRestaurantBySlug';
 import { supabase } from '@/src/server/api';
-import { iProducts, iProductsWithFKData, iRestaurant } from '@/src/types/types';
+import { iProductCategories, iProducts, iProductsWithFKData, iRestaurant } from '@/src/types/types';
 import { GetStaticPaths, GetStaticProps } from 'next';
 import AdminWrapper from '../../../../components/admin/AdminWrapper';
 
 interface iProdcutsProps {
     restaurant: iRestaurant["data"]
     products: iProductsWithFKData[]
+    categories: iProductCategories["data"]
 }
 
 
@@ -19,6 +21,7 @@ interface iProdcutsProps {
 export default function Prodcuts({
     restaurant,
     products,
+    categories
 }: iProdcutsProps) {
 
     return (
@@ -26,6 +29,7 @@ export default function Prodcuts({
         <ProductContextProvider
             products={products}
             restaurant={restaurant}
+            categories={categories}
         >
             <div className='pt-16 pl-60'>
                 <div className='p-5 flex flex-col gap-3'>
@@ -57,19 +61,21 @@ export const getStaticProps: GetStaticProps<iProdcutsProps, { slug: string }> = 
     const restaurant = await getRestaurantBySlugFetch(restaurantSlug);
 
     const [products] = await Promise.all([
-        getProductWithFKDataByRestaurantIdFetch({ restaurantId: restaurant.id })
+        getProductWithFKDataByRestaurantIdFetch({ restaurantId: restaurant.id }),
     ])
 
-    // const products = await supabase
-    //     .from('products')
-    //     .select('*, product_category ( * )')
-    //     .eq('restaurant_id', restaurant.id);
+    const categories = products.reduce((acc: iProductCategories["data"], item: iProductsWithFKData) => {
+        const newCategory = item.category_id;
+        if (acc.some(c => c.id === newCategory?.id)) return acc;
+        return [...acc, newCategory];
+    }, []);
 
 
     return {
         props: {
             restaurant,
             products,
+            categories
         },
         revalidate: 1 * 60
     };

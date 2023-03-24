@@ -712,6 +712,7 @@ export interface Database {
       }
       products: {
         Row: {
+          active: boolean
           category_id: number
           created_at: string | null
           description: string
@@ -722,6 +723,7 @@ export interface Database {
           restaurant_id: number | null
         }
         Insert: {
+          active?: boolean
           category_id: number
           created_at?: string | null
           description: string
@@ -732,6 +734,7 @@ export interface Database {
           restaurant_id?: number | null
         }
         Update: {
+          active?: boolean
           category_id?: number
           created_at?: string | null
           description?: string
@@ -914,6 +917,7 @@ export interface Database {
           address_string: string | null
           banner_url: string | null
           created_at: string | null
+          has_access_to_table_control: boolean | null
           id: number
           name: string
           picture_url: string
@@ -928,6 +932,7 @@ export interface Database {
           address_string?: string | null
           banner_url?: string | null
           created_at?: string | null
+          has_access_to_table_control?: boolean | null
           id?: number
           name: string
           picture_url: string
@@ -942,6 +947,7 @@ export interface Database {
           address_string?: string | null
           banner_url?: string | null
           created_at?: string | null
+          has_access_to_table_control?: boolean | null
           id?: number
           name?: string
           picture_url?: string

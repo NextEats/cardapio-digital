@@ -11,9 +11,14 @@ export async function getProductWithFKDataByRestaurantIdFetch({ restaurantId }: 
         .select('*, category_id ( * )')
         .eq('restaurant_id', restaurantId);
 
+
+    if (productData === null) {
+        return []
+    }
+
     console.log(productData, error)
 
 
 
-    return productData!
+    return productData as iProductsWithFKData[]
 }

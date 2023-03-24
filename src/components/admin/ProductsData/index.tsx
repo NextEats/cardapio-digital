@@ -1,5 +1,6 @@
 import { ProductContext } from "@/src/contexts/ProductContext"
 import { useContext } from "react"
+import { ProductsAction } from "./ProductsAction"
 import { ProductTable } from "./ProductTable"
 
 interface iProductsDataProps {
@@ -10,11 +11,11 @@ export function ProductsData({ styles }: iProductsDataProps) {
     const { products } = useContext(ProductContext)
 
     return (
-        <div className={`min-h-[400px] h-full bg-white shadow-md rounded ${styles}`}>
+        <div className={`min-h-[400px] h-full bg-white shadow-md rounded-md ${styles} p-4`}>
+            <ProductsAction />
+
             <ProductTable />
-            {products ? products.map(product => {
-                return <p key={product.id}>{product.name}</p>
-            }) : null}
+
         </div>
     )
 }

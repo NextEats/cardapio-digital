@@ -17,7 +17,7 @@ export function removeNonAlphaNumeric(str: string) {
     return str.replace(/[^a-zA-Z0-9]/g, '');
 }
 
-async function returnDistanceInMeters(start: string, end: string) {
+export async function returnDistanceInMeters(start: string, end: string) {
     try {
         const { data } = await distanceFeeApi.post('/calcular-distancia', {
             start,
@@ -31,6 +31,7 @@ async function returnDistanceInMeters(start: string, end: string) {
 }
 
 export async function SubmitForm({
+    setOrderNumber,
     setDeliveryFee,
     name,
     number,
@@ -153,6 +154,7 @@ export async function SubmitForm({
             .select('*');
 
         const order = orderData![0] as unknown as iOrder['data'];
+        setOrderNumber(order.number);
 
         products.state.forEach(async (product: any) => {
             if (product.quantity) {

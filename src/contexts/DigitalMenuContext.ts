@@ -7,6 +7,14 @@ export interface iShowModalsState {
     product: boolean;
 }
 
+export interface iProductsReducer {
+    id: number;
+    observation: string;
+    quantity: number;
+    additionals?: Array<any>;
+    selects?: Array<any>;
+}
+
 export interface iDigitalMenuContext {
     restaurant?: iRestaurantWithFKData;
     selectedProduct?: {
@@ -23,7 +31,7 @@ export interface iDigitalMenuContext {
         set: React.Dispatch<React.SetStateAction<tSelectWithOptions[]>>;
     };
     productReducer?: {
-        state: any;
+        state: Array<iProductsReducer> | undefined | null;
         dispatch: Dispatch<any>;
     };
 }

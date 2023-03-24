@@ -27,7 +27,12 @@ export default function ModalTriggerButtons({
         iPaymentMethodsRestaurantsWithFKData[]
     >([]);
 
+    const { register, setValue, watch, getValues } = useFormContext();
+
+    const isButtonDisabled = text === 'Telefone'
+    && watch('whatsappNumber').replace(/\D/g, "").length < 11 
     const handleToggleModal = () => {
+        
         if (isModalOpen) {
             setIsModalOpen(false);
         } else {
@@ -61,14 +66,6 @@ export default function ModalTriggerButtons({
         }
     };
 
-    const { register, setValue, watch, getValues } = useFormContext();
-
-    const handleSubmitModal = async () => {
-        // const values = getValues()
-        if (text === 'Nome') {
-            // setValue('nome', )
-        }
-    };
 
     useEffect(() => {
         const getPaymentMethodsRestaurants = async () => {
@@ -337,13 +334,11 @@ export default function ModalTriggerButtons({
                             </div>
                         </div>
 
-                        <div></div>
-
                         <div className="mt-12">
                             <Button
                                 text="salvar"
                                 onClick={handleToggleModal}
-                                // onClick={handleSubmitModal}
+                                disabled={isButtonDisabled}
                             />
                         </div>
                     </div>

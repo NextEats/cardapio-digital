@@ -150,7 +150,7 @@ export default function Cart() {
             const doesPaymentMethodInputIsFilled = !!getValues('paymentMethod');
             const doesWhatsAppNumberInputIsFilled =
                 !!getValues('whatsappNumber');
-
+            
             const isAllRequiredFieldsFilled =
                 doesNameInputIsFilled &&
                 doesPaymentMethodInputIsFilled &&
@@ -160,6 +160,7 @@ export default function Cart() {
 
             setIsReadyToSubmit(isAllRequiredFieldsFilled);
         } else {
+            // console.log('whatsappNumber: ', getValues('whatsappNumber'));
             const isAllRequiredFieldsFilled =
                 !!getValues('name') &&
                 !!getValues('cep') &&
@@ -214,7 +215,11 @@ export default function Cart() {
         );
     }
 
+
     return (
+
+        
+
         <div className="w-screen h-screen flex justify-center items-center fixed z-[2000]">
             <FormProvider {...newOrderForm}>
                 <div

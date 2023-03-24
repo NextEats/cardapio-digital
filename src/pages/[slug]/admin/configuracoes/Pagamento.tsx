@@ -1,6 +1,7 @@
 import { AdminContext } from '@/src/contexts/adminContext';
 import { supabase } from '@/src/server/api';
 import { useContext, useEffect, useState } from 'react';
+import * as Switch from '@radix-ui/react-switch';
 
 interface PaymentMethod {
     id: number;
@@ -119,19 +120,22 @@ export default function PaymentMethods() {
         <div className="flex flex-col">
             {paymentMethods.map((paymentMethod) => (
                 <div key={paymentMethod.id} className="flex items-center mt-2">
-                    <input
-                        type="checkbox"
+                    <Switch.Root
+                        className="w-[42px] h-6 bg-[red] rounded-full relative   data-[state=checked]:bg-blue-400 outline-none cursor-default"
                         id={`paymentMethod-${paymentMethod.id}`}
-                        onChange={(e) =>
+                        onCheckedChange={(checked : boolean) =>
                             handleTogglePaymentMethod(
                                 paymentMethod.id,
-                                e.target.checked
+                                checked
                             )
                         }
                         checked={enabledPaymentMethods.includes(
                             paymentMethod.id
                         )}
-                    />
+                    >
+                        <Switch.Thumb className="block w-[18px] h-[18px] bg-white rounded-full shadow-[0_2px_2px] shadow-blackA7 transition-transform duration-100 translate-x-0.5 will-change-transform data-[state=checked]:translate-x-[19px]" />
+                    </Switch.Root>
+
                     <label
                         htmlFor={`paymentMethod-${paymentMethod.id}`}
                         className="ml-2"

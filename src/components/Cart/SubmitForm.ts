@@ -135,7 +135,7 @@ export async function SubmitForm({
             ? orderDataByCashBoxId?.data.length + 1
             : 1;
 
-        const { data: orderData } = await supabase
+        const { data: orderData, error: orderError } = await supabase
             .from('orders')
             .insert({
                 restaurant_id: restaurant!.id,
@@ -153,7 +153,17 @@ export async function SubmitForm({
             })
             .select('*');
 
+        // if (deliveryForm === 1 &&  !orderError) {
+        //     localStorage.setItem('cep', cep);
+        //     localStorage.setItem('neighborhood', neighborhood);
+        //     localStorage.setItem('street', street);
+        //     localStorage.setItem('number', number);
+        //     complement ? localStorage.setItem('complement', complement) : null
+        // }
+
         const order = orderData![0] as unknown as iOrder['data'];
+
+
         setOrderNumber(order.number);
 
         products.state.forEach(async (product: any) => {

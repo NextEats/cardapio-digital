@@ -61,12 +61,14 @@ module.exports = {
 
                 'purple-500': '#8047F8',
 
+                'blue-400': '#007BFF',
                 'blue-500': '#4066D5',
 
                 'yellow-400': '#F7C443',
                 'yellow-500': '#C47F17',
 
                 'red-50': '#FEF2F2',
+                'red-orange': '#FC3B1D',
                 'red-400': '#FF371C',
 
                 'gray-300': '#E2E2E2',

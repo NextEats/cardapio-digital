@@ -23,22 +23,35 @@ export default function ModalTriggerButtons({
 }: iModalTriggerButtons) {
     const { restaurant } = useContext(DigitalMenuContext);
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+    // const [isButtonDisabled, setIsButtonDisabled] = useState<boolean>(false);
     const [paymentMethodsRestaurant, setPaymentMethodsRestaurant] = useState<
         iPaymentMethodsRestaurantsWithFKData[]
     >([]);
 
     const { register, setValue, watch, getValues } = useFormContext();
 
-    const isButtonDisabled = text === 'Telefone'
-    && watch('whatsappNumber').replace(/\D/g, "").length < 11 
+    const [street, setStreet] = useState<string>('')
+
+    const isButtonDisabled = (text === 'Telefone' && String(watch('whatsappNumber')).replace(/\D/g, "").length < 11)
+    
     const handleToggleModal = () => {
-        
+
+        if (text === 'Endereço de Entrega') {
+            const streeta = localStorage.getItem('street')
+            console.log(streeta)
+            streeta ? setStreet(streeta) : setStreet('')
+            console.log("street: ", street)
+            // setStreet(localStorage.getItem('street') ? localStorage.getItem('street') as string : '')
+            // console.log(street)
+        }
+
         if (isModalOpen) {
             setIsModalOpen(false);
         } else {
             setIsModalOpen(true);
         }
     };
+
 
     const handleCepBlur = async (e: React.FocusEvent<HTMLInputElement>) => {
         const neighborhoodInput: any = document.getElementById('neighborhood');
@@ -52,9 +65,11 @@ export default function ModalTriggerButtons({
             if (cepInfo) {
                 if (neighborhoodInput) {
                     neighborhoodInput.value = cepInfo.neighborhood;
+                    setValue('neighborhood', cepInfo.neighborhood);
                 }
                 if (streetInput) {
                     streetInput.value = cepInfo.street;
+                    setValue('street', cepInfo.street);
                 }
             } else {
                 neighborhoodInput.value = '';
@@ -65,7 +80,6 @@ export default function ModalTriggerButtons({
             streetInput.value = '';
         }
     };
-
 
     useEffect(() => {
         const getPaymentMethodsRestaurants = async () => {
@@ -270,6 +284,7 @@ export default function ModalTriggerButtons({
                                                 {...register('cep', {
                                                     required: true,
                                                 })}
+                                                defaultValue={localStorage.getItem('cep') ? localStorage.getItem('cep') as string : ''}
                                                 mask="99999-999"
                                                 value={watch('cep')}
                                                 type="text"
@@ -284,6 +299,8 @@ export default function ModalTriggerButtons({
                                             </span>
                                             <input
                                                 id="neighborhood"
+                                                {...register('neighborhood')}
+                                                defaultValue={localStorage.getItem('neighborhood') ? localStorage.getItem('neighborhood') as string : ''}
                                                 type="text"
                                                 className="pl-2 bg-[#00000015] text-lg h-10 w-full  focus:outline-none border-b-2 border-[#3d3d3d] focus:border-[#FC3B1D]"
                                                 placeholder="Parque das Rosas"
@@ -295,8 +312,11 @@ export default function ModalTriggerButtons({
                                                 Rua
                                             </span>
                                             <input
+                                                defaultValue={localStorage.getItem('street') ? localStorage.getItem('street') as string : ''}
+                                                value={watch('street')}
                                                 id="street"
                                                 type="text"
+                                                {...register('street')}
                                                 className="pl-2 bg-[#00000015] text-lg h-10 w-full  focus:outline-none border-b-2 border-[#3d3d3d] focus:border-[#FC3B1D]"
                                                 placeholder="Rua das Flores Vermelhas"
                                                 disabled
@@ -307,6 +327,7 @@ export default function ModalTriggerButtons({
                                                 Complemento
                                             </span>
                                             <input
+                                                defaultValue={localStorage.getItem('complement') ? localStorage.getItem('complement') as string : ''}
                                                 {...register('complement', {
                                                     required: true,
                                                 })}
@@ -320,6 +341,7 @@ export default function ModalTriggerButtons({
                                                 Número
                                             </span>
                                             <input
+                                                defaultValue={localStorage.getItem('number') ? localStorage.getItem('number') as string : ''}
                                                 {...register('number', {
                                                     required: true,
                                                 })}

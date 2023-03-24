@@ -43,6 +43,8 @@ export async function SubmitForm({
     change_value,
     deliveryForm,
     complement,
+    neighborhood,
+    street
 }: any) {
     try {
         let foundDeliveryFee;
@@ -153,16 +155,15 @@ export async function SubmitForm({
             })
             .select('*');
 
-        // if (deliveryForm === 1 &&  !orderError) {
-        //     localStorage.setItem('cep', cep);
-        //     localStorage.setItem('neighborhood', neighborhood);
-        //     localStorage.setItem('street', street);
-        //     localStorage.setItem('number', number);
-        //     complement ? localStorage.setItem('complement', complement) : null
-        // }
+        if (deliveryForm === 1 && !orderError) {
+            localStorage.setItem('cep', cep);
+            localStorage.setItem('neighborhood', neighborhood);
+            localStorage.setItem('street', street);
+            localStorage.setItem('number', number);
+            complement ? localStorage.setItem('complement', complement) : null
+        }
 
         const order = orderData![0] as unknown as iOrder['data'];
-
 
         setOrderNumber(order.number);
 

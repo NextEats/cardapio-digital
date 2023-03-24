@@ -26,6 +26,8 @@ const newOrderFormValidationSchema = zod.object({
     paymentMethod: zod.number(),
     deliveryForm: zod.number(),
     change_value: zod.number(),
+    neighborhood: zod.string(),
+    street: zod.string()
 });
 
 type NewOrderFormData = zod.infer<typeof newOrderFormValidationSchema>;
@@ -49,6 +51,8 @@ export default function Cart() {
             number: '',
             deliveryForm: 1,
             change_value: 0,
+            neighborhood: '',
+            street: '',
         },
     });
 
@@ -190,6 +194,9 @@ export default function Cart() {
             paymentMethod,
             deliveryForm,
             change_value,
+            neighborhood,
+            street
+
         } = getValues();
         console.log(getValues());
         SubmitForm({
@@ -205,6 +212,8 @@ export default function Cart() {
             change_value,
             deliveryForm: Number(deliveryForm),
             complement,
+            neighborhood,
+            street
         });
         setIsDone(true);
     };
@@ -217,8 +226,6 @@ export default function Cart() {
 
 
     return (
-
-        
 
         <div className="w-screen h-screen flex justify-center items-center fixed z-[2000]">
             <FormProvider {...newOrderForm}>

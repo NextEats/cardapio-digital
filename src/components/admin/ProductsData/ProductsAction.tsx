@@ -5,6 +5,7 @@ import { ProductContext } from "@/src/contexts/ProductContext";
 import { AiOutlineDollarCircle } from "react-icons/ai";
 import { ChangeProductsPrice } from "./ChangeProductsPrice";
 import * as Menubar from '@radix-ui/react-menubar';
+import { CategoriesModal } from "./CategoriesModal";
 
 interface iProductsActionProps {
 }
@@ -45,7 +46,9 @@ export function ProductsAction({ }: iProductsActionProps) {
 
                 {productSelected.length === 0 ?
                     <div className="flex items-center">
-                        <span className={`` + styleD}>3 categoris</span>
+                        <span className={`` + styleD}>
+                            <CategoriesModal />
+                        </span>
                         <Separator.Root
                             className="bg-red-700 data-[orientation=vertical]:h-full data-[orientation=vertical]:w-2 mx-2"
                             decorative

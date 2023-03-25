@@ -59,10 +59,11 @@ export const getStaticPaths: GetStaticPaths = async () => {
 export const getStaticProps: GetStaticProps<iProdcutsProps, { slug: string }> = async ({ params }) => {
     const restaurantSlug = params?.slug
     const restaurant = await getRestaurantBySlugFetch(restaurantSlug);
-
     const [products] = await Promise.all([
         getProductWithFKDataByRestaurantIdFetch({ restaurantId: restaurant.id }),
     ])
+
+    console.log(restaurant, products)
 
     const categories = products.reduce((acc: iProductCategories["data"], item: iProductsWithFKData) => {
         const newCategory = item.category_id;
@@ -70,12 +71,11 @@ export const getStaticProps: GetStaticProps<iProdcutsProps, { slug: string }> = 
         return [...acc, newCategory];
     }, []);
 
-
     return {
         props: {
             restaurant,
             products,
-            categories
+            categories: categories ? categories : []
         },
         revalidate: 1 * 60
     };

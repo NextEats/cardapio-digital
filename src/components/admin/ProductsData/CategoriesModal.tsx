@@ -6,7 +6,6 @@ import { BsPlusLg, BsThreeDotsVertical } from "react-icons/bs";
 import { CategoryModal } from "./CategoryModal";
 
 interface iCategoriesModalProps {
-    styles?: string
 }
 
 export function CategoriesModal({ }: iCategoriesModalProps) {

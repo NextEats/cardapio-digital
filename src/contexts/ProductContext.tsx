@@ -14,9 +14,10 @@ import {
 
 interface iProductContextProps {
     products: iProductsWithFKData[];
+    restaurant: iRestaurant['data'];
+    categories: iProductCategories["data"]
     productSelected: iProductsWithFKData[]
     setProductSelected: Dispatch<SetStateAction<iProductsWithFKData[]>>
-    categories: iProductCategories["data"]
     setFilter: Dispatch<SetStateAction<{
         name: string | null;
         category: number | null;
@@ -31,7 +32,6 @@ interface iProductContextProviderProps {
     restaurant: iRestaurant['data'];
     products: iProductsWithFKData[];
     categories: iProductCategories["data"]
-
 }
 
 export const ProductContext = createContext({} as iProductContextProps);
@@ -77,6 +77,7 @@ export default function ProductContextProvider({
                 //           ferchs
                 products: filteredProducts,
                 categories: !categories ? [] : categories,
+                restaurant,
                 //           states
                 productSelected,
                 setProductSelected,

@@ -16,8 +16,6 @@ export function ProductsAction({ }: iProductsActionProps) {
 
     const { productSelected, setProductSelected, categories, setFilter, filter } = useContext(ProductContext)
 
-
-
     function handleFilter(e: ChangeEvent<HTMLInputElement>) {
         const name = e.target.value;
         setFilter({

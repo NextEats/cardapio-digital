@@ -37,11 +37,9 @@ export function ChangeProductsPrice({ }: iChangeProductsPriceProps) {
     })
 
     const changeType = watch("changeType")
-    console.log(changeType)
 
     const moneySymbol = changeType === 'increaseByAmount' || changeType === 'reduceByAmount' || changeType === 'setANewPrice'
     const percentageSymbol = changeType === 'increaseByPercentage' || changeType === 'reduceByPercentage'
-
 
     const handleChangeProductPrice = () => {
         updateProductPriceByChangeType({

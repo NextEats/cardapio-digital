@@ -83,12 +83,17 @@ function ProductsHorizontalList({ category }: { category: any }) {
                         <div
                             key={index}
                             onClick={() => {
-                                if (product.id) {
+                                if (product.id && product.active) {
                                     selectedProduct?.set(undefined);
                                     selectedProduct?.set(product.id);
                                 }
                             }}
-                            className="border bg-gray-100 hover:bg-gray-300 w-44 px-3 py-6 mr-3 inline-block rounded-md cursor-pointer"
+                            className={
+                                'border hover:bg-gray-300 w-44 px-3 py-6 mr-3 inline-block rounded-md ' +
+                                (product.active
+                                    ? 'bg-gray-100 cursor-pointer'
+                                    : 'bg-gray-300 cursor-not-allowed grayscale')
+                            }
                         >
                             <div className="w-full mt-1 rounded-md">
                                 <Image

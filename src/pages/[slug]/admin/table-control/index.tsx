@@ -48,6 +48,11 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     // const restaurant = await getRestaurantBySlugFetch(context.query.slug);
     const restaurant: any = await getRestaurantBySlugFetch(context.query.slug);
 
+    const { data: ordersProducts } = await supabase
+        .from('orders_products')
+        .select('*')
+        .order('created_at', { ascending: false });
+
     return {
         props: {
             restaurant,
@@ -56,14 +61,17 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
             products: await getProductsByRestaurantIdFetch(restaurant.id),
             productOptions: await getProductOptionsFetch(),
             selects: await getSelectsByRestaurantIdFetch(restaurant.id),
-            ordersProducts: await getOrdersProductsFetch(),
+            ordersProducts: ordersProducts,
             orders: await getOrdersByRestaurantIdFetch(restaurant.id),
             categories: await getProductsCategoriesByRestaurantIdFetch(
                 restaurant.id
             ),
             ordersTables: await getOrdersTablesFetch(),
             cashBoxes: await getCashBoxesByRestaurantIdFetch(restaurant.id),
-            paymentMethod: await getPaymentMethodsRestaurantsByRestaurantIdFetch(restaurant.id),
+            paymentMethod:
+                await getPaymentMethodsRestaurantsByRestaurantIdFetch(
+                    restaurant.id
+                ),
         },
     };
 };

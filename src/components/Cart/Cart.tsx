@@ -75,7 +75,6 @@ export default function Cart() {
                 products,
                 restaurantId: restaurant?.id,
             });
-            console.log('price', price);
             setSubtotalPrice(price ? price : 0);
         }
 
@@ -126,7 +125,6 @@ export default function Cart() {
                 .eq('restaurant_id', restaurant?.id);
 
             foundDeliveryFee = delivery_fees_data!.find((df) => {
-                console.log(distance_in_km!, df.end_km!, df.start_km!);
                 return (
                     distance_in_km! <= df.end_km! &&
                     distance_in_km! >= df.start_km!
@@ -160,19 +158,14 @@ export default function Cart() {
                 doesPaymentMethodInputIsFilled &&
                 doesWhatsAppNumberInputIsFilled;
 
-            console.log('isAllRequiredFieldsFilled', isAllRequiredFieldsFilled);
-
             setIsReadyToSubmit(isAllRequiredFieldsFilled);
         } else {
-            // console.log('whatsappNumber: ', getValues('whatsappNumber'));
             const isAllRequiredFieldsFilled =
                 !!getValues('name') &&
                 !!getValues('cep') &&
                 !!getValues('paymentMethod') &&
                 !!getValues('number') &&
                 !!getValues('whatsappNumber');
-
-            console.log(isAllRequiredFieldsFilled);
 
             setIsReadyToSubmit(isAllRequiredFieldsFilled);
         }
@@ -182,6 +175,9 @@ export default function Cart() {
         handleCloseModal();
         return null;
     }
+
+    const isPhoneValid = String(watch('whatsappNumber')).replace(/\D/g, "").length < 11
+    const isCepValid = String(watch('cep')).replace(/\D/g, "").length < 8
 
     const handleFinishOrder = (e: FormEvent) => {
         e.preventDefault();
@@ -198,7 +194,7 @@ export default function Cart() {
             street
 
         } = getValues();
-        console.log(getValues());
+
         SubmitForm({
             setOrderNumber,
             setDeliveryFee,
@@ -223,7 +219,6 @@ export default function Cart() {
             <ThankYouPage deliveryFee={deliveryFee} orderNumber={orderNumber} />
         );
     }
-
 
     return (
 
@@ -282,7 +277,7 @@ export default function Cart() {
                                 <Button
                                     text={'confirmar pedido'}
                                     onClick={handleFinishOrder}
-                                    disabled={!isReadyToSubmit}
+                                    disabled={!isReadyToSubmit || isPhoneValid || isCepValid}
                                 />
                             </div>
                         </div>

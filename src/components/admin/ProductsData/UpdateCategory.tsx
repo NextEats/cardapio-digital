@@ -8,6 +8,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from '@hookform/resolvers/zod';
 import { api, supabase } from "@/src/server/api";
 interface iUpdateCategoryProps {
+    categoryType: "product_category" | "additional_category"
 }
 
 const updateCategoryValidationSchema = zod.object({
@@ -22,10 +23,10 @@ const updateCategoryDefaultValue: updateCategory = {
     order: 0,
 };
 
-export function UpdateCategory({ }: iUpdateCategoryProps) {
+export function UpdateCategory({ categoryType }: iUpdateCategoryProps) {
     const { updateCategoryState, setUpdateCategoryState } = useContext(ProductContext)
 
-    const { register, getValues, setValue } = useForm<updateCategory>({
+    const { register, getValues, setValue, reset } = useForm<updateCategory>({
         resolver: zodResolver(updateCategoryValidationSchema),
         defaultValues: updateCategoryDefaultValue
     })
@@ -39,11 +40,20 @@ export function UpdateCategory({ }: iUpdateCategoryProps) {
         e.preventDefault()
         const name = getValues("name")
         const order = getValues("order")
-        console.log(name, order)
-        const category = await supabase.from("product_categories").update({
-            name,
-            category_order: order,
-        }).eq("id", updateCategoryState?.id).select("*")
+        if (categoryType === "additional_category") {
+
+            const category = await supabase.from("product_categories").update({
+                name,
+                category_order: order,
+            }).eq("id", updateCategoryState?.id).select("*")
+        }
+        if (categoryType === "additional_category") {
+            const category = await supabase.from("additional_categories").update({
+                name,
+                category_order: order,
+            }).eq("id", updateCategoryState?.id).select("*")
+        }
+        reset()
     }
 
     return (
@@ -52,7 +62,10 @@ export function UpdateCategory({ }: iUpdateCategoryProps) {
             <Dialog.Trigger />
             <Dialog.Portal>
                 <Dialog.Overlay
-                    onClick={() => setUpdateCategoryState(null)}
+                    onClick={() => {
+                        setUpdateCategoryState(null)
+                        reset()
+                    }}
                     className="bg-blackA9 data-[state=open]:animate-overlayShow fixed inset-0" />
                 <Dialog.Content className="data-[state=open]:animate-contentShow fixed top-[40%] left-[50%] h-[500px] w-[900px] translate-x-[-50%] translate-y-[-50%] rounded-[6px] bg-white p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none">
                     <Dialog.Title className="text-mauve12 flex flex-1 items-center justify-between m-0 text-[17px] font-medium">
@@ -71,7 +84,10 @@ export function UpdateCategory({ }: iUpdateCategoryProps) {
                     </form>
 
                     <Dialog.Close
-                        onClick={() => setUpdateCategoryState(null)}
+                        onClick={() => {
+                            setUpdateCategoryState(null)
+                            reset()
+                        }}
                         asChild
                         className="text-violet11 cursor-pointer hover:bg-violet4 focus:shadow-violet7 absolute top-[8px] right-[8px] inline-flex h-[25px] w-[25px] appearance-none items-center justify-center rounded-full focus:shadow-[0_0_0_2px] focus:outline-none">
                         <FiX />

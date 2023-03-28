@@ -15,11 +15,6 @@ interface iAdditionalsModalProps {
 export function Additionals({ }: iAdditionalsModalProps) {
     const { products, additionals } = useContext(ProductContext)
 
-    // const procutsAmountByCategory = products.reduce((acc, item) => {
-    //     if (item.category_id === category.id) return acc + 1;
-    //     return acc;
-    // }, 0);
-    console.log(additionals)
     if (!additionals) return null
 
     return (
@@ -40,7 +35,7 @@ export function Additionals({ }: iAdditionalsModalProps) {
                                 <CreateCategory categoryType="additional_category" />
                             </div>
                         </Dialog.Title>
-                        <UpdateCategory />
+
 
                         <div className="flex flex-wrap gap-3">
 

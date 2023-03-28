@@ -121,7 +121,7 @@ export function ProductsAction({ }: iProductsActionProps) {
                         className={`flex items-center justify-center px-6 border  cursor-pointer rounded-full font-semibold 
                         ${filter.category === category.id ? 'border-blue-400 text-blue-400' : 'border-black'}`}
                     >
-                        <span className="text-base mb-[3px]" > {category.name}</span>
+                        <span className="text-base mb-[3px] " > {category.name}</span>
                     </div>
                 })}
             </div>

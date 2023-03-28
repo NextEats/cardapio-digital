@@ -34,7 +34,7 @@ export function CategoriesModal({ categoryType }: iCategoriesModalProps) {
                             Categorias
                             <CreateCategory categoryType={categoryType} />
                         </Dialog.Title>
-                        <UpdateCategory />
+                        <UpdateCategory categoryType={categoryType} />
 
                         <div className="flex flex-wrap gap-3">
                             {(categoryType === "product_category" ? categories : additional_categories).map(category => {

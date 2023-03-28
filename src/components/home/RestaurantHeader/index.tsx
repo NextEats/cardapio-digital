@@ -20,23 +20,23 @@ export default function RestaurantHeader() {
     }, [restaurant?.addresses.cep]);
 
     if (!restaurant) {
-        return <></>;
+        return null;
     }
 
     return (
-        <div>
-            <div
-                style={{
-                    background:
-                        'linear-gradient(to bottom, rgba(32, 32, 32, 0.106), rgba(24, 24, 24, 0.859)), url(' +
-                        restaurant.banner_url +
-                        ') no-repeat',
-                    backgroundSize: 'cover',
-                    backgroundOrigin: 'padding-box, content-box',
-                }}
-                className="h-[230px] w-full"
-            ></div>
-            <div className="mx-3 my-7 flex flex-row">
+        <>
+            {restaurant.banner_url ? (
+                <div className="h-[230px] w-full flex justify-center items-center relative">
+                    <Image
+                        src={restaurant.banner_url}
+                        alt=""
+                        width={2500}
+                        height={430}
+                    />
+                </div>
+            ) : null}
+
+            <div className="px-3 py-2 my-7 flex flex-row z-[0] bg-white relative">
                 <Image
                     src={restaurant.picture_url}
                     alt={restaurant.name}
@@ -44,14 +44,14 @@ export default function RestaurantHeader() {
                     height={130}
                     className="rounded-md"
                 />
-                <div className="ml-5 h-100 flex mt-7 flex-col">
+                <div className="ml-5 flex items-center justify-center h-[130px] py-2 flex-col">
                     <h1 className="text-2xl font-semibold text-[#3e3e3e]">
                         {restaurant.name}
                     </h1>
                 </div>
             </div>
             <div className="flex flex-col 3xs:flex-row gap-2 mt-2 ml-3 pb-3 pr-2">
-                {restaurant.addresses.google_maps_link && (
+                {restaurant.addresses.google_maps_link ? (
                     <Link
                         href={restaurant.addresses.google_maps_link}
                         target="_blank"
@@ -63,7 +63,7 @@ export default function RestaurantHeader() {
                             </span>
                         </div>
                     </Link>
-                )}
+                ) : null}
 
                 <div
                     onClick={() =>
@@ -83,6 +83,6 @@ export default function RestaurantHeader() {
                     <MdExpandMore className="inline text-white text-xl ml-2" />
                 </div>
             </div>
-        </div>
+        </>
     );
 }

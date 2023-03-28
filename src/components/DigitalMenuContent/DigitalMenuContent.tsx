@@ -36,31 +36,32 @@ export default function DigitalMenuContent() {
                 <RestaurantHeader />
                 <ProductsList />
 
-                {productReducer?.state?.length &&
-                    productReducer?.state?.length > 0 && (
-                        <div className="fixed bottom-6 max-w-7xl w-full px-6 h-12">
-                            <div
-                                className="px-5 h-12 shadow rounded text-white font-semibold bg-[#ca2a2a] z-[90] flex justify-center items-center uppercase text-xl cursor-pointer"
-                                onClick={handleOpenCheckoutModal}
-                            >
-                                <div className="flex justify-center items-center gap-1">
-                                    <HiShoppingCart className="mr-3" />
-                                    <span className="">meu pedido</span>
-                                </div>
+                {productReducer?.state?.length
+                    ? productReducer?.state?.length > 0 && (
+                          <div className="fixed bottom-6 max-w-7xl w-full px-6 h-12">
+                              <div
+                                  className="px-5 h-12 shadow rounded text-white font-semibold bg-[#ca2a2a] z-[90] flex justify-center items-center uppercase text-xl cursor-pointer"
+                                  onClick={handleOpenCheckoutModal}
+                              >
+                                  <div className="flex justify-center items-center gap-1">
+                                      <HiShoppingCart className="mr-3" />
+                                      <span className="">meu pedido</span>
+                                  </div>
 
-                                <p className="ml-auto">
-                                    {' '}
-                                    R${' '}
-                                    {orderPrice.toLocaleString('pt-BR', {
-                                        minimumFractionDigits: 2,
-                                        maximumFractionDigits: 2,
-                                    })}
-                                </p>
-                            </div>
-                        </div>
-                    )}
+                                  <p className="ml-auto">
+                                      {' '}
+                                      R${' '}
+                                      {orderPrice.toLocaleString('pt-BR', {
+                                          minimumFractionDigits: 2,
+                                          maximumFractionDigits: 2,
+                                      })}
+                                  </p>
+                              </div>
+                          </div>
+                      )
+                    : null}
 
-                <footer className="flex flex-col items-center gap-3 bg-gray-800 justify-center py-5 mt-32">
+                <footer className="relative bottom-0 max-w-7xl w-full mb-0 mt-auto flex flex-col items-center gap-3 bg-gray-800 justify-center py-5">
                     <div className="flex items-center gap-2">
                         <Image
                             className=""

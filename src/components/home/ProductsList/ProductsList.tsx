@@ -12,6 +12,10 @@ export default function ProductList() {
 
     const groupedProductsData = Object.values(products);
 
+    if (!products || products.length === 0) {
+        return null;
+    }
+
     return (
         <div>
             <CategoriesNavbar groupedProductsData={groupedProductsData} />
@@ -31,6 +35,10 @@ export default function ProductList() {
 }
 
 function CategoriesNavbar({ groupedProductsData }: any) {
+    if (groupedProductsData.length === 0 || !groupedProductsData) {
+        return null;
+    }
+
     const buttonClasses =
         'mr-3 px-12 py-3 rounded-lg border-2 text-md font-semibold bg-gray-100 hover:bg-gray-200';
 
@@ -72,52 +80,58 @@ function SearchInput() {
 function ProductsHorizontalList({ category }: { category: any }) {
     const selectedProduct = useContext(DigitalMenuContext).selectedProduct;
 
+    if (category.length === 0) {
+        return null;
+    }
+
     return (
         <div id={toNormalForm(category.name)} className="mb-12 scroll-mt-24">
             <h2 className="text-2xl mb-3 mt-5 font-semibold text-gray-700">
                 {category.name}
             </h2>
             <div className="whitespace-nowrap overflow-auto scrollbar-custom">
-                {category.products.map((product: any, index: any) => {
-                    return (
-                        <div
-                            key={index}
-                            onClick={() => {
-                                if (product.id && product.active) {
-                                    selectedProduct?.set(undefined);
-                                    selectedProduct?.set(product.id);
-                                }
-                            }}
-                            className={
-                                'border hover:bg-gray-300 w-44 px-3 py-6 mr-3 inline-block rounded-md ' +
-                                (product.active
-                                    ? 'bg-gray-100 cursor-pointer'
-                                    : 'bg-gray-300 cursor-not-allowed grayscale')
-                            }
-                        >
-                            <div className="w-full mt-1 rounded-md">
-                                <Image
-                                    src={product.picture_url}
-                                    width={180}
-                                    height={180}
-                                    alt={product.name}
-                                    className="rounded-md h-44"
-                                />
-                            </div>
-                            <div className="mt-3">
-                                <p className="text-md truncate">
-                                    {product.name}
-                                </p>
-                            </div>
+                {category.products
+                    ? category.products.map((product: any, index: any) => {
+                          return (
+                              <div
+                                  key={index}
+                                  onClick={() => {
+                                      if (product.id && product.active) {
+                                          selectedProduct?.set(undefined);
+                                          selectedProduct?.set(product.id);
+                                      }
+                                  }}
+                                  className={
+                                      'border hover:bg-gray-300 w-44 px-3 py-6 mr-3 inline-block rounded-md ' +
+                                      (product.active
+                                          ? 'bg-gray-100 cursor-pointer'
+                                          : 'bg-gray-300 cursor-not-allowed grayscale')
+                                  }
+                              >
+                                  <div className="w-full mt-1 rounded-md">
+                                      <Image
+                                          src={product.picture_url}
+                                          width={180}
+                                          height={180}
+                                          alt={product.name}
+                                          className="rounded-md h-44"
+                                      />
+                                  </div>
+                                  <div className="mt-3">
+                                      <p className="text-md truncate">
+                                          {product.name}
+                                      </p>
+                                  </div>
 
-                            <div className="mt-2">
-                                <span className="block before:content-['R$'] text-md font-semibold">
-                                    {product.price}
-                                </span>
-                            </div>
-                        </div>
-                    );
-                })}
+                                  <div className="mt-2">
+                                      <span className="block before:content-['R$'] text-md font-semibold">
+                                          {product.price}
+                                      </span>
+                                  </div>
+                              </div>
+                          );
+                      })
+                    : null}
             </div>
         </div>
     );

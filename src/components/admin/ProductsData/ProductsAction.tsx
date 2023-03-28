@@ -6,6 +6,7 @@ import { AiOutlineDollarCircle } from "react-icons/ai";
 import { ChangeProductsPrice } from "./ChangeProductsPrice";
 import * as Menubar from '@radix-ui/react-menubar';
 import { CategoriesModal } from "./CategoriesModal";
+import { Additionals } from "./Additionals";
 
 interface iProductsActionProps {
 }
@@ -14,8 +15,8 @@ export function ProductsAction({ }: iProductsActionProps) {
 
     const styleD = 'text-blue-400 cursor-pointer'
 
-    const { productSelected, setProductSelected, categories, setFilter, filter } = useContext(ProductContext)
-
+    const { productSelected, categories, setFilter, filter, additionals } = useContext(ProductContext)
+    console.log(additionals)
     function handleFilter(e: ChangeEvent<HTMLInputElement>) {
         const name = e.target.value;
         setFilter({
@@ -45,14 +46,16 @@ export function ProductsAction({ }: iProductsActionProps) {
                 {productSelected.length === 0 ?
                     <div className="flex items-center">
                         <span className={`` + styleD}>
-                            <CategoriesModal />
+                            <CategoriesModal categoryType="product_category" />
                         </span>
                         <Separator.Root
                             className="bg-red-700 data-[orientation=vertical]:h-full data-[orientation=vertical]:w-2 mx-2"
                             decorative
                             orientation="vertical"
                         />
-                        <span className={`` + styleD}>3 addicionais</span>
+                        <span className={`` + styleD}>
+                            <Additionals />
+                        </span>
                         <Separator.Root
                             className="bg-red-700 data-[orientation=vertical]:h-full w-2 mx-2"
                             decorative={true}

@@ -15,7 +15,6 @@ export function ProductsData({ styles }: iProductsDataProps) {
             <ProductsAction />
 
             <ProductTable />
-
         </div>
     )
 }

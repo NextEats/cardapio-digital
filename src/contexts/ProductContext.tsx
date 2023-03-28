@@ -7,16 +7,27 @@ import {
     useState,
 } from 'react';
 import {
+    iAdditionalCategories,
+    iAdditionalCategory,
+    iAdditionals,
     iProductCategories,
+    iProductCategory,
     iProductsWithFKData,
     iRestaurant,
+    iSelects,
 } from '../types/types';
 
 interface iProductContextProps {
     products: iProductsWithFKData[];
     restaurant: iRestaurant['data'];
     categories: iProductCategories["data"]
+    additionals: iAdditionals["data"]
+    selects: iSelects["data"]
+    additional_categories: iAdditionalCategories["data"]
+    //
     productSelected: iProductsWithFKData[]
+    setUpdateCategoryState: Dispatch<SetStateAction<iProductCategory["data"] | iAdditionalCategory["data"] | null>>
+    updateCategoryState: iProductCategory["data"] | iAdditionalCategory["data"] | null
     setProductSelected: Dispatch<SetStateAction<iProductsWithFKData[]>>
     setFilter: Dispatch<SetStateAction<{
         name: string | null;
@@ -32,6 +43,9 @@ interface iProductContextProviderProps {
     restaurant: iRestaurant['data'];
     products: iProductsWithFKData[];
     categories: iProductCategories["data"]
+    additionals: iAdditionals["data"]
+    selects: iSelects["data"]
+    additional_categories: iAdditionalCategories["data"]
 }
 
 export const ProductContext = createContext({} as iProductContextProps);
@@ -41,8 +55,12 @@ export default function ProductContextProvider({
     restaurant,
     products,
     categories,
+    additionals,
+    selects,
+    additional_categories,
 }: iProductContextProviderProps) {
     const [productSelected, setProductSelected] = useState<iProductsWithFKData[]>([])
+    const [updateCategoryState, setUpdateCategoryState] = useState<iProductCategory["data"] | iAdditionalCategory["data"] | null>(null)
 
     const [filter, setFilter] = useState<{
         name: string | null;
@@ -78,7 +96,13 @@ export default function ProductContextProvider({
                 products: filteredProducts,
                 categories: !categories ? [] : categories,
                 restaurant,
+                additionals,
+                selects,
+                additional_categories,
+
                 //           states
+                updateCategoryState,
+                setUpdateCategoryState,
                 productSelected,
                 setProductSelected,
                 filter,

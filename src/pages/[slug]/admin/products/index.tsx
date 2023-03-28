@@ -1,19 +1,23 @@
 import { ProductsData } from '@/src/components/admin/ProductsData';
 import { CategoryCard } from '@/src/components/admin/ProductsData/CategoryCard';
 import ProductContextProvider from '@/src/contexts/ProductContext';
-import { getProductsByRestaurantIdFetch } from '@/src/fetch/products/getProductsByRestaurantId';
+import { getAdditionalsByRestaurantIdFetch } from '@/src/fetch/additionals/getAdditionals';
+import { getProductAdditionalsFetch } from '@/src/fetch/productAdditionals/getProductAdditionals';
 import { getProductWithFKDataByRestaurantIdFetch } from '@/src/fetch/products/getProductWithFKDataByRestaurantId';
 import { getProductsCategoriesByRestaurantIdFetch } from '@/src/fetch/productsCategories/getProductsCategoriesByRestaurantId';
 import { getRestaurantBySlugFetch } from '@/src/fetch/restaurant/getRestaurantBySlug';
+import { getSelectsByRestaurantIdFetch } from '@/src/fetch/selects/getSelectsByRestaurantId';
 import { supabase } from '@/src/server/api';
-import { iProductCategories, iProducts, iProductsWithFKData, iRestaurant } from '@/src/types/types';
+import { iAdditionalCategories, iAdditionals, iProductCategories, iProductsWithFKData, iRestaurant, iSelects } from '@/src/types/types';
 import { GetStaticPaths, GetStaticProps } from 'next';
-import AdminWrapper from '../../../../components/admin/AdminWrapper';
 
 interface iProdcutsProps {
     restaurant: iRestaurant["data"]
     products: iProductsWithFKData[]
     categories: iProductCategories["data"]
+    additionals: iAdditionals["data"]
+    selects: iSelects["data"]
+    additional_categories: iAdditionalCategories["data"]
 }
 
 
@@ -21,7 +25,10 @@ interface iProdcutsProps {
 export default function Prodcuts({
     restaurant,
     products,
-    categories
+    categories,
+    additionals,
+    selects,
+    additional_categories,
 }: iProdcutsProps) {
 
     return (
@@ -30,6 +37,9 @@ export default function Prodcuts({
             products={products}
             restaurant={restaurant}
             categories={categories}
+            additionals={additionals}
+            selects={selects}
+            additional_categories={additional_categories}
         >
             <div className='pt-16 pl-60'>
                 <div className='p-5 flex flex-col gap-3'>
@@ -59,23 +69,22 @@ export const getStaticPaths: GetStaticPaths = async () => {
 export const getStaticProps: GetStaticProps<iProdcutsProps, { slug: string }> = async ({ params }) => {
     const restaurantSlug = params?.slug
     const restaurant = await getRestaurantBySlugFetch(restaurantSlug);
-    const [products] = await Promise.all([
+    const [additionals, products, categories, selects, additional_categories] = await Promise.all([
+        getAdditionalsByRestaurantIdFetch(restaurant.id),
         getProductWithFKDataByRestaurantIdFetch({ restaurantId: restaurant.id }),
+        getProductsCategoriesByRestaurantIdFetch(restaurant.id),
+        getSelectsByRestaurantIdFetch(restaurant.id),
+        supabase.from("additional_categories").select("*").eq("restaurant_id", restaurant.id)
     ])
-
-    console.log(restaurant, products)
-
-    const categories = products.reduce((acc: iProductCategories["data"], item: iProductsWithFKData) => {
-        const newCategory = item.category_id;
-        if (acc.some(c => c.id === newCategory?.id)) return acc;
-        return [...acc, newCategory];
-    }, []);
 
     return {
         props: {
             restaurant,
             products,
-            categories: categories ? categories : []
+            categories: categories ? categories : [],
+            additionals,
+            selects,
+            additional_categories: additional_categories.data ? additional_categories.data : []
         },
         revalidate: 1 * 60
     };

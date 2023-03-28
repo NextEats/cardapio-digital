@@ -4,7 +4,6 @@ import TableContextProvider from '@/src/contexts/TableControlContext';
 import { getAdditionalsByRestaurantIdFetch } from '@/src/fetch/additionals/getAdditionals';
 import { getCashBoxesByRestaurantIdFetch } from '@/src/fetch/cashBoxes/getCashBoxesByRestaurantId';
 import { getOrdersByRestaurantIdFetch } from '@/src/fetch/orders/getOrdersByRestaurantId';
-import { getOrdersProductsFetch } from '@/src/fetch/ordersProducts/getOrdersProducts';
 import { getOrdersTablesFetch } from '@/src/fetch/ordersTables/getOrdersTables';
 import { getPaymentMethodsRestaurantsByRestaurantIdFetch } from '@/src/fetch/paymentMethodsRestaurants/getPaymentMethodsRestaurantsByRestaurantId';
 import { getProductAdditionalsFetch } from '@/src/fetch/productAdditionals/getProductAdditionals';
@@ -13,6 +12,7 @@ import { getProductsByRestaurantIdFetch } from '@/src/fetch/products/getProducts
 import { getProductsCategoriesByRestaurantIdFetch } from '@/src/fetch/productsCategories/getProductsCategoriesByRestaurantId';
 import { getRestaurantBySlugFetch } from '@/src/fetch/restaurant/getRestaurantBySlug';
 import { getSelectsByRestaurantIdFetch } from '@/src/fetch/selects/getSelectsByRestaurantId';
+import { supabase } from '@/src/server/api';
 import {
     iAdditionals,
     iCashBoxes,
@@ -37,16 +37,21 @@ interface iAdminHomePageProps {
     productAdditionals: iProductAdditionals['data'];
     products: iProducts['data'];
     ordersProducts: iOrdersProducts['data'];
-    orders: iOrders["data"]
+    orders: iOrders['data'];
     categories: iProductCategories['data'];
     ordersTables: iOrdersTablesWithFkData[];
     cashBoxes: iCashBoxes['data'];
-    paymentMethod: iPaymentMethodsRestaurantsWithFKData[]
+    paymentMethod: iPaymentMethodsRestaurantsWithFKData[];
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
     // const restaurant = await getRestaurantBySlugFetch(context.query.slug);
     const restaurant: any = await getRestaurantBySlugFetch(context.query.slug);
+
+    const { data: ordersProducts } = await supabase
+        .from('orders_products')
+        .select('*')
+        .order('created_at', { ascending: false });
 
     return {
         props: {
@@ -56,14 +61,17 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
             products: await getProductsByRestaurantIdFetch(restaurant.id),
             productOptions: await getProductOptionsFetch(),
             selects: await getSelectsByRestaurantIdFetch(restaurant.id),
-            ordersProducts: await getOrdersProductsFetch(),
+            ordersProducts: ordersProducts,
             orders: await getOrdersByRestaurantIdFetch(restaurant.id),
             categories: await getProductsCategoriesByRestaurantIdFetch(
                 restaurant.id
             ),
             ordersTables: await getOrdersTablesFetch(),
             cashBoxes: await getCashBoxesByRestaurantIdFetch(restaurant.id),
-            paymentMethod: await getPaymentMethodsRestaurantsByRestaurantIdFetch(restaurant.id),
+            paymentMethod:
+                await getPaymentMethodsRestaurantsByRestaurantIdFetch(
+                    restaurant.id
+                ),
         },
     };
 };

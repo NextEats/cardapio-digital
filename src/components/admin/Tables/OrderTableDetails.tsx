@@ -33,6 +33,14 @@ export default function OrderTableDetails() {
             o.tables.id === openedTableModal!.id
     );
 
+    console.log(
+        ordersTables.filter(
+            (o) =>
+                o.orders.order_status.status_name === 'em produção' &&
+                o.tables.id === openedTableModal!.id
+        )
+    );
+
     const printOrderTableComponent = useRef<HTMLDivElement>(null);
 
     return (
@@ -47,62 +55,79 @@ export default function OrderTableDetails() {
                     </h2>
 
                     <div className="flex flex-col gap-2 uppercase">
-                        {ordersProductsOfTheTable.map((productsData, pIndex) => {
-                            return (
-                                <div
-                                    key={pIndex}
-                                    className="flex flex-col"
-                                >
-                                    <strong className="mb-1 flex items-center justify-between">
-                                        <span>{productsData.product.name}</span>
-                                        <span>
-                                            R$ {productsData.totalPrice}
-                                        </span>
-                                    </strong>
-                                    {productsData.selects.length > 0 ? (
-                                        <div className="flex">
-                                            <div>
-                                                |&nbsp;
-                                                <span>
-                                                    {productsData.selects.map(
-                                                        (
-                                                            productSelects,
-                                                            psIndex
-                                                        ) => {
-                                                            return productSelects.options.map(
-                                                                (option, index) => (option.name + ' | ')
-                                                            );
-                                                        }
-                                                    )}
-                                                </span>
-                                            </div>
-                                        </div>
-                                    ) : null}
-
-                                    {productsData.additionalsData.map(
-                                        (additional, aIndex) => {
-                                            return (
-                                                <span
-                                                    key={aIndex}
-                                                >
-                                                    {additional.quantityOfAdditionals}{' '}
-                                                    -{' '}{additional.additional.name}{' '}-
-                                                    <span className="font-semibold ml-auto">
-                                                        R${' '}{additional.totalPriceOfAdditionals}
+                        {ordersProductsOfTheTable.map(
+                            (productsData, pIndex) => {
+                                return (
+                                    <div key={pIndex} className="flex flex-col">
+                                        <strong className="mb-1 flex items-center justify-between">
+                                            <span>
+                                                {productsData.product.name}
+                                            </span>
+                                            <span>
+                                                R$ {productsData.totalPrice}
+                                            </span>
+                                        </strong>
+                                        {productsData.selects.length > 0 ? (
+                                            <div className="flex">
+                                                <div>
+                                                    |&nbsp;
+                                                    <span>
+                                                        {productsData.selects.map(
+                                                            (
+                                                                productSelects,
+                                                                psIndex
+                                                            ) => {
+                                                                return productSelects.options.map(
+                                                                    (
+                                                                        option,
+                                                                        index
+                                                                    ) =>
+                                                                        option.name +
+                                                                        ' | '
+                                                                );
+                                                            }
+                                                        )}
                                                     </span>
-                                                </span>
-                                            );
-                                        }
-                                    )}
-                                    
-                                    {productsData.observation ?
-                                    <p><strong>Obs.:</strong> {productsData.observation}</p>
-                                    : null}
+                                                </div>
+                                            </div>
+                                        ) : null}
 
-                                    <hr className="my-2 h-[2px] bg-black" />
-                                </div>
-                            );
-                        })}
+                                        {productsData.additionalsData.map(
+                                            (additional, aIndex) => {
+                                                return (
+                                                    <span key={aIndex}>
+                                                        {
+                                                            additional.quantityOfAdditionals
+                                                        }{' '}
+                                                        -{' '}
+                                                        {
+                                                            additional
+                                                                .additional.name
+                                                        }{' '}
+                                                        -
+                                                        <span className="font-semibold ml-auto">
+                                                            R${' '}
+                                                            {
+                                                                additional.totalPriceOfAdditionals
+                                                            }
+                                                        </span>
+                                                    </span>
+                                                );
+                                            }
+                                        )}
+
+                                        {productsData.observation ? (
+                                            <p>
+                                                <strong>Obs.:</strong>{' '}
+                                                {productsData.observation}
+                                            </p>
+                                        ) : null}
+
+                                        <hr className="my-2 h-[2px] bg-black" />
+                                    </div>
+                                );
+                            }
+                        )}
                     </div>
 
                     <div>
@@ -125,10 +150,7 @@ export default function OrderTableDetails() {
                 <div className="flex flex-col gap-2 uppercase">
                     {ordersProductsOfTheTable.map((productsData, pIndex) => {
                         return (
-                            <div
-                                key={pIndex}
-                                className="flex flex-col"
-                            >
+                            <div key={pIndex} className="flex flex-col">
                                 <strong className="mb-1 flex items-center justify-between">
                                     <span>{productsData.product.name}</span>
                                     <span> R$ {productsData.totalPrice}</span>
@@ -139,7 +161,10 @@ export default function OrderTableDetails() {
                                             |&nbsp;
                                             <span>
                                                 {productsData.selects.map(
-                                                    (productSelects, psIndex) => {
+                                                    (
+                                                        productSelects,
+                                                        psIndex
+                                                    ) => {
                                                         return productSelects.options.map(
                                                             (option, index) => {
                                                                 return (
@@ -158,9 +183,7 @@ export default function OrderTableDetails() {
                                 {productsData.additionalsData.map(
                                     (additional, aIndex) => {
                                         return (
-                                            <span
-                                                key={aIndex}
-                                            >
+                                            <span key={aIndex}>
                                                 {
                                                     additional.quantityOfAdditionals
                                                 }{' '}
@@ -175,9 +198,12 @@ export default function OrderTableDetails() {
                                         );
                                     }
                                 )}
-                                {productsData.observation ?
-                                    <p><strong>Obs.:</strong> {productsData.observation}</p>
-                                    : null}
+                                {productsData.observation ? (
+                                    <p>
+                                        <strong>Obs.:</strong>{' '}
+                                        {productsData.observation}
+                                    </p>
+                                ) : null}
 
                                 <hr className="my-2 h-[2px] bg-black" />
                             </div>

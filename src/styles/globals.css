@@ -101,3 +101,7 @@
     border-bottom: 1px solid rgba(72, 72, 72, 0.081);
     border-bottom-width: 80%;
 }
+
+.right-triangle {
+    clip-path: polygon(100% 40%, 0% 100%, 100% 100%);
+}

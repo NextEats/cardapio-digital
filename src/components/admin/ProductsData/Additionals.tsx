@@ -8,6 +8,7 @@ import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import { UpdateCategory } from "./UpdateCategory";
 import Image from "next/image";
 import { CategoriesModal } from "./CategoriesModal";
+import { CreateAdditional } from "./CreateAdditional";
 
 interface iAdditionalsModalProps {
 }
@@ -32,7 +33,7 @@ export function Additionals({ }: iAdditionalsModalProps) {
                             Adicionais
                             <div className="flex items-center gap-2">
                                 <CategoriesModal categoryType="additional_category" />
-                                <CreateCategory categoryType="additional_category" />
+                                <CreateAdditional />
                             </div>
                         </Dialog.Title>
 

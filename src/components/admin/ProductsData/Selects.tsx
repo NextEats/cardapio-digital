@@ -22,21 +22,21 @@ export function Selects({ }: iSelectsProps) {
             <Dialog.Root>
                 <Dialog.Trigger asChild>
                     <button className="text-violet11 shadow-blackA7 hover:bg-mauve3 inline-flex h-[35px] items-center justify-center rounded-[4px] bg-white px-[15px] font-medium leading-none shadow-[0_2px_10px] focus:shadow-[0_0_0_2px] focus:shadow-black focus:outline-none">
-                        Personalizações
+                        {selects.length} Personalizações
                     </button>
                 </Dialog.Trigger>
                 <Dialog.Portal>
                     <Dialog.Overlay className="bg-blackA9 data-[state=open]:animate-overlayShow fixed inset-0" />
                     <Dialog.Content className="data-[state=open]:animate-contentShow fixed top-[40%] left-[50%]  h-[500px] w-[900px] translate-x-[-50%] translate-y-[-50%] rounded-[6px] bg-white p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none">
                         <Dialog.Title className="text-mauve12 flex flex-1 items-center justify-between m-0 text-[17px] font-medium">
-                            Categorias
+                            Personalizações
                         </Dialog.Title>
 
                         <div className="flex flex-wrap gap-3">
                             {selects.map(select => {
 
                                 return (
-                                    <div key={select.id} className="w-[200px] flex flex-col gap-2">
+                                    <div key={select.id} className="w-[417px] flex flex-col gap-2">
                                         <div className="flex items-center justify-between">
                                             <span className="w-[160px] truncate"> {select.name} </span>
                                             <div className="flex item-center gap-2">
@@ -47,7 +47,8 @@ export function Selects({ }: iSelectsProps) {
                                             {selects.map(select => {
                                                 return <div key={select.id}>
                                                     <div className="flex mt-8 flex-wrap gap-2">
-                                                        {product_options?.map((product_option, optionIndex) => {
+                                                        {product_options?.map((product_option) => {
+                                                            if (product_option.select_id !== select.id) return
                                                             return <div key={product_option.id} >
                                                                 <label
                                                                     className=""

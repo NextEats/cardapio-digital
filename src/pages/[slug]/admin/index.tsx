@@ -28,7 +28,6 @@ import { getAddressesFetch } from 'src/fetch/addresses/getAddresses';
 import { getCashBoxesByRestaurantIdFetch } from 'src/fetch/cashBoxes/getCashBoxesByRestaurantId';
 import { getclientsFetch } from 'src/fetch/clients/getClients';
 import { getContactsFetch } from 'src/fetch/contacts/getContacts';
-import { getOrdersProductsFetch } from 'src/fetch/ordersProducts/getOrdersProducts';
 import { getOrdersByRestaurantIdFetch } from '../../../fetch/orders/getOrdersByRestaurantId';
 import { getProductsByRestaurantIdFetch } from '../../../fetch/products/getProductsByRestaurantId';
 import { getRestaurantBySlugFetch } from '../../../fetch/restaurant/getRestaurantBySlug';
@@ -105,8 +104,9 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     }
 
     const restaurant: any = await getRestaurantBySlugFetch(context.query.slug);
-    
-        const { data: ordersProductsData } = await supabase.from('orders_products')
+
+    const { data: ordersProductsData } = await supabase
+        .from('orders_products')
         .select('*')
         .order('created_at', { ascending: false });
 
@@ -309,9 +309,18 @@ export default function AdminHomepage({
     }, [restaurant, cashBoxState]);
 
     async function newOrdersProducts() {
-        const getNewOrdersProducts = await getOrdersProductsFetch();
-        setOrdersProducts(getNewOrdersProducts);
+        const { data: getNewOrdersProducts } = await supabase
+            .from('orders_products')
+            .select('*')
+            .order('created_at', { ascending: false });
+
         const getNewOrdersTables = await getOrdersTablesFetch();
+
+        if (!getNewOrdersProducts) {
+            return;
+        }
+
+        setOrdersProducts(getNewOrdersProducts);
         setOrdersTables(getNewOrdersTables);
     }
     const channel = supabase

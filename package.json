@@ -42,6 +42,7 @@
     "eslint-config-next": "13.1.1",
     "fs": "^0.0.1-security",
     "geolib": "^3.3.3",
+    "get-image-colors": "^4.0.1",
     "google-distance-matrix": "^1.1.1",
     "js-thermal-printer": "^1.0.2",
     "keen-slider": "^6.8.5",

@@ -105,10 +105,13 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     }
 
     const restaurant: any = await getRestaurantBySlugFetch(context.query.slug);
+    
+        const { data: ordersProductsData } = await supabase.from('orders_products')
+        .select('*')
+        .order('created_at', { ascending: false });
 
     const [
         ordersData,
-        ordersProductsData,
         products,
         clients,
         contacts,
@@ -119,7 +122,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         ordersTablesData,
     ] = await Promise.all([
         getOrdersByRestaurantIdFetch(restaurant.id),
-        getOrdersProductsFetch(),
         getProductsByRestaurantIdFetch(restaurant.id),
         getclientsFetch(),
         getContactsFetch(),

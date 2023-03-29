@@ -279,7 +279,7 @@ export default function AdminHomepage({
     useMemo(() => {
         async function newOrder(payload: any) {
             const getNewOrder = await api.get(`/api/orders/${restaurant.id}`);
-            // TODO1 Enviar mensagem de "seu pedido foi recebido com sucesso"
+
             const orderData: iOrdersWithFKData[] = getNewOrder.data;
             const ordersFilterend = orderData.filter(
                 (o) => o.cash_box_id === cashBoxState?.id

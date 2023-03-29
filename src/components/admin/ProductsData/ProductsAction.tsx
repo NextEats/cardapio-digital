@@ -7,6 +7,7 @@ import { ChangeProductsPrice } from "./ChangeProductsPrice";
 import * as Menubar from '@radix-ui/react-menubar';
 import { CategoriesModal } from "./CategoriesModal";
 import { Additionals } from "./Additionals";
+import { Selects } from "./Selects";
 
 interface iProductsActionProps {
 }
@@ -61,7 +62,9 @@ export function ProductsAction({ }: iProductsActionProps) {
                             decorative={true}
                             orientation="vertical"
                         />
-                        <span className={`` + styleD}>3 personalizações</span>
+                        <span className={`` + styleD}>
+                            <Selects />
+                        </span>
                     </div>
                     : <div className="flex justify-end mr-3 flex-1 ">
                         <ChangeProductsPrice />

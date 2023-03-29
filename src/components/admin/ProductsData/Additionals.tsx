@@ -40,9 +40,9 @@ export function Additionals({ }: iAdditionalsModalProps) {
                         <div className="flex flex-wrap gap-3">
 
                             {(additionals).map(additional => {
-                                const count = products.reduce((total, product) => {
-                                    return product.category_id === additional.id ? total + 1 : total;
-                                }, 0);
+                                // const count = products.reduce((total, product) => {
+                                //     return product.category_id === additional.id ? total + 1 : total;
+                                // }, 0);
                                 return (
                                     <div key={additional.id} className="w-[417px] h-[80px] rounded-sm bg-white shadow-sm flex gap-3 relative">
                                         <Image

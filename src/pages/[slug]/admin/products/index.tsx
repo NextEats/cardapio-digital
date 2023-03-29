@@ -1,14 +1,14 @@
 import { ProductsData } from '@/src/components/admin/ProductsData';
-import { CategoryCard } from '@/src/components/admin/ProductsData/CategoryCard';
 import ProductContextProvider from '@/src/contexts/ProductContext';
 import { getAdditionalsByRestaurantIdFetch } from '@/src/fetch/additionals/getAdditionals';
 import { getProductAdditionalsFetch } from '@/src/fetch/productAdditionals/getProductAdditionals';
+import { getProductOptionsFetch } from '@/src/fetch/productOptions/getProductOptions';
 import { getProductWithFKDataByRestaurantIdFetch } from '@/src/fetch/products/getProductWithFKDataByRestaurantId';
 import { getProductsCategoriesByRestaurantIdFetch } from '@/src/fetch/productsCategories/getProductsCategoriesByRestaurantId';
 import { getRestaurantBySlugFetch } from '@/src/fetch/restaurant/getRestaurantBySlug';
 import { getSelectsByRestaurantIdFetch } from '@/src/fetch/selects/getSelectsByRestaurantId';
 import { supabase } from '@/src/server/api';
-import { iAdditionalCategories, iAdditionals, iProductCategories, iProductsWithFKData, iRestaurant, iSelects } from '@/src/types/types';
+import { iAdditionalCategories, iAdditionals, iProductCategories, iProductOptions, iProductsWithFKData, iRestaurant, iSelects } from '@/src/types/types';
 import { GetStaticPaths, GetStaticProps } from 'next';
 
 interface iProdcutsProps {
@@ -18,6 +18,7 @@ interface iProdcutsProps {
     additionals: iAdditionals["data"]
     selects: iSelects["data"]
     additional_categories: iAdditionalCategories["data"]
+    product_options: iProductOptions["data"]
 }
 
 
@@ -29,6 +30,7 @@ export default function Prodcuts({
     additionals,
     selects,
     additional_categories,
+    product_options,
 }: iProdcutsProps) {
 
     return (
@@ -40,6 +42,7 @@ export default function Prodcuts({
             additionals={additionals}
             selects={selects}
             additional_categories={additional_categories}
+            product_options={product_options}
         >
             <div className='pt-16 pl-60'>
                 <div className='p-5 flex flex-col gap-3'>
@@ -69,12 +72,13 @@ export const getStaticPaths: GetStaticPaths = async () => {
 export const getStaticProps: GetStaticProps<iProdcutsProps, { slug: string }> = async ({ params }) => {
     const restaurantSlug = params?.slug
     const restaurant = await getRestaurantBySlugFetch(restaurantSlug);
-    const [additionals, products, categories, selects, additional_categories] = await Promise.all([
+    const [additionals, products, categories, selects, additional_categories, product_options] = await Promise.all([
         getAdditionalsByRestaurantIdFetch(restaurant.id),
         getProductWithFKDataByRestaurantIdFetch({ restaurantId: restaurant.id }),
         getProductsCategoriesByRestaurantIdFetch(restaurant.id),
         getSelectsByRestaurantIdFetch(restaurant.id),
-        supabase.from("additional_categories").select("*").eq("restaurant_id", restaurant.id)
+        supabase.from("additional_categories").select("*").eq("restaurant_id", restaurant.id),
+        getProductOptionsFetch(),
     ])
 
     return {
@@ -84,7 +88,8 @@ export const getStaticProps: GetStaticProps<iProdcutsProps, { slug: string }> = 
             categories: categories ? categories : [],
             additionals,
             selects,
-            additional_categories: additional_categories.data ? additional_categories.data : []
+            additional_categories: additional_categories.data ? additional_categories.data : [],
+            product_options,
         },
         revalidate: 1 * 60
     };

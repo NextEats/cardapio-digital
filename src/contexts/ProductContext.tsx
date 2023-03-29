@@ -12,6 +12,7 @@ import {
     iAdditionals,
     iProductCategories,
     iProductCategory,
+    iProductOptions,
     iProductsWithFKData,
     iRestaurant,
     iSelects,
@@ -24,6 +25,7 @@ interface iProductContextProps {
     additionals: iAdditionals["data"]
     selects: iSelects["data"]
     additional_categories: iAdditionalCategories["data"]
+    product_options: iProductOptions["data"]
     //
     productSelected: iProductsWithFKData[]
     setUpdateCategoryState: Dispatch<SetStateAction<iProductCategory["data"] | iAdditionalCategory["data"] | null>>
@@ -46,6 +48,7 @@ interface iProductContextProviderProps {
     additionals: iAdditionals["data"]
     selects: iSelects["data"]
     additional_categories: iAdditionalCategories["data"]
+    product_options: iProductOptions["data"]
 }
 
 export const ProductContext = createContext({} as iProductContextProps);
@@ -58,6 +61,7 @@ export default function ProductContextProvider({
     additionals,
     selects,
     additional_categories,
+    product_options,
 }: iProductContextProviderProps) {
     const [productSelected, setProductSelected] = useState<iProductsWithFKData[]>([])
     const [updateCategoryState, setUpdateCategoryState] = useState<iProductCategory["data"] | iAdditionalCategory["data"] | null>(null)
@@ -99,7 +103,7 @@ export default function ProductContextProvider({
                 additionals,
                 selects,
                 additional_categories,
-
+                product_options,
                 //           states
                 updateCategoryState,
                 setUpdateCategoryState,

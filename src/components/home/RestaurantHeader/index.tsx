@@ -26,13 +26,21 @@ export default function RestaurantHeader() {
     return (
         <>
             {restaurant.banner_url ? (
-                <div className="h-[230px] w-full flex justify-center items-center relative">
-                    <Image
+                <div
+                    className="h-[230px] w-full flex justify-center items-center relative"
+                    style={{
+                        backgroundImage: `url(${restaurant.banner_url})`,
+                        backgroundSize: 'auto 100%',
+                        backgroundRepeat: 'no-repeat',
+                        backgroundPosition: 'center center',
+                    }}
+                >
+                    {/* <Image
                         src={restaurant.banner_url}
                         alt=""
                         width={2500}
                         height={430}
-                    />
+                    /> */}
                 </div>
             ) : null}
 

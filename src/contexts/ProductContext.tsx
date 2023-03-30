@@ -10,6 +10,7 @@ import {
 } from 'react';
 import { iProductsPageAction, iProductsPageReducder, productsPageReducder, productsPageReducderDefaultValues } from '../reducers/productsPageReducer/reducer';
 import {
+    iAdditional,
     iAdditionalCategories,
     iAdditionalCategory,
     iAdditionals,
@@ -31,6 +32,7 @@ interface iProductContextProps {
     additional_categories: iAdditionalCategories["data"]
     product_options: iProductOptions["data"]
     //
+    updateAdditionalState: [iAdditional["data"] | null, Dispatch<SetStateAction<iAdditional["data"] | null>>]
     productSelected: iProductsWithFKData[]
     setUpdateCategoryState: Dispatch<SetStateAction<iProductCategory["data"] | iAdditionalCategory["data"] | null>>
     updateCategoryState: iProductCategory["data"] | iAdditionalCategory["data"] | null
@@ -70,6 +72,7 @@ export default function ProductContextProvider({
     const [productSelected, setProductSelected] = useState<iProductsWithFKData[]>([])
     const [updateCategoryState, setUpdateCategoryState] = useState<iProductCategory["data"] | iAdditionalCategory["data"] | null>(null)
     const [additionals, setAdditionals] = useState<iAdditionals["data"]>([])
+    const updateAdditionalState = useState<iAdditional["data"] | null>(null)
 
     useEffect(() => {
         setAdditionals(additionalsData)
@@ -112,6 +115,7 @@ export default function ProductContextProvider({
                 additional_categories,
                 product_options,
                 //           states
+                updateAdditionalState,
                 updateCategoryState,
                 setUpdateCategoryState,
                 productSelected,

@@ -9,13 +9,5 @@ export async function postAdditionalFetch({ name, picture_url, price, additional
         name, picture_url, price, additional_category_id, restaurant_id
     }).select("*")
 
-    console.log(
-        'name', name,
-        'picture_url', picture_url,
-        'price', price,
-        'additional_category_id', additional_category_id,
-        'restaurant_id', restaurant_id,
-    )
-
     return data!
 }

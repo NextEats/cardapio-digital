@@ -9,17 +9,21 @@ import { UpdateCategory } from "./UpdateCategory";
 import Image from "next/image";
 import { CategoriesModal } from "./CategoriesModal";
 import { CreateAdditional } from "./CreateAdditional";
+import { UpdateAdditional } from "./UpdateAdditional";
 
 interface iAdditionalsModalProps {
 }
 
 export function Additionals({ }: iAdditionalsModalProps) {
-    const { products, additionals } = useContext(ProductContext)
+    const { products, additionals, updateAdditionalState } = useContext(ProductContext)
+    const [updateAdditional, setUpdateAdditional] = updateAdditionalState
+    console.log(updateAdditional)
 
     if (!additionals) return null
 
     return (
         <div className={``}>
+            {updateAdditional ? <UpdateAdditional /> : null}
             <Dialog.Root>
                 <Dialog.Trigger asChild>
                     <button className="text-violet11 shadow-blackA7 hover:bg-mauve3 inline-flex h-[35px] items-center justify-center rounded-[4px] bg-white px-[15px] font-medium leading-none shadow-[0_2px_10px] focus:shadow-[0_0_0_2px] focus:shadow-black focus:outline-none">
@@ -69,12 +73,12 @@ export function Additionals({ }: iAdditionalsModalProps) {
                                                     sideOffset={5}
                                                 >
                                                     <DropdownMenu.Item
-                                                        // onClick={() => setUpdateCategoryState(additional)}
+                                                        onClick={() => setUpdateAdditional(additional)}
                                                         className="group text-[13px] leading-none text-violet11 rounded-[3px] flex items-center gap-3 hover:bg-white-blue cursor-pointer h-9 px-[5px] 
                                                             relative pl-[25px]"
                                                     >
                                                         <BsFillPencilFill size={16} />
-                                                        <span className="text-base">Editar categoria</span>
+                                                        <span className="text-base">Editar adicional</span>
                                                     </DropdownMenu.Item>
                                                     <DropdownMenu.Arrow className="fill-white" />
                                                 </DropdownMenu.Content>
@@ -90,7 +94,7 @@ export function Additionals({ }: iAdditionalsModalProps) {
                             asChild
                             className="text-violet11 cursor-pointer hover:bg-violet4 focus:shadow-violet7 absolute top-[8px] right-[8px] inline-flex h-[25px] w-[25px] appearance-none items-center justify-center rounded-full"
                         >
-                            <FiX />
+                            <FiX size={16} />
                         </Dialog.Close>
                     </Dialog.Content>
                 </Dialog.Portal>

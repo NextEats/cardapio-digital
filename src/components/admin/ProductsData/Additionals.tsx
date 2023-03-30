@@ -1,28 +1,42 @@
 import { ProductContext } from "@/src/contexts/ProductContext"
-import { useContext, useState } from "react"
+import { useContext } from "react"
 import * as Dialog from '@radix-ui/react-dialog';
 import { FiX } from "react-icons/fi";
-import { BsFillPencilFill, BsPlusLg, BsThreeDotsVertical } from "react-icons/bs";
-import { CreateCategory } from "./CreateCategory";
+import { BsFillPencilFill, BsThreeDotsVertical } from "react-icons/bs";
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
-import { UpdateCategory } from "./UpdateCategory";
 import Image from "next/image";
 import { CategoriesModal } from "./CategoriesModal";
 import { CreateAdditional } from "./CreateAdditional";
 import { UpdateAdditional } from "./UpdateAdditional";
 
+import { supabase } from "@/src/server/api";
+import { iAdditional } from "@/src/types/types";
+import { getPathByPictureUrl } from "@/src/helpers/getPathByPictureUrl";
+
 interface iAdditionalsModalProps {
 }
 
 export function Additionals({ }: iAdditionalsModalProps) {
-    const { products, additionals, updateAdditionalState } = useContext(ProductContext)
+    const { additionals, updateAdditionalState, setAdditionals } = useContext(ProductContext)
     const [updateAdditional, setUpdateAdditional] = updateAdditionalState
-    console.log(updateAdditional)
+
+    const handleDeleteAdditional = async (additional: iAdditional["data"]) => {
+        const { path } = getPathByPictureUrl(additional.picture_url)
+        await Promise.all([
+            supabase.storage.from("teste").remove([path]),
+            supabase.from("additionals").delete().eq("id", additional.id),
+        ])
+        setAdditionals(state => {
+            state.splice(state.findIndex(a => a.id === additional.id), 1)
+            return [...state]
+        })
+        alert("adicional deletado com sucesso.")
+    }
 
     if (!additionals) return null
-
     return (
         <div className={``}>
+
             {updateAdditional ? <UpdateAdditional /> : null}
             <Dialog.Root>
                 <Dialog.Trigger asChild>
@@ -41,13 +55,9 @@ export function Additionals({ }: iAdditionalsModalProps) {
                             </div>
                         </Dialog.Title>
 
-
                         <div className="flex flex-wrap gap-3">
 
                             {(additionals).map(additional => {
-                                // const count = products.reduce((total, product) => {
-                                //     return product.category_id === additional.id ? total + 1 : total;
-                                // }, 0);
                                 return (
                                     <div key={additional.id} className="w-[417px] h-[80px] rounded-sm bg-white shadow-sm flex gap-3 relative">
                                         <Image
@@ -79,6 +89,16 @@ export function Additionals({ }: iAdditionalsModalProps) {
                                                     >
                                                         <BsFillPencilFill size={16} />
                                                         <span className="text-base">Editar adicional</span>
+                                                    </DropdownMenu.Item>
+                                                    <DropdownMenu.Item
+                                                        onClick={() => handleDeleteAdditional(additional)}
+                                                        className="group text-[13px] leading-none text-violet11 rounded-[3px] flex items-center gap-3 hover:bg-white-blue cursor-pointer h-9 px-[5px] 
+                                                            relative pl-[25px]"
+                                                    >
+
+
+                                                        <BsFillPencilFill size={16} />
+                                                        <span className="text-base">Apagar adicional</span>
                                                     </DropdownMenu.Item>
                                                     <DropdownMenu.Arrow className="fill-white" />
                                                 </DropdownMenu.Content>

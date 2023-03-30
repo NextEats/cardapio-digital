@@ -111,7 +111,7 @@ export function UpdateAdditional({ }: iUpdateAdditionalProps) {
                                 Criar Adicional
                                 <button
                                     disabled={isSubmitting}
-                                    className="px-6 py-1 text-white rounded-full bg-blue-400 disabled:bg-gray-300 " type="submit"
+                                    className="px-6 py-1 text-white rounded-full bg-blue-400 disabled:bg-gray-400 " type="submit"
                                 // onClick={handleUpdateAdditional}
                                 >
                                     salvar

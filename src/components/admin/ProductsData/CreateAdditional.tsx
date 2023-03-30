@@ -1,5 +1,5 @@
 import { ProductContext } from "@/src/contexts/ProductContext"
-import { FormEvent, useContext, useMemo, useState } from "react"
+import { useContext, useState } from "react"
 import * as Dialog from '@radix-ui/react-dialog';
 import * as zod from 'zod';
 import { useForm } from "react-hook-form";
@@ -10,7 +10,6 @@ import { api, supabase } from "@/src/server/api";
 
 import { getFilePath } from "@/src/helpers/getFilePath";
 import Image from "next/image";
-import { toast, ToastContainer } from "react-toastify";
 
 import 'react-toastify/dist/ReactToastify.css';
 interface iCreateAdditionalProps {
@@ -20,7 +19,7 @@ const newAdditionalValidationSchema = zod.object({
     picture: zod.any().nullable(),
     name: zod.string(),
     price: zod.number(),
-    categori_id: zod.number(),
+    category_id: zod.number(),
 }).required()
 
 type newAdditional = zod.infer<typeof newAdditionalValidationSchema>
@@ -28,23 +27,21 @@ const newAdditionalDefaultValue: newAdditional = {
     picture: null,
     name: '',
     price: 0,
-    categori_id: 0,
+    category_id: 0,
 };
 
 export function CreateAdditional({ }: iCreateAdditionalProps) {
     const { restaurant, additional_categories, setAdditionals } = useContext(ProductContext)
     const [imageProview, setImageProview] = useState<string | null>(null)
 
-    const { register, getValues } = useForm<newAdditional>({
+    const { register, getValues, handleSubmit, reset, formState: { isSubmitting } } = useForm<newAdditional>({
         resolver: zodResolver(newAdditionalValidationSchema),
         defaultValues: newAdditionalDefaultValue
     })
 
-    const handleCreateAdditional = async (e: FormEvent) => {
-        e.preventDefault()
-        const name = getValues("name")
-        const price = getValues("price")
-        const category_id = getValues("categori_id")
+    const handleCreateAdditional = async (data: newAdditional) => {
+
+        const { category_id, name, price, picture } = data
 
         if (getValues("picture") === null || !name || !price || !category_id) {
             alert("Todas as informações devem ser preenchidas.")
@@ -53,16 +50,14 @@ export function CreateAdditional({ }: iCreateAdditionalProps) {
 
         const file: File = getValues("picture")[0]
         const { filePath } = getFilePath({ file, slug: restaurant.slug as string })
-        const { data, error } = await supabase.storage.from('teste')
+        const { data: uploadData, error } = await supabase.storage.from('teste')
             .upload(filePath, file, { upsert: true })
 
-
-        if (!data) {
+        if (!uploadData) {
             alert("Não foi possivel fazer a criação do adicional.")
             return
         }
-        const { data: { publicUrl } } = await supabase.storage.from('teste').getPublicUrl(data.path)
-
+        const { data: { publicUrl } } = await supabase.storage.from('teste').getPublicUrl(uploadData.path)
 
         const { data: additonal, status } = await api.post(`api/additionals/${restaurant.id}`, {
             name,
@@ -75,7 +70,8 @@ export function CreateAdditional({ }: iCreateAdditionalProps) {
             alert("Não foi possivel fazer a criação do adicional.")
             return
         }
-        setAdditionals(state => [...state, additonal])
+        setAdditionals(state => [...state, { ...additonal[0] }])
+        reset()
     }
 
     return (
@@ -90,10 +86,14 @@ export function CreateAdditional({ }: iCreateAdditionalProps) {
                     <Dialog.Overlay className="bg-blackA9 data-[state=open]:animate-overlayShow fixed inset-0" />
                     <Dialog.Content className="data-[state=open]:animate-contentShow fixed top-[30%] left-[50%]  h-[350px] w-[700px] translate-x-[-50%] translate-y-[-50%] rounded-[6px] bg-white p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none">
 
-                        <form className="">
+                        <form
+                            onSubmit={handleSubmit(handleCreateAdditional)}
+                            className="">
                             <Dialog.Title className="text-mauve12 flex flex-1 items-center justify-between m-0 text-[17px] font-medium mb-4">
                                 Criar Adicional
-                                <button className="px-6 py-1 text-white rounded-full bg-blue-400 " type="submit" onClick={handleCreateAdditional} >
+                                <button
+                                    disabled={isSubmitting}
+                                    className="px-6 py-1 text-white rounded-full bg-blue-400 disabled:bg-gray-400 " type="submit">
                                     salvar
                                 </button>
                             </Dialog.Title>
@@ -151,7 +151,7 @@ export function CreateAdditional({ }: iCreateAdditionalProps) {
 
                                     <label className="text-lg font-medium" htmlFor=""> Categoria </label>
                                     <select
-                                        {...register("categori_id", { valueAsNumber: true })}
+                                        {...register("category_id", { valueAsNumber: true })}
                                         className="w-full border border-gray-300 py-1 px-2 text-base font-semibold leading-none rounded outline-none focus:border-blue-400"
                                     >
                                         <option value="select">Selecione</option>
@@ -162,7 +162,6 @@ export function CreateAdditional({ }: iCreateAdditionalProps) {
 
                                 </div>
                             </div>
-
 
                         </form>
 

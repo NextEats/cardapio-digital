@@ -10,6 +10,7 @@ import { getSelectsByRestaurantIdFetch } from '@/src/fetch/selects/getSelectsByR
 import { supabase } from '@/src/server/api';
 import { iAdditionalCategories, iAdditionals, iProductCategories, iProductOptions, iProductsWithFKData, iRestaurant, iSelects } from '@/src/types/types';
 import { GetStaticPaths, GetStaticProps } from 'next';
+import { ToastContainer } from 'react-toastify';
 
 interface iProdcutsProps {
     restaurant: iRestaurant["data"]
@@ -39,7 +40,7 @@ export default function Prodcuts({
             products={products}
             restaurant={restaurant}
             categories={categories}
-            additionals={additionals}
+            additionalsData={additionals}
             selects={selects}
             additional_categories={additional_categories}
             product_options={product_options}
@@ -56,6 +57,7 @@ export default function Prodcuts({
                     <ProductsData styles='w-full' />
                 </div>
             </div>
+
         </ProductContextProvider>
         // </AdminWrapper>
     );

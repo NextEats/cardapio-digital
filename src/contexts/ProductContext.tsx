@@ -3,9 +3,12 @@ import {
     Dispatch,
     ReactNode,
     SetStateAction,
+    useEffect,
     useMemo,
+    useReducer,
     useState,
 } from 'react';
+import { iProductsPageAction, iProductsPageReducder, productsPageReducder, productsPageReducderDefaultValues } from '../reducers/productsPageReducer/reducer';
 import {
     iAdditionalCategories,
     iAdditionalCategory,
@@ -23,6 +26,7 @@ interface iProductContextProps {
     restaurant: iRestaurant['data'];
     categories: iProductCategories["data"]
     additionals: iAdditionals["data"]
+    setAdditionals: Dispatch<SetStateAction<iAdditionals["data"]>>
     selects: iSelects["data"]
     additional_categories: iAdditionalCategories["data"]
     product_options: iProductOptions["data"]
@@ -45,7 +49,7 @@ interface iProductContextProviderProps {
     restaurant: iRestaurant['data'];
     products: iProductsWithFKData[];
     categories: iProductCategories["data"]
-    additionals: iAdditionals["data"]
+    additionalsData: iAdditionals["data"]
     selects: iSelects["data"]
     additional_categories: iAdditionalCategories["data"]
     product_options: iProductOptions["data"]
@@ -58,18 +62,20 @@ export default function ProductContextProvider({
     restaurant,
     products,
     categories,
-    additionals,
+    additionalsData,
     selects,
     additional_categories,
     product_options,
 }: iProductContextProviderProps) {
     const [productSelected, setProductSelected] = useState<iProductsWithFKData[]>([])
     const [updateCategoryState, setUpdateCategoryState] = useState<iProductCategory["data"] | iAdditionalCategory["data"] | null>(null)
+    const [additionals, setAdditionals] = useState<iAdditionals["data"]>([])
 
-    const [filter, setFilter] = useState<{
-        name: string | null;
-        category: number | null;
-    }>({
+    useEffect(() => {
+        setAdditionals(additionalsData)
+    }, [additionalsData])
+
+    const [filter, setFilter] = useState<{ name: string | null, category: number | null }>({
         name: null,
         category: 0,
     });
@@ -101,6 +107,7 @@ export default function ProductContextProvider({
                 categories: !categories ? [] : categories,
                 restaurant,
                 additionals,
+                setAdditionals,
                 selects,
                 additional_categories,
                 product_options,

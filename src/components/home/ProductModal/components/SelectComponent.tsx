@@ -32,6 +32,10 @@ export default function SelectComponent({
 
             <div className="flex mt-8 flex-wrap gap-2">
                 {select.options?.map((option: any, optionIndex) => {
+                    if (!option.active) {
+                        return null;
+                    }
+
                     return (
                         <div
                             key={option.id}

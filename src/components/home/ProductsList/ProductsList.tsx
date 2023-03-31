@@ -39,15 +39,12 @@ function CategoriesNavbar({ groupedProductsData }: any) {
         return null;
     }
 
-    const buttonClasses =
-        'mr-3 px-12 py-3 rounded-lg border-2 text-md font-semibold bg-gray-100 hover:bg-gray-200';
-
     return (
-        <div className="scrollbar-custom sticky pl-3 py-2 left-0 top-0 mt-3 whitespace-nowrap overflow-auto bg-gray-100 shadow border z-10 touch-auto">
+        <div className="scrollbar-custom sticky pl-3 py-2 left-0 top-0 mt-3 whitespace-nowrap overflow-auto bg-gray-100 z-10 touch-auto">
             {groupedProductsData.map((category: any, index: number) => {
                 return (
                     <button
-                        className={buttonClasses}
+                        className="mr-3 px-12 py-3 rounded-lg text-md font-semibold bg-gray-700 text-white hover:bg-gray-500"
                         onClick={() => {
                             scrollTo(toNormalForm(category.name));
                         }}
@@ -63,13 +60,13 @@ function CategoriesNavbar({ groupedProductsData }: any) {
 
 function SearchInput() {
     return (
-        <div className="relative text-gray-600 mt-4 mx-3 ">
+        <div className="relative text-gray-600 mt-4 mx-3">
             <span className="absolute inset-y-0 left-0 flex items-center pl-2 ">
                 <FaSearch className="ml-2" />
             </span>
             <input
                 type="search"
-                className="p-3 w-full text-md text-gray-800 bg-gray-100 rounded-md pl-12 outline outline-1 outline-gray-300 focus:outline-gray-500"
+                className="p-3 w-full text-md text-gray-800 bg-white rounded-md pl-12 outline outline-1 outline-gray-300 focus:outline-gray-200"
                 placeholder="Pesquise por um produto..."
                 autoComplete="off"
             />
@@ -86,7 +83,7 @@ function ProductsHorizontalList({ category }: { category: any }) {
 
     return (
         <div id={toNormalForm(category.name)} className="mb-12 scroll-mt-24">
-            <h2 className="text-2xl mb-3 mt-5 font-semibold text-gray-700">
+            <h2 className="text-2xl mb-3 mt-5 font-semibold text-gray-700 ">
                 {category.name}
             </h2>
             <div className="whitespace-nowrap overflow-auto scrollbar-custom">

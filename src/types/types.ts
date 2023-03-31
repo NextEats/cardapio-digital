@@ -399,6 +399,10 @@ export interface iDeliveryFees {
     data: Array<Database['public']['Tables']['delivery_fees']['Row']>;
 }
 
+export type iProductsWithFKData = iProduct['data'] & {
+    category_id: iProductCategory["data"]
+};
+
 export type iOrdersWithFKData = iOrder['data'] & {
     payment_methods: iPaymentMethod['data'];
     order_types: iOrderTypes['data'];

@@ -712,6 +712,7 @@ export interface Database {
       }
       products: {
         Row: {
+          active: boolean
           category_id: number
           created_at: string | null
           description: string
@@ -722,6 +723,7 @@ export interface Database {
           restaurant_id: number | null
         }
         Insert: {
+          active?: boolean
           category_id: number
           created_at?: string | null
           description: string
@@ -732,6 +734,7 @@ export interface Database {
           restaurant_id?: number | null
         }
         Update: {
+          active?: boolean
           category_id?: number
           created_at?: string | null
           description?: string

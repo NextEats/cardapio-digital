@@ -8,12 +8,14 @@ import { CreateCategory } from "./CreateCategory";
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import { UpdateCategory } from "./UpdateCategory";
 import Image from "next/image";
+import { CreateAdditional } from "./CreateAdditional";
+import { CreateSelect } from "./CreateSelect";
 
 interface iSelectsProps {
 }
 
 export function Selects({ }: iSelectsProps) {
-    const { products, categories, selects, product_options } = useContext(ProductContext)
+    const { selects, product_options } = useContext(ProductContext)
 
     if (!selects) return null
     return (
@@ -30,68 +32,51 @@ export function Selects({ }: iSelectsProps) {
                     <Dialog.Content className="data-[state=open]:animate-contentShow fixed top-[40%] left-[50%]  h-[500px] w-[900px] translate-x-[-50%] translate-y-[-50%] rounded-[6px] bg-white p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none">
                         <Dialog.Title className="text-mauve12 flex flex-1 items-center justify-between m-0 text-[17px] font-medium">
                             Personalizações
+                            <CreateSelect />
                         </Dialog.Title>
 
-                        <div className="flex flex-wrap gap-3">
+                        <div className="flex flex-col gap-3 w-full">
                             {selects.map(select => {
-
                                 return (
-                                    <div key={select.id} className="w-[417px] flex flex-col gap-2">
+                                    <div key={select.id} className="w-full flex flex-col gap-2">
                                         <div className="flex items-center justify-between">
                                             <span className="w-[160px] truncate"> {select.name} </span>
                                             <div className="flex item-center gap-2">
                                                 <span> R$ 00,00 </span>
                                             </div>
                                         </div>
-                                        <div className="flex justify-between">
-                                            {selects.map(select => {
-                                                return <div key={select.id}>
-                                                    <div className="flex mt-8 flex-wrap gap-2">
-                                                        {product_options?.map((product_option) => {
-                                                            if (product_option.select_id !== select.id) return
-                                                            return <div key={product_option.id} >
-                                                                <label
-                                                                    className=""
-                                                                    htmlFor={select.name + product_option.id}
-                                                                >
-                                                                    <div
-                                                                        className={`w-[130px] h-[130px] rounded-lg relative cursor-pointer`}
-                                                                    >
-                                                                        <div className="w-full h-full absolute rounded-lg z-10 bg-gradient-to-t from-[#000000ff] via-[#00000063] to-[#00000000]"></div>
-                                                                        <span className="absolute bottom-1 left-1 z-20 text-white-300 text-sm font-medium">
-                                                                            {product_option.name}
-                                                                        </span>
-                                                                        {product_option.picture_url && (
-                                                                            <Image
-                                                                                src={product_option.picture_url}
-                                                                                alt={product_option.name}
-                                                                                className={
-                                                                                    'wi-full h-full relative rounded-lg object-cover'
-                                                                                }
-                                                                                width={326}
-                                                                                height={358}
-                                                                            />
-                                                                        )}
-                                                                    </div>
-                                                                </label>
-                                                                {/* <input
-                                                                type="radio"
-                                                                name={select.name}
-                                                                value={
-                                                                    stringToNormalForm(select.name) + option.id
-                                                                }
-                                                                defaultChecked={option.is_default_value}
-                                                                style={{ display: 'none' }}
-                                                            /> */}
-                                                            </div>
-
-                                                        })}
-                                                    </div>
-
+                                        <div className="flex mt-8 flex-wrap gap-2">
+                                            {product_options?.map((product_option) => {
+                                                if (product_option.select_id !== select.id) return
+                                                return <div key={product_option.id} >
+                                                    <label
+                                                        className=""
+                                                        htmlFor={select.name + product_option.id}
+                                                    >
+                                                        <div className={`w-[100px] h-[100px] rounded-lg relative cursor-pointer`} >
+                                                            <div className="w-full h-full absolute rounded-lg z-10 bg-gradient-to-t from-[#000000ff] via-[#00000063] to-[#00000000]"></div>
+                                                            <span className="absolute bottom-1 left-1 z-20 text-white-300 text-sm font-medium">
+                                                                {product_option.name}
+                                                            </span>
+                                                            {product_option.picture_url && (
+                                                                <Image
+                                                                    src={product_option.picture_url}
+                                                                    alt={product_option.name}
+                                                                    className={'w-full h-full relative rounded-lg object-cover'}
+                                                                    width={326}
+                                                                    height={358}
+                                                                />
+                                                            )}
+                                                        </div>
+                                                    </label>
                                                 </div>
                                             })}
+                                            <button className="w-[100px] h-[100px] rounded-lg flex items-center justify-center border border-gray-300 cursor-pointer">
+                                                <BsPlusLg size={32} />
+                                            </button>
+                                        </div>
 
-                                            {/* <DropdownMenu.Root>
+                                        {/* <DropdownMenu.Root>
                                                 <DropdownMenu.Trigger >
                                                     <BsThreeDotsVertical size={16} className="text-gray-400" />
                                                 </DropdownMenu.Trigger>
@@ -113,12 +98,9 @@ export function Selects({ }: iSelectsProps) {
                                                 </DropdownMenu.Portal>
                                             </DropdownMenu.Root> */}
 
-
-                                        </div>
                                     </div>
                                 );
                             })}
-
                         </div>
 
                         <Dialog.Close

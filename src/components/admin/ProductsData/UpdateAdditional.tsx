@@ -161,7 +161,7 @@ export function UpdateAdditional({ }: iUpdateAdditionalProps) {
                                         {...register("name", { required: true })}
                                         placeholder="ex.: Banana" />
 
-                                    <label htmlFor="" className="text-lg font-medium"> Ordem </label>
+                                    <label htmlFor="" className="text-lg font-medium"> Preço </label>
                                     <div className="flex items-center mb-2">
                                         <p className="py-1 px-2 bg-gray-300 text-gray-500 rounded-l-md ">R$ </p>
                                         <input

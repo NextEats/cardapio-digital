@@ -43,7 +43,7 @@ export function WeekdayOperatingTime() {
                             <thead>
                                 <tr className="child:font-bold child:text-[#525252] ">
                                     <td>Dia</td>
-                                    <td>Horario</td>
+                                    <td className='text-center'>Horario</td>
                                     {/* <td>Fechamento</td> */}
                                 </tr>
                             </thead>

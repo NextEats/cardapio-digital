@@ -20,7 +20,8 @@ export async function getOrdersByRestaurantIdFetch(
             delivery_fees (*)
     `
         )
-        .eq('restaurant_id', restaurant_id);
+        .eq('restaurant_id', restaurant_id)
+        .order('created_at', { ascending: false });
 
     return data! as unknown as iOrdersWithFKData[];
 }

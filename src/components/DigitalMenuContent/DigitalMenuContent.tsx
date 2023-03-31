@@ -31,7 +31,7 @@ export default function DigitalMenuContent() {
     }, [productReducer, restaurant?.id]);
 
     return (
-        <div className="bg-[#222] flex justify-center min-h-screen min-w-screen">
+        <div className="bg-gray-100 flex justify-center min-h-screen min-w-screen">
             <div className="bg-gray-100 max-w-7xl w-full">
                 <RestaurantHeader />
                 <ProductsList />

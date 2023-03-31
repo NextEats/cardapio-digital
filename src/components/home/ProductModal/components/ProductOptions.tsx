@@ -13,16 +13,19 @@ export default function ProductOptions({
 }: iProductOptions) {
     return (
         <div>
-            {productSelects.map((select: any, selectIndex: any) => (
-                <SelectComponent
-                    select={select}
-                    key={selectIndex}
-                    index={selectIndex}
-                    handleOptionClick={(optionIndex: number) => {
-                        selectOption(selectIndex, optionIndex);
-                    }}
-                />
-            ))}
+            {productSelects.map((select: any, selectIndex: any) => {
+                console.log(select);
+                return (
+                    <SelectComponent
+                        select={select}
+                        key={selectIndex}
+                        index={selectIndex}
+                        handleOptionClick={(optionIndex: number) => {
+                            selectOption(selectIndex, optionIndex);
+                        }}
+                    />
+                );
+            })}
         </div>
     );
 }

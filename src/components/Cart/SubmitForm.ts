@@ -11,6 +11,7 @@ import {
     iContact,
     iOrder,
 } from '@/src/types/types';
+import { calculateTotalOrderPrice } from '@/src/helpers/calculateTotalOrderPrice';
 
 export function removeNonAlphaNumeric(str: string) {
     return str.replace(/[^a-zA-Z0-9]/g, '');
@@ -210,6 +211,8 @@ export async function SubmitForm({
             }
         }
 
+        const totalOrderPrice =  await calculateTotalOrderPrice({products, restaurantId: restaurant.id})
+
         if (isPayingUsingPix) {
             try {
                 await whatsappRestApi({
@@ -218,9 +221,9 @@ export async function SubmitForm({
                     data: {
                         id: restaurant!.slug,
                         number: '55' + removeNonAlphaNumeric(whatsapp),
-                        message: `Pague através da chave pix: _*${
+                        message: `😊 O valor total do seu pedido é de ${isDelivery && foundDeliveryFee ? foundDeliveryFee.fee + totalOrderPrice : totalOrderPrice}\n\nPague através da chave pix: _*${
                             restaurant!.pix
-                        }*_\n\n😊☑ _Assim que fizer a transferência, envie o comprovante aqui_`,
+                        }*_\n\n☑ _Assim que fizer a transferência, envie o comprovante aqui_`,
                     },
                 });
             } catch (err) {

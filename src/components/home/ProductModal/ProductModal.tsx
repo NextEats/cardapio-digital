@@ -165,6 +165,7 @@ export default function ProductModal() {
                             placeholder="Observações"
                         ></textarea>
                     </form>
+                    <div className='mb-12'>
                     {productSelects && allOptionsSelected ? (
                         <SubmitButtons handleSubmit={handleSubmit} />
                     ) : (
@@ -176,7 +177,7 @@ export default function ProductModal() {
                             }
                         />
                     )}
-                </div>
+                </div></div>
             </div>
         </>
     );

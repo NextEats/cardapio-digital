@@ -39,8 +39,11 @@ const updateAdditionalDefaultValue: newSelectData = {
 };
 
 export function CreateSelect({ }: iCreateSelectProps) {
-    const { restaurant } = useContext(ProductContext)
+    const { restaurant, selectsState, product_options_state } = useContext(ProductContext)
     const [optionImageProview, setOptionImageProview] = useState<string | null>(null)
+
+    const [selects, setSelects] = selectsState
+    const [product_options, setProduct_options] = product_options_state
 
     const { register, reset, getValues, setFocus, setError, watch, setValue, handleSubmit, formState: { isSubmitting, errors } } = useForm<newSelectData>({
         resolver: zodResolver(newSelectValidationSchema),
@@ -78,7 +81,7 @@ export function CreateSelect({ }: iCreateSelectProps) {
             .upload(filePath, file, { upsert: true })
 
         if (!uploadData) {
-            alert("Não foi possivel fazer a criação do adicional.")
+            alert("Desculpe, houve um problema ao criar essa personalização. Por favor, contate um administrador!")
             return
         }
         const { data: { publicUrl } } = await supabase.storage.from('teste').getPublicUrl(uploadData.path)
@@ -90,6 +93,17 @@ export function CreateSelect({ }: iCreateSelectProps) {
             active: true,
             select_id: selectData[0].id,
             is_default_value: false,
+        }).select("*")
+
+        if (!optionData) {
+            alert("Desculpe, houve um problema ao criar essa personalização. Por favor, contate um administrador!")
+            return
+        }
+        setSelects(state => {
+            return state ? [...state, { ...selectData[0] }] : [{ ...selectData[0] }]
+        })
+        setProduct_options(state => {
+            return state ? [...state, { ...optionData[0] }] : [{ ...optionData[0] }]
         })
     }
 

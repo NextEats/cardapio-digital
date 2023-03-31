@@ -41,9 +41,9 @@ export default function Prodcuts({
             restaurant={restaurant}
             categories={categories}
             additionalsData={additionals}
-            selects={selects}
+            selectsData={selects}
             additional_categories={additional_categories}
-            product_options={product_options}
+            product_optionsData={product_options}
         >
             <div className='pt-16 pl-60'>
                 <div className='p-5 flex flex-col gap-3'>

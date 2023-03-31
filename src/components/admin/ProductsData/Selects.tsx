@@ -15,7 +15,10 @@ interface iSelectsProps {
 }
 
 export function Selects({ }: iSelectsProps) {
-    const { selects, product_options } = useContext(ProductContext)
+    const { selectsState, product_options_state } = useContext(ProductContext)
+
+    const [selects, setSelects] = selectsState
+    const [product_options, setProduct_options] = product_options_state
 
     if (!selects) return null
     return (

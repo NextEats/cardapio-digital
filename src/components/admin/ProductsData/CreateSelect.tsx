@@ -27,7 +27,7 @@ const newSelectValidationSchema = zod.object({
 })
 
 type newSelectData = zod.infer<typeof newSelectValidationSchema>
-const updateAdditionalDefaultValue: newSelectData = {
+const selectDefaultValue: newSelectData = {
     name: '',
     has_default_price: false,
     price: null,
@@ -45,16 +45,16 @@ export function CreateSelect({ }: iCreateSelectProps) {
     const [selects, setSelects] = selectsState
     const [product_options, setProduct_options] = product_options_state
 
-    const { register, reset, getValues, setFocus, setError, watch, setValue, handleSubmit, formState: { isSubmitting, errors } } = useForm<newSelectData>({
+    const { register, reset, setFocus, setError, watch, setValue, handleSubmit, formState: { isSubmitting, errors } } = useForm<newSelectData>({
         resolver: zodResolver(newSelectValidationSchema),
-        defaultValues: updateAdditionalDefaultValue
+        defaultValues: selectDefaultValue
     })
 
     const has_default_value = watch("has_default_price")
     const has_price = watch("option_has_price")
 
     const handleCreateSelect = async (data: newSelectData) => {
-        console.log(data)
+
         const { has_default_price, name, max_selected_options, option_name, option_price, price, option_picture_url } = data
 
         if (!option_picture_url) {
@@ -105,6 +105,7 @@ export function CreateSelect({ }: iCreateSelectProps) {
         setProduct_options(state => {
             return state ? [...state, { ...optionData[0] }] : [{ ...optionData[0] }]
         })
+        reset()
     }
 
     const handleFocus = (inputName: "price" | "option_price") => {

@@ -10,6 +10,8 @@ import { UpdateCategory } from "./UpdateCategory";
 import Image from "next/image";
 import { CreateAdditional } from "./CreateAdditional";
 import { CreateSelect } from "./CreateSelect";
+import { CreateProductOption } from "./CreateProductOption";
+import { iSelect } from "@/src/types/types";
 
 interface iSelectsProps {
 }
@@ -17,13 +19,14 @@ interface iSelectsProps {
 export function Selects({ }: iSelectsProps) {
     const { selectsState, product_options_state } = useContext(ProductContext)
 
+    const [selectToCreateOption, setSelectToCreateOption] = useState<iSelect["data"] | null>(null)
+
     const [selects, setSelects] = selectsState
     const [product_options, setProduct_options] = product_options_state
 
     if (!selects) return null
     return (
         <div className={``}>
-
             <Dialog.Root>
                 <Dialog.Trigger asChild>
                     <button className="text-violet11 shadow-blackA7 hover:bg-mauve3 inline-flex h-[35px] items-center justify-center rounded-[4px] bg-white px-[15px] font-medium leading-none shadow-[0_2px_10px] focus:shadow-[0_0_0_2px] focus:shadow-black focus:outline-none">
@@ -38,6 +41,10 @@ export function Selects({ }: iSelectsProps) {
                             <CreateSelect />
                         </Dialog.Title>
 
+                        {selectToCreateOption ? <CreateProductOption
+                            selectToCreateOption={selectToCreateOption}
+                            setSelectToCreateOption={setSelectToCreateOption}
+                        /> : null}
                         <div className="flex flex-col gap-3 w-full">
                             {selects.map(select => {
                                 return (
@@ -74,7 +81,9 @@ export function Selects({ }: iSelectsProps) {
                                                     </label>
                                                 </div>
                                             })}
-                                            <button className="w-[100px] h-[100px] rounded-lg flex items-center justify-center border border-gray-300 cursor-pointer">
+                                            <button
+                                                onClick={() => setSelectToCreateOption(select)}
+                                                className="w-[100px] h-[100px] rounded-lg flex items-center justify-center border border-gray-300 cursor-pointer">
                                                 <BsPlusLg size={32} />
                                             </button>
                                         </div>

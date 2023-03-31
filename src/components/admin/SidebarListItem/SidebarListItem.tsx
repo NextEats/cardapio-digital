@@ -1,27 +1,31 @@
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 
-export default function SidebarListItem({
-    name,
-    icon,
-    path,
-}: {
+interface iSidebarListItem
+    extends React.ButtonHTMLAttributes<HTMLImageElement> {
     name: string;
-    icon: JSX.Element;
+    icon: any;
     path: string;
-}) {
+}
+
+export default function SidebarListItem(props: iSidebarListItem) {
+    const { name, icon, path } = props;
     const router = useRouter();
+    const isTheCurrentPage = router.asPath === path;
+    let stateDependentClasses: string;
 
-    var linkClasses =
-        'flex flex-row h-14 items-center text-gray-500 hover:bg-gray-700 hover:text-gray-100 px-3 cursor-pointer';
-
-    if (router.asPath === path) {
-        linkClasses =
-            'flex flex-row h-14 items-center bg-gray-700 text-gray-100 px-3';
+    if (isTheCurrentPage) {
+        stateDependentClasses = 'text-[#FFA53A] cursor-default';
+    } else {
+        stateDependentClasses =
+            'text-white opacity-50 hover:opacity-100 cursor-pointer';
     }
 
     return (
-        <Link href={path} className={linkClasses}>
+        <Link
+            href={path}
+            className={`flex flex-row h-14 items-center px-3 text-md ${stateDependentClasses}`}
+        >
             <li className="flex flex-row items-center">
                 {icon} {name}
             </li>

@@ -637,27 +637,33 @@ export interface Database {
       }
       product_options: {
         Row: {
+          active: boolean | null
           created_at: string | null
           id: number
           is_default_value: boolean
           name: string
           picture_url: string
+          price: number | null
           select_id: number
         }
         Insert: {
+          active?: boolean | null
           created_at?: string | null
           id?: number
           is_default_value?: boolean
           name: string
           picture_url: string
+          price?: number | null
           select_id: number
         }
         Update: {
+          active?: boolean | null
           created_at?: string | null
           id?: number
           is_default_value?: boolean
           name?: string
           picture_url?: string
+          price?: number | null
           select_id?: number
         }
       }
@@ -961,23 +967,29 @@ export interface Database {
       selects: {
         Row: {
           created_at: string | null
+          has_default_price: boolean
           id: number
           max_selected_options: number
           name: string
+          price: number | null
           restaurant_id: number | null
         }
         Insert: {
           created_at?: string | null
+          has_default_price?: boolean
           id?: number
           max_selected_options?: number
           name: string
+          price?: number | null
           restaurant_id?: number | null
         }
         Update: {
           created_at?: string | null
+          has_default_price?: boolean
           id?: number
           max_selected_options?: number
           name?: string
+          price?: number | null
           restaurant_id?: number | null
         }
       }

@@ -49,7 +49,7 @@ export function CreateAdditional({ }: iCreateAdditionalProps) {
         }
 
         const file: File = getValues("picture")[0]
-        const { filePath } = getFilePath({ file, slug: restaurant.slug as string })
+        const { filePath } = getFilePath({ file, slug: restaurant.slug })
         const { data: uploadData, error } = await supabase.storage.from('teste')
             .upload(filePath, file, { upsert: true })
 

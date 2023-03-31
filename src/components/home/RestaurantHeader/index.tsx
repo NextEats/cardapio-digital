@@ -27,12 +27,13 @@ export default function RestaurantHeader() {
         <div className="flex justify-center flex-col mb-5">
             {restaurant.banner_url ? (
                 <div
-                    className="h-[230px] w-full flex justify-center items-center relative"
+                    className="h-[230px] w-full flex justify-center items-center relative lg:mt-3"
                     style={{
                         backgroundImage: `url(${restaurant.banner_url})`,
                         backgroundSize: 'auto 100%',
                         backgroundRepeat: 'no-repeat',
                         backgroundPosition: 'center center',
+                        borderRadius: '5px'
                     }}
                 ></div>
             ) : null}

@@ -24,7 +24,7 @@ export function WeekdayOperatingTime() {
                 className="absolute w-full h-screen bg-[#000000] opacity-80 overflow-x-hidden cursor-pointer"
                 onClick={handleClose}
             />
-            <div className="absolute bg-[#fefefe] w-[95%] max-w-[500px] min-h-[600px] rounded-lg shadow-lg">
+            <div className="absolute bg-[#fefefe] w-[95%] max-w-[700px] min-h-[600px] rounded-lg shadow-lg">
                 <BsX
                     className="my-8 cursor-pointer absolute right-7"
                     size={30}
@@ -39,12 +39,12 @@ export function WeekdayOperatingTime() {
                     </span>
                     <hr className="mt-6 my-2 w-full h-[2px] bg-[#d9d9d9]" />
                     <div className="w-[90%] mt-6">
-                        <table className="w-full">
+                        <table className="w-full table-auto">
                             <thead>
                                 <tr className="child:font-bold child:text-[#525252] ">
                                     <td>Dia</td>
-                                    <td>Abertura</td>
-                                    <td>Fechamento</td>
+                                    <td>Horario</td>
+                                    {/* <td>Fechamento</td> */}
                                 </tr>
                             </thead>
                             <tbody className="child:child:font-light child:child:text-2xl child:child:h-12">
@@ -62,7 +62,7 @@ export function WeekdayOperatingTime() {
                                                     </td>
                                                     <td
                                                         colSpan={2}
-                                                        className="text-red-400"
+                                                        className="text-red-400 text-center"
                                                     >
                                                         Fechado
                                                     </td>
@@ -74,20 +74,25 @@ export function WeekdayOperatingTime() {
                                                     <td>
                                                         {weekday.weekdays.name}
                                                     </td>
-                                                    <td className="text-green-500">
+                                                    <td className="text-green-500 text-center">
                                                         {weekday.opening_time?.slice(
                                                             0,
                                                             5
                                                         )}
-                                                        h
-                                                    </td>
-                                                    <td className="text-green-500">
+                                                        h -&nbsp;
                                                         {weekday.closing_time?.slice(
                                                             0,
                                                             5
                                                         )}
                                                         h
                                                     </td>
+                                                    {/* <td className="text-green-500">
+                                                        {weekday.closing_time?.slice(
+                                                            0,
+                                                            5
+                                                        )}
+                                                        h
+                                                    </td> */}
                                                 </tr>
                                             );
                                         }

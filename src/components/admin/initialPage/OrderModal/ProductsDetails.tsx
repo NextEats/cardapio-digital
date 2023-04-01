@@ -38,7 +38,7 @@ export default function ProductsDetails({
     return (
         <div className="mb-2 w-full uppercase">
             <div>
-                {productsFiltered!.map((product, index) => {
+                {productsFiltered!.map((product: any, index) => {
                     console.log(product);
 
                     const orderProductByProductId = orderProductFiltered.find(
@@ -46,13 +46,19 @@ export default function ProductsDetails({
                             op.product_id === product.id &&
                             !ordersProductsId.some((opId) => opId === op.id)
                     );
+
+                    console.log(
+                        'orderProductByProductId',
+                        orderProductByProductId
+                    );
+
                     if (!orderProductByProductId) return;
                     ordersProductsId = [
                         ...ordersProductsId,
                         orderProductByProductId.id!,
                     ];
 
-                    const selectsDada = orderProductByProductId.selects_data as
+                    const selectsData = orderProductByProductId.selects_data as
                         | {
                               id: number;
                               max_selected_options: number;
@@ -143,7 +149,7 @@ export default function ProductsDetails({
                             <div className="flex">
                                 {
                                     <>
-                                        {selectsDada!.map((s) => {
+                                        {selectsData!.map((s) => {
                                             return (
                                                 <div
                                                     key={s.id}
@@ -181,16 +187,10 @@ export default function ProductsDetails({
                                     );
                                 })}
                             </div>
-
-                            {/* {orderProductFiltered.length > 0 ? (
-                                    <div>
-                                        <p className={`${textStyles} flex flex-col`}>
-                                            Observações{' '}
-                                            {/* {       .observation} }
-                                        </p>
-                                    </div>
-                                ) : null
-                            */}
+                            <span className="text-sm mt-4">
+                                <span className="font-semibold">Obs:</span>{' '}
+                                {orderProductByProductId.observation}
+                            </span>
                         </div>
                     );
                 })}

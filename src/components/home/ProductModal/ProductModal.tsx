@@ -129,8 +129,8 @@ export default function ProductModal() {
                             className="rounded-3xl"
                             src={productData.picture_url}
                             alt="backgfroundheader"
-                            width={500}
-                            height={500}
+                            width={400}
+                            height={400}
                         />
                     </div>
                     <div className="mb-9">

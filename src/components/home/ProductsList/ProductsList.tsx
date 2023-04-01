@@ -86,49 +86,80 @@ function ProductsHorizontalList({ category }: { category: any }) {
             <h2 className="text-2xl mb-3 mt-5 font-semibold text-gray-700 ">
                 {category.name}
             </h2>
-            <div className="whitespace-nowrap overflow-auto scrollbar-custom">
+            <div className="grid md:grid-cols-2 xl:grid-cols-3  gap-3 ">
                 {category.products
                     ? category.products.map((product: any, index: any) => {
-                          return (
-                              <div
-                                  key={index}
-                                  onClick={() => {
-                                      if (product.id && product.active) {
-                                          selectedProduct?.set(undefined);
-                                          selectedProduct?.set(product.id);
-                                      }
-                                  }}
-                                  className={
-                                      'border hover:bg-gray-300 w-44 px-3 py-6 mr-3 inline-block rounded-md ' +
-                                      (product.active
-                                          ? 'bg-gray-100 cursor-pointer'
-                                          : 'bg-gray-300 cursor-not-allowed grayscale')
-                                  }
-                              >
-                                  <div className="w-full mt-1 rounded-md">
-                                      <Image
-                                          src={product.picture_url}
-                                          width={180}
-                                          height={180}
-                                          alt={product.name}
-                                          className="rounded-md h-44"
-                                      />
-                                  </div>
-                                  <div className="mt-3">
-                                      <p className="text-md truncate">
-                                          {product.name}
-                                      </p>
-                                  </div>
+                            return (
+                            <div
+                                key={index}
+                                onClick={() => {
+                                    if (product.id && product.active) {
+                                        selectedProduct?.set(undefined);
+                                        selectedProduct?.set(product.id);
+                                    }
+                                }}
+                                className={
+                                    'border hover:bg-gray-300 inline-block rounded-md' +
+                                    (product.active
+                                        ? 'bg-gray-100 cursor-pointer'
+                                        : 'bg-gray-300 cursor-not-allowed grayscale')
+                                }
+                            >
+                                <div className="grid grid-cols-1 sm:grid-cols-4 bg-white h-full">
+                                    {/* flex flex-col border-b sm:border-b-0 h-full sm:justify-center */}
+                                    <div className="flex flex-col sm:justify-center items-center">
+                                        <Image
+                                            src={product.picture_url}
+                                            width={100}
+                                            height={100}
+                                            alt={product.name}
+                                            className="rounded-md max-h-28"
+                                        />
+                                    </div>
+                                    <div className="flex flex-col sm:border-l col-span-3">
+                                        <div className="flex flex-col pl-4 py-4 text-gray-600">
+                                            <div className="flex flex-row text-sm">
+                                                <p className="text-md truncate">
+                                                    {product.name}
+                                                </p>
+                                            </div>
+                                            <div className="flex flex-row text-sm">
+                                                <span className="block text-md font-semibold truncate ">
+                                                    {product.description}
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div className="flex flex-row text-md pl-4">
+                                            <span className="block before:content-['R$'] text-md font-semibold">
+                                                {product.price}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                {/* <div className="w-full mt-1 rounded-md">
+                                    <Image
+                                        src={product.picture_url}
+                                        width={100}
+                                        height={50}
+                                        alt={product.name}
+                                        className="rounded-md h-15"
+                                    />
+                                </div>
+                                <div className="mt-3">
+                                    <p className="text-md truncate">
+                                        {product.name}
+                                    </p>
+                                </div>
 
-                                  <div className="mt-2">
-                                      <span className="block before:content-['R$'] text-md font-semibold">
-                                          {product.price}
-                                      </span>
-                                  </div>
-                              </div>
-                          );
-                      })
-                    : null}
+                                <div className="mt-2">
+                                    <span className="block before:content-['R$'] text-md font-semibold">
+                                        {product.price}
+                                    </span>
+                                </div> */}
+                            </div>
+                        );
+                    })
+                : null}
             </div>
         </div>
     );

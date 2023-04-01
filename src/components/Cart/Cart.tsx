@@ -266,7 +266,7 @@ export default function Cart() {
                                     </span>
                                 </div>
                             </div>
-                            <div className="mt-7">
+                            <div className="mt-7 mb-12">
                                 <Button
                                     text={'confirmar pedido'}
                                     onClick={handleFinishOrder}

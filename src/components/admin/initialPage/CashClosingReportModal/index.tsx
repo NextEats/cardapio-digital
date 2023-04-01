@@ -18,7 +18,7 @@ import { FiX } from 'react-icons/fi';
 import ReactToPrint from 'react-to-print';
 import { CardapioDigitalButton } from '../../cardapio-digital/CardapioDigitalButton';
 
-interface iCashClosingReportModalProps {
+interface CashClosingReportModalProps {
     setOpenCashBoxClosingReportModal: Dispatch<SetStateAction<boolean>>;
     openCashBoxClosingReportModal: boolean;
     ordersGroupedByOrderStatus: { [key: string]: iOrdersWithFKData[] };
@@ -34,7 +34,7 @@ export default function CashClosingReportModal({
     billing,
     openCashBoxClosingReportModal,
     setOpenCashBoxClosingReportModal,
-}: iCashClosingReportModalProps) {
+}: CashClosingReportModalProps) {
     const [ordersProducts, setOrdersProducts] = useState<
         iOrdersProducts['data']
     >([]);
@@ -52,7 +52,7 @@ export default function CashClosingReportModal({
     const cashBoxOpenedAt = new Date(cashBoxState?.opened_at!);
 
     useEffect(() => {
-        async function getDatas() {
+        async function fetchData() {
             const ordersProductsData = await api.get(`api/orders_products`);
             setOrdersProducts(ordersProductsData.data);
             const additionalsData = await api.get(
@@ -69,8 +69,9 @@ export default function CashClosingReportModal({
             const selectsData = await api.get(`api/selects/${restaurantId}`);
             setSelects(selectsData.data as iSelects['data']);
         }
-        getDatas();
+        fetchData();
     }, [restaurantId, user]);
+
     async function handleCloseCashBox() {
         if (
             ordersGroupedByOrderStatus['em análise'] ||
@@ -86,7 +87,6 @@ export default function CashClosingReportModal({
         });
         setOpenCashBoxClosingReportModal(false);
     }
-
     interface Payment {
         payment_method: string;
         value: number;
@@ -129,7 +129,7 @@ export default function CashClosingReportModal({
         }).reduce((acc: number, item: any) => acc + item.totalPrice, 0);
 
         const deliveryFees = order.delivery_fees ? order.delivery_fees.fee : 0;
-        return deliveryFees + totalPriceOfOrder /* adicionar valor do pedido */;
+        return deliveryFees + totalPriceOfOrder;
     }
 
     const textStyles = 'text-[10px]';
@@ -152,162 +152,173 @@ export default function CashClosingReportModal({
         );
 
     return (
-        <div className="flex items-center gap-3">
-            <Dialog.Root open={openCashBoxClosingReportModal}>
-                <Dialog.Trigger></Dialog.Trigger>
+        <>
+            <div className="flex items-center gap-3">
+                <Dialog.Root open={openCashBoxClosingReportModal}>
+                    <Dialog.Trigger></Dialog.Trigger>
 
-                <Dialog.Portal>
-                    <Dialog.Overlay
-                        onClick={() => setOpenCashBoxClosingReportModal(false)}
-                        className="w-screen h-screen flex items-center justify-center bg-black fixed inset-0 z-10 opacity-40 transition-all duration-300 ease-in-out"
-                    />
-                    <Dialog.Content
-                        ref={CashBoxReportComponent}
-                        className="hideShadowToPrint fixed top-[14vh] right-1/2 z-20 translate-x-1/2 rounded-lg w-[298px] bg-white shadow-md p-6"
-                    >
-                        <Dialog.Title className="text-base w-full uppercase text-center font-semibold mb-6">
-                            Extrato de Caixa
-                        </Dialog.Title>
-
-                        <div className="max-w-full">
-                            <p className={`${textStyles}`}>
-                                Usuário:{' '}
-                                <span className="font-bold">
-                                    {usersData ? usersData.name : null}
-                                </span>
-                            </p>
-                            <p className={`${textStyles} mb-2`}>
-                                Email:{' '}
-                                <span className="font-bold">{user?.email}</span>
-                            </p>
-
-                            {cashBoxState ? (
-                                <p className={`${textStyles}`}>
-                                    Data de abertura:{' '}
-                                    <span className="font-bold">
-                                        {format(cashBoxOpenedAt, 'P', {
-                                            locale: ptBR,
-                                        })}{' '}
-                                        {format(cashBoxOpenedAt, 'HH')} {':'}{' '}
-                                        {format(cashBoxOpenedAt, 'mm')}
-                                    </span>
-                                </p>
-                            ) : null}
-                            <p className={`${textStyles}`}>
-                                Saldo abertura:{' '}
-                                <span className="font-bold">0,00</span>
-                            </p>
-                            <p className={`${textStyles}`}>
-                                Data de fechamento:{' '}
-                                <span className="font-bold">
-                                    {format(moment, 'P', { locale: ptBR })}{' '}
-                                    {format(moment, 'HH')} {':'}
-                                    {format(moment, 'mm')}
-                                </span>
-                            </p>
-                            <p className={`${textStyles}`}>
-                                Saldo fechamento:{' '}
-                                <span className="font-bold">
-                                    {billing.toLocaleString('pt-BR', {
-                                        minimumFractionDigits: 2,
-                                        maximumFractionDigits: 2,
-                                    })}
-                                </span>
-                            </p>
-                            <hr className="my-2" />
-                            <h3 className="text-xs w-full uppercase text-center font-bold my-3">
-                                Valores totais do caixa
-                            </h3>
-
-                            <p className="text-base font-semibold mb-2">
-                                Entradas
-                            </p>
-                            {cashBoxState
-                                ? totalValueOfDoneOrders.map(
-                                      (paymentMethods, index) => {
-                                          return (
-                                              <p
-                                                  key={index}
-                                                  className={`${textStyles}  font-medium`}
-                                              >
-                                                  {' '}
-                                                  {
-                                                      paymentMethods.payment_method
-                                                  }
-                                                  : R${' '}
-                                                  {paymentMethods.value.toLocaleString(
-                                                      'pt-BR',
-                                                      {
-                                                          maximumFractionDigits: 2,
-                                                          minimumFractionDigits: 2,
-                                                      }
-                                                  )}{' '}
-                                              </p>
-                                          );
-                                      }
-                                  )
-                                : null}
-                            <hr className="my-2" />
-                            <p className="text-base font-semibold mb-2">
-                                Cancelados
-                            </p>
-                            <p>
-                                {canceledOrders ? (
-                                    <span>
-                                        R$&nbsp;{totalValueOfCanceledOrders}
-                                    </span>
-                                ) : null}
-                            </p>
-                        </div>
-
-                        <Dialog.Close
-                            className="fixed top-3 right-3 text-gray-600 hideButtonToPrint"
+                    <Dialog.Portal>
+                        <Dialog.Overlay
                             onClick={() =>
                                 setOpenCashBoxClosingReportModal(false)
                             }
+                            className="w-screen h-screen flex items-center justify-center bg-black fixed inset-0 z-10 opacity-40 transition-all duration-300 ease-in-out"
+                        />
+                        <Dialog.Content
+                            ref={CashBoxReportComponent}
+                            className="hideShadowToPrint fixed top-[14vh] right-1/2 z-20 translate-x-1/2 rounded-lg w-[298px] bg-white shadow-md p-6"
                         >
-                            <FiX size={22} />
-                        </Dialog.Close>
+                            <Dialog.Title className="text-base w-full uppercase text-center font-semibold mb-6">
+                                Extrato de Caixa
+                            </Dialog.Title>
 
-                        <div className="flex flex-col items-center gap-3 w-full mt-6 hideButtonToPrint">
-                            <ReactToPrint
-                                copyStyles={true}
-                                content={() => CashBoxReportComponent.current}
-                                onAfterPrint={() => handleCloseCashBox()}
-                                trigger={() => {
-                                    return (
-                                        <CardapioDigitalButton
-                                            name="Imprimir e fechar o caixa"
-                                            w="w-full"
-                                            h="h-8"
-                                        />
-                                    );
-                                }}
-                            />
+                            <div className="max-w-full">
+                                <p className={`${textStyles}`}>
+                                    Usuário:{' '}
+                                    <span className="font-bold">
+                                        {usersData ? usersData.name : null}
+                                    </span>
+                                </p>
+                                <p className={`${textStyles} mb-2`}>
+                                    Email:{' '}
+                                    <span className="font-bold">
+                                        {user?.email}
+                                    </span>
+                                </p>
 
-                            <ReactToPrint
-                                copyStyles={true}
-                                content={() => CashBoxReportComponent.current}
-                                trigger={() => {
-                                    return (
-                                        <CardapioDigitalButton
-                                            name="Imprimir"
-                                            w="w-full"
-                                            h="h-8"
-                                        />
-                                    );
-                                }}
-                            />
-                            <CardapioDigitalButton
-                                onClick={() => handleCloseCashBox()}
-                                name="Fechar caixa"
-                                w="w-full"
-                                h="h-8"
-                            />
-                        </div>
-                    </Dialog.Content>
-                </Dialog.Portal>
-            </Dialog.Root>
-        </div>
+                                {cashBoxState ? (
+                                    <p className={`${textStyles}`}>
+                                        Data de abertura:{' '}
+                                        <span className="font-bold">
+                                            {format(cashBoxOpenedAt, 'P', {
+                                                locale: ptBR,
+                                            })}{' '}
+                                            {format(cashBoxOpenedAt, 'HH')}{' '}
+                                            {':'}{' '}
+                                            {format(cashBoxOpenedAt, 'mm')}
+                                        </span>
+                                    </p>
+                                ) : null}
+                                <p className={`${textStyles}`}>
+                                    Saldo abertura:{' '}
+                                    <span className="font-bold">0,00</span>
+                                </p>
+                                <p className={`${textStyles}`}>
+                                    Data de fechamento:{' '}
+                                    <span className="font-bold">
+                                        {format(moment, 'P', { locale: ptBR })}{' '}
+                                        {format(moment, 'HH')} {':'}
+                                        {format(moment, 'mm')}
+                                    </span>
+                                </p>
+                                <p className={`${textStyles}`}>
+                                    Saldo fechamento:{' '}
+                                    <span className="font-bold">
+                                        {billing.toLocaleString('pt-BR', {
+                                            minimumFractionDigits: 2,
+                                            maximumFractionDigits: 2,
+                                        })}
+                                    </span>
+                                </p>
+                                <hr className="my-2" />
+                                <h3 className="text-xs w-full uppercase text-center font-bold my-3">
+                                    Valores totais do caixa
+                                </h3>
+
+                                <p className="text-base font-semibold mb-2">
+                                    Entradas
+                                </p>
+                                {cashBoxState
+                                    ? totalValueOfDoneOrders.map(
+                                          (paymentMethods, index) => {
+                                              return (
+                                                  <p
+                                                      key={index}
+                                                      className={`${textStyles}  font-medium`}
+                                                  >
+                                                      {' '}
+                                                      {
+                                                          paymentMethods.payment_method
+                                                      }
+                                                      : R${' '}
+                                                      {paymentMethods.value.toLocaleString(
+                                                          'pt-BR',
+                                                          {
+                                                              maximumFractionDigits: 2,
+                                                              minimumFractionDigits: 2,
+                                                          }
+                                                      )}{' '}
+                                                  </p>
+                                              );
+                                          }
+                                      )
+                                    : null}
+                                <hr className="my-2" />
+                                <p className="text-base font-semibold mb-2">
+                                    Cancelados
+                                </p>
+                                <p>
+                                    {canceledOrders ? (
+                                        <span>
+                                            R$&nbsp;{totalValueOfCanceledOrders}
+                                        </span>
+                                    ) : null}
+                                </p>
+                            </div>
+
+                            <Dialog.Close
+                                className="fixed top-3 right-3 text-gray-600 hideButtonToPrint"
+                                onClick={() =>
+                                    setOpenCashBoxClosingReportModal(false)
+                                }
+                            >
+                                <FiX size={22} />
+                            </Dialog.Close>
+
+                            <div className="flex flex-col items-center gap-3 w-full mt-6 hideButtonToPrint">
+                                <ReactToPrint
+                                    copyStyles={true}
+                                    content={() =>
+                                        CashBoxReportComponent.current
+                                    }
+                                    onAfterPrint={() => handleCloseCashBox()}
+                                    trigger={() => {
+                                        return (
+                                            <CardapioDigitalButton
+                                                name="Imprimir e fechar o caixa"
+                                                w="w-full"
+                                                h="h-8"
+                                            />
+                                        );
+                                    }}
+                                />
+
+                                <ReactToPrint
+                                    copyStyles={true}
+                                    content={() =>
+                                        CashBoxReportComponent.current
+                                    }
+                                    trigger={() => {
+                                        return (
+                                            <CardapioDigitalButton
+                                                name="Imprimir"
+                                                w="w-full"
+                                                h="h-8"
+                                            />
+                                        );
+                                    }}
+                                />
+                                <CardapioDigitalButton
+                                    onClick={() => handleCloseCashBox()}
+                                    name="Fechar caixa"
+                                    w="w-full"
+                                    h="h-8"
+                                />
+                            </div>
+                        </Dialog.Content>
+                    </Dialog.Portal>
+                </Dialog.Root>
+            </div>
+        </>
     );
 }

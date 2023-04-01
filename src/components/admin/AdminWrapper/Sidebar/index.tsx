@@ -1,15 +1,15 @@
 import { AdminContext } from '@/src/contexts/adminContext';
 import { useRouter } from 'next/router';
 import { useContext } from 'react';
-import { FaChartBar, FaCog, FaMotorcycle, FaUtensils } from 'react-icons/fa';
-import { IoMdExit } from 'react-icons/io';
+import { AiOutlineAreaChart } from 'react-icons/ai';
+import { FaCog, FaMotorcycle } from 'react-icons/fa';
+import { IoMdExit, IoMdRestaurant } from 'react-icons/io';
+import { MdFastfood } from 'react-icons/md';
+import { RiMoneyDollarBoxFill } from 'react-icons/ri';
 import SidebarListItem from '../../SidebarListItem';
 interface iSidebar {
     isSidebarOpen: boolean;
 }
-
-import Bandeja from '@/src/assets/bandeja.svg';
-import Image from 'next/image';
 
 export default function Sidebar({ isSidebarOpen }: iSidebar) {
     const router = useRouter();
@@ -29,8 +29,10 @@ export default function Sidebar({ isSidebarOpen }: iSidebar) {
                         <>
                             <SidebarListItem
                                 name="Controle de Caixa"
-                                icon={<FaMotorcycle className="mr-4 h-7 w-7" />}
-                                path={`/${restaurantName}/admin`}
+                                icon={
+                                    <RiMoneyDollarBoxFill className="mr-4 h-7 w-7" />
+                                }
+                                path={`/${restaurantName}/admin/caixa`}
                             />
                             <SidebarListItem
                                 name="Delivery"
@@ -39,12 +41,14 @@ export default function Sidebar({ isSidebarOpen }: iSidebar) {
                             />
                             <SidebarListItem
                                 name="Produtos"
-                                icon={<FaUtensils className="mr-4 h-7 w-7" />}
+                                icon={<MdFastfood className="mr-4 h-7 w-7" />}
                                 path={`/${restaurantName}/admin/cardapio-digital`}
                             />
                             <SidebarListItem
                                 name="Relatórios"
-                                icon={<FaChartBar className="mr-4 h-7 w-7" />}
+                                icon={
+                                    <AiOutlineAreaChart className="mr-4 h-7 w-7" />
+                                }
                                 path={`/${restaurantName}/admin/relatorios`}
                             />
                             <SidebarListItem
@@ -54,14 +58,13 @@ export default function Sidebar({ isSidebarOpen }: iSidebar) {
                             />
                         </>
                     )}
-                    {/* {userDetails?.restaurants.has_access_to_table_control ? (
+                    {userDetails?.restaurants.has_access_to_table_control ? (
                         <SidebarListItem
                             name="Controle de Mesas"
-                            icon={<Bandeja className="mr-4 h-8 w-8" />}
+                            icon={<IoMdRestaurant className="mr-4 h-8 w-8" />}
                             path={`/${restaurantName}/admin/table-control`}
                         />
-                    ) : null} */}
-                    <Image src={Bandeja} alt="" className="icon-test" />
+                    ) : null}
                 </ul>
                 <ul className="mt-auto mb-20 flex flex-col">
                     <SidebarListItem

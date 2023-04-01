@@ -14,6 +14,8 @@ import { tSelectWithOptions } from '@/src/fetch/productSelects/getProductSelectW
 import { ProductsReducer } from '@/src/reducers/ProductsReducer/reducer';
 import { supabase } from '@/src/server/api';
 
+import Image from 'next/image';
+
 export const getServerSideProps: GetServerSideProps = async (context) => {
     const restaurant = await getRestaurantBySlugFetch(context.query.slug);
 
@@ -71,12 +73,30 @@ export default function CardapioDigital({ data }: { data: iDigitalMenuData }) {
                 productReducer: { state, dispatch },
             }}
         >
-            <Head>
-                <title>{restaurant.name}</title>
-                <link href={restaurant.picture_url} rel="icon" sizes="any" />
-            </Head>
-            <DigitalMenuModals />
-            <DigitalMenuContent />
+            <div className="bg-gray-100">
+                <Head>
+                    <title>{restaurant.name}</title>
+                    <link
+                        href={restaurant.picture_url}
+                        rel="icon"
+                        sizes="any"
+                    />
+                </Head>
+                <DigitalMenuModals />
+                <DigitalMenuContent />
+                <footer className="relative bottom-0 mt-32 w-full mb-0 flex flex-col items-center gap-3 bg-gray-800 justify-center py-5">
+                    <div className="flex items-center gap-2">
+                        <Image
+                            className=""
+                            src={'/LogoLaranja.png'}
+                            alt="asdasd"
+                            width={160}
+                            height={160}
+                        />
+                    </div>
+                    <span className="text-sm text-white">versão 1.0.0</span>
+                </footer>
+            </div>
         </DigitalMenuContext.Provider>
     );
 }

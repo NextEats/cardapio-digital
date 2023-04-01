@@ -32,13 +32,11 @@ import { getOrdersByRestaurantIdFetch } from '../../../fetch/orders/getOrdersByR
 import { getProductsByRestaurantIdFetch } from '../../../fetch/products/getProductsByRestaurantId';
 import { getRestaurantBySlugFetch } from '../../../fetch/restaurant/getRestaurantBySlug';
 
-import CashBoxButtons from '@/src/components/admin/initialPage/CashBoxButtons';
 import { OrderModal } from '@/src/components/admin/initialPage/OrderModal';
 import LoadingSpinner from '@/src/components/LoadingSpinner';
 import { getAdditionalsByRestaurantIdFetch } from '@/src/fetch/additionals/getAdditionals';
 import { getOrdersTablesFetch } from '@/src/fetch/ordersTables/getOrdersTables';
 import { getSelectsByRestaurantIdFetch } from '@/src/fetch/selects/getSelectsByRestaurantId';
-import { getOrdersProductsData } from '@/src/helpers/getOrdersProductsData';
 import { addNewUnderReviewAction } from '@/src/reducers/statusReducer/action';
 import { api, supabase } from '@/src/server/api';
 import { createServerSupabaseClient } from '@supabase/auth-helpers-nextjs';
@@ -202,56 +200,6 @@ export default function AdminHomepage({
         orderId: 0,
     });
 
-    function billing() {
-        let ordersProductFiltered;
-        if (ordersGroupedByOrderStatus['entregue']) {
-            ordersProductFiltered = ordersProducts.filter((op) =>
-                ordersGroupedByOrderStatus['entregue'].some(
-                    (o) => o.id === op.order_id
-                )
-            );
-
-            const productIds = ordersProductFiltered.map(
-                (ordersProduct) => ordersProduct.product_id
-            );
-            const selectedProduct = productIds.map(
-                (productId) =>
-                    products[
-                        products.findIndex(
-                            (product) => productId === product.id
-                        )
-                    ]
-            );
-
-            const totalPriceOfDeliveryFee = ordersGroupedByOrderStatus[
-                'entregue'
-            ].reduce((acc, item) => {
-                if (!item.delivery_fees) return acc;
-                return acc + item.delivery_fees.fee;
-            }, 0);
-            const totalAdditionalPrice = getOrdersProductsData({
-                ordersProducts: ordersProductFiltered,
-                additionals,
-                products,
-                selects,
-            }).reduce(
-                (acc, item) => acc + item.totalAdditionalsPriceByProduct,
-                0
-            );
-
-            return (
-                selectedProduct.reduce(
-                    (acc, product) => acc + product?.price!,
-                    0
-                ) +
-                totalPriceOfDeliveryFee +
-                totalAdditionalPrice
-            );
-        } else {
-            return 0;
-        }
-    }
-
     useEffect(() => {
         const audio = new Audio('/alertAudio.mp3');
         let intervalId: number | undefined | any; // variável para armazenar o id do setInterval
@@ -374,14 +322,6 @@ export default function AdminHomepage({
     return (
         <AdminWrapper>
             <div className="flex flex-col gap-4 pb-24">
-                <CashBoxButtons
-                    cashBoxState={cashBoxState}
-                    restaurantId={restaurant.id}
-                    ordersGroupedByOrderStatus={ordersGroupedByOrderStatus}
-                    cashBoxes={cashBoxes}
-                    billing={billing()}
-                />
-
                 <NewRequests
                     dispatch={ordersDispatch}
                     ordersState={ordersState}

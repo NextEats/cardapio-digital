@@ -5,7 +5,6 @@ import ProductsList from '../home/ProductsList';
 import RestaurantHeader from '../home/RestaurantHeader';
 
 import { calculateTotalOrderPrice } from '@/src/helpers/calculateTotalOrderPrice';
-import Image from 'next/image';
 
 export default function DigitalMenuContent() {
     const [orderPrice, setOrderPrice] = useState(0);
@@ -60,19 +59,6 @@ export default function DigitalMenuContent() {
                           </div>
                       )
                     : null}
-
-                <footer className="relative bottom-0 max-w-7xl w-full mb-0 mt-auto flex flex-col items-center gap-3 bg-gray-800 justify-center py-5">
-                    <div className="flex items-center gap-2">
-                        <Image
-                            className=""
-                            src={'/LogoLaranja.png'}
-                            alt="asdasd"
-                            width={160}
-                            height={160}
-                        />
-                    </div>
-                    <span className="text-sm text-white">versão 1.0.0</span>
-                </footer>
             </div>
         </div>
     );

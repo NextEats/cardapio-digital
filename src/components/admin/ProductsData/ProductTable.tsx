@@ -9,7 +9,8 @@ interface iProductTableDataProps {
 
 export function ProductTable({ }: iProductTableDataProps) {
 
-    const { products, productSelected, setProductSelected } = useContext(ProductContext)
+    const { products, productSelected, setProductSelected, productScreenState } = useContext(ProductContext)
+    const [productScreen, setProductScreen] = productScreenState
 
     const thDefaultStyle = " text-left px-2 py-4 "
     const tdDefaultStyle = " px-2 py-4 h-[70px] "
@@ -54,7 +55,7 @@ export function ProductTable({ }: iProductTableDataProps) {
                         <th className={`max-w-28 ` + thDefaultStyle}> Status </th>
                     </tr>
                 </thead>
-                <tbody className='h-[400px] overflow-y-scroll'>
+                <tbody className=' overflow-y-scroll'>
                     {products ? products.map(product => {
 
                         return <tr key={product.id} className="border-t-[1px] border-t-gray-300 ">
@@ -66,7 +67,7 @@ export function ProductTable({ }: iProductTableDataProps) {
                                     className='h-4 w-4 cursor-pointer'
                                     onChange={(e) => handleSelectProduct({ product, })} />
                             </td>
-                            <td className={` w-12 max-h-12` + tdDefaultStyle}>
+                            <td onClick={() => setProductScreen(product)} className={` w-12 max-h-12` + tdDefaultStyle}>
                                 <Image
                                     className="w-full max-h-12 object-cover"
                                     src={product.picture_url}
@@ -76,11 +77,11 @@ export function ProductTable({ }: iProductTableDataProps) {
                                 />
 
                             </td>
-                            <td className={` w-80 ` + tdDefaultStyle}>
+                            <td onClick={() => setProductScreen(product)} className={` w-80 ` + tdDefaultStyle}>
                                 {product.name}
                             </td>
-                            <td className={`` + tdDefaultStyle}> {product.category_id.name} </td>
-                            <td className={`` + tdDefaultStyle}> R$ {product.price.toLocaleString('pt-Br', {
+                            <td onClick={() => setProductScreen(product)} className={`` + tdDefaultStyle}> {product.category_id.name} </td>
+                            <td onClick={() => setProductScreen(product)} className={`` + tdDefaultStyle}> R$ {product.price.toLocaleString('pt-Br', {
                                 minimumFractionDigits: 2, maximumFractionDigits: 2
                             })} </td>
                             <td className={` max-w-28` + tdDefaultStyle}>

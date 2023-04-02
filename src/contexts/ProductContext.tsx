@@ -14,6 +14,7 @@ import {
     iAdditionalCategories,
     iAdditionalCategory,
     iAdditionals,
+    iProduct,
     iProductCategories,
     iProductCategory,
     iProductOptions,
@@ -32,6 +33,7 @@ interface iProductContextProps {
     additional_categories: iAdditionalCategories["data"]
     product_options_state: [iProductOptions["data"] | null, Dispatch<SetStateAction<iProductOptions["data"] | null>>]
     //
+    productScreenState: [iProduct["data"] | "create_product" | null, Dispatch<SetStateAction<iProduct["data"] | "create_product" | null>>]
     updateAdditionalState: [iAdditional["data"] | null, Dispatch<SetStateAction<iAdditional["data"] | null>>]
     productSelected: iProductsWithFKData[]
     setUpdateCategoryState: Dispatch<SetStateAction<iProductCategory["data"] | iAdditionalCategory["data"] | null>>
@@ -75,6 +77,7 @@ export default function ProductContextProvider({
     const updateAdditionalState = useState<iAdditional["data"] | null>(null)
     const product_options_state = useState<iProductOptions["data"] | null>(null)
     const selectsState = useState<iSelects["data"] | null>(null)
+    const productScreenState = useState<iProduct["data"] | "create_product" | null>(null)
 
     const [selects, setSelects] = selectsState
     const [product_options, setProduct_options] = product_options_state
@@ -122,6 +125,7 @@ export default function ProductContextProvider({
                 additional_categories,
                 product_options_state,
                 //           states
+                productScreenState,
                 updateAdditionalState,
                 updateCategoryState,
                 setUpdateCategoryState,

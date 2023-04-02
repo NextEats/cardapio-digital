@@ -14,9 +14,10 @@ import { iAdditional } from "@/src/types/types";
 import { getPathByPictureUrl } from "@/src/helpers/getPathByPictureUrl";
 
 interface iAdditionalsModalProps {
+    type: "list" | "select_additionals";
 }
 
-export function Additionals({ }: iAdditionalsModalProps) {
+export function Additionals({ type }: iAdditionalsModalProps) {
     const { additionals, updateAdditionalState, setAdditionals } = useContext(ProductContext)
     const [updateAdditional, setUpdateAdditional] = updateAdditionalState
 

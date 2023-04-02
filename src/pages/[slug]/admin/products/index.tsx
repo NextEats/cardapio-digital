@@ -47,14 +47,7 @@ export default function Prodcuts({
         >
             <div className='pt-16 pl-60'>
                 <div className='p-5 flex flex-col gap-3'>
-                    <div className='lg:flex lg:flex-wrap 1xl:grid 1xl:grid-cols-3 gap-3'>
-                        {/* <CategoryCard />
-                    <ProductsData styles='mb-3 lg:mb-0 flex-1 flex flex-1 flex ' />
-
-                <ProductsData styles='basis-full' /> */}
-
-                    </div>
-                    <ProductsData styles='w-full' />
+                    <ProductsData />
                 </div>
             </div>
 

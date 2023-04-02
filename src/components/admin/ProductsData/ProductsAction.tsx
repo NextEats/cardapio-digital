@@ -2,9 +2,7 @@ import { BsPlusLg } from "react-icons/bs";
 import * as Separator from '@radix-ui/react-separator';
 import { ChangeEvent, useContext } from "react";
 import { ProductContext } from "@/src/contexts/ProductContext";
-import { AiOutlineDollarCircle } from "react-icons/ai";
 import { ChangeProductsPrice } from "./ChangeProductsPrice";
-import * as Menubar from '@radix-ui/react-menubar';
 import { CategoriesModal } from "./CategoriesModal";
 import { Additionals } from "./Additionals";
 import { Selects } from "./Selects";
@@ -16,8 +14,9 @@ export function ProductsAction({ }: iProductsActionProps) {
 
     const styleD = 'text-blue-400 cursor-pointer'
 
-    const { productSelected, categories, setFilter, filter, additionals } = useContext(ProductContext)
-    console.log(additionals)
+    const { productSelected, categories, setFilter, filter, additionals, productScreenState } = useContext(ProductContext)
+    const [productScreen, setProductScreen] = productScreenState
+
     function handleFilter(e: ChangeEvent<HTMLInputElement>) {
         const name = e.target.value;
         setFilter({
@@ -55,7 +54,7 @@ export function ProductsAction({ }: iProductsActionProps) {
                             orientation="vertical"
                         />
                         <span className={`` + styleD}>
-                            <Additionals />
+                            <Additionals type="list" />
                         </span>
                         <Separator.Root
                             className="bg-red-700 data-[orientation=vertical]:h-full w-2 mx-2"
@@ -105,7 +104,7 @@ export function ProductsAction({ }: iProductsActionProps) {
 
 
 
-                <button className="bg-blue-400 px-8 py-2 rounded-full">
+                <button onClick={() => setProductScreen("create_product")} className="bg-blue-400 px-8 py-2 rounded-full">
                     < BsPlusLg size={16} className="text-white" />
                 </button>
             </div>

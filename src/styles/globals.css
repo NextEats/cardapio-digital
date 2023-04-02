@@ -102,6 +102,10 @@
     border-bottom-width: 80%;
 }
 
+.right-triangle {
+    clip-path: polygon(100% 40%, 0% 100%, 100% 100%);
+}
+
 .icon-test {
     filter: invert(100%) sepia(100%) saturate(0%) hue-rotate(180deg)
         brightness(50%) contrast(100%);

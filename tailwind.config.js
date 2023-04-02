@@ -85,6 +85,9 @@ module.exports = {
 
                 'green-300': '#1DC88A',
                 'green-100': '#1FA262',
+
+                'brand-light-orange': '#FC892C',
+                'brand-dark-orange': '#FC6E25',
             },
         },
     },

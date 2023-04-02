@@ -4,7 +4,6 @@ import TableContextProvider from '@/src/contexts/TableControlContext';
 import { getAdditionalsByRestaurantIdFetch } from '@/src/fetch/additionals/getAdditionals';
 import { getCashBoxesByRestaurantIdFetch } from '@/src/fetch/cashBoxes/getCashBoxesByRestaurantId';
 import { getOrdersByRestaurantIdFetch } from '@/src/fetch/orders/getOrdersByRestaurantId';
-import { getOrdersProductsFetch } from '@/src/fetch/ordersProducts/getOrdersProducts';
 import { getOrdersTablesFetch } from '@/src/fetch/ordersTables/getOrdersTables';
 import { getPaymentMethodsRestaurantsByRestaurantIdFetch } from '@/src/fetch/paymentMethodsRestaurants/getPaymentMethodsRestaurantsByRestaurantId';
 import { getProductAdditionalsFetch } from '@/src/fetch/productAdditionals/getProductAdditionals';
@@ -13,6 +12,7 @@ import { getProductsByRestaurantIdFetch } from '@/src/fetch/products/getProducts
 import { getProductsCategoriesByRestaurantIdFetch } from '@/src/fetch/productsCategories/getProductsCategoriesByRestaurantId';
 import { getRestaurantBySlugFetch } from '@/src/fetch/restaurant/getRestaurantBySlug';
 import { getSelectsByRestaurantIdFetch } from '@/src/fetch/selects/getSelectsByRestaurantId';
+import { supabase } from '@/src/server/api';
 import {
     iAdditionals,
     iCashBoxes,
@@ -28,7 +28,6 @@ import {
     iSelects,
 } from '@/src/types/types';
 import { GetServerSideProps } from 'next';
-import { supabase } from '@/src/server/api';
 
 interface iAdminHomePageProps {
     restaurant: iRestaurantWithFKData;
@@ -38,11 +37,11 @@ interface iAdminHomePageProps {
     productAdditionals: iProductAdditionals['data'];
     products: iProducts['data'];
     ordersProducts: iOrdersProducts['data'];
-    orders: iOrders["data"]
+    orders: iOrders['data'];
     categories: iProductCategories['data'];
     ordersTables: iOrdersTablesWithFkData[];
     cashBoxes: iCashBoxes['data'];
-    paymentMethod: iPaymentMethodsRestaurantsWithFKData[]
+    paymentMethod: iPaymentMethodsRestaurantsWithFKData[];
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {

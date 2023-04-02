@@ -27,10 +27,10 @@ export default function AdminContextProvider({
             return;
         }
 
-        if (!user || userDetails?.restaurant_id !== restaurant.id) {
-            router.replace(`/login`);
-        }
-    });
+        // if (!user || userDetails?.restaurant_id !== restaurant.id) {
+        //     router.replace(`/login`);
+        // }
+    }, [user, restaurant, router, userDetails]);
 
     useMemo(() => {
         async function fetchRestaurantData() {

@@ -51,19 +51,23 @@ const CashboxManagement = (props: iCashboxManagement) => {
 
     let res: any = {};
 
-    res['entregue'] = ordersGroupedByOrderStatus['entregue'].filter(
-        (elem) => elem.cash_box_id === cashBoxState?.id
-    );
+    if (
+        ordersGroupedByOrderStatus['entregue'] &&
+        ordersGroupedByOrderStatus['cancelado'] &&
+        ordersGroupedByOrderStatus['em produção']
+    ) {
+        res['entregue'] = ordersGroupedByOrderStatus['entregue'].filter(
+            (elem) => elem.cash_box_id === cashBoxState?.id
+        );
 
-    res['cancelado'] = ordersGroupedByOrderStatus['cancelado'].filter(
-        (elem) => elem.cash_box_id === cashBoxState?.id
-    );
+        res['cancelado'] = ordersGroupedByOrderStatus['cancelado'].filter(
+            (elem) => elem.cash_box_id === cashBoxState?.id
+        );
 
-    res['em produção'] = ordersGroupedByOrderStatus['em produção'].filter(
-        (elem) => elem.cash_box_id === cashBoxState?.id
-    );
-
-    console.log('res', res);
+        res['em produção'] = ordersGroupedByOrderStatus['em produção'].filter(
+            (elem) => elem.cash_box_id === cashBoxState?.id
+        );
+    }
 
     const billingAmount = calculateBilling({
         ordersGroupedByOrderStatus,

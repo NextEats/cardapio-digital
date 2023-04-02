@@ -49,6 +49,22 @@ const CashboxManagement = (props: iCashboxManagement) => {
 
     const ordersGroupedByOrderStatus = groupOrdersByStatus(ordersData);
 
+    let res: any = {};
+
+    res['entregue'] = ordersGroupedByOrderStatus['entregue'].filter(
+        (elem) => elem.cash_box_id === cashBoxState?.id
+    );
+
+    res['cancelado'] = ordersGroupedByOrderStatus['cancelado'].filter(
+        (elem) => elem.cash_box_id === cashBoxState?.id
+    );
+
+    res['em produção'] = ordersGroupedByOrderStatus['em produção'].filter(
+        (elem) => elem.cash_box_id === cashBoxState?.id
+    );
+
+    console.log('res', res);
+
     const billingAmount = calculateBilling({
         ordersGroupedByOrderStatus,
         ordersProductsData,
@@ -66,7 +82,7 @@ const CashboxManagement = (props: iCashboxManagement) => {
             <CashBoxButtons
                 cashBoxState={cashBoxState}
                 restaurantId={restaurant.id}
-                ordersGroupedByOrderStatus={ordersGroupedByOrderStatus}
+                ordersGroupedByOrderStatus={res}
                 cashBoxes={cashBoxes}
                 billing={billingAmount}
             />

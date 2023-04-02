@@ -1,11 +1,12 @@
 import { AdminContext } from '@/src/contexts/adminContext';
 import { useRouter } from 'next/router';
 import { useContext } from 'react';
-import { FaChartBar, FaCog, FaHome, FaUtensils } from 'react-icons/fa';
-import { GiTable } from 'react-icons/gi';
-import { IoMdExit } from 'react-icons/io';
+import { AiOutlineAreaChart } from 'react-icons/ai';
+import { FaCog, FaMotorcycle } from 'react-icons/fa';
+import { IoMdExit, IoMdRestaurant } from 'react-icons/io';
+import { MdFastfood } from 'react-icons/md';
+import { RiMoneyDollarBoxFill } from 'react-icons/ri';
 import SidebarListItem from '../../SidebarListItem';
-
 interface iSidebar {
     isSidebarOpen: boolean;
 }
@@ -17,50 +18,62 @@ export default function Sidebar({ isSidebarOpen }: iSidebar) {
     const { userDetails } = useContext(AdminContext);
 
     return (
-        <div
-            className={`select-none bg-gray-800 w-60 h-screen absolute transition-[left] duration-500 ease-in-out ${
-                isSidebarOpen ? 'left-0' : '-left-64'
-            }`}
-        >
-            <ul className="flex flex-col mt-5">
-                {userDetails?.is_waiter === false && (
-                    <>
+        <>
+            <div
+                className={`select-none bg-[#1A1F23] w-60 h-screen absolute transition-[left] duration-500 ease-in-out ${
+                    isSidebarOpen ? 'left-0' : '-left-64'
+                } flex flex-col shadow-2xl`}
+            >
+                <ul className="flex flex-col mt-5">
+                    {userDetails?.is_waiter === false && (
+                        <>
+                            <SidebarListItem
+                                name="Controle de Caixa"
+                                icon={
+                                    <RiMoneyDollarBoxFill className="mr-4 h-7 w-7" />
+                                }
+                                path={`/${restaurantName}/admin/caixa`}
+                            />
+                            <SidebarListItem
+                                name="Delivery"
+                                icon={<FaMotorcycle className="mr-4 h-7 w-7" />}
+                                path={`/${restaurantName}/admin`}
+                            />
+                            <SidebarListItem
+                                name="Produtos"
+                                icon={<MdFastfood className="mr-4 h-7 w-7" />}
+                                path={`/${restaurantName}/admin/cardapio-digital`}
+                            />
+                            <SidebarListItem
+                                name="Relatórios"
+                                icon={
+                                    <AiOutlineAreaChart className="mr-4 h-7 w-7" />
+                                }
+                                path={`/${restaurantName}/admin/relatorios`}
+                            />
+                            <SidebarListItem
+                                name="Configurações"
+                                icon={<FaCog className="mr-4 h-7 w-7" />}
+                                path={`/${restaurantName}/admin/configuracoes`}
+                            />
+                        </>
+                    )}
+                    {userDetails?.restaurants.has_access_to_table_control ? (
                         <SidebarListItem
-                            name="Página Inicial"
-                            icon={<FaHome className="mr-4 h-8 w-8" />}
-                            path={`/${restaurantName}/admin`}
+                            name="Controle de Mesas"
+                            icon={<IoMdRestaurant className="mr-4 h-8 w-8" />}
+                            path={`/${restaurantName}/admin/table-control`}
                         />
-                        <SidebarListItem
-                            name="Produtos"
-                            icon={<FaUtensils className="mr-4 h-8 w-8" />}
-                            path={`/${restaurantName}/admin/cardapio-digital`}
-                        />
-                        <SidebarListItem
-                            name="Relatórios"
-                            icon={<FaChartBar className="mr-4 h-8 w-8" />}
-                            path={`/${restaurantName}/admin/relatorios`}
-                        />
-                        <SidebarListItem
-                            name="Configurações"
-                            icon={<FaCog className="mr-4 h-8 w-8" />}
-                            path={`/${restaurantName}/admin/configuracoes`}
-                        />
-                    </>
-                )}
-                {userDetails?.restaurants.has_access_to_table_control ? (
+                    ) : null}
+                </ul>
+                <ul className="mt-auto mb-20 flex flex-col">
                     <SidebarListItem
-                        name="Controle de Mesas"
-                        icon={<GiTable className="mr-4 h-8 w-8" />}
-                        path={`/${restaurantName}/admin/table-control`}
+                        name="Sair"
+                        icon={<IoMdExit className="mr-4 h-8 w-8" />}
+                        path={`/logout`}
                     />
-                ) : null}
-
-                <SidebarListItem
-                    name="Sair"
-                    icon={<IoMdExit className="mr-4 h-8 w-8" />}
-                    path={`/logout`}
-                />
-            </ul>
-        </div>
+                </ul>
+            </div>
+        </>
     );
 }

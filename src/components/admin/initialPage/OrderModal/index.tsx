@@ -163,14 +163,14 @@ export function OrderModal({
                             className="bg-black opacity-40 fixed inset-0 transition-all ease-in-out duration-300"
                             onClick={() => ordersDispatch(showModalAction())}
                         />
-                        <div className="fixed mt-12 right-1/2 translate-x-1/2 p-4 bg-[#fb3d3a] w-[298px] rounded-lg max-h-[80vh]">
+                        <div className="fixed mt-12 right-1/2 translate-x-1/2 p-4 bg-[#fb3d3a] w-[298px] rounded-lg">
                             <Dialog.Title className="text-xl font-bold text-center text-[white] mb-3">
                                 Next Eats
                             </Dialog.Title>
                             <Dialog.Content
                                 ref={printComponent}
                                 className="bg-white shadow-bd w-[298px] fixed right-1/2 
-                            translate-x-1/2 px-6 pt-3 pb-6 uppercase"
+                            translate-x-1/2 px-6 pt-3 pb-6 uppercase overflow-y-auto max-h-[80vh]"
                             >
                                 <ProductionOrder
                                     productsFiltered={productsFiltered}

@@ -6,10 +6,13 @@ import { FaClock } from 'react-icons/fa';
 import { MdLocationOn } from 'react-icons/md';
 
 import { DigitalMenuContext } from '@/src/contexts/DigitalMenuContext';
+import { supabase } from '@/src/server/api';
+import { iCashBox } from '@/src/types/types';
 
 function RestaurantHeader() {
     const { modals, restaurant } = useContext(DigitalMenuContext);
     const [street, setStreet] = useState<string>('');
+    const [currentCashbox, setCurrentCashbox] = useState<any>();
 
     useEffect(() => {
         async function fetchAddress() {
@@ -29,6 +32,21 @@ function RestaurantHeader() {
 
     const iconsClasses =
         'flex items-center justify-center h-12 w-12 border border-gray-500 hover:text-white text-gray-500 rounded-full cursor-pointer transition-all ease-in-out duration-300 hover:bg-gray-600';
+
+    useEffect(() => {
+        async function getCurrentCashbox() {
+            const { data: currentCashBoxData } = await supabase
+                .from('cash_boxes')
+                .select('*')
+                .match({ restaurant_id: restaurant!.id, is_open: true });
+
+            const currentCashBox =
+                currentCashBoxData![0] as unknown as iCashBox['data'];
+
+            setCurrentCashbox(currentCashBox);
+        }
+        getCurrentCashbox();
+    }, []);
 
     if (!restaurant) return null;
 
@@ -59,9 +77,15 @@ function RestaurantHeader() {
                         <h1 className="text-2xl font-semibold text-[#3e3e3e]">
                             {restaurant.name}
                         </h1>
-                        <span className="mt-1 text-green-600 font-semibold">
-                            Aberto Agora
-                        </span>
+                        {currentCashbox ? (
+                            <span className="mt-1 text-green-600 font-semibold">
+                                Aberto Agora
+                            </span>
+                        ) : (
+                            <span className="mt-1 text-red-600 font-semibold">
+                                Fechado Agora
+                            </span>
+                        )}
                     </div>
                 </div>
                 <div className="mx-auto mt-7 sm;mt-0 sm:ml-auto sm:mr-0">

@@ -110,3 +110,11 @@
     filter: invert(100%) sepia(100%) saturate(0%) hue-rotate(180deg)
         brightness(50%) contrast(100%);
 }
+
+.father-div:hover .hide {
+    display: none;
+}
+
+.father-div:hover .show {
+    display: flex;
+}

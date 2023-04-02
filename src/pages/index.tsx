@@ -151,8 +151,127 @@ const Homepage = () => {
                     />
                 </div>
             </div>
+            <div className="py-32">
+                <div className="flex flex-col justify-center max-w-[1500px] max-w-screen mx-auto p-8">
+                    <h2 className="w-full text-center text-4xl font-bold">
+                        A Opinião dos Nossos Clientes
+                    </h2>
+                    <div className="mt-12 grid grid-cols-1 lg:grid-cols-2 gap-x-4 gap-y-4">
+                        <Testimonial
+                            imageUrl="https://i.ibb.co/1nbj50S/Ellipse-1.png"
+                            name="1 Maria das Rosas"
+                            text="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been..."
+                            stars={5}
+                        />
+                        <Testimonial
+                            imageUrl="https://i.ibb.co/1nbj50S/Ellipse-1.png"
+                            name="2 Maria das Rosas"
+                            text="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been..."
+                            stars={3}
+                        />
+                        <Testimonial
+                            imageUrl="https://i.ibb.co/1nbj50S/Ellipse-1.png"
+                            name="3 Maria das Rosas"
+                            text="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been..."
+                            stars={4.4}
+                        />
+                        <Testimonial
+                            imageUrl="https://i.ibb.co/1nbj50S/Ellipse-1.png"
+                            name="4 Maria das Rosas"
+                            text="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been..."
+                            stars={4}
+                        />
+                    </div>
+                </div>
+            </div>
+            <div className="border-t-[22px] border-t-brand-dark-orange bg-gray-800 py-32">
+                <div className="max-w-[1500px] max-w-screen mx-auto p-8 grid grid-cols-1 sm:grid-cols-2">
+                    <div>
+                        <h6 className="text-white text-3xl mb-4">
+                            Entre em contato conosco
+                        </h6>
+                        <form className="flex flex-col gap-y-4" action="">
+                            <input
+                                placeholder="Nome"
+                                className="h-12 p-4"
+                                type="text"
+                            />
+                            <input
+                                placeholder="Email"
+                                className="h-12 p-4"
+                                type="text"
+                            />
+                            <textarea
+                                placeholder="Digite sua mensagem"
+                                className="h-32 p-4"
+                            />
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div className="h-20 text-white font-semibold bg-gray-900 flex w-screen justify-center text-center items-center father-div transition-all duration-1000">
+                <span className="hide">Feito por NextEats | 2023</span>
+                <span className="show hidden">
+                    Feito por Lucas Bezerra | 2023
+                </span>
+            </div>
         </>
     );
+};
+
+interface iTestimonial {
+    imageUrl: string;
+    name: string;
+    text: string;
+    stars: number;
+}
+
+const Testimonial = (props: iTestimonial) => {
+    const { imageUrl, name, text, stars } = props;
+
+    return (
+        <div className="flex flex-row p-12 border">
+            <Image
+                className="w-24 h-24"
+                src={imageUrl}
+                alt={name}
+                width={100}
+                height={100}
+            />
+            <div className="ml-5">
+                <span className="text-lg font-semibold text-brand-dark-orange">
+                    {name}
+                </span>
+                <p className="mt-1 mb-7">{text}</p>
+                <div className="flex flex-row gap-x-1 text-yellow-400 text-xl">
+                    <StarRating rating={stars} />
+                </div>
+            </div>
+        </div>
+    );
+};
+
+import { FaStar, FaStarHalf } from 'react-icons/fa';
+
+interface iStarRating {
+    rating: number;
+}
+
+const StarRating = ({ rating }: iStarRating) => {
+    const roundedRating = Math.round(rating * 2) / 2; // Round to nearest .0 or .5
+
+    const starIcons = [];
+    for (let i = 0; i < 5; i++) {
+        if (i < Math.floor(roundedRating)) {
+            starIcons.push(<FaStar key={i} />);
+        } else if (i === Math.floor(roundedRating) && roundedRating % 1 !== 0) {
+            starIcons.push(<FaStarHalf key={i} />);
+        } else {
+            starIcons.push(<></>);
+        }
+    }
+
+    return <>{starIcons}</>;
 };
 
 interface iCardSubscriptionPlan {
@@ -186,7 +305,7 @@ const CardSubscriptionPlan = (props: iCardSubscriptionPlan) => {
                             className="flex flex-row items-center text-lg text-gray-600"
                             key={index}
                         >
-                            <div className="h-9 my-2 w-9 flex items-center justify-center bg-brand-dark-orange rounded-full">
+                            <div className="h-9 my-2 w-9 flex items-center justify-center bg-[#2C7AED] rounded-full">
                                 <FaCheck className="text-xl text-white" />
                             </div>
                             <span className="ml-2">{feat}</span>

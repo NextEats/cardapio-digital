@@ -28,7 +28,6 @@ import {
     iSelects,
 } from '@/src/types/types';
 import { GetServerSideProps } from 'next';
-import { supabase } from '@/src/server/api';
 
 interface iAdminHomePageProps {
     restaurant: iRestaurantWithFKData;

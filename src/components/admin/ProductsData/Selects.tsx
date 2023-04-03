@@ -12,6 +12,7 @@ import { CreateAdditional } from "./CreateAdditional";
 import { CreateSelect } from "./CreateSelect";
 import { CreateProductOption } from "./CreateProductOption";
 import { iSelect } from "@/src/types/types";
+import { UpdateSelect } from "./UpdateSelects";
 
 interface iSelectsProps {
     type: "list" | "select_selects"
@@ -21,6 +22,7 @@ export function Selects({ type }: iSelectsProps) {
     const { selectsState, product_options_state, selectSelectState } = useContext(ProductContext)
     const [setectSelect, setSelectSelect] = selectSelectState
     const [selectToCreateOption, setSelectToCreateOption] = useState<iSelect["data"] | null>(null)
+    const [isUpadatingSelect, setIsUpadatingSelect] = useState<iSelect["data"] | null>(null)
 
     const [selects, setSelects] = selectsState
     const [product_options, setProduct_options] = product_options_state
@@ -40,6 +42,7 @@ export function Selects({ type }: iSelectsProps) {
     if (!selects) return null
     return (
         <div className={``}>
+            <UpdateSelect isUpadatingSelect={isUpadatingSelect} setIsUpadatingSelect={setIsUpadatingSelect} />
             <Dialog.Root>
                 <Dialog.Trigger asChild>
                     {type === "select_selects" ?
@@ -65,17 +68,46 @@ export function Selects({ type }: iSelectsProps) {
                             {selects.map(select => {
                                 return (
                                     <div key={select.id} className="w-full flex flex-col gap-2">
-                                        <div className="flex items-center justify-between">
+                                        <div className="flex items-center justify-between pr-3">
                                             <div className="flex items-center gap-2">
-                                                <input type="checkbox" onClick={() => handleSelectSelect(select)} />
+                                                {type === "select_selects" ?
+                                                    <input type="checkbox" onClick={() => handleSelectSelect(select)} />
+                                                    : null}
                                                 <span className="w-[160px] truncate"> {select.name} </span>
                                             </div>
-                                            <div className="flex item-center gap-2">
-                                                <span> R$ 00,00 </span>
+
+                                            <div className="flex items-center gap-4">
+                                                {select.has_default_price ?
+                                                    <span className=""> R$ {select.price?.toLocaleString("pt-BR", {
+                                                        minimumFractionDigits: 2, maximumFractionDigits: 2
+                                                    })} </span>
+                                                    : null}
+                                                <DropdownMenu.Root>
+                                                    <DropdownMenu.Trigger >
+                                                        <BsThreeDotsVertical size={16} className="text-gray-400" />
+                                                    </DropdownMenu.Trigger>
+                                                    <DropdownMenu.Portal>
+                                                        <DropdownMenu.Content
+                                                            className="min-w-[220px] bg-white rounded-md p-[5px] z-30 shadow-[0px_10px_38px_-10px_rgba(22,_23,_24,_0.35),_0px_10px_20px_-15px_rgba(22,_23,_24,_0.2)] will-change-[opacity,transform] data-[side=top]:animate-slideDownAndFade data-[side=right]:animate-slideLeftAndFade data-[side=bottom]:animate-slideUpAndFade data-[side=left]:animate-slideRightAndFade"
+                                                            sideOffset={5}
+                                                        >
+                                                            <DropdownMenu.Item
+                                                                onClick={() => setIsUpadatingSelect(select)}
+                                                                className="group text-[13px] leading-none text-violet11 rounded-[3px] flex items-center gap-3 hover:bg-white-blue cursor-pointer h-9 px-[5px] 
+                                                            relative pl-[25px]"
+                                                            >
+                                                                <BsFillPencilFill size={16} />
+                                                                <span className="text-base">Editar personalização</span>
+                                                            </DropdownMenu.Item>
+                                                            <DropdownMenu.Arrow className="fill-white" />
+                                                        </DropdownMenu.Content>
+                                                    </DropdownMenu.Portal>
+                                                </DropdownMenu.Root>
+
                                             </div>
                                         </div>
 
-                                        <div className="flex mt-8 flex-wrap gap-2">
+                                        <div className="flex flex-wrap gap-2">
                                             {product_options?.map((product_option) => {
                                                 if (product_option.select_id !== select.id) return
                                                 return <div key={product_option.id} >
@@ -108,27 +140,6 @@ export function Selects({ type }: iSelectsProps) {
                                             </button>
                                         </div>
 
-                                        {/* <DropdownMenu.Root>
-                                                <DropdownMenu.Trigger >
-                                                    <BsThreeDotsVertical size={16} className="text-gray-400" />
-                                                </DropdownMenu.Trigger>
-                                                <DropdownMenu.Portal>
-                                                    <DropdownMenu.Content
-                                                        className="min-w-[220px] bg-white rounded-md p-[5px] shadow-[0px_10px_38px_-10px_rgba(22,_23,_24,_0.35),_0px_10px_20px_-15px_rgba(22,_23,_24,_0.2)] will-change-[opacity,transform] data-[side=top]:animate-slideDownAndFade data-[side=right]:animate-slideLeftAndFade data-[side=bottom]:animate-slideUpAndFade data-[side=left]:animate-slideRightAndFade"
-                                                        sideOffset={5}
-                                                    >
-                                                        <DropdownMenu.Item
-                                                            onClick={() => setUpdateCategoryState(category)}
-                                                            className="group text-[13px] leading-none text-violet11 rounded-[3px] flex items-center gap-3 hover:bg-white-blue cursor-pointer h-9 px-[5px] 
-                                                            relative pl-[25px]"
-                                                        >
-                                                            <BsFillPencilFill size={16} />
-                                                            <span className="text-base">Editar categoria</span>
-                                                        </DropdownMenu.Item>
-                                                        <DropdownMenu.Arrow className="fill-white" />
-                                                    </DropdownMenu.Content>
-                                                </DropdownMenu.Portal>
-                                            </DropdownMenu.Root> */}
 
                                     </div>
                                 );

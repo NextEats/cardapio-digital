@@ -1,5 +1,5 @@
 import { ProductContext } from "@/src/contexts/ProductContext"
-import { useContext, useState } from "react"
+import { Dispatch, SetStateAction, useContext, useEffect, useState } from "react"
 import * as Dialog from '@radix-ui/react-dialog';
 import { FiX } from "react-icons/fi";
 import { BsPlusLg, BsUpload } from "react-icons/bs";
@@ -11,104 +11,122 @@ import { api, supabase } from "@/src/server/api";
 import * as Switch from '@radix-ui/react-switch';
 import Image from "next/image";
 import { getFilePath } from "@/src/helpers/getFilePath";
+import { iSelect } from "@/src/types/types";
 
-interface iCreateSelectProps {
+interface iUpdateSelectProps {
+    setIsUpadatingSelect: Dispatch<SetStateAction<iSelect["data"] | null>>;
+    isUpadatingSelect: iSelect["data"] | null;
 }
 
-const newSelectValidationSchema = zod.object({
+const updateSelectValidationSchema = zod.object({
     name: zod.string().min(1, { message: "O nome da personalização é obrigatório. " }),
     has_default_price: zod.boolean(),
     price: zod.number().nullish(),
     max_selected_options: zod.number().min(1, { message: "O número mínimo de opções selecionáveis é 1." }),
-    option_picture_url: zod.any().nullable(),
-    option_name: zod.string().min(1, { message: "Campo obrigatório." }),
-    option_has_price: zod.boolean(),
-    option_price: zod.number().nullable(),
+    // option_picture_url: zod.any().nullable(),
+    // option_name: zod.string().min(1, { message: "Campo obrigatório." }),
+    // option_has_price: zod.boolean(),
+    // option_price: zod.number().nullable(),
 })
 
-type newSelectData = zod.infer<typeof newSelectValidationSchema>
-const selectDefaultValue: newSelectData = {
+type updateSelectData = zod.infer<typeof updateSelectValidationSchema>
+const selectDefaultValue: updateSelectData = {
     name: '',
     has_default_price: false,
     price: null,
     max_selected_options: 1,
-    option_has_price: false,
-    option_name: '',
-    option_price: null,
-    option_picture_url: '',
+    // option_has_price: false,
+    // option_name: '',
+    // option_price: null,
+    // option_picture_url: '',
 };
 
-export function CreateSelect({ }: iCreateSelectProps) {
+export function UpdateSelect({ isUpadatingSelect, setIsUpadatingSelect }: iUpdateSelectProps) {
     const { restaurant, selectsState, product_options_state } = useContext(ProductContext)
     const [optionImageProview, setOptionImageProview] = useState<string | null>(null)
 
     const [selects, setSelects] = selectsState
     const [product_options, setProduct_options] = product_options_state
 
-    const { register, reset, setFocus, setError, watch, setValue, handleSubmit, formState: { isSubmitting, errors } } = useForm<newSelectData>({
-        resolver: zodResolver(newSelectValidationSchema),
+    const { register, reset, setFocus, setError, watch, setValue, handleSubmit, formState: { isSubmitting, errors } } = useForm<updateSelectData>({
+        resolver: zodResolver(updateSelectValidationSchema),
         defaultValues: selectDefaultValue
     })
 
     const has_default_value = watch("has_default_price")
-    const has_price = watch("option_has_price")
+    // const has_price = watch("option_has_price")
 
-    const handleCreateSelect = async (data: newSelectData) => {
-
-        const { has_default_price, name, max_selected_options, option_name, option_price, price, option_picture_url } = data
-
-        if (!option_picture_url) {
-            setError('option_picture_url', { type: 'custom', message: 'Selecione uma imagem' })
-            return
+    useEffect(() => {
+        if (isUpadatingSelect) {
+            setValue("name", isUpadatingSelect?.name)
+            setValue("has_default_price", isUpadatingSelect?.has_default_price)
+            setValue("price", isUpadatingSelect?.price)
+            setValue("max_selected_options", isUpadatingSelect?.max_selected_options)
         }
+    }, [setValue, isUpadatingSelect])
 
-        const { data: selectData } = await supabase.from("selects").insert({
+
+    const handleUpdateSelect = async (data: updateSelectData) => {
+
+        const { has_default_price, name, max_selected_options,
+            // option_name, option_price, 
+            price,
+            // option_picture_url
+        } = data
+
+        // if (!option_picture_url) {
+        //     setError('option_picture_url', { type: 'custom', message: 'Selecione uma imagem' })
+        //     return
+        // }
+
+        const { data: selectData } = await supabase.from("selects").update({
             name,
             max_selected_options,
             has_default_price,
             price,
-            restaurant_id: restaurant.id,
-        }).select("*")
+        }).eq("id", isUpadatingSelect?.id!).select("*")
 
         if (!selectData) {
-            alert("Desculpe, houve um problema ao criar essa personalização. Por favor, contate um administrador!")
+            alert("Desculpe, houve um problema ao editar essa personalização. Por favor, contate um administrador!")
             return
         }
 
-        const file: File = option_picture_url[0]
-        const { filePath } = getFilePath({ file, slug: restaurant.slug })
-        const { data: uploadData, error } = await supabase.storage.from('teste')
-            .upload(filePath, file, { upsert: true })
+        // const file: File = option_picture_url[0]
+        // const { filePath } = getFilePath({ file, slug: restaurant.slug })
+        // const { data: uploadData, error } = await supabase.storage.from('teste')
+        //     .upload(filePath, file, { upsert: true })
 
-        if (!uploadData) {
-            alert("Desculpe, houve um problema ao criar essa personalização. Por favor, contate um administrador!")
-            return
-        }
-        const { data: { publicUrl } } = await supabase.storage.from('teste').getPublicUrl(uploadData.path)
+        // if (!uploadData) {
+        //     alert("Desculpe, houve um problema ao criar essa personalização. Por favor, contate um administrador!")
+        //     return
+        // }
+        // const { data: { publicUrl } } = await supabase.storage.from('teste').getPublicUrl(uploadData.path)
 
-        const { data: optionData } = await supabase.from("product_options").insert({
-            name: option_name,
-            picture_url: publicUrl,
-            price: option_price,
-            active: true,
-            select_id: selectData[0].id,
-            is_default_value: false,
-        }).select("*")
+        // const { data: optionData } = await supabase.from("product_options").insert({
+        //     name: option_name,
+        //     picture_url: publicUrl,
+        //     price: option_price,
+        //     active: true,
+        //     select_id: selectData[0].id,
+        //     is_default_value: false,
+        // }).select("*")
 
-        if (!optionData) {
-            alert("Desculpe, houve um problema ao criar essa personalização. Por favor, contate um administrador!")
-            return
-        }
+        // if (!optionData) {
+        //     alert("Desculpe, houve um problema ao criar essa personalização. Por favor, contate um administrador!")
+        //     return
+        // }
         setSelects(state => {
-            return state ? [...state, { ...selectData[0] }] : [{ ...selectData[0] }]
+            state?.splice(state?.findIndex(s => s.id! === isUpadatingSelect?.id!), 1)
+            return [...state!, { ...selectData[0] }]
         })
-        setProduct_options(state => {
-            return state ? [...state, { ...optionData[0] }] : [{ ...optionData[0] }]
-        })
+        // setProduct_options(state => {
+        //     return state ? [...state, { ...optionData[0] }] : [{ ...optionData[0] }]
+        // })
+        setIsUpadatingSelect(null)
         reset()
     }
 
-    const handleFocus = (inputName: "price" | "option_price") => {
+    const handleFocus = (inputName: "price") => {
         setTimeout(() => {
             setFocus(inputName)
         }, 50);
@@ -116,20 +134,18 @@ export function CreateSelect({ }: iCreateSelectProps) {
 
     return (
 
-        <Dialog.Root>
-            <Dialog.Trigger asChild className="mb-4">
-                <button className="px-6 py-2 rounded-full bg-blue-400 ">
-                    <BsPlusLg size={16} className="text-white" />
-                </button>
-            </Dialog.Trigger>
+        <Dialog.Root open={isUpadatingSelect !== null}>
+            <Dialog.Trigger />
             <Dialog.Portal>
-                <Dialog.Overlay className="bg-blackA9 data-[state=open]:animate-overlayShow fixed inset-0" />
+                <Dialog.Overlay
+                    onClick={() => setIsUpadatingSelect(null)}
+                    className="bg-blackA9 data-[state=open]:animate-overlayShow fixed inset-0" />
                 <Dialog.Content className="data-[state=open]:animate-contentShow fixed top-[34%] left-[50%] z-40 h-auto w-[400px] translate-x-[-50%] translate-y-[-50%] rounded-[6px] bg-white p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none">
-                    <form onSubmit={handleSubmit(handleCreateSelect)} className="flex flex-col">
+                    <form onSubmit={handleSubmit(handleUpdateSelect)} className="flex flex-col">
                         <Dialog.Title className="text-mauve12 flex flex-1 items-center justify-between m-0 text-[17px] font-medium mb-3">
                             Criar categoria
                             <button disabled={isSubmitting} type="submit" className="px-6 py-1 rounded-full text-white bg-blue-400 disabled:bg-gray-400 ">
-                                Salvar
+                                Editar
                             </button>
                         </Dialog.Title>
 
@@ -174,7 +190,7 @@ export function CreateSelect({ }: iCreateSelectProps) {
                         </>
                             : null}
 
-                        <input hidden id="picture" type="file" accept="image/*"
+                        {/* <input hidden id="picture" type="file" accept="image/*"
                             {...register("option_picture_url", {
                                 setValueAs: (value: FileList) => value,
                                 onChange(event) {
@@ -183,9 +199,9 @@ export function CreateSelect({ }: iCreateSelectProps) {
                                 },
                                 required: true
                             })}
-                        />
+                        /> */}
                         <div className="flex gap-2 mt-3">
-                            <div>
+                            {/* <div>
 
                                 {optionImageProview ?
                                     <div>
@@ -211,9 +227,9 @@ export function CreateSelect({ }: iCreateSelectProps) {
                                     </>
                                 }
 
-                            </div>
+                            </div> */}
 
-                            <div>
+                            {/* <div>
                                 <input
                                     className={`w-full border border-gray-300 py-1 px-2 text-base font-normal leading-none rounded outline-none focus:border-blue-400
                                     ${errors.option_name ? "" : "mb-2"}`}
@@ -248,12 +264,14 @@ export function CreateSelect({ }: iCreateSelectProps) {
                                     </div>
                                 </div>
                                     : null}
-                            </div>
+                            </div> */}
 
                         </div>
                     </form>
 
-                    <Dialog.Close asChild className="text-violet11 cursor-pointer hover:bg-violet4 focus:shadow-violet7 absolute top-[8px] right-[8px] inline-flex h-[25px] w-[25px] appearance-none items-center justify-center rounded-full focus:shadow-[0_0_0_2px] focus:outline-none">
+                    <Dialog.Close
+                        onClick={() => setIsUpadatingSelect(null)}
+                        asChild className="text-violet11 cursor-pointer hover:bg-violet4 focus:shadow-violet7 absolute top-[8px] right-[8px] inline-flex h-[25px] w-[25px] appearance-none items-center justify-center rounded-full focus:shadow-[0_0_0_2px] focus:outline-none">
                         <FiX />
                     </Dialog.Close>
                 </Dialog.Content>

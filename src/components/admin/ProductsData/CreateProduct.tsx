@@ -9,17 +9,19 @@ import { Additionals } from "./Additionals";
 import { FiTrash2 } from "react-icons/fi";
 import { iAdditional } from "@/src/types/types";
 import { Selects } from "./Selects";
+import { api, supabase } from "@/src/server/api";
+import { getFilePath } from "@/src/helpers/getFilePath";
 
 interface iCreateProductProps {
 }
 
 const newProductValidationSchema = zod.object({
-    name: zod.string(),
-    price: zod.number().min(0, { message: "Valor mínimo do produto: 0." }),
+    name: zod.string().min(1, { message: "O nome do produto é obrigatório." }),
+    price: zod.number(),
     category_id: zod.number(),
     picture: zod.any().nullable(),
-    description: zod.string(),
-}).required()
+    description: zod.string().min(1, { message: "A descrição do produto é obrigatório." }),
+})
 
 type newProduct = zod.infer<typeof newProductValidationSchema>
 const newProductDefaultValue: newProduct = {
@@ -27,18 +29,18 @@ const newProductDefaultValue: newProduct = {
     name: '',
     price: 0,
     category_id: 0,
-    description: '0',
+    description: '',
 };
 
 export function CreateProduct({ }: iCreateProductProps) {
-    const { products, productScreenState, categories, selectAdditionalState, selectSelectState, product_options_state } = useContext(ProductContext)
+    const { restaurant, productScreenState, categories, selectAdditionalState, selectSelectState, product_options_state } = useContext(ProductContext)
     const [productScreen, setProductScreen] = productScreenState
     const [selectAdditional, setSelectAdditional] = selectAdditionalState
     const [setectSelect, setSelectSelect] = selectSelectState
     const [product_options, setProduct_options] = product_options_state
     const [imageProview, setImageProview] = useState<string | null>(null)
 
-    const { register, getValues, handleSubmit, reset, formState: { isSubmitting } } = useForm<newProduct>({
+    const { register, getValues, setValue, handleSubmit, reset, formState: { isSubmitting } } = useForm<newProduct>({
         resolver: zodResolver(newProductValidationSchema),
         defaultValues: newProductDefaultValue
     })
@@ -46,8 +48,12 @@ export function CreateProduct({ }: iCreateProductProps) {
     useEffect(() => {
         if (typeof productScreen !== "string") {
             setImageProview(productScreen?.picture_url!)
+            setValue("description", productScreen?.description!)
+            setValue("name", productScreen?.name!)
+            setValue("price", productScreen?.price!)
+            setValue("category_id", productScreen?.category_id!)
         }
-    }, [productScreen])
+    }, [productScreen, setValue])
 
     const handleRemoveAdditional = (additional: iAdditional["data"]) => {
         setSelectAdditional(state => {
@@ -56,16 +62,62 @@ export function CreateProduct({ }: iCreateProductProps) {
         })
     }
 
+    const handleCreateProduct = async (data: newProduct) => {
+        const { category_id, description, name, price, picture } = data
+        console.log(data)
+        const file: File = picture[0]
+        const { filePath } = getFilePath({ file, slug: restaurant.slug })
+        const { data: uploadData, error } = await supabase.storage.from('teste')
+            .upload(filePath, file, { upsert: true })
+
+        if (!uploadData) {
+            alert("Não foi possivel criar o produto.")
+            return
+        }
+        const { data: { publicUrl } } = await supabase.storage.from('teste').getPublicUrl(uploadData.path)
+
+        const { data: productData } = await api.post(`api/products/${restaurant.id}`, {
+            name,
+            picture_url: publicUrl,
+            price,
+            description,
+            category_id,
+        })
+
+
+        selectAdditional.forEach(async add => {
+            await supabase.from("product_additionals").insert({
+                additional_id: add.id,
+                product_id: productData[0].id,
+            })
+        })
+        setectSelect.forEach(async s => {
+            await supabase.from("product_selects").insert({
+                select_id: s.id,
+                product_id: productData[0].id,
+            })
+        })
+
+        reset()
+        handleGoBack()
+    }
+
+    const handleGoBack = () => {
+        setProductScreen(null)
+        setSelectSelect([])
+        setSelectAdditional([])
+    }
+
     return (
-        <div>
-            <button
-                onClick={() => setProductScreen(null)}
-                className="text-blue-400 text-right w-full"
-            >
-                voltar
-            </button>
+        <form onSubmit={handleSubmit(handleCreateProduct)}>
+            <div className="flex items-center justify-between">
+                <button onClick={() => handleGoBack()} type="button" className="text-blue-400" > voltar </button>
+                <button type="submit" disabled={isSubmitting} className="text-blue-400 disabled:text-gray-400" >
+                    {typeof productScreen === "string" ? "Salvar " : "Editar"}
+                </button>
+            </div>
             <div className={`min-h-[400px] h-full bg-white shadow-md rounded-md p-4`}>
-                <form action="" className="flex gap-8 flex-1">
+                <div className="flex gap-8 flex-1">
                     <input
                         hidden
                         id="picture_url"
@@ -135,7 +187,7 @@ export function CreateProduct({ }: iCreateProductProps) {
 
                         <label className="text-lg font-medium" htmlFor=""> Descrição </label>
                         <textarea
-                            {...register("name")}
+                            {...register("description")}
                             className="scrollbar-custom w-full flex-1 border resize-none border-gray-300 py-2 px-2 text-base font-normal leading-none rounded outline-none focus:border-blue-400 "
                             placeholder="ex.: Banana"
                         ></textarea>
@@ -143,7 +195,7 @@ export function CreateProduct({ }: iCreateProductProps) {
                     </div>
                     {/* </div> */}
 
-                </form>
+                </div>
 
                 <div className="grid grid-cols-2 gap-3 mt-6">
                     <div className=" border border-gray-300 p-4">
@@ -182,7 +234,7 @@ export function CreateProduct({ }: iCreateProductProps) {
                     </div>
                     <div className=" border border-gray-300 p-4">
                         <div className="flex items-center justify-between">
-                            <span>Personalisações </span>
+                            <span className="font-bold">Personalisações </span>
                             <Selects type="select_selects" />
                         </div>
                         {setectSelect.map(select => {
@@ -225,6 +277,6 @@ export function CreateProduct({ }: iCreateProductProps) {
                     </div>
                 </div>
             </div>
-        </div>
+        </form>
     )
 }

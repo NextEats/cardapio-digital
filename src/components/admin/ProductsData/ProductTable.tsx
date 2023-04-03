@@ -2,14 +2,14 @@ import * as Switch from '@radix-ui/react-switch';
 import { ProductContext } from "@/src/contexts/ProductContext"
 import Image from "next/image"
 import { useContext } from "react"
-import { iProductsWithFKData } from '@/src/types/types';
+import { iProduct, iProductsWithFKData } from '@/src/types/types';
 interface iProductTableDataProps {
 
 }
 
 export function ProductTable({ }: iProductTableDataProps) {
 
-    const { products, productSelected, setProductSelected, productScreenState } = useContext(ProductContext)
+    const { products, productSelected, setProductSelected, productScreenState, hanleViewProduct } = useContext(ProductContext)
     const [productScreen, setProductScreen] = productScreenState
 
     const thDefaultStyle = " text-left px-2 py-4 "
@@ -67,7 +67,7 @@ export function ProductTable({ }: iProductTableDataProps) {
                                     className='h-4 w-4 cursor-pointer'
                                     onChange={(e) => handleSelectProduct({ product, })} />
                             </td>
-                            <td onClick={() => setProductScreen(product)} className={` w-12 max-h-12` + tdDefaultStyle}>
+                            <td onClick={() => hanleViewProduct(product)} className={` w-12 max-h-12` + tdDefaultStyle}>
                                 <Image
                                     className="w-full max-h-12 object-cover"
                                     src={product.picture_url}
@@ -77,11 +77,11 @@ export function ProductTable({ }: iProductTableDataProps) {
                                 />
 
                             </td>
-                            <td onClick={() => setProductScreen(product)} className={` w-80 ` + tdDefaultStyle}>
+                            <td onClick={() => hanleViewProduct(product)} className={` w-80 ` + tdDefaultStyle}>
                                 {product.name}
                             </td>
-                            <td onClick={() => setProductScreen(product)} className={`` + tdDefaultStyle}> {product.category_id.name} </td>
-                            <td onClick={() => setProductScreen(product)} className={`` + tdDefaultStyle}> R$ {product.price.toLocaleString('pt-Br', {
+                            <td onClick={() => hanleViewProduct(product)} className={`` + tdDefaultStyle}> {product.category_id.name} </td>
+                            <td onClick={() => hanleViewProduct(product)} className={`` + tdDefaultStyle}> R$ {product.price.toLocaleString('pt-Br', {
                                 minimumFractionDigits: 2, maximumFractionDigits: 2
                             })} </td>
                             <td className={` max-w-28` + tdDefaultStyle}>

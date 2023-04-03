@@ -20,6 +20,9 @@ import {
     iRestaurant,
     iSelects,
 } from '../types/types';
+import { getProductAdditionalsFetch } from '../fetch/productAdditionals/getProductAdditionals';
+import { getProductSelectsFetch } from '../fetch/productSelects/getProductSelects';
+import { supabase } from '../server/api';
 
 interface iProductContextProps {
     products: iProductsWithFKData[];
@@ -48,6 +51,7 @@ interface iProductContextProps {
         name: string | null;
         category: number | null;
     }
+    hanleViewProduct: (product: iProduct["data"]) => void
 }
 interface iProductContextProviderProps {
     children: ReactNode;
@@ -81,10 +85,14 @@ export default function ProductContextProvider({
     const productScreenState = useState<iProduct["data"] | "create_product" | null>(null)
 
     const selectAdditionalState = useState<iAdditionals["data"]>([])
+    const [selectAdditional, setSelectAdditional] = selectAdditionalState
+
     const selectSelectState = useState<iSelects["data"]>([])
+    const [setectSelect, setSelectSelect] = selectSelectState
 
     const [selects, setSelects] = selectsState
     const [product_options, setProduct_options] = product_options_state
+    const [productScreen, setProductScreen] = productScreenState
 
     useEffect(() => {
         setAdditionals(additionalsData)
@@ -116,6 +124,23 @@ export default function ProductContextProvider({
     }, [products, filter])
 
 
+    const hanleViewProduct = async (product: iProduct["data"]) => {
+
+        const [product_additionals, product_selects] = await Promise.all([
+            supabase.from("product_additionals").select("*, additionals (*)").eq("product_id", product.id),
+            supabase.from("product_selects").select("*, selects (*)").eq("product_id", product.id),
+        ])
+        setProductScreen(product)
+        const selectsData = product_selects.data?.map(ps => ps.selects)
+        if (selectsData)
+            setSelectSelect([...selectsData as iSelects["data"]])
+        const additinalsData = product_additionals.data?.map(ad => ad.additionals)
+        if (additinalsData)
+            setSelectAdditional([...additinalsData as iAdditionals["data"]])
+
+    }
+
+
     return (
         <ProductContext.Provider
             value={{
@@ -139,6 +164,7 @@ export default function ProductContextProvider({
                 setProductSelected,
                 filter,
                 setFilter,
+                hanleViewProduct,
             }}
         >
             {children}

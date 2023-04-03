@@ -43,7 +43,7 @@ export function Selects({ type }: iSelectsProps) {
             <Dialog.Root>
                 <Dialog.Trigger asChild>
                     {type === "select_selects" ?
-                        <button>Selecionar</button> :
+                        <button className="text-blue-400">Selecionar</button> :
                         <button className="text-violet11 shadow-blackA7 hover:bg-mauve3 inline-flex h-[35px] items-center justify-center rounded-[4px] bg-white px-[15px] font-medium leading-none shadow-[0_2px_10px] focus:shadow-[0_0_0_2px] focus:shadow-black focus:outline-none">
                             {selects.length} Personalizações
                         </button>

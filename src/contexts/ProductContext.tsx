@@ -5,10 +5,8 @@ import {
     SetStateAction,
     useEffect,
     useMemo,
-    useReducer,
     useState,
 } from 'react';
-import { iProductsPageAction, iProductsPageReducder, productsPageReducder, productsPageReducderDefaultValues } from '../reducers/productsPageReducer/reducer';
 import {
     iAdditional,
     iAdditionalCategories,
@@ -33,6 +31,8 @@ interface iProductContextProps {
     additional_categories: iAdditionalCategories["data"]
     product_options_state: [iProductOptions["data"] | null, Dispatch<SetStateAction<iProductOptions["data"] | null>>]
     //
+
+    selectAdditionalState: [iAdditionals["data"], Dispatch<SetStateAction<iAdditionals["data"]>>]
     productScreenState: [iProduct["data"] | "create_product" | null, Dispatch<SetStateAction<iProduct["data"] | "create_product" | null>>]
     updateAdditionalState: [iAdditional["data"] | null, Dispatch<SetStateAction<iAdditional["data"] | null>>]
     productSelected: iProductsWithFKData[]
@@ -79,6 +79,8 @@ export default function ProductContextProvider({
     const selectsState = useState<iSelects["data"] | null>(null)
     const productScreenState = useState<iProduct["data"] | "create_product" | null>(null)
 
+    const selectAdditionalState = useState<iAdditionals["data"]>([])
+
     const [selects, setSelects] = selectsState
     const [product_options, setProduct_options] = product_options_state
 
@@ -96,7 +98,7 @@ export default function ProductContextProvider({
 
     const filteredProducts = useMemo(() => {
         if (!products) return [];
-        console.log(products)
+
         return products.filter((product) => {
             if (filter.name !== null) {
                 return product.name
@@ -125,6 +127,7 @@ export default function ProductContextProvider({
                 additional_categories,
                 product_options_state,
                 //           states
+                selectAdditionalState,
                 productScreenState,
                 updateAdditionalState,
                 updateCategoryState,

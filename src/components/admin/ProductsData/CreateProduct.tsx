@@ -6,6 +6,9 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import Image from "next/image"
 import { BsUpload } from "react-icons/bs"
 import { Additionals } from "./Additionals";
+import { FiTrash2 } from "react-icons/fi";
+import { iAdditional } from "@/src/types/types";
+import { Selects } from "./Selects";
 
 interface iCreateProductProps {
 }
@@ -15,6 +18,7 @@ const newProductValidationSchema = zod.object({
     price: zod.number().min(0, { message: "Valor mínimo do produto: 0." }),
     category_id: zod.number(),
     picture: zod.any().nullable(),
+    description: zod.string(),
 }).required()
 
 type newProduct = zod.infer<typeof newProductValidationSchema>
@@ -23,11 +27,13 @@ const newProductDefaultValue: newProduct = {
     name: '',
     price: 0,
     category_id: 0,
+    description: '0',
 };
 
 export function CreateProduct({ }: iCreateProductProps) {
-    const { products, productScreenState, categories } = useContext(ProductContext)
+    const { products, productScreenState, categories, selectAdditionalState } = useContext(ProductContext)
     const [productScreen, setProductScreen] = productScreenState
+    const [selectAdditional, setSelectAdditional] = selectAdditionalState
     const [imageProview, setImageProview] = useState<string | null>(null)
 
     const { register, getValues, handleSubmit, reset, formState: { isSubmitting } } = useForm<newProduct>({
@@ -40,6 +46,13 @@ export function CreateProduct({ }: iCreateProductProps) {
             setImageProview(productScreen?.picture_url!)
         }
     }, [productScreen])
+
+    const handleRemoveAdditional = (additional: iAdditional["data"]) => {
+        setSelectAdditional(state => {
+            state.splice(state.findIndex((a) => a.id === additional.id), 1);
+            return [...state]
+        })
+    }
 
     return (
         <div>
@@ -129,7 +142,50 @@ export function CreateProduct({ }: iCreateProductProps) {
                     {/* </div> */}
 
                 </form>
-                <Additionals type="select_additionals" />
+
+                <div className="grid grid-cols-2 gap-3 mt-6">
+                    <div className=" border border-gray-300 p-4">
+                        <div className="flex items-center justify-between">
+                            <span className="text-base font-bold">Adicionais </span>
+                            <Additionals type="select_additionals" />
+                        </div>
+
+                        <div className="flex flex-col gap-2 mt-3">
+
+                            {selectAdditional.map(additional => {
+                                return <div
+                                    key={additional.id}
+                                    className={`w-full h-[50px] rounded-sm bg-white shadow-sm flex gap-3 relative `}>
+                                    <Image
+                                        className="rounded-sm object-cover w-[50px] sm:h-full "
+                                        src={additional.picture_url}
+                                        alt=""
+                                        width={200}
+                                        height={200}
+                                    />
+                                    <div className="flex flex-col mt-2">
+                                        <span className="w-[180px] truncate text-lg font-semibold"> {additional.name} </span>
+                                        {/* <span className=""> R$ {additional.price.toLocaleString("pt-BR", {
+                                        minimumFractionDigits: 2, maximumFractionDigits: 2
+                                    })} </span> */}
+                                    </div>
+                                    <FiTrash2
+                                        onClick={() => handleRemoveAdditional(additional)}
+                                        className="text-xl text-red-500 cursor-pointer hover:scale-125 hover:transition-all ease-in-out absolute top-2 right-2"
+                                    />
+                                </div>
+                            })}
+                        </div>
+
+                    </div>
+                    <div className=" border border-gray-300 p-4">
+                        <div className="flex items-center justify-between">
+                            <span>Personalisações </span>
+                            <Selects type="select_selects" />
+                        </div>
+
+                    </div>
+                </div>
             </div>
         </div>
     )

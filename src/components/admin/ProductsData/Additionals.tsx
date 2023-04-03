@@ -18,8 +18,9 @@ interface iAdditionalsModalProps {
 }
 
 export function Additionals({ type }: iAdditionalsModalProps) {
-    const { additionals, updateAdditionalState, setAdditionals } = useContext(ProductContext)
+    const { additionals, updateAdditionalState, setAdditionals, selectAdditionalState } = useContext(ProductContext)
     const [updateAdditional, setUpdateAdditional] = updateAdditionalState
+    const [selectAdditional, setSelectAdditional] = selectAdditionalState
 
     const handleDeleteAdditional = async (additional: iAdditional["data"]) => {
         const { path } = getPathByPictureUrl(additional.picture_url)
@@ -34,6 +35,18 @@ export function Additionals({ type }: iAdditionalsModalProps) {
         alert("adicional deletado com sucesso.")
     }
 
+    const handleSelectAdditional = (additional: iAdditional["data"]) => {
+
+        if (selectAdditional.some(a => a.id === additional.id)) {
+            setSelectAdditional((state) => {
+                state.splice(state.findIndex((a) => a.id === additional.id), 1);
+                return [...state];
+            });
+            return
+        }
+        setSelectAdditional(state => [...state, additional])
+    }
+
     if (!additionals) return null
     return (
         <div className={``}>
@@ -41,9 +54,12 @@ export function Additionals({ type }: iAdditionalsModalProps) {
             {updateAdditional ? <UpdateAdditional /> : null}
             <Dialog.Root>
                 <Dialog.Trigger asChild>
-                    <button className="text-violet11 shadow-blackA7 hover:bg-mauve3 inline-flex h-[35px] items-center justify-center rounded-[4px] bg-white px-[15px] font-medium leading-none shadow-[0_2px_10px] focus:shadow-[0_0_0_2px] focus:shadow-black focus:outline-none">
-                        {additionals.length} Adicionais
-                    </button>
+                    {type === "select_additionals" ?
+                        <button>Selecionar</button> :
+                        <button className="text-violet11 shadow-blackA7 hover:bg-mauve3 inline-flex h-[35px] items-center justify-center rounded-[4px] bg-white px-[15px] font-medium leading-none shadow-[0_2px_10px] focus:shadow-[0_0_0_2px] focus:shadow-black focus:outline-none">
+                            {additionals.length} Adicionais
+                        </button>
+                    }
                 </Dialog.Trigger>
                 <Dialog.Portal>
                     <Dialog.Overlay className="bg-blackA9 data-[state=open]:animate-overlayShow fixed inset-0" />
@@ -59,8 +75,13 @@ export function Additionals({ type }: iAdditionalsModalProps) {
                         <div className="flex flex-wrap gap-3">
 
                             {(additionals).map(additional => {
+                                const isAdditionalSelected = type === "select_additionals" && selectAdditional.some(a => a.id === additional.id)
                                 return (
-                                    <div key={additional.id} className="w-[417px] h-[80px] rounded-sm bg-white shadow-sm flex gap-3 relative">
+                                    <div
+                                        onClick={() => type === "select_additionals" ? handleSelectAdditional(additional) : null}
+                                        key={additional.id}
+                                        className={`w-[417px] h-[80px] rounded-sm bg-white shadow-sm flex gap-3 relative
+                                        ${isAdditionalSelected ? 'border-2 border-blue-400' : ''}`}>
                                         <Image
                                             className="rounded-sm object-cover w-[80px] sm:h-full "
                                             src={additional.picture_url}

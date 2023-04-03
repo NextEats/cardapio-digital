@@ -62,7 +62,7 @@ export function ProductsAction({ }: iProductsActionProps) {
                             orientation="vertical"
                         />
                         <span className={`` + styleD}>
-                            <Selects />
+                            <Selects type="list" />
                         </span>
                     </div>
                     : <div className="flex justify-end mr-3 flex-1 ">

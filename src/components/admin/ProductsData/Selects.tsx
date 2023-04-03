@@ -14,9 +14,10 @@ import { CreateProductOption } from "./CreateProductOption";
 import { iSelect } from "@/src/types/types";
 
 interface iSelectsProps {
+    type: "list" | "select_selects"
 }
 
-export function Selects({ }: iSelectsProps) {
+export function Selects({ type }: iSelectsProps) {
     const { selectsState, product_options_state } = useContext(ProductContext)
 
     const [selectToCreateOption, setSelectToCreateOption] = useState<iSelect["data"] | null>(null)
@@ -50,6 +51,7 @@ export function Selects({ }: iSelectsProps) {
                                 return (
                                     <div key={select.id} className="w-full flex flex-col gap-2">
                                         <div className="flex items-center justify-between">
+                                            <input type="checkbox" />
                                             <span className="w-[160px] truncate"> {select.name} </span>
                                             <div className="flex item-center gap-2">
                                                 <span> R$ 00,00 </span>

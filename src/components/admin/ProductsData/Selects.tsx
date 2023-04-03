@@ -18,25 +18,40 @@ interface iSelectsProps {
 }
 
 export function Selects({ type }: iSelectsProps) {
-    const { selectsState, product_options_state } = useContext(ProductContext)
-
+    const { selectsState, product_options_state, selectSelectState } = useContext(ProductContext)
+    const [setectSelect, setSelectSelect] = selectSelectState
     const [selectToCreateOption, setSelectToCreateOption] = useState<iSelect["data"] | null>(null)
 
     const [selects, setSelects] = selectsState
     const [product_options, setProduct_options] = product_options_state
+
+    const handleSelectSelect = (select: iSelect["data"]) => {
+        if (setectSelect.some(s => s.id === select.id)) {
+            setSelectSelect((state) => {
+                state.splice(state.findIndex((a) => a.id === select.id), 1);
+                return [...state];
+            });
+            return
+        }
+        setSelectSelect(state => [...state, select])
+    }
+
 
     if (!selects) return null
     return (
         <div className={``}>
             <Dialog.Root>
                 <Dialog.Trigger asChild>
-                    <button className="text-violet11 shadow-blackA7 hover:bg-mauve3 inline-flex h-[35px] items-center justify-center rounded-[4px] bg-white px-[15px] font-medium leading-none shadow-[0_2px_10px] focus:shadow-[0_0_0_2px] focus:shadow-black focus:outline-none">
-                        {selects.length} Personalizações
-                    </button>
+                    {type === "select_selects" ?
+                        <button>Selecionar</button> :
+                        <button className="text-violet11 shadow-blackA7 hover:bg-mauve3 inline-flex h-[35px] items-center justify-center rounded-[4px] bg-white px-[15px] font-medium leading-none shadow-[0_2px_10px] focus:shadow-[0_0_0_2px] focus:shadow-black focus:outline-none">
+                            {selects.length} Personalizações
+                        </button>
+                    }
                 </Dialog.Trigger>
                 <Dialog.Portal>
                     <Dialog.Overlay className="bg-blackA9 data-[state=open]:animate-overlayShow fixed inset-0" />
-                    <Dialog.Content className="data-[state=open]:animate-contentShow fixed top-[40%] left-[50%]  h-[500px] w-[900px] translate-x-[-50%] translate-y-[-50%] rounded-[6px] bg-white p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none">
+                    <Dialog.Content className="data-[state=open]:animate-contentShow fixed z-30 top-[40%] left-[50%]  h-[500px] w-[900px] translate-x-[-50%] translate-y-[-50%] rounded-[6px] bg-white p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none">
                         <Dialog.Title className="text-mauve12 flex flex-1 items-center justify-between m-0 text-[17px] font-medium">
                             Personalizações
                             <CreateSelect />
@@ -46,17 +61,20 @@ export function Selects({ type }: iSelectsProps) {
                             selectToCreateOption={selectToCreateOption}
                             setSelectToCreateOption={setSelectToCreateOption}
                         /> : null}
-                        <div className="flex flex-col gap-3 w-full">
+                        <div className="flex flex-col gap-3 w-full h-[400px] overflow-auto scrollbar-custom">
                             {selects.map(select => {
                                 return (
                                     <div key={select.id} className="w-full flex flex-col gap-2">
                                         <div className="flex items-center justify-between">
-                                            <input type="checkbox" />
-                                            <span className="w-[160px] truncate"> {select.name} </span>
+                                            <div className="flex items-center gap-2">
+                                                <input type="checkbox" onClick={() => handleSelectSelect(select)} />
+                                                <span className="w-[160px] truncate"> {select.name} </span>
+                                            </div>
                                             <div className="flex item-center gap-2">
                                                 <span> R$ 00,00 </span>
                                             </div>
                                         </div>
+
                                         <div className="flex mt-8 flex-wrap gap-2">
                                             {product_options?.map((product_option) => {
                                                 if (product_option.select_id !== select.id) return

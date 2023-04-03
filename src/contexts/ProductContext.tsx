@@ -32,6 +32,7 @@ interface iProductContextProps {
     product_options_state: [iProductOptions["data"] | null, Dispatch<SetStateAction<iProductOptions["data"] | null>>]
     //
 
+    selectSelectState: [iSelects["data"], Dispatch<SetStateAction<iSelects["data"]>>]
     selectAdditionalState: [iAdditionals["data"], Dispatch<SetStateAction<iAdditionals["data"]>>]
     productScreenState: [iProduct["data"] | "create_product" | null, Dispatch<SetStateAction<iProduct["data"] | "create_product" | null>>]
     updateAdditionalState: [iAdditional["data"] | null, Dispatch<SetStateAction<iAdditional["data"] | null>>]
@@ -80,6 +81,7 @@ export default function ProductContextProvider({
     const productScreenState = useState<iProduct["data"] | "create_product" | null>(null)
 
     const selectAdditionalState = useState<iAdditionals["data"]>([])
+    const selectSelectState = useState<iSelects["data"]>([])
 
     const [selects, setSelects] = selectsState
     const [product_options, setProduct_options] = product_options_state
@@ -127,6 +129,7 @@ export default function ProductContextProvider({
                 additional_categories,
                 product_options_state,
                 //           states
+                selectSelectState,
                 selectAdditionalState,
                 productScreenState,
                 updateAdditionalState,

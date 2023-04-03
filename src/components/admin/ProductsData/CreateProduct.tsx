@@ -31,9 +31,11 @@ const newProductDefaultValue: newProduct = {
 };
 
 export function CreateProduct({ }: iCreateProductProps) {
-    const { products, productScreenState, categories, selectAdditionalState } = useContext(ProductContext)
+    const { products, productScreenState, categories, selectAdditionalState, selectSelectState, product_options_state } = useContext(ProductContext)
     const [productScreen, setProductScreen] = productScreenState
     const [selectAdditional, setSelectAdditional] = selectAdditionalState
+    const [setectSelect, setSelectSelect] = selectSelectState
+    const [product_options, setProduct_options] = product_options_state
     const [imageProview, setImageProview] = useState<string | null>(null)
 
     const { register, getValues, handleSubmit, reset, formState: { isSubmitting } } = useForm<newProduct>({
@@ -183,7 +185,43 @@ export function CreateProduct({ }: iCreateProductProps) {
                             <span>Personalisações </span>
                             <Selects type="select_selects" />
                         </div>
-
+                        {setectSelect.map(select => {
+                            return <div key={select.id} className="w-full flex flex-col gap-2 mt-2">
+                                <div className="flex items-center justify-between">
+                                    <span className="w-[160px] truncate"> {select.name} </span>
+                                    <div className="flex item-center gap-2">
+                                        <span> R$ 00,00 </span>
+                                    </div>
+                                </div>
+                                <div className="flex flex-wrap gap-2">
+                                    {product_options?.map((product_option) => {
+                                        if (product_option.select_id !== select.id) return
+                                        return <div key={product_option.id} >
+                                            <label
+                                                className=""
+                                                htmlFor={select.name + product_option.id}
+                                            >
+                                                <div className={`w-[70px] h-[70px] rounded-sm relative cursor-pointer`} >
+                                                    <div className="w-full h-full absolute rounded-lg z-10 bg-gradient-to-t from-[#000000ff] via-[#00000063] to-[#00000000]"></div>
+                                                    <span className="absolute bottom-1 left-1 z-20 w-16 truncate text-white-300 text-sm font-medium">
+                                                        {product_option.name}
+                                                    </span>
+                                                    {product_option.picture_url && (
+                                                        <Image
+                                                            src={product_option.picture_url}
+                                                            alt={product_option.name}
+                                                            className={'w-full h-full relative rounded-lg object-cover'}
+                                                            width={326}
+                                                            height={358}
+                                                        />
+                                                    )}
+                                                </div>
+                                            </label>
+                                        </div>
+                                    })}
+                                </div>
+                            </div>
+                        })}
                     </div>
                 </div>
             </div>

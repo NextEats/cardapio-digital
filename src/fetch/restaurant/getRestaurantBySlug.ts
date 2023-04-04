@@ -4,6 +4,7 @@ import { iRestaurantWithFKData } from '../../types/types';
 export async function getRestaurantBySlugFetch(
   slug: string | string[] | undefined
 ) {
+
   const { data, error } = await supabase
     .from('restaurants')
     .select(
@@ -33,6 +34,11 @@ export async function getRestaurantBySlugFetch(
     `
     )
     .eq('slug', slug);
+
+    if(error) {
+      console.log(error)
+    }
+    
 
   const typedData = data![0] as unknown as iRestaurantWithFKData;
 

@@ -1,5 +1,6 @@
 import { AdminContext } from '@/src/contexts/adminContext';
 import { supabase } from '@/src/server/api';
+import * as Switch from '@radix-ui/react-switch';
 import { useContext, useEffect, useState } from 'react';
 
 interface PaymentMethod {
@@ -55,29 +56,68 @@ export default function PaymentMethods() {
         paymentMethodId: number,
         enabled: boolean
     ) {
-        const { error } = await supabase
+        const { data: paymentMethodList } = await supabase
             .from('payment_methods_restaurants')
-            .upsert({
-                payment_method_id: paymentMethodId,
-                restaurant_id: restaurant!.id,
-                enabled,
-            })
-            .match({
-                restaurant_id: restaurant!.id,
-                payment_method_id: paymentMethodId,
-            });
-        if (error) {
-            console.error(error);
-        } else {
-            if (enabled) {
-                setEnabledPaymentMethods([
-                    ...enabledPaymentMethods,
-                    paymentMethodId,
-                ]);
+            .select('*')
+            .eq('restaurant_id', restaurant!.id);
+
+        const paymentMethodAlreadyEnabled = paymentMethodList!.find(
+            (item) => item.payment_method_id === paymentMethodId
+        );
+
+        if (paymentMethodAlreadyEnabled) {
+            const { error } = await supabase
+                .from('payment_methods_restaurants')
+                .update({
+                    enabled,
+                })
+                .match({
+                    restaurant_id: restaurant!.id,
+                    payment_method_id: paymentMethodId,
+                });
+            if (error) {
+                console.error(error);
             } else {
-                setEnabledPaymentMethods(
-                    enabledPaymentMethods.filter((id) => id !== paymentMethodId)
-                );
+                if (enabled) {
+                    setEnabledPaymentMethods([
+                        ...enabledPaymentMethods,
+                        paymentMethodId,
+                    ]);
+                } else {
+                    setEnabledPaymentMethods(
+                        enabledPaymentMethods.filter(
+                            (id) => id !== paymentMethodId
+                        )
+                    );
+                }
+            }
+        } else {
+            const { error } = await supabase
+                .from('payment_methods_restaurants')
+                .upsert({
+                    payment_method_id: paymentMethodId,
+                    restaurant_id: restaurant!.id,
+                    enabled,
+                })
+                .match({
+                    restaurant_id: restaurant!.id,
+                    payment_method_id: paymentMethodId,
+                });
+            if (error) {
+                console.error(error);
+            } else {
+                if (enabled) {
+                    setEnabledPaymentMethods([
+                        ...enabledPaymentMethods,
+                        paymentMethodId,
+                    ]);
+                } else {
+                    setEnabledPaymentMethods(
+                        enabledPaymentMethods.filter(
+                            (id) => id !== paymentMethodId
+                        )
+                    );
+                }
             }
         }
     }
@@ -86,19 +126,22 @@ export default function PaymentMethods() {
         <div className="flex flex-col">
             {paymentMethods.map((paymentMethod) => (
                 <div key={paymentMethod.id} className="flex items-center mt-2">
-                    <input
-                        type="checkbox"
+                    <Switch.Root
+                        className="w-[42px] h-6 bg-gray-400 rounded-full relative data-[state=checked]:bg-brand-dark-orange outline-none cursor-default"
                         id={`paymentMethod-${paymentMethod.id}`}
-                        onChange={(e) =>
-                            handleTogglePaymentMethod(
-                                paymentMethod.id,
-                                e.target.checked
-                            )
+                        onCheckedChange={(checked: boolean) =>
+                            handleTogglePaymentMethod(paymentMethod.id, checked)
                         }
                         checked={enabledPaymentMethods.includes(
                             paymentMethod.id
                         )}
-                    />
+                    >
+                        <Switch.Thumb
+                            className="block w-[18px] h-[18px] bg-white rounded-full transition-transform
+                        duration-100 translate-x-1 will-change-transform data-[state=checked]:translate-x-[20px]"
+                        />
+                    </Switch.Root>
+
                     <label
                         htmlFor={`paymentMethod-${paymentMethod.id}`}
                         className="ml-2"

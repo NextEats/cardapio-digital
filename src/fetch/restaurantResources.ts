@@ -1,5 +1,3 @@
-// ...imports...
-
 import { supabase } from '../server/api';
 import { getAdditionalsByRestaurantIdFetch } from './additionals/getAdditionals';
 import { getAddressesFetch } from './addresses/getAddresses';

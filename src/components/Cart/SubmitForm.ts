@@ -12,6 +12,7 @@ import {
     iContact,
     iOrder,
 } from '@/src/types/types';
+import { toast } from 'react-toastify';
 
 export function removeNonAlphaNumeric(str: string) {
     return str.replace(/[^a-zA-Z0-9]/g, '');
@@ -43,6 +44,8 @@ export async function SubmitForm({
     change_value,
     deliveryForm,
     complement,
+    neighborhood,
+    street
 }: any) {
     console.log(products);
 
@@ -69,10 +72,15 @@ export async function SubmitForm({
             });
 
             if (!foundDeliveryFee) {
-                alert(
-                    'Sinto muito, o endereço digitado está fora do alcance de nossos entregadores!'
-                );
-                window.location.href = serverURL + restaurant.slug;
+                toast.error('Sinto muito, o endereço digitado está fora do alcance de nossos entregadores!'
+                ,{
+                    theme: "light",
+                    position: "top-center"
+                })
+
+                setTimeout(() => {
+                    window.location.href = serverURL + restaurant.slug;
+                }, 6000)
                 return;
             }
         }
@@ -86,7 +94,10 @@ export async function SubmitForm({
             currentCashBoxData![0] as unknown as iCashBox['data'];
 
         if (!currentCashBox) {
-            alert('O Pedido só pode ser feito se o caixa estiver aberto.');
+            toast.error('O Pedido só pode ser feito se o caixa estiver aberto.'
+            , {
+                theme: "light",
+            })
             return;
         }
 
@@ -129,7 +140,7 @@ export async function SubmitForm({
             ? orderDataByCashBoxId?.data.length + 1
             : 1;
 
-        const { data: orderData } = await supabase
+        const { data: orderData, error: orderError } = await supabase
             .from('orders')
             .insert({
                 restaurant_id: restaurant!.id,
@@ -147,7 +158,16 @@ export async function SubmitForm({
             })
             .select('*');
 
+        if (deliveryForm === 1 && !orderError) {
+            localStorage.setItem('cep', cep);
+            localStorage.setItem('neighborhood', neighborhood);
+            localStorage.setItem('street', street);
+            localStorage.setItem('number', number);
+            complement ? localStorage.setItem('complement', complement) : null
+        }
+
         const order = orderData![0] as unknown as iOrder['data'];
+
         setOrderNumber(order.number);
 
         products.state.forEach(async (product: any) => {

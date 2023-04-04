@@ -26,6 +26,8 @@ const newOrderFormValidationSchema = zod.object({
     paymentMethod: zod.number(),
     deliveryForm: zod.number(),
     change_value: zod.number(),
+    neighborhood: zod.string(),
+    street: zod.string()
 });
 
 type NewOrderFormData = zod.infer<typeof newOrderFormValidationSchema>;
@@ -49,6 +51,8 @@ export default function Cart() {
             number: '',
             deliveryForm: 1,
             change_value: 0,
+            neighborhood: '',
+            street: '',
         },
     });
 
@@ -71,7 +75,6 @@ export default function Cart() {
                 products,
                 restaurantId: restaurant?.id,
             });
-            console.log('price', price);
             setSubtotalPrice(price ? price : 0);
         }
 
@@ -122,7 +125,6 @@ export default function Cart() {
                 .eq('restaurant_id', restaurant?.id);
 
             foundDeliveryFee = delivery_fees_data!.find((df) => {
-                console.log(distance_in_km!, df.end_km!, df.start_km!);
                 return (
                     distance_in_km! <= df.end_km! &&
                     distance_in_km! >= df.start_km!
@@ -150,13 +152,11 @@ export default function Cart() {
             const doesPaymentMethodInputIsFilled = !!getValues('paymentMethod');
             const doesWhatsAppNumberInputIsFilled =
                 !!getValues('whatsappNumber');
-
+            
             const isAllRequiredFieldsFilled =
                 doesNameInputIsFilled &&
                 doesPaymentMethodInputIsFilled &&
                 doesWhatsAppNumberInputIsFilled;
-
-            console.log('isAllRequiredFieldsFilled', isAllRequiredFieldsFilled);
 
             setIsReadyToSubmit(isAllRequiredFieldsFilled);
         } else {
@@ -167,8 +167,6 @@ export default function Cart() {
                 !!getValues('number') &&
                 !!getValues('whatsappNumber');
 
-            console.log(isAllRequiredFieldsFilled);
-
             setIsReadyToSubmit(isAllRequiredFieldsFilled);
         }
     });
@@ -177,6 +175,9 @@ export default function Cart() {
         handleCloseModal();
         return null;
     }
+
+    const isPhoneValid = String(watch('whatsappNumber')).replace(/\D/g, "").length < 11
+    const isCepValid = String(watch('cep')).replace(/\D/g, "").length < 8
 
     const handleFinishOrder = (e: FormEvent) => {
         e.preventDefault();
@@ -189,8 +190,11 @@ export default function Cart() {
             paymentMethod,
             deliveryForm,
             change_value,
+            neighborhood,
+            street
+
         } = getValues();
-        console.log(getValues());
+
         SubmitForm({
             setOrderNumber,
             setDeliveryFee,
@@ -204,6 +208,8 @@ export default function Cart() {
             change_value,
             deliveryForm: Number(deliveryForm),
             complement,
+            neighborhood,
+            street
         });
         setIsDone(true);
     };
@@ -215,6 +221,7 @@ export default function Cart() {
     }
 
     return (
+
         <div className="w-screen h-screen flex justify-center items-center fixed z-[2000]">
             <FormProvider {...newOrderForm}>
                 <div
@@ -270,7 +277,7 @@ export default function Cart() {
                                 <Button
                                     text={'confirmar pedido'}
                                     onClick={handleFinishOrder}
-                                    disabled={!isReadyToSubmit}
+                                    disabled={!isReadyToSubmit || isPhoneValid || isCepValid}
                                 />
                             </div>
                         </div>

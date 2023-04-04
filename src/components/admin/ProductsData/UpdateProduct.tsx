@@ -7,15 +7,15 @@ import Image from "next/image"
 import { BsUpload } from "react-icons/bs"
 import { Additionals } from "./Additionals";
 import { FiTrash2 } from "react-icons/fi";
-import { iAdditional, iSelect } from "@/src/types/types";
+import { iAdditional, iAdditionals, iSelect } from "@/src/types/types";
 import { Selects } from "./Selects";
 import { api, supabase } from "@/src/server/api";
 import { getFilePath } from "@/src/helpers/getFilePath";
 
-interface iCreateProductProps {
+interface iUpdateProductProps {
 }
 
-const newProductValidationSchema = zod.object({
+const updateProductValidationSchema = zod.object({
     name: zod.string().min(1, { message: "O nome do produto é obrigatório." }),
     price: zod.number(),
     category_id: zod.number(),
@@ -23,8 +23,8 @@ const newProductValidationSchema = zod.object({
     description: zod.string().min(1, { message: "A descrição do produto é obrigatório." }),
 })
 
-type newProduct = zod.infer<typeof newProductValidationSchema>
-const newProductDefaultValue: newProduct = {
+type updateProduct = zod.infer<typeof updateProductValidationSchema>
+const updateProductDefaultValue: updateProduct = {
     picture: null,
     name: '',
     price: 0,
@@ -32,20 +32,38 @@ const newProductDefaultValue: newProduct = {
     description: '',
 };
 
-export function CreateProduct({ }: iCreateProductProps) {
-    const { restaurant, isCreatingProductState, categories, selectAdditionalState, selectSelectState, product_options_state } = useContext(ProductContext)
-    const [isCreatingProduct, setIsCreatingProduct] = isCreatingProductState
+export function UpdateProduct({ }: iUpdateProductProps) {
+    const { restaurant, categories, selectAdditionalState, updateProductState, selectSelectState, product_options_state } = useContext(ProductContext)
+
+    const [updateProduct, setUpdateProduct] = updateProductState
     const [selectAdditional, setSelectAdditional] = selectAdditionalState
     const [setectSelect, setSelectSelect] = selectSelectState
     const [product_options, setProduct_options] = product_options_state
     const [imageProview, setImageProview] = useState<string | null>(null)
 
-    const { register, getValues, setValue, handleSubmit, reset, formState: { isSubmitting } } = useForm<newProduct>({
-        resolver: zodResolver(newProductValidationSchema),
-        defaultValues: newProductDefaultValue
+    const [oldAdditionals, setOldAdditionals] = useState<iAdditionals["data"]>([])
+
+    const { register, getValues, setValue, handleSubmit, reset, formState: { isSubmitting } } = useForm<updateProduct>({
+        resolver: zodResolver(updateProductValidationSchema),
+        defaultValues: updateProductDefaultValue
     })
 
+    useEffect(() => {
+        setOldAdditionals(selectAdditional)
+    })
+
+    useEffect(() => {
+        if (typeof updateProduct !== null) {
+            setImageProview(updateProduct?.picture_url!)
+            setValue("description", updateProduct?.description!)
+            setValue("name", updateProduct?.name!)
+            setValue("price", updateProduct?.price!)
+            setValue("category_id", updateProduct?.category_id!)
+        }
+    }, [updateProduct, setValue])
+
     const handleRemoveAdditional = async (additional: iAdditional["data"]) => {
+        await supabase.from("product_additionals").delete().match({ product_id: updateProduct!.id, additional_id: additional.id })
         setSelectAdditional(state => {
             state.splice(state.findIndex((a) => a.id === additional.id), 1);
             return [...state]
@@ -53,65 +71,74 @@ export function CreateProduct({ }: iCreateProductProps) {
     }
 
     const handleRemoveSelect = async (select: iSelect["data"]) => {
+
+        await supabase.from("product_selects").delete().match({ product_id: updateProduct!.id, select_id: select.id })
         setSelectSelect(state => {
             state.splice(state.findIndex((a) => a.id === select.id), 1);
             return [...state]
         })
     }
 
-
-    const handleCreateProduct = async (data: newProduct) => {
+    const handleUpdateProduct = async (data: updateProduct) => {
         const { category_id, description, name, price, picture } = data
+        console.log(data)
+        console.log(
+            oldAdditionals
+        )
+        console.log(
+            selectAdditional.filter(a => oldAdditionals.some(oldA => oldA.id !== a.id))
+        )
+        // let pictureUrl
+        // if (typeof picture[0] == "string" ) {
+        //     pictureUrl = picture
+        // } else{
+        //     const file: File = picture[0]
+        //     const { filePath } = getFilePath({ file, slug: restaurant.slug })
+        //     const { data: uploadData, error } = await supabase.storage.from('teste')
+        //     .upload(filePath, file, { upsert: true })
 
-        const file: File = picture[0]
-        const { filePath } = getFilePath({ file, slug: restaurant.slug })
-        const { data: uploadData, error } = await supabase.storage.from('teste')
-            .upload(filePath, file, { upsert: true })
+        //     if (!uploadData) {
+        //         alert("Não foi possivel criar o produto.")
+        //         return
+        //     }
+        //     const { data: { publicUrl } } = await supabase.storage.from('teste').getPublicUrl(uploadData.path)
+        //  pictureUrl = publicUrl   
+        // }
+        //     const { data: productData } = await api.post(`api/products/${restaurant.id}`, {
+        //         name,
+        //         picture_url: pictureUrl,
+        //         price,
+        //         description,
+        //     category_id,
+        // })
 
-        if (!uploadData) {
-            alert("Não foi possivel criar o produto.")
-            return
-        }
-        const { data: { publicUrl } } = await supabase.storage.from('teste').getPublicUrl(uploadData.path)
+        // selectAdditional.forEach(async add => {
+        //     await supabase.from("product_additionals").insert({
+        //         additional_id: add.id,
+        //         product_id: productData[0].id,
+        //     })
+        // })
+        // setectSelect.forEach(async s => {
+        //     await supabase.from("product_selects").insert({
+        //         select_id: s.id,
+        //         product_id: productData[0].id,
+        //     })
+        // })
 
-        const { data: productData } = await api.post(`api/products/${restaurant.id}`, {
-            name,
-            picture_url: publicUrl,
-            price,
-            description,
-            category_id,
-        })
-
-
-        selectAdditional.forEach(async add => {
-            await supabase.from("product_additionals").insert({
-                additional_id: add.id,
-                product_id: productData[0].id,
-            })
-        })
-        setectSelect.forEach(async s => {
-            await supabase.from("product_selects").insert({
-                select_id: s.id,
-                product_id: productData[0].id,
-            })
-        })
-
-        reset()
-        handleGoBack()
     }
 
     const handleGoBack = () => {
-        setIsCreatingProduct(false)
+        setUpdateProduct(null)
         setSelectSelect([])
         setSelectAdditional([])
     }
 
     return (
-        <form onSubmit={handleSubmit(handleCreateProduct)}>
+        <form onSubmit={handleSubmit(handleUpdateProduct)}>
             <div className="flex items-center justify-between">
                 <button onClick={() => handleGoBack()} type="button" className="text-blue-400" > voltar </button>
                 <button type="submit" disabled={isSubmitting} className="text-blue-400 disabled:text-gray-400" >
-                    Salvar
+                    Editar
                 </button>
             </div>
             <div className={`min-h-[400px] h-full bg-white shadow-md rounded-md p-4`}>
@@ -148,6 +175,7 @@ export function CreateProduct({ }: iCreateProductProps) {
                         </label>
                     }
 
+                    {/* <div> */}
                     <div className="max-h-[300px] flex flex-col flex-1">
                         <label className="text-lg font-medium" htmlFor=""> Nome </label>
                         <input
@@ -190,6 +218,7 @@ export function CreateProduct({ }: iCreateProductProps) {
                         ></textarea>
 
                     </div>
+                    {/* </div> */}
 
                 </div>
 
@@ -215,6 +244,9 @@ export function CreateProduct({ }: iCreateProductProps) {
                                     />
                                     <div className="flex flex-col mt-2">
                                         <span className="w-[180px] truncate text-lg font-semibold"> {additional.name} </span>
+                                        {/* <span className=""> R$ {additional.price.toLocaleString("pt-BR", {
+                                        minimumFractionDigits: 2, maximumFractionDigits: 2
+                                    })} </span> */}
                                     </div>
                                     <FiTrash2
                                         onClick={() => handleRemoveAdditional(additional)}

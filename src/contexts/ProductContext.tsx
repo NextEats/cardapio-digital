@@ -37,7 +37,8 @@ interface iProductContextProps {
 
     selectSelectState: [iSelects["data"], Dispatch<SetStateAction<iSelects["data"]>>]
     selectAdditionalState: [iAdditionals["data"], Dispatch<SetStateAction<iAdditionals["data"]>>]
-    productScreenState: [iProduct["data"] | "create_product" | null, Dispatch<SetStateAction<iProduct["data"] | "create_product" | null>>]
+    updateProductState: [iProduct["data"] | null, Dispatch<SetStateAction<iProduct["data"] | null>>]
+    isCreatingProductState: [boolean, Dispatch<SetStateAction<boolean>>]
     updateAdditionalState: [iAdditional["data"] | null, Dispatch<SetStateAction<iAdditional["data"] | null>>]
     productSelected: iProductsWithFKData[]
     setUpdateCategoryState: Dispatch<SetStateAction<iProductCategory["data"] | iAdditionalCategory["data"] | null>>
@@ -82,7 +83,8 @@ export default function ProductContextProvider({
     const updateAdditionalState = useState<iAdditional["data"] | null>(null)
     const product_options_state = useState<iProductOptions["data"] | null>(null)
     const selectsState = useState<iSelects["data"] | null>(null)
-    const productScreenState = useState<iProduct["data"] | "create_product" | null>(null)
+    const isCreatingProductState = useState(false)
+    const updateProductState = useState<iProduct["data"] | null>(null)
 
     const selectAdditionalState = useState<iAdditionals["data"]>([])
     const [selectAdditional, setSelectAdditional] = selectAdditionalState
@@ -92,7 +94,8 @@ export default function ProductContextProvider({
 
     const [selects, setSelects] = selectsState
     const [product_options, setProduct_options] = product_options_state
-    const [productScreen, setProductScreen] = productScreenState
+    const [isCreatingProduct, setIsCreatingProduct] = isCreatingProductState
+    const [updateProduct, setUpdateProduct] = updateProductState
 
     useEffect(() => {
         setAdditionals(additionalsData)
@@ -130,7 +133,7 @@ export default function ProductContextProvider({
             supabase.from("product_additionals").select("*, additionals (*)").eq("product_id", product.id),
             supabase.from("product_selects").select("*, selects (*)").eq("product_id", product.id),
         ])
-        setProductScreen(product)
+        setUpdateProduct(product)
         const selectsData = product_selects.data?.map(ps => ps.selects)
         if (selectsData)
             setSelectSelect([...selectsData as iSelects["data"]])
@@ -156,7 +159,8 @@ export default function ProductContextProvider({
                 //           states
                 selectSelectState,
                 selectAdditionalState,
-                productScreenState,
+                isCreatingProductState,
+                updateProductState,
                 updateAdditionalState,
                 updateCategoryState,
                 setUpdateCategoryState,

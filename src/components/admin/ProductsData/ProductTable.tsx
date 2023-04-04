@@ -1,7 +1,7 @@
 import * as Switch from '@radix-ui/react-switch';
 import { ProductContext } from "@/src/contexts/ProductContext"
 import Image from "next/image"
-import { useContext } from "react"
+import { useContext, useState } from "react"
 import { iProduct, iProductsWithFKData } from '@/src/types/types';
 interface iProductTableDataProps {
 
@@ -9,8 +9,7 @@ interface iProductTableDataProps {
 
 export function ProductTable({ }: iProductTableDataProps) {
 
-    const { products, productSelected, setProductSelected, productScreenState, hanleViewProduct } = useContext(ProductContext)
-    const [productScreen, setProductScreen] = productScreenState
+    const { products, productSelected, setProductSelected, hanleViewProduct } = useContext(ProductContext)
 
     const thDefaultStyle = " text-left px-2 py-4 "
     const tdDefaultStyle = " px-2 py-4 h-[70px] "
@@ -36,7 +35,6 @@ export function ProductTable({ }: iProductTableDataProps) {
 
     return (
         <div className={` bg-white`}>
-
             <table className="p-2 w-full">
                 <thead>
                     <tr>

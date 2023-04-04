@@ -3,28 +3,26 @@ import { useContext } from "react"
 import { ProductsAction } from "./ProductsAction"
 import { ProductTable } from "./ProductTable"
 import { CreateProduct } from "./CreateProduct"
+import { UpdateProduct } from "./UpdateProduct"
 
 interface iProductsDataProps {
 }
 
 export function ProductsData({ }: iProductsDataProps) {
-    const { products, productScreenState } = useContext(ProductContext)
-    const [productScreen, setProductScreen] = productScreenState
-
+    const { products, isCreatingProductState, updateProductState } = useContext(ProductContext)
+    const [isCreatingProduct, setIsCreatingProduct] = isCreatingProductState
+    const [updateProduct, setUpdateProduct] = updateProductState
 
     return (
         <div>
-            {!productScreen ?
+            {updateProduct === null && !isCreatingProduct ?
                 <div className={`min-h-[400px] h-full bg-white shadow-md rounded-md p-4`}>
                     <ProductsAction />
                     <ProductTable />
                 </div>
                 : null}
-            {productScreen !== null ?
-                // <div className="">
-                <CreateProduct />
-                // </div>
-                : null}
+            {isCreatingProduct ? <CreateProduct /> : null}
+            {updateProduct !== null ? <UpdateProduct /> : null}
         </div>
     )
 }

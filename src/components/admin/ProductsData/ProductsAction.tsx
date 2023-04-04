@@ -14,8 +14,8 @@ export function ProductsAction({ }: iProductsActionProps) {
 
     const styleD = 'text-blue-400 cursor-pointer'
 
-    const { productSelected, categories, setFilter, filter, additionals, productScreenState } = useContext(ProductContext)
-    const [productScreen, setProductScreen] = productScreenState
+    const { productSelected, categories, setFilter, filter, additionals, isCreatingProductState } = useContext(ProductContext)
+    const [isCreatingProduct, setIsCreatingProduct] = isCreatingProductState
 
     function handleFilter(e: ChangeEvent<HTMLInputElement>) {
         const name = e.target.value;
@@ -30,7 +30,6 @@ export function ProductsAction({ }: iProductsActionProps) {
             name: null,
             category: categoryId,
         });
-        // setCategoryId(categoryId);
     }
 
     return (
@@ -104,7 +103,7 @@ export function ProductsAction({ }: iProductsActionProps) {
 
 
 
-                <button onClick={() => setProductScreen("create_product")} className="bg-blue-400 px-8 py-2 rounded-full">
+                <button onClick={() => setIsCreatingProduct(true)} className="bg-blue-400 px-8 py-2 rounded-full">
                     < BsPlusLg size={16} className="text-white" />
                 </button>
             </div>

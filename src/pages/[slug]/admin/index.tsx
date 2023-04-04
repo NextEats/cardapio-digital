@@ -202,7 +202,7 @@ export default function AdminHomepage({
 
     useEffect(() => {
         const audio = new Audio('/alertAudio.mp3');
-        let intervalId: number | undefined | any; // variável para armazenar o id do setInterval
+        let intervalId: number | undefined | any;
 
         if (ordersGroupedByOrderStatus['em análise']) {
             intervalId = setInterval(() => {
@@ -216,11 +216,10 @@ export default function AdminHomepage({
         }
 
         if (ordersGroupedByOrderStatus['em análise'] === undefined) {
-            clearInterval(intervalId); // se ordersGroupedByOrderStatus['em análise'] é undefined, pare o setInterval
+            clearInterval(intervalId);
             audio.pause();
         }
 
-        // limpa o setInterval quando o componente é desmontado
         return () => clearInterval(intervalId);
     }, [ordersGroupedByOrderStatus]);
 

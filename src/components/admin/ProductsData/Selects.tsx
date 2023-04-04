@@ -11,8 +11,9 @@ import Image from "next/image";
 import { CreateAdditional } from "./CreateAdditional";
 import { CreateSelect } from "./CreateSelect";
 import { CreateProductOption } from "./CreateProductOption";
-import { iSelect } from "@/src/types/types";
+import { iProductOption, iSelect } from "@/src/types/types";
 import { UpdateSelect } from "./UpdateSelects";
+import { UpdateProductOption } from "./UpdateProductOption";
 
 interface iSelectsProps {
     type: "list" | "select_selects"
@@ -23,6 +24,7 @@ export function Selects({ type }: iSelectsProps) {
     const [setectSelect, setSelectSelect] = selectSelectState
     const [selectToCreateOption, setSelectToCreateOption] = useState<iSelect["data"] | null>(null)
     const [isUpadatingSelect, setIsUpadatingSelect] = useState<iSelect["data"] | null>(null)
+    const [updateOption, setUpdateOption] = useState<iProductOption["data"] | null>(null)
 
     const [selects, setSelects] = selectsState
     const [product_options, setProduct_options] = product_options_state
@@ -43,6 +45,10 @@ export function Selects({ type }: iSelectsProps) {
     return (
         <div className={``}>
             <UpdateSelect isUpadatingSelect={isUpadatingSelect} setIsUpadatingSelect={setIsUpadatingSelect} />
+            <UpdateProductOption
+                updateOption={updateOption}
+                setUpdateOption={setUpdateOption}
+            />
             <Dialog.Root>
                 <Dialog.Trigger asChild>
                     {type === "select_selects" ?
@@ -111,26 +117,47 @@ export function Selects({ type }: iSelectsProps) {
                                             {product_options?.map((product_option) => {
                                                 if (product_option.select_id !== select.id) return
                                                 return <div key={product_option.id} >
-                                                    <label
+                                                    {/* <label
                                                         className=""
                                                         htmlFor={select.name + product_option.id}
-                                                    >
-                                                        <div className={`w-[100px] h-[100px] rounded-lg relative cursor-pointer`} >
-                                                            <div className="w-full h-full absolute rounded-lg z-10 bg-gradient-to-t from-[#000000ff] via-[#00000063] to-[#00000000]"></div>
-                                                            <span className="absolute bottom-1 left-1 z-20 text-white-300 text-sm font-medium">
-                                                                {product_option.name}
-                                                            </span>
-                                                            {product_option.picture_url && (
-                                                                <Image
-                                                                    src={product_option.picture_url}
-                                                                    alt={product_option.name}
-                                                                    className={'w-full h-full relative rounded-lg object-cover'}
-                                                                    width={326}
-                                                                    height={358}
-                                                                />
-                                                            )}
-                                                        </div>
-                                                    </label>
+                                                    > */}
+                                                    <div className={`w-[100px] h-[100px] rounded-lg relative cursor-pointer`} >
+                                                        <DropdownMenu.Root >
+                                                            <DropdownMenu.Trigger className="absolute top-1 right-1 z-30">
+                                                                <BsThreeDotsVertical size={16} className="text-gray-400" />
+                                                            </DropdownMenu.Trigger>
+                                                            <DropdownMenu.Portal>
+                                                                <DropdownMenu.Content
+                                                                    className="min-w-[220px] bg-white rounded-md p-[5px] z-30 shadow-[0px_10px_38px_-10px_rgba(22,_23,_24,_0.35),_0px_10px_20px_-15px_rgba(22,_23,_24,_0.2)] will-change-[opacity,transform] data-[side=top]:animate-slideDownAndFade data-[side=right]:animate-slideLeftAndFade data-[side=bottom]:animate-slideUpAndFade data-[side=left]:animate-slideRightAndFade"
+                                                                    sideOffset={5}
+                                                                >
+                                                                    <DropdownMenu.Item
+                                                                        onClick={() => setUpdateOption(product_option)}
+                                                                        className="group text-[13px] leading-none text-violet11 rounded-[3px] flex items-center gap-3 hover:bg-white-blue cursor-pointer h-9 px-[5px] 
+                                                            relative pl-[25px]"
+                                                                    >
+                                                                        <BsFillPencilFill size={16} />
+                                                                        <span className="text-base">Editar opção</span>
+                                                                    </DropdownMenu.Item>
+                                                                    <DropdownMenu.Arrow className="fill-white" />
+                                                                </DropdownMenu.Content>
+                                                            </DropdownMenu.Portal>
+                                                        </DropdownMenu.Root>
+                                                        <div className="w-full h-full absolute rounded-lg z-10 bg-gradient-to-t from-[#000000ff] via-[#00000063] to-[#00000000]"></div>
+                                                        <span className="absolute bottom-1 left-1 z-20 text-white-300 text-sm font-medium">
+                                                            {product_option.name}
+                                                        </span>
+                                                        {product_option.picture_url && (
+                                                            <Image
+                                                                src={product_option.picture_url}
+                                                                alt={product_option.name}
+                                                                className={'w-full h-full relative rounded-lg object-cover'}
+                                                                width={326}
+                                                                height={358}
+                                                            />
+                                                        )}
+                                                    </div>
+                                                    {/* </label> */}
                                                 </div>
                                             })}
                                             <button

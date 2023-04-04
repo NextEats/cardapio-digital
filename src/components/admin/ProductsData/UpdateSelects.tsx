@@ -2,15 +2,12 @@ import { ProductContext } from "@/src/contexts/ProductContext"
 import { Dispatch, SetStateAction, useContext, useEffect, useState } from "react"
 import * as Dialog from '@radix-ui/react-dialog';
 import { FiX } from "react-icons/fi";
-import { BsPlusLg, BsUpload } from "react-icons/bs";
 import * as zod from 'zod';
 import { useForm } from "react-hook-form";
 import { zodResolver } from '@hookform/resolvers/zod';
-import { api, supabase } from "@/src/server/api";
+import { supabase } from "@/src/server/api";
 
 import * as Switch from '@radix-ui/react-switch';
-import Image from "next/image";
-import { getFilePath } from "@/src/helpers/getFilePath";
 import { iSelect } from "@/src/types/types";
 
 interface iUpdateSelectProps {
@@ -23,10 +20,6 @@ const updateSelectValidationSchema = zod.object({
     has_default_price: zod.boolean(),
     price: zod.number().nullish(),
     max_selected_options: zod.number().min(1, { message: "O número mínimo de opções selecionáveis é 1." }),
-    // option_picture_url: zod.any().nullable(),
-    // option_name: zod.string().min(1, { message: "Campo obrigatório." }),
-    // option_has_price: zod.boolean(),
-    // option_price: zod.number().nullable(),
 })
 
 type updateSelectData = zod.infer<typeof updateSelectValidationSchema>
@@ -35,10 +28,6 @@ const selectDefaultValue: updateSelectData = {
     has_default_price: false,
     price: null,
     max_selected_options: 1,
-    // option_has_price: false,
-    // option_name: '',
-    // option_price: null,
-    // option_picture_url: '',
 };
 
 export function UpdateSelect({ isUpadatingSelect, setIsUpadatingSelect }: iUpdateSelectProps) {
@@ -54,7 +43,6 @@ export function UpdateSelect({ isUpadatingSelect, setIsUpadatingSelect }: iUpdat
     })
 
     const has_default_value = watch("has_default_price")
-    // const has_price = watch("option_has_price")
 
     useEffect(() => {
         if (isUpadatingSelect) {
@@ -68,16 +56,12 @@ export function UpdateSelect({ isUpadatingSelect, setIsUpadatingSelect }: iUpdat
 
     const handleUpdateSelect = async (data: updateSelectData) => {
 
-        const { has_default_price, name, max_selected_options,
-            // option_name, option_price, 
+        const {
+            has_default_price,
+            name,
+            max_selected_options,
             price,
-            // option_picture_url
         } = data
-
-        // if (!option_picture_url) {
-        //     setError('option_picture_url', { type: 'custom', message: 'Selecione uma imagem' })
-        //     return
-        // }
 
         const { data: selectData } = await supabase.from("selects").update({
             name,
@@ -91,37 +75,11 @@ export function UpdateSelect({ isUpadatingSelect, setIsUpadatingSelect }: iUpdat
             return
         }
 
-        // const file: File = option_picture_url[0]
-        // const { filePath } = getFilePath({ file, slug: restaurant.slug })
-        // const { data: uploadData, error } = await supabase.storage.from('teste')
-        //     .upload(filePath, file, { upsert: true })
-
-        // if (!uploadData) {
-        //     alert("Desculpe, houve um problema ao criar essa personalização. Por favor, contate um administrador!")
-        //     return
-        // }
-        // const { data: { publicUrl } } = await supabase.storage.from('teste').getPublicUrl(uploadData.path)
-
-        // const { data: optionData } = await supabase.from("product_options").insert({
-        //     name: option_name,
-        //     picture_url: publicUrl,
-        //     price: option_price,
-        //     active: true,
-        //     select_id: selectData[0].id,
-        //     is_default_value: false,
-        // }).select("*")
-
-        // if (!optionData) {
-        //     alert("Desculpe, houve um problema ao criar essa personalização. Por favor, contate um administrador!")
-        //     return
-        // }
         setSelects(state => {
             state?.splice(state?.findIndex(s => s.id! === isUpadatingSelect?.id!), 1)
             return [...state!, { ...selectData[0] }]
         })
-        // setProduct_options(state => {
-        //     return state ? [...state, { ...optionData[0] }] : [{ ...optionData[0] }]
-        // })
+
         setIsUpadatingSelect(null)
         reset()
     }
@@ -189,84 +147,6 @@ export function UpdateSelect({ isUpadatingSelect, setIsUpadatingSelect }: iUpdat
                             </div>
                         </>
                             : null}
-
-                        {/* <input hidden id="picture" type="file" accept="image/*"
-                            {...register("option_picture_url", {
-                                setValueAs: (value: FileList) => value,
-                                onChange(event) {
-                                    const picturteUrl = URL.createObjectURL(event.target.files[0])
-                                    setOptionImageProview(picturteUrl)
-                                },
-                                required: true
-                            })}
-                        /> */}
-                        <div className="flex gap-2 mt-3">
-                            {/* <div>
-
-                                {optionImageProview ?
-                                    <div>
-                                        <Image
-                                            className="rounded-sm object-cover h-32 w-32 "
-                                            src={optionImageProview}
-                                            alt=""
-                                            width={200}
-                                            height={200}
-                                        />
-                                        <label htmlFor="picture" className="text-blue-400 cursor-pointer">Trocar imagem</label>
-                                    </div>
-                                    :
-                                    <>
-                                        <label
-                                            className="h-32 w-32 border border-gray-300 flex items-center justify-center"
-                                            htmlFor="picture">
-                                            <BsUpload size={44} />
-                                        </label>
-                                        {errors.option_picture_url ?
-                                            <p className={`text-red-500 text-sm font-light mb-2`}>{errors.option_picture_url.message as string}</p>
-                                            : null}
-                                    </>
-                                }
-
-                            </div> */}
-
-                            {/* <div>
-                                <input
-                                    className={`w-full border border-gray-300 py-1 px-2 text-base font-normal leading-none rounded outline-none focus:border-blue-400
-                                    ${errors.option_name ? "" : "mb-2"}`}
-                                    type="text"
-                                    {...register('option_name')}
-                                    placeholder="ex.: Banana"
-                                />
-                                {errors.option_name ? <p className={`text-red-500 text-sm font-light mb-2`}>{errors.option_name.message}</p> : null}
-
-                                <div className="flex item-center gap-3">
-                                    <Switch.Root
-                                        className="w-[38px] h-5 bg-red-orange rounded-full relative   data-[state=checked]:bg-blue-400 outline-none cursor-default"
-                                        id="airplane-mode"
-                                        onCheckedChange={(checked: boolean) => {
-                                            setValue("option_has_price", checked)
-                                            checked ? handleFocus("option_price") : setValue("option_price", null)
-                                        }}
-                                    >
-                                        <Switch.Thumb className="block w-[16px] h-[16px] bg-white rounded-full transition-transform duration-100 translate-x-0.5 will-change-transform data-[state=checked]:translate-x-[19px]" />
-                                    </Switch.Root>
-                                    <label className="text-base font-normal leading-[20px]" htmlFor=""> Cobar  </label>
-                                </div>
-
-                                {has_price ? <div>
-                                    <label htmlFor="" className="text-lg font-medium"> Preço </label>
-                                    <div className="flex items-center mb-2">
-                                        <p className="py-1 px-2 bg-gray-300 text-gray-500 rounded-l-md ">R$ </p>
-                                        <input
-                                            className="w-full border border-gray-300 py-1 px-2 text-base font-semibold leading-none rounded-r outline-none focus:border-blue-400"
-                                            type="number"
-                                            {...register("option_price", { valueAsNumber: true, required: true })} />
-                                    </div>
-                                </div>
-                                    : null}
-                            </div> */}
-
-                        </div>
                     </form>
 
                     <Dialog.Close
@@ -277,6 +157,5 @@ export function UpdateSelect({ isUpadatingSelect, setIsUpadatingSelect }: iUpdat
                 </Dialog.Content>
             </Dialog.Portal>
         </Dialog.Root>
-
     )
 }

@@ -1,30 +1,31 @@
 import { ProductContext } from "@/src/contexts/ProductContext"
-import { Dispatch, SetStateAction, useContext, useState } from "react"
+import { Dispatch, SetStateAction, useContext, useEffect, useState } from "react"
 import * as zod from 'zod';
 import { useForm } from "react-hook-form";
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as Switch from '@radix-ui/react-switch';
 import Image from "next/image";
 import { BsPlusLg, BsUpload } from "react-icons/bs";
-import { iSelect } from "@/src/types/types";
+import { iProductOption, iSelect } from "@/src/types/types";
 import * as Dialog from '@radix-ui/react-dialog';
 import { FiX } from "react-icons/fi";
 import { getFilePath } from "@/src/helpers/getFilePath";
 import { supabase } from "@/src/server/api";
+import { UpdateCategory } from "./UpdateCategory";
 
-interface iCreateProductOptionProps {
-    setSelectToCreateOption: Dispatch<SetStateAction<iSelect["data"] | null>>
-    selectToCreateOption: iSelect["data"]
+interface iUpdateProductOptionProps {
+    setUpdateOption: Dispatch<SetStateAction<iProductOption["data"] | null>>
+    updateOption: iProductOption["data"] | null
 }
 
-const newProductOptionValidationSchema = zod.object({
+const ProductOptionValidationSchema = zod.object({
     option_picture_url: zod.any().nullable(),
     option_name: zod.string().min(1, { message: "Campo obrigatório." }),
     option_has_price: zod.boolean(),
     option_price: zod.number().nullable(),
 })
 
-type productOptionData = zod.infer<typeof newProductOptionValidationSchema>
+type productOptionData = zod.infer<typeof ProductOptionValidationSchema>
 const productOptionDefaultValue: productOptionData = {
     option_has_price: false,
     option_name: '',
@@ -32,42 +33,60 @@ const productOptionDefaultValue: productOptionData = {
     option_picture_url: '',
 };
 
-export function CreateProductOption({ setSelectToCreateOption, selectToCreateOption }: iCreateProductOptionProps) {
+export function UpdateProductOption({ setUpdateOption, updateOption }: iUpdateProductOptionProps) {
     const { restaurant, product_options_state } = useContext(ProductContext)
     const [optionImageProview, setOptionImageProview] = useState<string | null>(null)
 
     const [product_options, setProduct_options] = product_options_state
 
     const { register, reset, getValues, setFocus, setError, watch, setValue, handleSubmit, formState: { isSubmitting, errors } } = useForm<productOptionData>({
-        resolver: zodResolver(newProductOptionValidationSchema),
+        resolver: zodResolver(ProductOptionValidationSchema),
         defaultValues: productOptionDefaultValue
     })
 
     const has_price = watch("option_has_price")
 
+    useEffect(() => {
+        if (updateOption !== null) {
+            setValue("option_has_price", updateOption.price !== null)
+            setValue("option_name", updateOption.name)
+            setValue("option_price", updateOption.price)
+            setValue("option_picture_url", updateOption.picture_url)
+            setOptionImageProview(updateOption.picture_url)
+        }
+    }, [updateOption, setValue])
+
     const handleCreateProductOption = async (data: productOptionData) => {
 
         const { option_name, option_price, option_picture_url } = data
 
-        const file: File = option_picture_url[0]
-        const { filePath } = getFilePath({ file, slug: restaurant.slug })
-        const { data: uploadData, error } = await supabase.storage.from('teste')
-            .upload(filePath, file, { upsert: true })
+        console.log(data)
 
-        if (!uploadData) {
-            alert("Desculpe, houve um problema ao criar essa opção. Por favor, contate um administrador!")
-            return
+        let pictureUrl
+        if (typeof option_picture_url === 'string') {
+            pictureUrl = option_picture_url
+        } else {
+            const file: File = option_picture_url[0]
+            const { filePath } = getFilePath({ file, slug: restaurant.slug })
+            const { data: uploadData, error } = await supabase.storage.from('teste')
+                .upload(filePath, file, { upsert: true })
+
+            if (!uploadData) {
+                alert("Desculpe, houve um problema ao criar essa opção. Por favor, contate um administrador!")
+                return
+            }
+            const { data: { publicUrl } } = await supabase.storage.from('teste').getPublicUrl(uploadData.path)
+            pictureUrl = publicUrl
         }
-        const { data: { publicUrl } } = await supabase.storage.from('teste').getPublicUrl(uploadData.path)
 
-        const { data: optionData } = await supabase.from("product_options").insert({
+        console.log(pictureUrl)
+
+        const { data: optionData } = await supabase.from("product_options").update({
             name: option_name,
-            picture_url: publicUrl,
+            picture_url: pictureUrl,
             price: option_price,
-            active: true,
-            select_id: selectToCreateOption.id,
             is_default_value: false,
-        }).select("*")
+        }).eq("id", updateOption?.id).select("*")
 
         if (!optionData) {
             alert("Desculpe, houve um problema ao criar essa opção. Por favor, contate um administrador!")
@@ -75,10 +94,11 @@ export function CreateProductOption({ setSelectToCreateOption, selectToCreateOpt
         }
 
         setProduct_options(state => {
-            return state ? [...state, { ...optionData[0] }] : [{ ...optionData[0] }]
+            state!.splice(state!.findIndex(op => op.id === updateOption?.id), 1)
+            return [...state!, { ...optionData[0] }]
         })
         reset()
-        setSelectToCreateOption(null)
+        setUpdateOption(null)
     }
 
     const handleFocus = (inputName: "option_price") => {
@@ -86,18 +106,18 @@ export function CreateProductOption({ setSelectToCreateOption, selectToCreateOpt
             setFocus(inputName)
         }, 50);
     }
-
+    if (!updateOption) return null
     return (
         <div className={``}>
-            <Dialog.Root open={selectToCreateOption !== null}>
+            <Dialog.Root open={updateOption !== null}>
                 <Dialog.Portal>
                     <Dialog.Overlay
-                        onClick={() => setSelectToCreateOption(null)}
+                        onClick={() => setUpdateOption(null)}
                         className="bg-blackA9 data-[state=open]:animate-overlayShow fixed inset-0" />
                     <Dialog.Content className="data-[state=open]:animate-contentShow fixed top-[34%] left-[50%] z-40 h-auto w-[400px] translate-x-[-50%] translate-y-[-50%] rounded-[6px] bg-white p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none">
                         <form onSubmit={handleSubmit(handleCreateProductOption)} className="flex flex-col">
                             <Dialog.Title className="text-mauve12 flex flex-1 items-center justify-between m-0 text-[17px] font-medium mb-3">
-                                Criar opção em {selectToCreateOption!.name}
+                                Editar {updateOption!.name}
                                 <button disabled={isSubmitting} type="submit" className="px-6 py-1 rounded-full text-white bg-blue-400 disabled:bg-gray-400 ">
                                     Salvar
                                 </button>
@@ -182,7 +202,7 @@ export function CreateProductOption({ setSelectToCreateOption, selectToCreateOpt
                             </div>
                         </form>
                         <Dialog.Close
-                            onClick={() => setSelectToCreateOption(null)}
+                            onClick={() => setUpdateOption(null)}
                             asChild className="text-violet11 cursor-pointer hover:bg-violet4 focus:shadow-violet7 absolute top-[8px] right-[8px] inline-flex h-[25px] w-[25px] appearance-none items-center justify-center rounded-full focus:shadow-[0_0_0_2px] focus:outline-none">
                             <FiX />
                         </Dialog.Close>

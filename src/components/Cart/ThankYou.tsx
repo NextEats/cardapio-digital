@@ -1,78 +1,94 @@
-import { DigitalMenuContext } from '@/src/contexts/DigitalMenuContext';
-import { calculateTotalOrderPrice } from '@/src/helpers/calculateTotalOrderPrice';
 import Link from 'next/link';
-import { useContext, useMemo, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
+import { FaCheck } from 'react-icons/fa';
+import { DigitalMenuContext } from '../../contexts/DigitalMenuContext';
+import { calculateTotalOrderPrice } from '../../helpers/calculateTotalOrderPrice';
 
-interface iThankYouPage {
-    deliveryFee: number | undefined;
+interface Props {
+    deliveryFee?: number;
     orderNumber: number;
 }
 
-function ThankYouPage({ deliveryFee, orderNumber }: iThankYouPage) {
+function ThankYouPage({ deliveryFee = 0, orderNumber }: Props): JSX.Element {
     const { restaurant } = useContext(DigitalMenuContext);
+    const { productReducer } = useContext(DigitalMenuContext);
 
-    const products = useContext(DigitalMenuContext).productReducer!;
     const [orderPrice, setOrderPrice] = useState(0);
 
-    useMemo(async () => {
-        const price = await calculateTotalOrderPrice({
-            products,
-            restaurantId: restaurant?.id,
-        });
-        setOrderPrice(price ? price : 0);
-    }, [products, restaurant?.id]);
+    useEffect(() => {
+        async function fetchOrderPrice() {
+            const price = await calculateTotalOrderPrice({
+                products: productReducer!,
+                restaurantId: restaurant?.id,
+            });
+            setOrderPrice(price || 0);
+        }
+        fetchOrderPrice();
+    }, [productReducer, restaurant?.id]);
 
     return (
-        <div className="fixed top-0 left-0 w-screen z-[6000] min-h-screen bg-gray-100 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
-            <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-                <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
-                    <div className="sm:mx-auto sm:w-full sm:max-w-md">
-                        <h2 className="text-center text-3xl font-extrabold text-gray-900">
-                            Obrigado pela sua solicitação!
+        <div
+            className="min-w-screen min-h-screen w-screen h-screen fixed z-[1000]
+                        bg-gray-100 flex items-center justify-center"
+        >
+            <div className="grid grid-cols-1 lg:grid-cols-2 py-12 sm:px-6 lg:px-8 max-w-720px max-w-[95%]">
+                <div className="flex items-center pr-12 pb-12 lg:pb-0 flex-col lg:flex-row">
+                    <div
+                        className="w-24 h-24 border-[7px] border-green-600 mb-6
+                                        rounded-full flex justify-center items-center"
+                    >
+                        <FaCheck className="text-[40px] text-green-600" />
+                    </div>
+                    <div className="ml-10">
+                        <h2 className="text-3xl font-extrabold text-gray-900">
+                            Sucesso
                         </h2>
-                        <p className="mt-2 text-center text-md text-gray-600">
+                        <p className="mt-2 text-md text-gray-600 w-64 italic">
                             Seu pedido foi recebido e está sendo processado.
                             Você receberá uma confirmação em breve.
                         </p>
+                    </div>
+                </div>
+                <div className="flex flex-col border-t lg:border-t-[#00000000] lg:border-l border-t-[#c5c5c5] border-l-[#c5c5c5] pl-12">
+                    <div className="h-4 my-4 text-gray-700">
+                        Número do pedido:&nbsp;
+                        <span className="font-bold">#{orderNumber}</span>
+                    </div>
 
-                        <div className="h-7 text-center w-full my-4 text-lg font-semibold text-[#313131]">
-                            Número do pedido:{' '}
+                    {deliveryFee > 0 && (
+                        <div className="h-4 my-4 text-gray-700">
+                            Subtotal:&nbsp;
                             <span className="font-bold">
-                                #{orderNumber ? orderNumber : null}
+                                R$&nbsp;{orderPrice.toFixed(2)}
                             </span>
                         </div>
+                    )}
 
-                        {deliveryFee ? (
-                            <div className="h-7 text-center w-full my-4 text-lg font-semibold text-[#313131]">
-                                Sub total: <span>R$&nbsp;{orderPrice}</span>
-                            </div>
-                        ) : null}
-
-                        {deliveryFee ? (
-                            <div className="h-7 text-center w-full my-4 text-lg font-semibold text-[#313131]">
-                                Taxa de Entrega:{' '}
-                                <span>R$&nbsp;{deliveryFee}</span>
-                            </div>
-                        ) : null}
-
-                        <div className="h-7 text-center w-full my-4 text-lg font-semibold text-[#313131]">
-                            Valor Total:{' '}
-                            <span>
-                                R$&nbsp;
-                                {deliveryFee
-                                    ? deliveryFee + orderPrice
-                                    : orderPrice}
+                    {deliveryFee > 0 && (
+                        <div className="h-4 my-4 text-gray-700">
+                            Taxa de Entrega:&nbsp;
+                            <span className="font-bold">
+                                R$&nbsp;{deliveryFee.toFixed(2)}
                             </span>
                         </div>
+                    )}
 
-                        <div className="mt-6">
-                            <Link
-                                href={`/${restaurant!.slug}`}
-                                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-md font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
-                            >
-                                Voltar para a página inicial
-                            </Link>
-                        </div>
+                    <div className="h-4 my-4 text-gray-700">
+                        Valor Total:&nbsp;
+                        <span className="font-bold">
+                            R$&nbsp;
+                            {(deliveryFee + orderPrice).toFixed(2)}
+                        </span>
+                    </div>
+
+                    <div className="mt-6 w-full">
+                        <Link
+                            href={`/${restaurant!.slug}`}
+                            className="py-2 px-4 rounded-md shadow-md shadow-orange-600 text-md font-medium text-white bg-orange-600 
+                            hover:bg-orange-700"
+                        >
+                            Voltar para a página inicial
+                        </Link>
                     </div>
                 </div>
             </div>

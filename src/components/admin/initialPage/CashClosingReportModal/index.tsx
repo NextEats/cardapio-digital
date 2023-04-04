@@ -16,6 +16,7 @@ import { ptBR } from 'date-fns/locale';
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
 import { FiX } from 'react-icons/fi';
 import ReactToPrint from 'react-to-print';
+import { toast } from 'react-toastify';
 import { CardapioDigitalButton } from '../../cardapio-digital/CardapioDigitalButton';
 
 interface CashClosingReportModalProps {
@@ -77,9 +78,10 @@ export default function CashClosingReportModal({
             ordersGroupedByOrderStatus['em análise'] ||
             ordersGroupedByOrderStatus['a caminho']
         ) {
-            alert(
-                'Para fechar o caixa, todos os pedidos precisam ser entregues.'
-            );
+            toast.error('Para fechar o caixa, todos os pedidos precisam ser entregues.'
+            , {
+                theme: "light",
+            })
             return;
         }
         const cashBox = await api.post('api/cash_boxes/close', {

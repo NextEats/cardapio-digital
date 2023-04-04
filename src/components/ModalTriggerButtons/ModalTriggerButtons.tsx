@@ -27,6 +27,11 @@ export default function ModalTriggerButtons({
         iPaymentMethodsRestaurantsWithFKData[]
     >([]);
 
+    const { register, setValue, watch, getValues, formState: { errors } } = useFormContext();
+
+    const isButtonPhoneDisabled = (text === 'Telefone' && String(watch('whatsappNumber')).replace(/\D/g, "").length < 11)
+    const isButtonCepDisabled = (text === 'Endereço de Entrega' && String(watch('cep')).replace(/\D/g, "").length < 8)
+    
     const handleToggleModal = () => {
         if (isModalOpen) {
             setIsModalOpen(false);
@@ -34,6 +39,22 @@ export default function ModalTriggerButtons({
             setIsModalOpen(true);
         }
     };
+
+    useEffect(() => {
+        const cepFromStorage = localStorage.getItem('cep') ? localStorage.getItem('cep') : null
+        const neighborhoodFromStorage = localStorage.getItem('neighborhood') ? localStorage.getItem('neighborhood') : null
+        const streetFromStorage = localStorage.getItem('street') ? localStorage.getItem('street') : null
+        const complementFromStorage = localStorage.getItem('complement') ? localStorage.getItem('complement') : null
+        const numberFromStorage = localStorage.getItem('number') ? localStorage.getItem('number') : null
+    
+        if(streetFromStorage || complementFromStorage || numberFromStorage || neighborhoodFromStorage || cepFromStorage) {
+            setValue('cep', cepFromStorage);
+            setValue('neighborhood', neighborhoodFromStorage)
+            setValue('street', streetFromStorage)
+            setValue('complement', complementFromStorage)
+            setValue('number', numberFromStorage)
+        }
+    }, [])
 
     const handleCepBlur = async (e: React.FocusEvent<HTMLInputElement>) => {
         const neighborhoodInput: any = document.getElementById('neighborhood');
@@ -47,9 +68,11 @@ export default function ModalTriggerButtons({
             if (cepInfo) {
                 if (neighborhoodInput) {
                     neighborhoodInput.value = cepInfo.neighborhood;
+                    setValue('neighborhood', cepInfo.neighborhood);
                 }
                 if (streetInput) {
                     streetInput.value = cepInfo.street;
+                    setValue('street', cepInfo.street);
                 }
             } else {
                 neighborhoodInput.value = '';
@@ -61,20 +84,8 @@ export default function ModalTriggerButtons({
         }
     };
 
-    const { register, setValue, watch, getValues } = useFormContext();
-
-    const handleSubmitModal = async () => {
-        // const values = getValues()
-        if (text === 'Nome') {
-            // setValue('nome', )
-        }
-    };
-
     useEffect(() => {
         const getPaymentMethodsRestaurants = async () => {
-            // const paymentMethods = await supabase
-            //     .from('payment_methods_restaurants')
-            //     .select('*, ()');
             const paymentMethodsRestaurant =
                 await getPaymentMethodsRestaurantsByRestaurantIdFetch(
                     restaurant?.id
@@ -123,9 +134,9 @@ export default function ModalTriggerButtons({
                             <div className="mb-8">
                                 {text === 'Nome' ? (
                                     <>
-                                        <span className="text-sm font-semibold text-[#000000aa]">
-                                            Nome
-                                        </span>
+                                        <label className="text-sm font-semibold text-[#000000aa]">
+                                            <span className='text-red-500 text-lg'>*</span>Nome
+                                        </label>
                                         <input
                                             {...register('name', {
                                                 required: true,
@@ -266,27 +277,34 @@ export default function ModalTriggerButtons({
                                 {text === 'Endereço de Entrega' ? (
                                     <>
                                         <div className="mb-4">
-                                            <span className="text-sm font-semibold text-[#000000aa]">
-                                                CEP
-                                            </span>
+                                            <label className="flex items-center text-sm font-semibold text-[#000000aa]">
+                                               <span className='text-red-500 text-lg'>*</span> CEP
+                                            </label>
+                                            
                                             <ReactInputMask
-                                                {...register('cep', {
-                                                    required: true,
+                                                {...register("cep", {
+                                                    required: "Campo obrigatório",
+                                                    pattern: {
+                                                      value: /^\d{5}-?\d{3}$/i,
+                                                      message: "CEP inválido"
+                                                    }
                                                 })}
                                                 mask="99999-999"
-                                                value={watch('cep')}
                                                 type="text"
                                                 className="pl-2 text-lg h-10 w-full  focus:outline-none border-b-2 border-[#3d3d3d] focus:border-[#FC3B1D]"
                                                 placeholder="99999-999"
                                                 onBlur={(e) => handleCepBlur(e)}
+                                                defaultValue={getValues('cep')}
                                             />
+                                            {errors.cep && <span>This field is required</span>}
                                         </div>
                                         <div className="mb-4">
-                                            <span className="text-sm font-semibold text-[#000000aa]">
-                                                Bairro
-                                            </span>
+                                            <label className="text-sm font-semibold text-[#000000aa]">
+                                                <span className='text-red-500 text-lg'>*</span>Bairro
+                                            </label>
                                             <input
                                                 id="neighborhood"
+                                                {...register('neighborhood')}
                                                 type="text"
                                                 className="pl-2 bg-[#00000015] text-lg h-10 w-full  focus:outline-none border-b-2 border-[#3d3d3d] focus:border-[#FC3B1D]"
                                                 placeholder="Parque das Rosas"
@@ -294,21 +312,22 @@ export default function ModalTriggerButtons({
                                             />
                                         </div>
                                         <div className="mb-4">
-                                            <span className="text-sm font-semibold text-[#000000aa]">
-                                                Rua
-                                            </span>
+                                            <label className="text-sm font-semibold text-[#000000aa]">
+                                                <span className='text-red-500 text-lg'>*</span>Rua
+                                            </label>
                                             <input
                                                 id="street"
                                                 type="text"
+                                                {...register('street')}
                                                 className="pl-2 bg-[#00000015] text-lg h-10 w-full  focus:outline-none border-b-2 border-[#3d3d3d] focus:border-[#FC3B1D]"
                                                 placeholder="Rua das Flores Vermelhas"
                                                 disabled
                                             />
                                         </div>
                                         <div className="mb-4">
-                                            <span className="text-sm font-semibold text-[#000000aa]">
+                                            <label className="text-sm font-semibold text-[#000000aa]">
                                                 Complemento
-                                            </span>
+                                            </label>
                                             <input
                                                 {...register('complement', {
                                                     required: true,
@@ -319,14 +338,13 @@ export default function ModalTriggerButtons({
                                             />
                                         </div>
                                         <div className="mb-4">
-                                            <span className="text-sm font-semibold text-[#000000aa]">
-                                                Número
-                                            </span>
+                                            <label className="text-sm font-semibold text-[#000000aa]">
+                                                <span className='text-red-500 text-lg'>*</span>Número
+                                            </label>
                                             <input
                                                 {...register('number', {
                                                     required: true,
                                                 })}
-                                                value={watch('number')}
                                                 type="text"
                                                 className="pl-2 text-lg h-10 w-full  focus:outline-none border-b-2 border-[#3d3d3d] focus:border-[#FC3B1D]"
                                                 placeholder="334"
@@ -337,13 +355,11 @@ export default function ModalTriggerButtons({
                             </div>
                         </div>
 
-                        <div></div>
-
                         <div className="mt-12">
                             <Button
                                 text="salvar"
                                 onClick={handleToggleModal}
-                                // onClick={handleSubmitModal}
+                                disabled={isButtonPhoneDisabled || isButtonCepDisabled}
                             />
                         </div>
                     </div>

@@ -1,5 +1,6 @@
 import '../styles/globals.css';
-
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import {
     createBrowserSupabaseClient,
     Session,
@@ -37,16 +38,21 @@ export default function App({
     }, [router]);
 
     return (
-        <SessionContextProvider
-            supabaseClient={supabaseClient}
-            initialSession={pageProps.initialSession}
-        >
-            {loading && (
-                <div className="w-screen h-screen flex justify-center items-center">
-                    <LoadingSpinner />
-                </div>
-            )}
-            {!loading && <Component {...pageProps} />}
-        </SessionContextProvider>
+        
+            <SessionContextProvider
+            
+                supabaseClient={supabaseClient}
+                initialSession={pageProps.initialSession}
+            >
+                <ToastContainer/>
+                {loading && (
+                    <div className="w-screen h-screen flex justify-center items-center">
+                        <LoadingSpinner />
+                    </div>
+                )}
+                {!loading && <Component {...pageProps} />}
+                
+            </SessionContextProvider>
+        
     );
 }

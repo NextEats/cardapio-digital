@@ -41,6 +41,7 @@ import { addNewUnderReviewAction } from '@/src/reducers/statusReducer/action';
 import { api, supabase } from '@/src/server/api';
 import { createServerSupabaseClient } from '@supabase/auth-helpers-nextjs';
 import 'react-toastify/dist/ReactToastify.css';
+import { toast } from 'react-toastify';
 
 interface iAdminHomePageProps {
     ordersData: iOrdersWithFKData[];
@@ -298,11 +299,17 @@ export default function AdminHomepage({
                 if (payload.eventType === 'UPDATE') {
                     setOrders([]);
                     setCashBoxState(undefined);
-                    alert('Caixa fechado!');
+                    toast.success('Caixa fechado!'
+                    ,{
+                        theme: "light",
+                    })
                 }
                 if (payload.eventType === 'INSERT') {
                     setCashBoxState(payload.new);
-                    alert('Caixa aberto!');
+                    toast.success('Caixa aberto!'
+                    ,{
+                        theme: "light",
+                    })
                 }
             }
         )

@@ -40,6 +40,7 @@ export default function AdminContextProvider({
                 );
                 const jsonData = await restaurantData.json();
                 setRestaurant(jsonData);
+                
             } catch (err) {
                 console.error(err);
             }

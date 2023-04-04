@@ -14,6 +14,7 @@ import { iCashBox } from '@/src/types/types';
 import Additionals from './components/Additionals';
 import ProductOptions from './components/ProductOptions';
 import SubmitButtons from './components/SubmitButtons';
+import { toast } from 'react-toastify';
 
 export default function ProductModal() {
     const { selectedProduct, productReducer } = useContext(DigitalMenuContext);
@@ -63,7 +64,10 @@ export default function ProductModal() {
             currentCashBoxData![0] as unknown as iCashBox['data'];
 
         if (!currentCashBox) {
-            alert('O Pedido só pode ser feito se o caixa estiver aberto.');
+            // alert('O Pedido só pode ser feito se o caixa estiver aberto.');
+            toast.error('O Pedido só pode ser feito se o caixa estiver aberto.', {
+                theme: "light",
+            })
             return;
         }
 
@@ -171,9 +175,12 @@ export default function ProductModal() {
                     ) : (
                         <SubmitButtons
                             handleSubmit={() =>
-                                alert(
-                                    'Para finalizar o produto, selecione ao menos uma opção de cada ingrediente.'
-                                )
+                                // alert(
+                                //     'Para finalizar o produto, selecione ao menos uma opção de cada ingrediente.'
+                                // )
+                                toast.error('Para finalizar o produto, selecione ao menos uma opção de cada ingrediente.', {
+                                    theme: "light",
+                                })
                             }
                         />
                     )}

@@ -1,6 +1,7 @@
 import { api } from '@/src/server/api';
 import { iCashBox, iCashBoxes, iOrdersWithFKData } from '@/src/types/types';
 import { useState } from 'react';
+import { toast } from 'react-toastify';
 import { CardapioDigitalButton } from '../../cardapio-digital/CardapioDigitalButton';
 import CashClosingReportModal from '../CashClosingReportModal';
 
@@ -35,8 +36,11 @@ export default function CashBoxButtons({
             ordersGroupedByOrderStatus['em análise'] ||
             ordersGroupedByOrderStatus['a caminho']
         ) {
-            alert(
-                'Para fechar o caixa, todos os pedidos precisam ser entregues.'
+            toast.error(
+                'Para fechar o caixa, todos os pedidos precisam ser entregues.',
+                {
+                    theme: 'light',
+                }
             );
             return;
         }

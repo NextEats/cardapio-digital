@@ -277,7 +277,7 @@ export default function Cart() {
                                 <Button
                                     text={'confirmar pedido'}
                                     onClick={handleFinishOrder}
-                                    disabled={!isReadyToSubmit || isPhoneValid || isCepValid}
+                                    disabled={!isReadyToSubmit}
                                 />
                             </div>
                         </div>

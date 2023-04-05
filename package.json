@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "supabase-gen": "supabase gen types typescript --linked > ./src/types/supabase.ts",
-    "test": "jest",
+    "test": "jest --passWithNoTests",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
   },

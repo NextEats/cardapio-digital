@@ -24,7 +24,7 @@ interface iProdcutsProps {
 
 
 
-export default function Prodcuts({
+export default function Products({
     restaurant,
     products,
     categories,

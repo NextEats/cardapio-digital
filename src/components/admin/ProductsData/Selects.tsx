@@ -154,7 +154,7 @@ export function Selects({ type }: iSelectsProps) {
                                             <div className="flex items-center justify-between pr-3">
                                                 <div className="flex items-center gap-2">
                                                     {type === "select_selects" ?
-                                                        <input type="checkbox" onClick={() => handleSelectSelect(select)} />
+                                                        <input type="checkbox" className="h-5 w-5" onClick={() => handleSelectSelect(select)} />
                                                         : null}
                                                     <span className="w-[160px] truncate"> {select.name} </span>
                                                     {!select.active ?

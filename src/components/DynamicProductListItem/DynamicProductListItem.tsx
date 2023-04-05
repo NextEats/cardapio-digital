@@ -46,7 +46,11 @@ export default function DynamicProductListItem({
                     {data?.name}
                 </span>
                 <span className="font-normal text-md leading-4">
-                    R$&nbsp;{data?.price}
+                    R$&nbsp;
+                    {data?.price.toLocaleString('pt-BR', {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2,
+                    })}
                 </span>
             </div>
             <div>

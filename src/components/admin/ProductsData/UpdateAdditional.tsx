@@ -102,7 +102,8 @@ export function UpdateAdditional({ }: iUpdateAdditionalProps) {
                             reset()
                         }}
                         className="bg-blackA9 data-[state=open]:animate-overlayShow fixed inset-0" />
-                    <Dialog.Content className="data-[state=open]:animate-contentShow fixed top-[30%] left-[50%]  h-[350px] w-[700px] translate-x-[-50%] translate-y-[-50%] rounded-[6px] bg-white p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none">
+                    <Dialog.Content className="data-[state=open]:animate-contentShow fixed top-0 right-0 3xs:top-[30%] 3xs:left-[50%] h-screen  w-screen
+                    3xs:h-[350px] 3xs:w-[500px] md:w-[700px] 3xs:translate-x-[-50%] 3xs:translate-y-[-50%] 3xs:rounded-[6px] bg-white p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none">
 
                         <form
                             onSubmit={handleSubmit(handleUpdateAdditional)}
@@ -118,12 +119,12 @@ export function UpdateAdditional({ }: iUpdateAdditionalProps) {
                                 </button>
                             </Dialog.Title>
 
-                            <div className="flex gap-3">
+                            <div className="flex flex-col 3xs:flex-row gap-3">
 
                                 {imageProview ?
                                     <div>
                                         <Image
-                                            className="rounded-sm object-cover h-40 w-40 "
+                                            className="rounded-sm object-cover h-60 w-60 3xs:h-40 3xs:w-40 md:w-52 md:h-52 "
                                             src={imageProview}
                                             alt=""
                                             width={200}
@@ -133,7 +134,7 @@ export function UpdateAdditional({ }: iUpdateAdditionalProps) {
                                     </div>
                                     :
                                     <label
-                                        className="h-40 w-40 border border-gray-300 flex items-center justify-center"
+                                        className="h-60 w-60 3xs:h-40 3xs:w-40 md:w-52 md:h-52 border border-gray-300 flex items-center justify-center"
                                         htmlFor="picture">
                                         <BsUpload size={44} />
                                     </label>

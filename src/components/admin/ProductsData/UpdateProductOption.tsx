@@ -23,6 +23,7 @@ const ProductOptionValidationSchema = zod.object({
     option_name: zod.string().min(1, { message: "Campo obrigatório." }),
     option_has_price: zod.boolean(),
     option_price: zod.number().nullable(),
+    default_value: zod.boolean(),
 })
 
 type productOptionData = zod.infer<typeof ProductOptionValidationSchema>
@@ -31,6 +32,7 @@ const productOptionDefaultValue: productOptionData = {
     option_name: '',
     option_price: null,
     option_picture_url: '',
+    default_value: false,
 };
 
 export function UpdateProductOption({ setUpdateOption, updateOption }: iUpdateProductOptionProps) {
@@ -52,13 +54,14 @@ export function UpdateProductOption({ setUpdateOption, updateOption }: iUpdatePr
             setValue("option_name", updateOption.name)
             setValue("option_price", updateOption.price)
             setValue("option_picture_url", updateOption.picture_url)
+            setValue("default_value", updateOption.is_default_value)
             setOptionImageProview(updateOption.picture_url)
         }
     }, [updateOption, setValue])
 
     const handleCreateProductOption = async (data: productOptionData) => {
 
-        const { option_name, option_price, option_picture_url } = data
+        const { option_name, option_price, option_picture_url, default_value } = data
 
         console.log(data)
 
@@ -85,7 +88,7 @@ export function UpdateProductOption({ setUpdateOption, updateOption }: iUpdatePr
             name: option_name,
             picture_url: pictureUrl,
             price: option_price,
-            is_default_value: false,
+            is_default_value: default_value,
         }).eq("id", updateOption?.id).select("*")
 
         if (!optionData) {
@@ -114,7 +117,7 @@ export function UpdateProductOption({ setUpdateOption, updateOption }: iUpdatePr
                     <Dialog.Overlay
                         onClick={() => setUpdateOption(null)}
                         className="bg-blackA9 data-[state=open]:animate-overlayShow fixed inset-0" />
-                    <Dialog.Content className="data-[state=open]:animate-contentShow fixed top-[34%] left-[50%] z-40 h-auto w-[400px] translate-x-[-50%] translate-y-[-50%] rounded-[6px] bg-white p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none">
+                    <Dialog.Content className="data-[state=open]:animate-contentShow fixed top-[34%] left-[50%] z-40 h-auto w-[460px] translate-x-[-50%] translate-y-[-50%] rounded-[6px] bg-white p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none">
                         <form onSubmit={handleSubmit(handleCreateProductOption)} className="flex flex-col">
                             <Dialog.Title className="text-mauve12 flex flex-1 items-center justify-between m-0 text-[17px] font-medium mb-3">
                                 Editar {updateOption!.name}
@@ -197,6 +200,20 @@ export function UpdateProductOption({ setUpdateOption, updateOption }: iUpdatePr
                                         </div>
                                     </div>
                                         : null}
+
+                                    <div className="flex item-center gap-3 mt-2">
+                                        <Switch.Root
+                                            className="w-[38px] h-5 bg-red-orange rounded-full relative   data-[state=checked]:bg-blue-400 outline-none cursor-default"
+                                            id="airplane-mode"
+                                            checked={watch("default_value")}
+                                            onCheckedChange={(checked: boolean) => {
+                                                setValue("default_value", checked)
+                                            }}
+                                        >
+                                            <Switch.Thumb className="block w-[16px] h-[16px] bg-white rounded-full transition-transform duration-100 translate-x-0.5 will-change-transform data-[state=checked]:translate-x-[19px]" />
+                                        </Switch.Root>
+                                        <label className="text-base font-normal leading-[20px]" htmlFor=""> Deve selecionda como padrão </label>
+                                    </div>
                                 </div>
 
                             </div>

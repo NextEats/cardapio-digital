@@ -20,7 +20,7 @@ export function ProductsAction({ }: iProductsActionProps) {
     const [isChangingProductPrice, setIsChangingProductPrice] = useState(false)
     const styleD = 'text-blue-400 cursor-pointer'
 
-    const { productSelected, setProductSelected, categories, setFilter, filter, additionals, isCreatingProductState } = useContext(ProductContext)
+    const { productSelected, setProductSelected, setProducts, categories, setFilter, filter, additionals, isCreatingProductState } = useContext(ProductContext)
     const [isCreatingProduct, setIsCreatingProduct] = isCreatingProductState
 
     function handleFilter(e: ChangeEvent<HTMLInputElement>) {
@@ -43,8 +43,10 @@ export function ProductsAction({ }: iProductsActionProps) {
                 supabase.from("product_additionals").delete().eq("product_id", product.id),
                 supabase.from("product_selects").delete().eq("product_id", product.id),
             ])
-            await supabase.from("products").delete().eq("id", product.id);
-            setProductSelected(state => {
+            await supabase.from("products").update({
+                is_deleted: true
+            }).eq("id", product.id);
+            setProducts(state => {
                 state.splice(state.findIndex(p => p.id === product.id), 1);
                 return [...state]
             })

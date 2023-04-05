@@ -726,6 +726,7 @@ export interface Database {
           created_at: string | null
           description: string
           id: number
+          is_deleted: boolean
           name: string
           picture_url: string
           price: number
@@ -737,6 +738,7 @@ export interface Database {
           created_at?: string | null
           description: string
           id?: number
+          is_deleted?: boolean
           name: string
           picture_url: string
           price: number
@@ -748,6 +750,7 @@ export interface Database {
           created_at?: string | null
           description?: string
           id?: number
+          is_deleted?: boolean
           name?: string
           picture_url?: string
           price?: number

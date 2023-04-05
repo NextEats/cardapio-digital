@@ -10,24 +10,20 @@ interface iProductTableDataProps {
 
 export function ProductTable({ }: iProductTableDataProps) {
 
-    const { products, productSelected, setProductSelected, hanleViewProduct } = useContext(ProductContext)
-
-    const [productsState, setProductsState] = useState<iProductsWithFKData[]>([])
-
-    useEffect(() => {
-        setProductsState(products)
-    }, [products])
+    const { products, setProducts, productSelected, setProductSelected, hanleViewProduct } = useContext(ProductContext)
 
     const thDefaultStyle = " text-left px-2 py-4 "
     const tdDefaultStyle = " px-2 py-4 h-[70px] "
 
+    const productsFiltered = products.filter(p => !p.is_deleted)
+
     const handleSelectProduct = ({ product, isSelectAll = false }: { product?: iProductsWithFKData, isSelectAll?: boolean }) => {
         if (isSelectAll) {
-            if (productsState.length === productSelected.length) {
+            if (productsFiltered.length === productSelected.length) {
                 setProductSelected(state => state = [])
                 return
             }
-            setProductSelected(productsState)
+            setProductSelected(productsFiltered)
             return
         }
         if (productSelected.some(p => p.id === product!.id)) {
@@ -42,7 +38,7 @@ export function ProductTable({ }: iProductTableDataProps) {
 
     const handleChangeProductStatus = async ({ checked, productId }: { checked: boolean, productId: number }) => {
         const updatedProducts = await Promise.all(
-            productsState.map(async (product) => {
+            products.map(async (product) => {
                 if (product.id === productId) {
                     await supabase.from("products").update({
                         active: checked,
@@ -53,7 +49,7 @@ export function ProductTable({ }: iProductTableDataProps) {
             })
         );
 
-        setProductsState(updatedProducts);
+        setProducts(updatedProducts);
     }
 
     return (
@@ -64,9 +60,8 @@ export function ProductTable({ }: iProductTableDataProps) {
                         <th className={`` + thDefaultStyle}>
                             <input
                                 type="checkbox"
-                                name="" id=""
-                                className='h-4 w-4'
-                                checked={productsState && productsState.length === productSelected.length}
+                                className='h-5 w-5'
+                                checked={productsFiltered && productsFiltered.length === productSelected.length}
                                 onChange={(e) => handleSelectProduct({ isSelectAll: true })} />
                         </th>
                         <th className={`w-12 ` + thDefaultStyle} >  </th>
@@ -77,15 +72,15 @@ export function ProductTable({ }: iProductTableDataProps) {
                     </tr>
                 </thead>
                 <tbody className=' overflow-y-scroll'>
-                    {productsState ? productsState.map(product => {
+                    {products ? products.map(product => {
+                        if (product.is_deleted) return null
 
                         return <tr key={product.id} className="border-t-[1px] border-t-gray-300 ">
                             <td className={`` + tdDefaultStyle} >
                                 <input
                                     type="checkbox"
-                                    name="" id=""
                                     checked={productSelected.some(p => product.id === p.id)}
-                                    className='h-4 w-4 cursor-pointer'
+                                    className='h-5 w-5  cursor-pointer'
                                     onChange={(e) => handleSelectProduct({ product, })} />
                             </td>
                             <td onClick={() => hanleViewProduct(product)} className={` w-12 max-h-12` + tdDefaultStyle}>

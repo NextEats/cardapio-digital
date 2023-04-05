@@ -26,6 +26,7 @@ import { supabase } from '../server/api';
 
 interface iProductContextProps {
     products: iProductsWithFKData[];
+    setProducts: Dispatch<SetStateAction<iProductsWithFKData[]>>
     restaurant: iRestaurant['data'];
     categories: iProductCategories["data"]
     additionals: iAdditionals["data"]
@@ -57,7 +58,7 @@ interface iProductContextProps {
 interface iProductContextProviderProps {
     children: ReactNode;
     restaurant: iRestaurant['data'];
-    products: iProductsWithFKData[];
+    productsData: iProductsWithFKData[];
     categories: iProductCategories["data"]
     additionalsData: iAdditionals["data"]
     selectsData: iSelects["data"]
@@ -70,13 +71,14 @@ export const ProductContext = createContext({} as iProductContextProps);
 export default function ProductContextProvider({
     children,
     restaurant,
-    products,
+    productsData,
     categories,
     additionalsData,
     selectsData,
     additional_categories,
     product_optionsData,
 }: iProductContextProviderProps) {
+    const [products, setProducts] = useState<iProductsWithFKData[]>([])
     const [productSelected, setProductSelected] = useState<iProductsWithFKData[]>([])
     const [updateCategoryState, setUpdateCategoryState] = useState<iProductCategory["data"] | iAdditionalCategory["data"] | null>(null)
     const [additionals, setAdditionals] = useState<iAdditionals["data"]>([])
@@ -98,10 +100,11 @@ export default function ProductContextProvider({
     const [updateProduct, setUpdateProduct] = updateProductState
 
     useEffect(() => {
+        setProducts(productsData)
         setAdditionals(additionalsData)
         setProduct_options(product_optionsData)
         setSelects(selectsData)
-    }, [additionalsData, setProduct_options, product_optionsData, setSelects, selectsData])
+    }, [additionalsData, setProduct_options, productsData, product_optionsData, setSelects, selectsData])
 
     const [filter, setFilter] = useState<{ name: string | null, category: number | null }>({
         name: null,
@@ -125,6 +128,8 @@ export default function ProductContextProvider({
             }
         })
     }, [products, filter])
+    console.log(products, filteredProducts)
+    // useEffect(() =>     setProducts(filteredProducts), [filteredProducts])
 
 
     const hanleViewProduct = async (product: iProduct["data"]) => {
@@ -149,6 +154,7 @@ export default function ProductContextProvider({
             value={{
                 //           ferchs
                 products: filteredProducts,
+                setProducts,
                 categories: !categories ? [] : categories,
                 restaurant,
                 additionals,

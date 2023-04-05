@@ -27,7 +27,7 @@ const newOrderFormValidationSchema = zod.object({
     deliveryForm: zod.number(),
     change_value: zod.number(),
     neighborhood: zod.string(),
-    street: zod.string()
+    street: zod.string(),
 });
 
 type NewOrderFormData = zod.infer<typeof newOrderFormValidationSchema>;
@@ -152,7 +152,7 @@ export default function Cart() {
             const doesPaymentMethodInputIsFilled = !!getValues('paymentMethod');
             const doesWhatsAppNumberInputIsFilled =
                 !!getValues('whatsappNumber');
-            
+
             const isAllRequiredFieldsFilled =
                 doesNameInputIsFilled &&
                 doesPaymentMethodInputIsFilled &&
@@ -176,8 +176,9 @@ export default function Cart() {
         return null;
     }
 
-    const isPhoneValid = String(watch('whatsappNumber')).replace(/\D/g, "").length < 11
-    const isCepValid = String(watch('cep')).replace(/\D/g, "").length < 8
+    const isPhoneValid =
+        String(watch('whatsappNumber')).replace(/\D/g, '').length < 11;
+    const isCepValid = String(watch('cep')).replace(/\D/g, '').length < 8;
 
     const handleFinishOrder = (e: FormEvent) => {
         e.preventDefault();
@@ -191,8 +192,7 @@ export default function Cart() {
             deliveryForm,
             change_value,
             neighborhood,
-            street
-
+            street,
         } = getValues();
 
         SubmitForm({
@@ -209,7 +209,7 @@ export default function Cart() {
             deliveryForm: Number(deliveryForm),
             complement,
             neighborhood,
-            street
+            street,
         });
         setIsDone(true);
     };
@@ -221,7 +221,6 @@ export default function Cart() {
     }
 
     return (
-
         <div className="w-screen h-screen flex justify-center items-center fixed z-[2000]">
             <FormProvider {...newOrderForm}>
                 <div
@@ -247,7 +246,16 @@ export default function Cart() {
                                         <span className="font-semibold">
                                             Subtotal
                                         </span>
-                                        <span>R$ {subtotalPrice}</span>
+                                        <span>
+                                            R${' '}
+                                            {subtotalPrice.toLocaleString(
+                                                'pt-BR',
+                                                {
+                                                    minimumFractionDigits: 2,
+                                                    maximumFractionDigits: 2,
+                                                }
+                                            )}
+                                        </span>
                                     </div>
                                 ) : null}
                                 {`${watch('deliveryForm')}` == '1' &&
@@ -258,7 +266,16 @@ export default function Cart() {
                                         <span className="font-semibold">
                                             Taxa de Entrega
                                         </span>
-                                        <span>R$ {deliveryFee}</span>
+                                        <span>
+                                            R${' '}
+                                            {deliveryFee.toLocaleString(
+                                                'pt-BR',
+                                                {
+                                                    minimumFractionDigits: 2,
+                                                    maximumFractionDigits: 2,
+                                                }
+                                            )}
+                                        </span>
                                     </div>
                                 ) : null}
 
@@ -267,9 +284,13 @@ export default function Cart() {
                                     <span>
                                         R${' '}
                                         {deliveryFee &&
-                                        watch('deliveryForm') == 1
-                                            ? subtotalPrice + deliveryFee
-                                            : subtotalPrice}
+                                            (watch('deliveryForm') == 1
+                                                ? subtotalPrice + deliveryFee
+                                                : subtotalPrice
+                                            ).toLocaleString('pt-BR', {
+                                                minimumFractionDigits: 2,
+                                                maximumFractionDigits: 2,
+                                            })}
                                     </span>
                                 </div>
                             </div>

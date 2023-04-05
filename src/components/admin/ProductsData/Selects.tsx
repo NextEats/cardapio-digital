@@ -14,6 +14,7 @@ import { CreateProductOption } from "./CreateProductOption";
 import { iProductOption, iSelect } from "@/src/types/types";
 import { UpdateSelect } from "./UpdateSelects";
 import { UpdateProductOption } from "./UpdateProductOption";
+import { supabase } from "@/src/server/api";
 
 interface iSelectsProps {
     type: "list" | "select_selects"
@@ -40,6 +41,55 @@ export function Selects({ type }: iSelectsProps) {
         setSelectSelect(state => [...state, select])
     }
 
+    const handleDeleteSelect = async (select: iSelect["data"]) => {
+        await supabase.from("select").delete().eq("id", select.id)
+        setSelects(state => {
+            state?.splice(state.findIndex(s => s.id === select.id), 1)
+            return [...state!]
+        })
+
+        product_options?.forEach(async op => {
+            if (op.select_id === select.id) {
+                await handleDeleteOption(op)
+            }
+        })
+    }
+
+    const handleChangeSelectStatus = async (select: iSelect["data"]) => {
+        await supabase.from("selects").update({
+            active: !select.active
+        }).eq("id", select.id)
+        setSelects(state => {
+            const newState = state?.map(s => {
+                if (select.id === s.id) {
+                    return { ...s, active: !select.active }
+                }
+                return s
+            })
+            return newState!
+        })
+    }
+    const handleDeleteOption = async (option: iProductOption["data"]) => {
+        await supabase.from("product_options").delete().eq("id", option.id)
+        setProduct_options(state => {
+            state?.splice(state.findIndex(op => op.id === option.id), 1)
+            return [...state!]
+        })
+    }
+    const handleChangeOptionStatus = async (option: iProductOption["data"]) => {
+        await supabase.from("product_options").update({
+            active: !option.active
+        }).eq("id", option.id)
+        setProduct_options(state => {
+            const newState = state?.map(op => {
+                if (option.id === op.id) {
+                    return { ...op, active: !option.active }
+                }
+                return op
+            })
+            return newState!
+        })
+    }
 
     if (!selects) return null
     return (
@@ -82,6 +132,9 @@ export function Selects({ type }: iSelectsProps) {
                                                         <input type="checkbox" onClick={() => handleSelectSelect(select)} />
                                                         : null}
                                                     <span className="w-[160px] truncate"> {select.name} </span>
+                                                    {!select.active ?
+                                                        <div className="h-3 w-3 z-10 bg-red-400 rounded-full"></div>
+                                                        : null}
                                                 </div>
 
                                                 <div className="flex items-center gap-4">
@@ -101,11 +154,26 @@ export function Selects({ type }: iSelectsProps) {
                                                             >
                                                                 <DropdownMenu.Item
                                                                     onClick={() => setIsUpadatingSelect(select)}
-                                                                    className="group text-[13px] leading-none text-violet11 rounded-[3px] flex items-center gap-3 hover:bg-white-blue cursor-pointer h-9 px-[5px] 
-                                                            relative pl-[25px]"
+                                                                    className="group text-[13px] leading-none text-violet11 rounded-[3px] flex items-center gap-3 hover:bg-white-blue cursor-pointer h-9 px-[5px] relative pl-[25px]"
                                                                 >
                                                                     <BsFillPencilFill size={16} />
                                                                     <span className="text-base">Editar personalização</span>
+                                                                </DropdownMenu.Item>
+                                                                <DropdownMenu.Item
+                                                                    onClick={() => handleDeleteSelect(select)}
+                                                                    className="group text-[13px] leading-none text-violet11 rounded-[3px] flex items-center gap-3 hover:bg-white-blue cursor-pointer h-9 px-[5px] relative pl-[25px]"
+                                                                >
+                                                                    <BsFillPencilFill size={16} />
+                                                                    <span className="text-base">Excluir personalização</span>
+                                                                </DropdownMenu.Item>
+                                                                <DropdownMenu.Item
+                                                                    onClick={() => handleChangeSelectStatus(select)}
+                                                                    className="group text-[13px] leading-none text-violet11 rounded-[3px] flex items-center gap-3 hover:bg-white-blue cursor-pointer h-9 px-[5px] relative pl-[25px]"
+                                                                >
+                                                                    <BsFillPencilFill size={16} />
+                                                                    <span className="text-base">
+                                                                        {!select.active ? 'Ativar personalização' : 'Inativar personalização'}
+                                                                    </span>
                                                                 </DropdownMenu.Item>
                                                                 <DropdownMenu.Arrow className="fill-white" />
                                                             </DropdownMenu.Content>
@@ -126,7 +194,7 @@ export function Selects({ type }: iSelectsProps) {
                                                         <div className={`w-[100px] h-[100px] rounded-lg relative cursor-pointer`} >
                                                             <DropdownMenu.Root >
                                                                 <DropdownMenu.Trigger className="absolute top-1 right-1 z-30">
-                                                                    <BsThreeDotsVertical size={16} className="text-gray-400" />
+                                                                    <BsThreeDotsVertical size={16} className="text-black" />
                                                                 </DropdownMenu.Trigger>
                                                                 <DropdownMenu.Portal>
                                                                     <DropdownMenu.Content
@@ -135,17 +203,35 @@ export function Selects({ type }: iSelectsProps) {
                                                                     >
                                                                         <DropdownMenu.Item
                                                                             onClick={() => setUpdateOption(product_option)}
-                                                                            className="group text-[13px] leading-none text-violet11 rounded-[3px] flex items-center gap-3 hover:bg-white-blue cursor-pointer h-9 px-[5px] 
-                                                            relative pl-[25px]"
+                                                                            className="group text-[13px] leading-none text-violet11 rounded-[3px] flex items-center gap-3 hover:bg-white-blue cursor-pointer h-9 px-[5px]  relative pl-[25px]"
                                                                         >
                                                                             <BsFillPencilFill size={16} />
                                                                             <span className="text-base">Editar opção</span>
+                                                                        </DropdownMenu.Item>
+                                                                        <DropdownMenu.Item
+                                                                            onClick={() => handleDeleteOption(product_option)}
+                                                                            className="group text-[13px] leading-none text-violet11 rounded-[3px] flex items-center gap-3 hover:bg-white-blue cursor-pointer h-9 px-[5px] relative pl-[25px]"
+                                                                        >
+                                                                            <BsFillPencilFill size={16} />
+                                                                            <span className="text-base">Excluir opção</span>
+                                                                        </DropdownMenu.Item>
+                                                                        <DropdownMenu.Item
+                                                                            onClick={() => handleChangeOptionStatus(product_option)}
+                                                                            className="group text-[13px] leading-none text-violet11 rounded-[3px] flex items-center gap-3 hover:bg-white-blue cursor-pointer h-9 px-[5px] relative pl-[25px]"
+                                                                        >
+                                                                            <BsFillPencilFill size={16} />
+                                                                            <span className="text-base">
+                                                                                {product_option.active ? 'Inativar opção' : 'Ativar opção'}
+                                                                            </span>
                                                                         </DropdownMenu.Item>
                                                                         <DropdownMenu.Arrow className="fill-white" />
                                                                     </DropdownMenu.Content>
                                                                 </DropdownMenu.Portal>
                                                             </DropdownMenu.Root>
-                                                            <div className="w-full h-full absolute rounded-lg z-10 bg-gradient-to-t from-[#000000ff] via-[#00000063] to-[#00000000]"></div>
+                                                            <div className={`w-full h-full absolute rounded-lg z-10 bg-gradient-to-t from-[#000000ff] via-[#00000063] to-[#00000000]`}></div>
+                                                            {!product_option.active ?
+                                                                <div className="h-3 w-3 z-10 bg-red-400 absolute top-2 left-2 rounded-full"></div>
+                                                                : null}
                                                             <span className="absolute bottom-1 left-1 z-20 text-white-300 text-sm font-medium">
                                                                 {product_option.name}
                                                             </span>

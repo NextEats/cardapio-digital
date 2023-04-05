@@ -188,6 +188,7 @@ export interface Database {
       }
       additionals: {
         Row: {
+          acitve: boolean
           additional_category_id: number | null
           created_at: string | null
           id: number
@@ -197,6 +198,7 @@ export interface Database {
           restaurant_id: number | null
         }
         Insert: {
+          acitve?: boolean
           additional_category_id?: number | null
           created_at?: string | null
           id?: number
@@ -206,6 +208,7 @@ export interface Database {
           restaurant_id?: number | null
         }
         Update: {
+          acitve?: boolean
           additional_category_id?: number | null
           created_at?: string | null
           id?: number
@@ -966,6 +969,7 @@ export interface Database {
       }
       selects: {
         Row: {
+          active: boolean
           created_at: string | null
           has_default_price: boolean
           id: number
@@ -975,6 +979,7 @@ export interface Database {
           restaurant_id: number | null
         }
         Insert: {
+          active?: boolean
           created_at?: string | null
           has_default_price?: boolean
           id?: number
@@ -984,6 +989,7 @@ export interface Database {
           restaurant_id?: number | null
         }
         Update: {
+          active?: boolean
           created_at?: string | null
           has_default_price?: boolean
           id?: number
@@ -1205,6 +1211,7 @@ export interface Database {
           owner: string | null
           path_tokens: string[] | null
           updated_at: string | null
+          version: string | null
         }
         Insert: {
           bucket_id?: string | null
@@ -1216,6 +1223,7 @@ export interface Database {
           owner?: string | null
           path_tokens?: string[] | null
           updated_at?: string | null
+          version?: string | null
         }
         Update: {
           bucket_id?: string | null
@@ -1227,6 +1235,7 @@ export interface Database {
           owner?: string | null
           path_tokens?: string[] | null
           updated_at?: string | null
+          version?: string | null
         }
       }
     }
@@ -1259,7 +1268,7 @@ export interface Database {
         Args: {
           name: string
         }
-        Returns: string[]
+        Returns: unknown
       }
       get_size_by_bucket: {
         Args: Record<PropertyKey, never>

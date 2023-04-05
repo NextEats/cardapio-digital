@@ -117,7 +117,7 @@ export function CreateSelect({ }: iCreateSelectProps) {
     return (
 
         <Dialog.Root>
-            <Dialog.Trigger asChild className="mb-4">
+            <Dialog.Trigger asChild className="">
                 <button className="px-6 py-2 rounded-full bg-blue-400 ">
                     <BsPlusLg size={16} className="text-white" />
                 </button>

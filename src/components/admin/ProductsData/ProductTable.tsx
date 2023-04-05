@@ -33,6 +33,10 @@ export function ProductTable({ }: iProductTableDataProps) {
         setProductSelected(state => [...state, product!])
     }
 
+    const handleChangeProductStatus = (checked: boolean) => {
+
+    }
+
     return (
         <div className={` bg-white`}>
             <table className="p-2 w-full">
@@ -87,7 +91,7 @@ export function ProductTable({ }: iProductTableDataProps) {
                                     className="w-[42px] h-6 bg-red-orange rounded-full relative   data-[state=checked]:bg-blue-400 outline-none cursor-default"
                                     id="airplane-mode"
                                     checked={product.active}
-                                    onCheckedChange={(checked: boolean) => { }}
+                                    onCheckedChange={(checked: boolean) => { handleChangeProductStatus(checked) }}
                                     value={product.id}
                                 // style={{ '-webkit-tap-highlight-color': 'rgba(0, 0, 0, 0)' }}
                                 >

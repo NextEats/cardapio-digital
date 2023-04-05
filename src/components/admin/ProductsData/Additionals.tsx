@@ -56,15 +56,16 @@ export function Additionals({ type }: iAdditionalsModalProps) {
                 <Dialog.Trigger asChild>
                     {type === "select_additionals" ?
                         <button className="text-blue-400">Selecionar</button> :
-                        <button className="text-violet11 shadow-blackA7 hover:bg-mauve3 inline-flex h-[35px] items-center justify-center rounded-[4px] bg-white px-[15px] font-medium leading-none shadow-[0_2px_10px] focus:shadow-[0_0_0_2px] focus:shadow-black focus:outline-none">
+                        <button className=" px-[15px] font-medium leading-none outline-none text-blue-400">
                             {additionals.length} Adicionais
                         </button>
                     }
                 </Dialog.Trigger>
                 <Dialog.Portal>
                     <Dialog.Overlay className="bg-blackA9 data-[state=open]:animate-overlayShow fixed inset-0" />
-                    <Dialog.Content className="data-[state=open]:animate-contentShow fixed top-[40%] left-[50%]  h-[500px] w-[900px] translate-x-[-50%] translate-y-[-50%] rounded-[6px] bg-white p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none">
-                        <Dialog.Title className="text-mauve12 flex flex-1 items-center justify-between m-0 text-[17px] font-medium">
+                    <Dialog.Content className="data-[state=open]:animate-contentShow fixed top-0 right-0 3xs:top-[40%] 3xs:left-[50%] h-screen 3xs:h-[500px] w-screen 3xs:w-[500px] 
+                    2md:w-[900px] 3xs:translate-x-[-50%] 3xs:translate-y-[-50%] 3xs:rounded-[6px] bg-white p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none">
+                        <Dialog.Title className="text-xl flex flex-1 items-center justify-between m-0 text-[17px] font-bold">
                             Adicionais
                             <div className="flex items-center gap-2">
                                 <CategoriesModal categoryType="additional_category" />
@@ -72,7 +73,7 @@ export function Additionals({ type }: iAdditionalsModalProps) {
                             </div>
                         </Dialog.Title>
 
-                        <div className="flex flex-wrap gap-3">
+                        <div className="flex flex-wrap gap-3 mt-3">
 
                             {(additionals).map(additional => {
                                 const isAdditionalSelected = type === "select_additionals" && selectAdditional.some(a => a.id === additional.id)
@@ -80,7 +81,7 @@ export function Additionals({ type }: iAdditionalsModalProps) {
                                     <div
                                         onClick={() => type === "select_additionals" ? handleSelectAdditional(additional) : null}
                                         key={additional.id}
-                                        className={`w-[417px] h-[80px] rounded-sm bg-white shadow-sm flex gap-3 relative
+                                        className={` w-full 2md:w-[417px] h-[80px] rounded-sm bg-white shadow-sm flex gap-3 relative
                                         ${isAdditionalSelected ? 'border-2 border-blue-400' : ''}`}>
                                         <Image
                                             className="rounded-sm object-cover w-[80px] sm:h-full "
@@ -89,8 +90,8 @@ export function Additionals({ type }: iAdditionalsModalProps) {
                                             width={200}
                                             height={200}
                                         />
-                                        <div className="flex flex-col mt-2">
-                                            <span className="w-[280px] truncate text-lg font-semibold"> {additional.name} </span>
+                                        <div className="flex flex-col mt-2 w-full">
+                                            <span className=" w-full pr-9 3xs:pr-0 3xs:w-[280px] truncate text-lg font-semibold"> {additional.name} </span>
                                             <span className=""> R$ {additional.price.toLocaleString("pt-BR", {
                                                 minimumFractionDigits: 2, maximumFractionDigits: 2
                                             })} </span>

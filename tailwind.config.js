@@ -49,6 +49,7 @@ module.exports = {
             boxShadow: {
                 sm: '0px 0px 2px rgba(0, 0, 0, 0.25);',
                 md: '0px 0px 8px rgba(0, 0, 0, 0.3);',
+                'blue-md': '0px 0px 8px rgba(0.9686, 0.7686, 0.2627, 0.3);',
             },
             gridTemplateColumns: {
                 xlcharts: 'repeat(2, auto)',

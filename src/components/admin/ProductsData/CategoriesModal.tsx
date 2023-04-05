@@ -14,10 +14,6 @@ interface iCategoriesModalProps {
 export function CategoriesModal({ categoryType }: iCategoriesModalProps) {
     const { products, categories, setUpdateCategoryState, additional_categories } = useContext(ProductContext)
 
-    // const procutsAmountByCategory = products.reduce((acc, item) => {
-    //     if (item.category_id === category.id) return acc + 1;
-    //     return acc;
-    // }, 0);
 
     return (
         <Dialog.Root>
@@ -39,8 +35,10 @@ export function CategoriesModal({ categoryType }: iCategoriesModalProps) {
                     <div className="flex flex-wrap 2md:justify-start justify-center gap-3">
                         {(categoryType === "product_category" ? categories : additional_categories).map(category => {
                             const count = products.reduce((total, product) => {
-                                return product.category_id === category.id ? total + 1 : total;
+                                if (product.category_id.id === category.id) total = total + 1
+                                return total;
                             }, 0);
+
                             return (
                                 <div key={category.id} className="w-full 3xs:w-[200px] h-[70px] p-2 rounded-sm bg-white shadow-sm">
                                     <div className="flex justify-between ">
@@ -70,7 +68,7 @@ export function CategoriesModal({ categoryType }: iCategoriesModalProps) {
 
 
                                     </div>
-                                    <span>  {count} </span>
+                                    <span>  {categoryType === "product_category" ? count : null} </span>
                                 </div>
                             );
                         })}

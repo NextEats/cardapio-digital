@@ -24,6 +24,7 @@ const newSelectValidationSchema = zod.object({
     option_name: zod.string().min(1, { message: "Campo obrigatório." }),
     option_has_price: zod.boolean(),
     option_price: zod.number().nullable(),
+    option_default_value: zod.boolean(),
 })
 
 type newSelectData = zod.infer<typeof newSelectValidationSchema>
@@ -36,6 +37,7 @@ const selectDefaultValue: newSelectData = {
     option_name: '',
     option_price: null,
     option_picture_url: '',
+    option_default_value: false,
 };
 
 export function CreateSelect({ }: iCreateSelectProps) {
@@ -55,7 +57,7 @@ export function CreateSelect({ }: iCreateSelectProps) {
 
     const handleCreateSelect = async (data: newSelectData) => {
 
-        const { has_default_price, name, max_selected_options, option_name, option_price, price, option_picture_url } = data
+        const { has_default_price, name, max_selected_options, option_name, option_price, price, option_picture_url, option_default_value } = data
 
         if (!option_picture_url) {
             setError('option_picture_url', { type: 'custom', message: 'Selecione uma imagem' })
@@ -92,7 +94,7 @@ export function CreateSelect({ }: iCreateSelectProps) {
             price: option_price,
             active: true,
             select_id: selectData[0].id,
-            is_default_value: false,
+            is_default_value: option_default_value,
         }).select("*")
 
         if (!optionData) {
@@ -124,7 +126,7 @@ export function CreateSelect({ }: iCreateSelectProps) {
             </Dialog.Trigger>
             <Dialog.Portal>
                 <Dialog.Overlay className="bg-blackA9 data-[state=open]:animate-overlayShow fixed inset-0" />
-                <Dialog.Content className="data-[state=open]:animate-contentShow fixed top-[34%] left-[50%] z-40 h-auto w-[400px] translate-x-[-50%] translate-y-[-50%] rounded-[6px] bg-white p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none">
+                <Dialog.Content className="data-[state=open]:animate-contentShow fixed top-[34%] left-[50%] z-40 h-auto w-[450px] translate-x-[-50%] translate-y-[-50%] rounded-[6px] bg-white p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none">
                     <form onSubmit={handleSubmit(handleCreateSelect)} className="flex flex-col">
                         <Dialog.Title className="text-mauve12 flex flex-1 items-center justify-between m-0 text-[17px] font-medium mb-3">
                             Criar categoria
@@ -248,6 +250,18 @@ export function CreateSelect({ }: iCreateSelectProps) {
                                     </div>
                                 </div>
                                     : null}
+                                <div className="flex item-center gap-3 mt-2">
+                                    <Switch.Root
+                                        className="w-[38px] h-5 bg-red-orange rounded-full relative   data-[state=checked]:bg-blue-400 outline-none cursor-default"
+                                        id="airplane-mode"
+                                        onCheckedChange={(checked: boolean) => {
+                                            setValue("option_default_value", checked)
+                                        }}
+                                    >
+                                        <Switch.Thumb className="block w-[16px] h-[16px] bg-white rounded-full transition-transform duration-100 translate-x-0.5 will-change-transform data-[state=checked]:translate-x-[19px]" />
+                                    </Switch.Root>
+                                    <label className="text-base font-normal leading-[20px]" htmlFor=""> Deve ser selecionda por padrão </label>
+                                </div>
                             </div>
 
                         </div>

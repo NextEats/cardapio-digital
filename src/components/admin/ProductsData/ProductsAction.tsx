@@ -1,20 +1,26 @@
-import { BsPlusLg } from "react-icons/bs";
+import { BsFillPencilFill, BsPlusLg, BsThreeDotsVertical } from "react-icons/bs";
 import * as Separator from '@radix-ui/react-separator';
-import { ChangeEvent, useContext } from "react";
+import { ChangeEvent, useContext, useState } from "react";
 import { ProductContext } from "@/src/contexts/ProductContext";
 import { ChangeProductsPrice } from "./ChangeProductsPrice";
 import { CategoriesModal } from "./CategoriesModal";
 import { Additionals } from "./Additionals";
 import { Selects } from "./Selects";
+import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
+import { IoIosArrowDown } from "react-icons/io";
+import { RiArrowDownSLine } from "react-icons/ri";
+import { supabase } from "@/src/server/api";
+import { BiTrash } from "react-icons/bi";
 
 interface iProductsActionProps {
 }
 
 export function ProductsAction({ }: iProductsActionProps) {
 
+    const [isChangingProductPrice, setIsChangingProductPrice] = useState(false)
     const styleD = 'text-blue-400 cursor-pointer'
 
-    const { productSelected, categories, setFilter, filter, additionals, isCreatingProductState } = useContext(ProductContext)
+    const { productSelected, setProductSelected, categories, setFilter, filter, additionals, isCreatingProductState } = useContext(ProductContext)
     const [isCreatingProduct, setIsCreatingProduct] = isCreatingProductState
 
     function handleFilter(e: ChangeEvent<HTMLInputElement>) {
@@ -31,81 +37,108 @@ export function ProductsAction({ }: iProductsActionProps) {
             category: categoryId,
         });
     }
+    const handleDeleteProducts = async () => {
+        productSelected.forEach(async product => {
+            await Promise.all([
+                supabase.from("product_additionals").delete().eq("product_id", product.id),
+                supabase.from("product_selects").delete().eq("product_id", product.id),
+            ])
+            await supabase.from("products").delete().eq("id", product.id);
+            setProductSelected(state => {
+                state.splice(state.findIndex(p => p.id === product.id), 1);
+                return [...state]
+            })
+        })
+    }
 
     return (
         <div className={''}>
-            <div className="flex items-center mb-3">
+            <div className="flex items-center justify-between mb-3">
                 <input
                     type="text"
                     placeholder="Pesquisar"
                     onChange={handleFilter}
                     className="w-52 lg:w-80 placeholder:text-gray-400 font-medium text-xs px-3 py-[6px] shadow-sm focus:border-2 focus:border-blue-400 outline-none rounded-full" />
 
+                <div className="flex items-center gap-3">
 
-                {productSelected.length === 0 ?
-                    <div className="flex items-center">
-                        <span className={`` + styleD}>
-                            <CategoriesModal categoryType="product_category" />
-                        </span>
-                        <Separator.Root
-                            className="bg-red-700 data-[orientation=vertical]:h-full data-[orientation=vertical]:w-2 mx-2"
-                            decorative
-                            orientation="vertical"
-                        />
-                        <span className={`` + styleD}>
-                            <Additionals type="list" />
-                        </span>
-                        <Separator.Root
-                            className="bg-red-700 data-[orientation=vertical]:h-full w-2 mx-2"
-                            decorative={true}
-                            orientation="vertical"
-                        />
-                        <span className={`` + styleD}>
-                            <Selects type="list" />
-                        </span>
-                    </div>
-                    : <div className="flex justify-end mr-3 flex-1 ">
-                        <ChangeProductsPrice />
-                        {/* <Menubar.Root className="flex bg-white p-[3px] rounded-md shadow-[0_2px_10px] shadow-blackA7">
-                            <Menubar.Menu>
-                                <Menubar.Trigger className="py-2 px-3 outline-none select-none font-medium leading-none rounded text-violet11 text-[13px] flex items-center justify-between gap-[2px] data-[highlighted]:bg-violet4 data-[state=open]:bg-violet4">
-                                    File
-                                </Menubar.Trigger>
-                                <Menubar.Portal>
-                                    <Menubar.Content
-                                        className="min-w-[220px] bg-white rounded-md p-[5px] shadow-[0px_10px_38px_-10px_rgba(22,_23,_24,_0.35),_0px_10px_20px_-15px_rgba(22,_23,_24,_0.2)] [animation-duration:_400ms] [animation-timing-function:_cubic-bezier(0.16,_1,_0.3,_1)] will-change-[transform,opacity]"
-                                        align="start"
+                    {productSelected.length === 0 ?
+                        <div className="flex items-center">
+                            <span className={`` + styleD}>
+                                <CategoriesModal categoryType="product_category" />
+                            </span>
+                            <Separator.Root
+                                className="bg-red-700 data-[orientation=vertical]:h-full data-[orientation=vertical]:w-2 mx-2"
+                                decorative
+                                orientation="vertical"
+                            />
+                            <span className={`` + styleD}>
+                                <Additionals type="list" />
+                            </span>
+                            <Separator.Root
+                                className="bg-red-700 data-[orientation=vertical]:h-full w-2 mx-2"
+                                decorative={true}
+                                orientation="vertical"
+                            />
+                            <span className={`` + styleD}>
+                                <Selects type="list" />
+                            </span>
+                        </div>
+                        : <div className="flex mr-3 ">
+                            {isChangingProductPrice ?
+                                <ChangeProductsPrice isChangingProductPrice={isChangingProductPrice} setIsChangingProductPrice={setIsChangingProductPrice} />
+                                : null}
+                            <DropdownMenu.Root>
+                                <DropdownMenu.Trigger  >
+                                    <button className="bg-white flex items-center gap-4 pl-8 pr-2 py-1 rounded-full text-blue-400 shadow-blue-md">
+                                        <span className="leading-none font-semibold"> Ações </span>  <RiArrowDownSLine className="" size={24} />
+                                    </button>
+                                </DropdownMenu.Trigger>
+                                <DropdownMenu.Portal>
+                                    <DropdownMenu.Content
+                                        className="min-w-[220px] bg-white rounded-md p-[5px] z-30 shadow-[0px_10px_38px_-10px_rgba(22,_23,_24,_0.35),_0px_10px_20px_-15px_rgba(22,_23,_24,_0.2)] will-change-[opacity,transform] data-[side=top]:animate-slideDownAndFade data-[side=right]:animate-slideLeftAndFade data-[side=bottom]:animate-slideUpAndFade data-[side=left]:animate-slideRightAndFade"
                                         sideOffset={5}
-                                        alignOffset={-3}
                                     >
-                                        <Menubar.Item className="group text-[13px] leading-none text-violet11 rounded flex items-center h-[25px] px-[10px] relative select-none outline-none data-[state=open]:bg-violet4 data-[state=open]:text-violet11 data-[highlighted]:bg-gradient-to-br data-[highlighted]:from-violet9 data-[highlighted]:to-violet10 data-[highlighted]:text-violet1 data-[highlighted]:data-[state=open]:text-violet1 data-[disabled]:text-mauve8 data-[disabled]:pointer-events-none">
-                                
-                                        </Menubar.Item>
-                                    </Menubar.Content>
-                                </Menubar.Portal>
-                            </Menubar.Menu>
-                        </Menubar.Root> */}
+                                        <DropdownMenu.Item
+                                            onClick={() => setIsChangingProductPrice(true)}
+                                            className="group hover:text-blue-400 text-[13px] leading-none text-violet11 items-center rounded-[3px] flex pl-5 gap-3 hover:bg-white-blue cursor-pointer h-9 pr-[5px] relative"
+                                        >
+                                            <BsFillPencilFill size={16} className="" />
+                                            <span className="text-base">Alterar Preço</span>
+                                        </DropdownMenu.Item>
+                                        <DropdownMenu.Item
+                                            onClick={() => handleDeleteProducts()}
+                                            className="group hover:text-blue-400 text-[13px] leading-none text-violet11 items-center rounded-[3px] flex pl-5 gap-3 hover:bg-white-blue cursor-pointer h-9 pr-[5px] relative"
+                                        >
+                                            <BiTrash size={20} className="" />
+                                            <span className="text-base"> Excluir </span>
+                                        </DropdownMenu.Item>
+                                        <DropdownMenu.Arrow className="fill-white" />
+                                    </DropdownMenu.Content>
+                                </DropdownMenu.Portal>
+                            </DropdownMenu.Root>
 
-                        {/* <select name="" id="" className="h-8 px-4 border border-blue-400 rounded-full">
+                            {/* <select name="" id="" className="h-8 px-4 border border-blue-400 rounded-full">
                             <option value="" className="cursor-pointer">
-                                selecione
+                            selecione
                             </option>
                             <option
-                                value=""
-                                className="cursor-pointer"
+                            value=""
+                            className="cursor-pointer"
                                 onClick={() => { }}
-                            >
+                                >
                                 <AiOutlineDollarCircle />
                             </option>
                         </select> */}
-                    </div>
-                }
+                        </div>
+                    }
 
 
 
-                <button onClick={() => setIsCreatingProduct(true)} className="bg-blue-400 px-8 py-2 rounded-full">
-                    < BsPlusLg size={16} className="text-white" />
-                </button>
+                    <button onClick={() => setIsCreatingProduct(true)} className="bg-blue-400 px-8 py-2 rounded-full">
+                        < BsPlusLg size={16} className="text-white" />
+                    </button>
+                </div>
             </div>
             <div className="w-full overflow-x-auto flex items-center gap-2">
                 <div

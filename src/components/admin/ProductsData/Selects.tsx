@@ -4,17 +4,16 @@ import { useContext, useState } from "react"
 import * as Dialog from '@radix-ui/react-dialog';
 import { FiX } from "react-icons/fi";
 import { BsFillPencilFill, BsPlusLg, BsThreeDotsVertical } from "react-icons/bs";
-import { CreateCategory } from "./CreateCategory";
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
-import { UpdateCategory } from "./UpdateCategory";
 import Image from "next/image";
-import { CreateAdditional } from "./CreateAdditional";
 import { CreateSelect } from "./CreateSelect";
 import { CreateProductOption } from "./CreateProductOption";
 import { iProductOption, iSelect } from "@/src/types/types";
 import { UpdateSelect } from "./UpdateSelects";
 import { UpdateProductOption } from "./UpdateProductOption";
 import { supabase } from "@/src/server/api";
+import { getPathByPictureUrl } from "@/src/helpers/getPathByPictureUrl";
+import { promise } from "zod";
 
 interface iSelectsProps {
     type: "list" | "select_selects"
@@ -42,17 +41,36 @@ export function Selects({ type }: iSelectsProps) {
     }
 
     const handleDeleteSelect = async (select: iSelect["data"]) => {
-        await supabase.from("select").delete().eq("id", select.id)
+        const { data } = await supabase.from("product_selects").select("*").eq("select_id", select.id)
+        console.log(data)
+        if (data && data.length > 0) {
+            const isConfirmed = confirm("Esta personalização está a alguns produtos. Tem certeza de que deseja excluí-la?");
+            if (isConfirmed) {
+                await supabase.from("product_selects").delete().eq("select_id", select.id)
+                await deleteSelect(select)
+            } else {
+                return
+            }
+        }
+        await deleteSelect(select)
+    }
+
+    const deleteSelect = async (select: iSelect["data"]) => {
+
+        await Promise.all([
+            product_options?.forEach(async op => {
+                if (op.select_id === select.id) {
+                    await handleDeleteOption(op)
+                }
+            })
+        ])
+
+        await supabase.from("selects").delete().eq("id", select.id)
         setSelects(state => {
             state?.splice(state.findIndex(s => s.id === select.id), 1)
             return [...state!]
         })
 
-        product_options?.forEach(async op => {
-            if (op.select_id === select.id) {
-                await handleDeleteOption(op)
-            }
-        })
     }
 
     const handleChangeSelectStatus = async (select: iSelect["data"]) => {
@@ -70,6 +88,13 @@ export function Selects({ type }: iSelectsProps) {
         })
     }
     const handleDeleteOption = async (option: iProductOption["data"]) => {
+        const { path } = getPathByPictureUrl(option.picture_url)
+
+        const { error, data } = await supabase.storage.from("teste").remove([path!])
+        if (error !== null) {
+            alert("Erro ao excluir a opção, por favor contate um administrador!")
+            return
+        }
         await supabase.from("product_options").delete().eq("id", option.id)
         setProduct_options(state => {
             state?.splice(state.findIndex(op => op.id === option.id), 1)

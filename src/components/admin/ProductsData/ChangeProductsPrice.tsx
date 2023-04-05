@@ -1,12 +1,15 @@
 import { ProductContext } from "@/src/contexts/ProductContext"
-import { useContext } from "react"
+import { Dispatch, SetStateAction, useContext } from "react"
 import * as Dialog from '@radix-ui/react-dialog';
 import * as zod from 'zod';
 import { useForm } from "react-hook-form";
 import { zodResolver } from '@hookform/resolvers/zod';
 import { updateProductPriceByChangeType } from "@/src/helpers/ChangeProductPrice";
+import { FiX } from "react-icons/fi";
 
 interface iChangeProductsPriceProps {
+    isChangingProductPrice: boolean;
+    setIsChangingProductPrice: Dispatch<SetStateAction<boolean>>;
 }
 
 const newChangeProductsPriceValidationSchema = zod.object({
@@ -28,7 +31,7 @@ const defaultNewChangeProductPrice: newChangeProductPrice = {
     changeAmount: 0,
 };
 
-export function ChangeProductsPrice({ }: iChangeProductsPriceProps) {
+export function ChangeProductsPrice({ isChangingProductPrice, setIsChangingProductPrice }: iChangeProductsPriceProps) {
     const { products, productSelected, } = useContext(ProductContext)
 
     const { register, handleSubmit, watch, getValues } = useForm<newChangeProductPrice>({
@@ -50,14 +53,14 @@ export function ChangeProductsPrice({ }: iChangeProductsPriceProps) {
     }
 
     return (
-        <form>
-            <Dialog.Root>
-                <Dialog.Trigger asChild>
-                    <span className="h-5 cursor-pointer">Alterar preço</span>
-                </Dialog.Trigger>
+        <form className="">
+            <Dialog.Root open={isChangingProductPrice}>
+                <Dialog.Trigger />
                 <Dialog.Portal>
-                    <Dialog.Overlay className="bg-blackA9 data-[state=open]:animate-overlayShow fixed inset-0" />
-                    <Dialog.Content className="data-[state=open]:animate-contentShow fixed top-[50%] left-[50%] w-[90vw] max-w-[400px] translate-x-[-50%] translate-y-[-50%] rounded-[6px] p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none z-100">
+                    <Dialog.Overlay
+                        onClick={() => setIsChangingProductPrice(false)}
+                        className="bg-black data-[state=open]:animate-overlayShow z-10 fixed inset-0" />
+                    <Dialog.Content className="data-[state=open]:animate-contentShow z-20 bg-white fixed top-[40%] left-[50%] w-[90vw] max-w-[400px] translate-x-[-50%] translate-y-[-50%] rounded-[6px] p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none">
                         <Dialog.Title className="text-mauve12 text-[17px] mb-[20px] font-medium">
                             Alterar o preço de {productSelected.length} produto(s)
                         </Dialog.Title>
@@ -119,6 +122,13 @@ export function ChangeProductsPrice({ }: iChangeProductsPriceProps) {
                                 </button>
                             </Dialog.Close>
                         </div>
+                        <Dialog.Close
+                            onClick={() => setIsChangingProductPrice(false)}
+                            asChild
+                            className="text-violet11 cursor-pointer hover:bg-violet4 focus:shadow-violet7 absolute top-[8px] right-[8px] inline-flex h-[25px] w-[25px] appearance-none items-center justify-center rounded-full focus:shadow-[0_0_0_2px] focus:outline-none">
+                            <FiX />
+
+                        </Dialog.Close>
                     </Dialog.Content>
                 </Dialog.Portal>
             </Dialog.Root>

@@ -188,7 +188,7 @@ export interface Database {
       }
       additionals: {
         Row: {
-          acitve: boolean
+          active: boolean
           additional_category_id: number | null
           created_at: string | null
           id: number
@@ -198,7 +198,7 @@ export interface Database {
           restaurant_id: number | null
         }
         Insert: {
-          acitve?: boolean
+          active?: boolean
           additional_category_id?: number | null
           created_at?: string | null
           id?: number
@@ -208,7 +208,7 @@ export interface Database {
           restaurant_id?: number | null
         }
         Update: {
-          acitve?: boolean
+          active?: boolean
           additional_category_id?: number | null
           created_at?: string | null
           id?: number

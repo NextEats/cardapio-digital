@@ -108,7 +108,7 @@ export function CreateProduct({ }: iCreateProductProps) {
 
     return (
         <form onSubmit={handleSubmit(handleCreateProduct)}>
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between mb-3">
                 <button onClick={() => handleGoBack()} type="button" className="text-blue-400" > voltar </button>
                 <button type="submit" disabled={isSubmitting} className="text-blue-400 disabled:text-gray-400" >
                     Salvar
@@ -156,17 +156,18 @@ export function CreateProduct({ }: iCreateProductProps) {
                             {...register("name")}
                             placeholder="ex.: Banana" />
 
-                        <div className="flex items-center gap-2 w-full">
-                            <label htmlFor="" className="text-lg font-medium w-40"> Preço
-                                <div className="flex items-center mb-2">
-                                    <p className="py-1 px-2 bg-gray-300 text-gray-500 rounded-l-md text-base">R$ </p>
+                        <div className="flex lg:items-center lg:flex-row flex-col gap-2 w-full">
+                            <label htmlFor="" className="text-lg font-medium w-full lg:w-[30%]">
+                                Preço
+                                <div className="flex items-center">
+                                    <p className="py-[3.5px] px-2 bg-gray-300 text-gray-500 rounded-l-sm text-base">R$ </p>
                                     <input
                                         className="w-full border border-gray-300 py-1 px-2 text-base font-semibold leading-none rounded-r outline-none focus:border-blue-400"
                                         type="number"
                                         {...register("price", { valueAsNumber: true })} />
                                 </div>
                             </label>
-                            <label htmlFor="" className="w-full">
+                            <label htmlFor="" className="w-full lg:w-[70%] text-lg font-medium">
                                 Categoria
                                 <select
                                     {...register("category_id", { valueAsNumber: true })}
@@ -193,7 +194,7 @@ export function CreateProduct({ }: iCreateProductProps) {
 
                 </div>
 
-                <div className="grid grid-cols-2 gap-3 mt-6">
+                <div className="grid 2md:grid-cols-2 grid-cols-1 gap-3 mt-6">
                     <div className=" border border-gray-300 p-4">
                         <div className="flex items-center justify-between">
                             <span className="text-base font-bold">Adicionais </span>

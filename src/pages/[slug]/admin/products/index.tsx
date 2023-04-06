@@ -37,23 +37,23 @@ export default function Products({
     console.log(productsData)
     return (
         // <AdminWrapper>
-        <ProductContextProvider
-            productsData={productsData}
-            restaurant={restaurant}
-            categories={categories}
-            additionalsData={additionals}
-            selectsData={selects}
-            additional_categories={additional_categories}
-            product_optionsData={product_options}
-        >
+        <div className='pt-16 pl-60 h-screen'>
+            <ProductContextProvider
+                productsData={productsData}
+                restaurant={restaurant}
+                categories={categories}
+                additionalsData={additionals}
+                selectsData={selects}
+                additional_categories={additional_categories}
+                product_optionsData={product_options}
+            >
 
-            <div className='pt-16 pl-60'>
-                <div className='p-5 flex flex-col gap-3'>
+                <div className='p-5 flex flex-col h-full gap-3'>
                     <ProductsData />
                 </div>
-            </div>
 
-        </ProductContextProvider>
+            </ProductContextProvider>
+        </div>
         // </AdminWrapper>
     );
 }

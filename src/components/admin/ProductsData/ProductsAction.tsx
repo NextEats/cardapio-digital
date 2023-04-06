@@ -55,14 +55,14 @@ export function ProductsAction({ }: iProductsActionProps) {
 
     return (
         <div className={''}>
-            <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center justify-between mb-6">
                 <input
                     type="text"
                     placeholder="Pesquisar"
                     onChange={handleFilter}
                     className="w-52 lg:w-80 placeholder:text-gray-400 font-medium text-xs px-3 py-[6px] shadow-sm focus:border-2 focus:border-blue-400 outline-none rounded-full" />
 
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2">
 
                     {productSelected.length === 0 ?
                         <div className="flex items-center">
@@ -142,7 +142,7 @@ export function ProductsAction({ }: iProductsActionProps) {
                     </button>
                 </div>
             </div>
-            <div className="w-full overflow-x-auto flex items-center gap-2">
+            <div className="w-full overflow-x-auto flex items-center gap-2 pb-3 scrollbar-custom">
                 <div
                     onClick={() => handleFilterByCategory(0)}
                     className={`flex items-center justify-center px-6 border border-black cursor-pointer rounded-full font-semibold 
@@ -157,7 +157,7 @@ export function ProductsAction({ }: iProductsActionProps) {
                         className={`flex items-center justify-center px-6 border  cursor-pointer rounded-full font-semibold 
                         ${filter.category === category.id ? 'border-blue-400 text-blue-400' : 'border-black'}`}
                     >
-                        <span className="text-base mb-[3px] " > {category.name}</span>
+                        <span className="text-base mb-[3px] truncate" > {category.name} </span>
                     </div>
                 })}
             </div>

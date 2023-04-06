@@ -72,12 +72,117 @@ export default function Additionals({
     function handleSelectAdditional(additional: iAdditional['data']) {
         dispatch(selectNewAdditionalAction(additional));
     }
-
+    console.log("asdasdasdasda",additionalsGrupedCategory);
     return (
         <div>
-            <p className="text-xl font-semibold"> Adicionais </p>
+            {additionalsGrupedCategory && additionalsGrupedCategory.length > 0 ?
+                <>
+                    <p className="text-xl font-semibold"> Adicionais </p>
+                    {
+                        additionalsGrupedCategory.map( (additionalByCategory, index) => {
+                            if (additionalByCategory.additionals.length === 0)
+                            return;
+                            return (
+                                <div key={index} className='grid sm:grid-col-2 lg:grid-cols-2'>
+                                    <p className="text-lg mt-4 lg:col-span-2">
+                                        {additionalByCategory.categoryName}
+                                    </p>
+                                    {additionalByCategory.additionals.map(
+                                        (additional) => {
+                                            const additionalHasAlreadyBeenSelected = state.quantityAdditionals.some( (aq) => aq.additionalId === additional.id);
+                                            const additionalQuantity = state.quantityAdditionals.find( (aq) =>aq.additionalId ===additional.id);
+                                            if(additional.active === false){
+                                                return "";
+                                            }
+                                            return (
+                                                    <div
+                                                        key={additional.id}
+                                                        className=" pr-4 h-[60px] shadow-md rounded-md relative bg-white-300 mt-3 mr-3"
+                                                        >
+                                                        <div className="flex flex-1 h-full items-center gap-2">
+                                                            <Image
+                                                                src={
+                                                                    additional.picture_url
+                                                                }
+                                                                className="rounded-tl-md rounded-bl-md h-full"
+                                                                alt={additional?.name}
+                                                                width={91}
+                                                                height={200}
+                                                            />
+                                                            <div className=" flex flex-1 flex-col">
+                                                                <p className="font-bold text-black text-sm ">
+                                                                    {additional?.name}
+                                                                </p>
+                                                                <p className="font-medium text-xs text-black ">
+                                                                    R$
+                                                                    {
+                                                                        additional?.price
+                                                                    }
+                                                                </p>
+                                                            </div>
+                                                            <div>
+                                                                {!additionalHasAlreadyBeenSelected ? (
+                                                                    <BsPlusCircleFill
+                                                                        size={24}
+                                                                        className="text-gray-500 cursor-pointer"
+                                                                        onClick={() =>
+                                                                            handleSelectAdditional(
+                                                                                additional
+                                                                            )
+                                                                        }
+                                                                    />
+                                                                ) : (
+                                                                    <div className="bg-slate-900 text-white w-24 flex flex-row justify-between p-1">
+                                                                        <button
+                                                                            className="w-6 text-md flex items-center justify-center"
+                                                                            onClick={() =>
+                                                                                dispatch(
+                                                                                    changeAdditionalQuantityAction(
+                                                                                        false,
+                                                                                        additional.id
+                                                                                    )
+                                                                                )
+                                                                            }
+                                                                        >
+                                                                            <FaMinus />
+                                                                        </button>
+                                                                        <span className="">
+                                                                            {additionalQuantity
+                                                                                ? additionalQuantity.quantity
+                                                                                : ''}
+                                                                        </span>
+                                                                        <button
+                                                                            className="w-6 text-md flex items-center justify-center"
+                                                                            onClick={() =>
+                                                                                dispatch(
+                                                                                    changeAdditionalQuantityAction(
+                                                                                        true,
+                                                                                        additional.id
+                                                                                    )
+                                                                                )
+                                                                            }
+                                                                        >
+                                                                            <FaPlus />
+                                                                        </button>
+                                                                    </div>
+                                                                )}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                            );
+                                        }
+                                    )}
+                                </div>
+                            );
+                        })
+                    }
+                </>
+                :
+                null
+            }
+            
 
-            {additionalsGrupedCategory
+            {/* {additionalsGrupedCategory
                 ? additionalsGrupedCategory.map(
                       (additionalByCategory, index) => {
                           if (additionalByCategory.additionals.length === 0)
@@ -183,7 +288,7 @@ export default function Additionals({
                           );
                       }
                   )
-                : null}
+                : null} */}
         </div>
     );
 }

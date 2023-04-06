@@ -56,17 +56,25 @@ const CashboxManagement = (props: iCashboxManagement) => {
     ordersGroupedByOrderStatus["cancelado"] &&
     ordersGroupedByOrderStatus["em produção"]
   ) {
-    res["entregue"] = ordersGroupedByOrderStatus["entregue"] ? ordersGroupedByOrderStatus["entregue"].filter(
-      (elem) => elem.cash_box_id === cashBoxState?.id
-    ) : []
+    res["entregue"] = ordersGroupedByOrderStatus["entregue"]
+      ? ordersGroupedByOrderStatus["entregue"].filter(
+          (elem) => elem.cash_box_id === cashBoxState?.id
+        )
+      : [];
 
-    res["cancelado"] = ordersGroupedByOrderStatus["cancelado"] ? ordersGroupedByOrderStatus["cancelado"].filter(
-      (elem) => elem.cash_box_id === cashBoxState?.id
-    ) : []
+    res["cancelado"] = ordersGroupedByOrderStatus["cancelado"]
+      ? ordersGroupedByOrderStatus["cancelado"].filter(
+          (elem) => elem.cash_box_id === cashBoxState?.id
+        )
+      : [];
 
-    res["em produção"] = ordersGroupedByOrderStatus["em produção"] ? ordersGroupedByOrderStatus["em produção"].filter(
-      (elem) => elem.cash_box_id === cashBoxState?.id
-    ) : []
+    res["em produção"] = ordersGroupedByOrderStatus["em produção"]
+      ? ordersGroupedByOrderStatus["em produção"].filter(
+          (elem) => elem.cash_box_id === cashBoxState?.id
+        )
+      : [];
+  } else {
+    res = ordersGroupedByOrderStatus;
   }
 
   const billingAmount = calculateBilling({

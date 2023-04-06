@@ -30,6 +30,10 @@ export default function CashBoxButtons({
   }
 
   function getOrdersWithCashBoxId(arr: any) {
+    if (!arr["entregue"]) {
+      return;
+    }
+
     const res = arr["entregue"].filter(
       (order: any) => order.cash_box_id === cashBoxState?.id
     );
@@ -50,6 +54,10 @@ export default function CashBoxButtons({
       return;
     }
     setOpenCashBoxClosingReportModal(true);
+  }
+
+  if (!ordersGroupedByOrderStatus) {
+    return null;
   }
 
   return (

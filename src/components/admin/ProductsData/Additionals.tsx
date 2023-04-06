@@ -1,5 +1,5 @@
 import { ProductContext } from "@/src/contexts/ProductContext"
-import { useContext } from "react"
+import { useContext, useEffect, useState } from "react"
 import * as Dialog from '@radix-ui/react-dialog';
 import { FiX } from "react-icons/fi";
 import { BsFillPencilFill, BsThreeDotsVertical } from "react-icons/bs";
@@ -10,20 +10,34 @@ import { CreateAdditional } from "./CreateAdditional";
 import { UpdateAdditional } from "./UpdateAdditional";
 
 import { supabase } from "@/src/server/api";
-import { iAdditional } from "@/src/types/types";
+import { iAdditional, iProductAdditionals } from "@/src/types/types";
 import { getPathByPictureUrl } from "@/src/helpers/getPathByPictureUrl";
 
 interface iAdditionalsModalProps {
+    type: "list" | "select_additionals";
 }
 
-export function Additionals({ }: iAdditionalsModalProps) {
-    const { additionals, updateAdditionalState, setAdditionals } = useContext(ProductContext)
+export function Additionals({ type }: iAdditionalsModalProps) {
+    const { additionals, updateAdditionalState, setAdditionals, selectAdditionalState, productEditDataState, updateProductState } = useContext(ProductContext)
     const [updateAdditional, setUpdateAdditional] = updateAdditionalState
+    const [selectAdditional, setSelectAdditional] = selectAdditionalState
+    const [productEditData, setProductEditData] = productEditDataState
+    const [product_additionals, setProduct_additionals] = useState<iProductAdditionals["data"]>([])
+
+    useEffect(() => {
+        if (updateProductState[0] !== null) {
+            const getPoductAdditionals = async () => {
+                const { data } = await supabase.from("product_additionals").select("*").eq("product_id", updateProductState[0]!.id)
+                data ? setProduct_additionals([...data]) : null
+            }
+            getPoductAdditionals()
+        }
+    }, [updateProductState])
 
     const handleDeleteAdditional = async (additional: iAdditional["data"]) => {
         const { path } = getPathByPictureUrl(additional.picture_url)
         await Promise.all([
-            supabase.storage.from("teste").remove([path]),
+            supabase.storage.from("teste").remove([path!]),
             supabase.from("additionals").delete().eq("id", additional.id),
         ])
         setAdditionals(state => {
@@ -33,6 +47,33 @@ export function Additionals({ }: iAdditionalsModalProps) {
         alert("adicional deletado com sucesso.")
     }
 
+    const handleSelectAdditional = async (additional: iAdditional["data"]) => {
+
+        if (selectAdditional.some(a => a.id === additional.id)) {
+            setSelectAdditional((state) => {
+                state.splice(state.findIndex((a) => a.id === additional.id), 1);
+                return [...state];
+            });
+            if (updateProductState[0] !== null) {
+                if (product_additionals.some(pa => pa.additional_id === additional.id)) {
+                    setProductEditData(state => state ?
+                        [...state, { select_id: null, additional_id: additional.id, type: "deleted" }] :
+                        [{ select_id: null, additional_id: additional.id, type: "deleted" }]
+                    )
+                    return
+                }
+            }
+            return
+        }
+        if (updateProductState[0] !== null) {
+            setProductEditData(state => state ?
+                [...state, { select_id: null, additional_id: additional.id, type: "added" }] :
+                [{ select_id: null, additional_id: additional.id, type: "added" }]
+            )
+        }
+        setSelectAdditional(state => [...state, additional])
+    }
+
     if (!additionals) return null
     return (
         <div className={``}>
@@ -40,14 +81,18 @@ export function Additionals({ }: iAdditionalsModalProps) {
             {updateAdditional ? <UpdateAdditional /> : null}
             <Dialog.Root>
                 <Dialog.Trigger asChild>
-                    <button className="text-violet11 shadow-blackA7 hover:bg-mauve3 inline-flex h-[35px] items-center justify-center rounded-[4px] bg-white px-[15px] font-medium leading-none shadow-[0_2px_10px] focus:shadow-[0_0_0_2px] focus:shadow-black focus:outline-none">
-                        {additionals.length} Adicionais
-                    </button>
+                    {type === "select_additionals" ?
+                        <button className="text-blue-400">Selecionar</button> :
+                        <button className=" px-[15px] font-medium leading-none outline-none text-blue-400">
+                            {additionals.length} Adicionais
+                        </button>
+                    }
                 </Dialog.Trigger>
                 <Dialog.Portal>
                     <Dialog.Overlay className="bg-blackA9 data-[state=open]:animate-overlayShow fixed inset-0" />
-                    <Dialog.Content className="data-[state=open]:animate-contentShow fixed top-[40%] left-[50%]  h-[500px] w-[900px] translate-x-[-50%] translate-y-[-50%] rounded-[6px] bg-white p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none">
-                        <Dialog.Title className="text-mauve12 flex flex-1 items-center justify-between m-0 text-[17px] font-medium">
+                    <Dialog.Content className="data-[state=open]:animate-contentShow fixed top-0 right-0 3xs:top-[40%] 3xs:left-[50%] h-screen 3xs:h-[500px] w-screen 3xs:w-[500px] 
+                    2md:w-[900px] 3xs:translate-x-[-50%] 3xs:translate-y-[-50%] 3xs:rounded-[6px] bg-white p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none">
+                        <Dialog.Title className="text-xl flex flex-1 items-center justify-between m-0 text-[17px] font-bold">
                             Adicionais
                             <div className="flex items-center gap-2">
                                 <CategoriesModal categoryType="additional_category" />
@@ -55,11 +100,16 @@ export function Additionals({ }: iAdditionalsModalProps) {
                             </div>
                         </Dialog.Title>
 
-                        <div className="flex flex-wrap gap-3">
+                        <div className="flex flex-wrap gap-3 mt-3">
 
                             {(additionals).map(additional => {
+                                const isAdditionalSelected = type === "select_additionals" && selectAdditional.some(a => a.id === additional.id)
                                 return (
-                                    <div key={additional.id} className="w-[417px] h-[80px] rounded-sm bg-white shadow-sm flex gap-3 relative">
+                                    <div
+                                        onClick={() => type === "select_additionals" ? handleSelectAdditional(additional) : null}
+                                        key={additional.id}
+                                        className={` w-full 2md:w-[417px] h-[80px] rounded-sm bg-white shadow-sm flex gap-3 relative
+                                        ${isAdditionalSelected ? 'border-2 border-blue-400' : ''}`}>
                                         <Image
                                             className="rounded-sm object-cover w-[80px] sm:h-full "
                                             src={additional.picture_url}
@@ -67,8 +117,8 @@ export function Additionals({ }: iAdditionalsModalProps) {
                                             width={200}
                                             height={200}
                                         />
-                                        <div className="flex flex-col mt-2">
-                                            <span className="w-[280px] truncate text-lg font-semibold"> {additional.name} </span>
+                                        <div className="flex flex-col mt-2 w-full">
+                                            <span className=" w-full pr-9 3xs:pr-0 3xs:w-[280px] truncate text-lg font-semibold"> {additional.name} </span>
                                             <span className=""> R$ {additional.price.toLocaleString("pt-BR", {
                                                 minimumFractionDigits: 2, maximumFractionDigits: 2
                                             })} </span>

@@ -1,5 +1,5 @@
 import { ProductContext } from "@/src/contexts/ProductContext"
-import { FormEvent, useContext, useEffect } from "react"
+import { FormEvent, useContext, useEffect, useMemo } from "react"
 import * as Dialog from '@radix-ui/react-dialog';
 import { FiX } from "react-icons/fi";
 import { BsFillPencilFill, BsPlusLg } from "react-icons/bs";
@@ -7,13 +7,14 @@ import * as zod from 'zod';
 import { useForm } from "react-hook-form";
 import { zodResolver } from '@hookform/resolvers/zod';
 import { api, supabase } from "@/src/server/api";
+import { getAscendingCategoriesOrderSequence } from "@/src/helpers/getAscendingCategoriesOrderSequence";
 interface iUpdateCategoryProps {
     categoryType: "product_category" | "additional_category"
 }
 
 const updateCategoryValidationSchema = zod.object({
-    name: zod.string(),
-    order: zod.number(),
+    name: zod.string().min(1, { message: "O nome da categoria é obrigatório." }),
+    order: zod.number().min(1, { message: "Escolha uma ordem para a categoria." }),
 })
 
 
@@ -24,20 +25,20 @@ const updateCategoryDefaultValue: updateCategory = {
 };
 
 export function UpdateCategory({ categoryType }: iUpdateCategoryProps) {
-    const { updateCategoryState, setUpdateCategoryState } = useContext(ProductContext)
+    const { updateCategoryState, setUpdateCategoryState, categories } = useContext(ProductContext)
 
-    const { register, getValues, setValue, reset } = useForm<updateCategory>({
+    const { register, getValues, watch, setError, setValue, handleSubmit, reset, formState: { errors, isSubmitting } } = useForm<updateCategory>({
         resolver: zodResolver(updateCategoryValidationSchema),
         defaultValues: updateCategoryDefaultValue
     })
+    const newOrder = watch("order")
 
     useEffect(() => {
         setValue("name", updateCategoryState?.name!)
         setValue("order", updateCategoryState?.category_order!)
     }, [updateCategoryState, setValue])
 
-    const handleUpdateCategory = async (e: FormEvent) => {
-        e.preventDefault()
+    const handleUpdateCategory = async () => {
         const name = getValues("name")
         const order = getValues("order")
         if (categoryType === "additional_category") {
@@ -56,6 +57,15 @@ export function UpdateCategory({ categoryType }: iUpdateCategoryProps) {
         reset()
     }
 
+    let sequence = getAscendingCategoriesOrderSequence(categories)
+
+    useMemo(() => {
+        const numbersOfCategoryOrder = categories.map((category) => category.category_order).sort();
+        if (numbersOfCategoryOrder.some(order => order === newOrder) && newOrder !== updateCategoryState?.category_order) {
+            setError("order", { message: "Essa order já está ocupada, escolha uma ordem disponivel." })
+        }
+    }, [newOrder, setError, categories, updateCategoryState?.category_order])
+
     return (
 
         <Dialog.Root open={updateCategoryState !== null}>
@@ -67,20 +77,52 @@ export function UpdateCategory({ categoryType }: iUpdateCategoryProps) {
                         reset()
                     }}
                     className="bg-blackA9 data-[state=open]:animate-overlayShow fixed inset-0" />
-                <Dialog.Content className="data-[state=open]:animate-contentShow fixed top-[40%] left-[50%] h-[500px] w-[900px] translate-x-[-50%] translate-y-[-50%] rounded-[6px] bg-white p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none">
-                    <Dialog.Title className="text-mauve12 flex flex-1 items-center justify-between m-0 text-[17px] font-medium">
-                        Editar categoria
-                    </Dialog.Title>
+                <Dialog.Content className="data-[state=open]:animate-contentShow fixed top-0 right-0 3xs:top-[40%] 3xs:left-[50%] h-screen 3xs:h-[500px] w-screen 3xs:w-[500px] 
+                    2md:w-[900px] 3xs:translate-x-[-50%] 3xs:translate-y-[-50%] 3xs:rounded-[6px] bg-white p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none">
+                    <form onSubmit={handleSubmit(handleUpdateCategory)} >
+                        <Dialog.Title className="text-mauve12 flex flex-1 items-center justify-between m-0 text-[17px] font-medium">
+                            Editar categoria
+                            <button type="submit"
+                                disabled={isSubmitting}
+                                className="px-6 py-1 rounded-full text-white bg-blue-400 disabled:bg-gray-400 ">
+                                save
+                            </button>
+                        </Dialog.Title>
 
-                    <form className="flex flex-wrap gap-3">
-                        <label htmlFor=""> Nome </label>
-                        <input type="text" {...register("name")} />
-                        <label htmlFor=""> Ordem </label>
-                        <input type="number" {...register("order")} />
-                        <button type="submit"
-                            onClick={(e) => handleUpdateCategory(e)}>
-                            Salvar
-                        </button>
+                        <div className="flex flex-col flex-1 ">
+
+                            <label htmlFor="" className="text-base font-medium"> Nome </label>
+                            <input
+                                className="w-full border border-gray-300 py-1 px-2 text-base font-normal leading-none rounded outline-none focus:border-blue-400 mb-1"
+                                type="text" {...register("name")} />
+                            {errors.name ? <p className={`text-red-500 text-sm font-light mb-2`}>{errors.name.message}</p> : null}
+                            <label htmlFor="" className="text-base font-medium"> Ordem </label>
+                            <input
+                                className="w-full border border-gray-300 py-1 px-2 text-base font-normal leading-none rounded outline-none focus:border-blue-400 mb-1"
+                                type="number" {...register("order", { valueAsNumber: true })}
+                            // onChange={() => this}
+                            />
+                            {errors.order ? <p className={`text-red-500 text-sm font-light mb-2`}>{errors.order.message}</p> : null}
+                        </div>
+
+
+                        <div className="flex flex-wrap items-center gap-3 mb-4 mt-6">
+                            {sequence.map(seq => {
+                                const busyoOrder = categories.some(c => c.category_order === seq)
+                                return <button
+                                    key={seq}
+                                    disabled={busyoOrder && updateCategoryState?.category_order !== seq}
+                                    type="button"
+                                    onClick={() => setValue("order", seq)}
+                                    className={`text-base font-semibold text-white w-6 h-6 rounded
+                                    ${updateCategoryState?.category_order === seq ? 'bg-green-500' : busyoOrder ? 'bg-gray-300' :
+                                            seq === newOrder ? 'bg-yellow-400' : 'bg-blue-400'}
+                                    `}
+                                >
+                                    {seq}
+                                </button>
+                            })}
+                        </div>
                     </form>
 
                     <Dialog.Close

@@ -1,26 +1,29 @@
 import * as Switch from '@radix-ui/react-switch';
 import { ProductContext } from "@/src/contexts/ProductContext"
 import Image from "next/image"
-import { useContext } from "react"
-import { iProductsWithFKData } from '@/src/types/types';
+import { useContext, useEffect, useState } from "react"
+import { iProductsWithFKData } from '@/src/types/types'
+import { supabase } from '@/src/server/api';
 interface iProductTableDataProps {
 
 }
 
 export function ProductTable({ }: iProductTableDataProps) {
 
-    const { products, productSelected, setProductSelected } = useContext(ProductContext)
+    const { products, setProducts, productSelected, setProductSelected, hanleViewProduct } = useContext(ProductContext)
 
     const thDefaultStyle = " text-left px-2 py-4 "
     const tdDefaultStyle = " px-2 py-4 h-[70px] "
 
+    const productsFiltered = products.filter(p => !p.is_deleted)
+
     const handleSelectProduct = ({ product, isSelectAll = false }: { product?: iProductsWithFKData, isSelectAll?: boolean }) => {
         if (isSelectAll) {
-            if (products.length === productSelected.length) {
+            if (productsFiltered.length === productSelected.length) {
                 setProductSelected(state => state = [])
                 return
             }
-            setProductSelected(products)
+            setProductSelected(productsFiltered)
             return
         }
         if (productSelected.some(p => p.id === product!.id)) {
@@ -33,18 +36,32 @@ export function ProductTable({ }: iProductTableDataProps) {
         setProductSelected(state => [...state, product!])
     }
 
+    const handleChangeProductStatus = async ({ checked, productId }: { checked: boolean, productId: number }) => {
+        const updatedProducts = await Promise.all(
+            products.map(async (product) => {
+                if (product.id === productId) {
+                    await supabase.from("products").update({
+                        active: checked,
+                    }).eq("id", productId);
+                    return { ...product, active: checked };
+                }
+                return product;
+            })
+        );
+
+        setProducts(updatedProducts);
+    }
+
     return (
         <div className={` bg-white`}>
-
             <table className="p-2 w-full">
                 <thead>
                     <tr>
                         <th className={`` + thDefaultStyle}>
                             <input
                                 type="checkbox"
-                                name="" id=""
-                                className='h-4 w-4'
-                                checked={products && products.length === productSelected.length}
+                                className='h-5 w-5'
+                                checked={productsFiltered && productsFiltered.length === productSelected.length}
                                 onChange={(e) => handleSelectProduct({ isSelectAll: true })} />
                         </th>
                         <th className={`w-12 ` + thDefaultStyle} >  </th>
@@ -54,19 +71,19 @@ export function ProductTable({ }: iProductTableDataProps) {
                         <th className={`max-w-28 ` + thDefaultStyle}> Status </th>
                     </tr>
                 </thead>
-                <tbody className='h-[400px] overflow-y-scroll'>
+                <tbody className=' overflow-y-scroll'>
                     {products ? products.map(product => {
+                        if (product.is_deleted) return null
 
                         return <tr key={product.id} className="border-t-[1px] border-t-gray-300 ">
                             <td className={`` + tdDefaultStyle} >
                                 <input
                                     type="checkbox"
-                                    name="" id=""
                                     checked={productSelected.some(p => product.id === p.id)}
-                                    className='h-4 w-4 cursor-pointer'
+                                    className='h-5 w-5  cursor-pointer'
                                     onChange={(e) => handleSelectProduct({ product, })} />
                             </td>
-                            <td className={` w-12 max-h-12` + tdDefaultStyle}>
+                            <td onClick={() => hanleViewProduct(product)} className={` w-12 max-h-12` + tdDefaultStyle}>
                                 <Image
                                     className="w-full max-h-12 object-cover"
                                     src={product.picture_url}
@@ -76,11 +93,11 @@ export function ProductTable({ }: iProductTableDataProps) {
                                 />
 
                             </td>
-                            <td className={` w-80 ` + tdDefaultStyle}>
+                            <td onClick={() => hanleViewProduct(product)} className={` w-80 ` + tdDefaultStyle}>
                                 {product.name}
                             </td>
-                            <td className={`` + tdDefaultStyle}> {product.category_id.name} </td>
-                            <td className={`` + tdDefaultStyle}> R$ {product.price.toLocaleString('pt-Br', {
+                            <td onClick={() => hanleViewProduct(product)} className={`` + tdDefaultStyle}> {product.category_id.name} </td>
+                            <td onClick={() => hanleViewProduct(product)} className={`` + tdDefaultStyle}> R$ {product.price.toLocaleString('pt-Br', {
                                 minimumFractionDigits: 2, maximumFractionDigits: 2
                             })} </td>
                             <td className={` max-w-28` + tdDefaultStyle}>
@@ -88,7 +105,7 @@ export function ProductTable({ }: iProductTableDataProps) {
                                     className="w-[42px] h-6 bg-red-orange rounded-full relative   data-[state=checked]:bg-blue-400 outline-none cursor-default"
                                     id="airplane-mode"
                                     checked={product.active}
-                                    onCheckedChange={(checked: boolean) => { }}
+                                    onCheckedChange={(checked: boolean) => { handleChangeProductStatus({ checked, productId: product.id }) }}
                                     value={product.id}
                                 // style={{ '-webkit-tap-highlight-color': 'rgba(0, 0, 0, 0)' }}
                                 >

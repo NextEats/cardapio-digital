@@ -14,7 +14,7 @@ import { ToastContainer } from 'react-toastify';
 
 interface iProdcutsProps {
     restaurant: iRestaurant["data"]
-    products: iProductsWithFKData[]
+    productsData: iProductsWithFKData[]
     categories: iProductCategories["data"]
     additionals: iAdditionals["data"]
     selects: iSelects["data"]
@@ -24,9 +24,9 @@ interface iProdcutsProps {
 
 
 
-export default function Prodcuts({
+export default function Products({
     restaurant,
-    products,
+    productsData,
     categories,
     additionals,
     selects,
@@ -34,27 +34,22 @@ export default function Prodcuts({
     product_options,
 }: iProdcutsProps) {
 
+    console.log(productsData)
     return (
         // <AdminWrapper>
         <ProductContextProvider
-            products={products}
+            productsData={productsData}
             restaurant={restaurant}
             categories={categories}
             additionalsData={additionals}
-            selects={selects}
+            selectsData={selects}
             additional_categories={additional_categories}
-            product_options={product_options}
+            product_optionsData={product_options}
         >
+
             <div className='pt-16 pl-60'>
                 <div className='p-5 flex flex-col gap-3'>
-                    <div className='lg:flex lg:flex-wrap 1xl:grid 1xl:grid-cols-3 gap-3'>
-                        {/* <CategoryCard />
-                    <ProductsData styles='mb-3 lg:mb-0 flex-1 flex flex-1 flex ' />
-
-                <ProductsData styles='basis-full' /> */}
-
-                    </div>
-                    <ProductsData styles='w-full' />
+                    <ProductsData />
                 </div>
             </div>
 
@@ -74,7 +69,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 export const getStaticProps: GetStaticProps<iProdcutsProps, { slug: string }> = async ({ params }) => {
     const restaurantSlug = params?.slug
     const restaurant = await getRestaurantBySlugFetch(restaurantSlug);
-    const [additionals, products, categories, selects, additional_categories, product_options] = await Promise.all([
+    const [additionals, productsData, categories, selects, additional_categories, product_options] = await Promise.all([
         getAdditionalsByRestaurantIdFetch(restaurant.id),
         getProductWithFKDataByRestaurantIdFetch({ restaurantId: restaurant.id }),
         getProductsCategoriesByRestaurantIdFetch(restaurant.id),
@@ -86,7 +81,7 @@ export const getStaticProps: GetStaticProps<iProdcutsProps, { slug: string }> = 
     return {
         props: {
             restaurant,
-            products,
+            productsData,
             categories: categories ? categories : [],
             additionals,
             selects,

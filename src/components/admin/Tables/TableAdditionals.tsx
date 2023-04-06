@@ -47,7 +47,9 @@ export default function TableAdditionals() {
                 const additionalQuantity = tableState.quantityAdditionals.find(
                     (aq) => aq.additionalId === additional.id
                 );
-
+                if(additional.active === false){
+                    return "";
+                }
                 return (
                     <div
                         key={additional.id}

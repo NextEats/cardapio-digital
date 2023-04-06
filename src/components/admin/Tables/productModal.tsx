@@ -126,7 +126,7 @@ export default function ProductModal() {
                                     </div>
 
                                     {additionalByProductId.length !== 0 ? <h2> Adicionais </h2> : null}
-
+                                                    
                                     <TableAdditionals />
                                 </div>
                             </div>

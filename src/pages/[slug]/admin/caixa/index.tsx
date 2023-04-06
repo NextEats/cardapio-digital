@@ -67,6 +67,8 @@ const CashboxManagement = (props: iCashboxManagement) => {
     res["em produção"] = ordersGroupedByOrderStatus["em produção"].filter(
       (elem) => elem.cash_box_id === cashBoxState?.id
     );
+  } else {
+    res = ordersGroupedByOrderStatus;
   }
 
   const billingAmount = calculateBilling({

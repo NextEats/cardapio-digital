@@ -1,5 +1,5 @@
 import { ProductContext } from "@/src/contexts/ProductContext"
-import { useContext } from "react"
+import { useContext, useEffect, useState } from "react"
 import * as Dialog from '@radix-ui/react-dialog';
 import { FiX } from "react-icons/fi";
 import { BsFillPencilFill, BsThreeDotsVertical } from "react-icons/bs";
@@ -10,7 +10,7 @@ import { CreateAdditional } from "./CreateAdditional";
 import { UpdateAdditional } from "./UpdateAdditional";
 
 import { supabase } from "@/src/server/api";
-import { iAdditional } from "@/src/types/types";
+import { iAdditional, iProductAdditionals } from "@/src/types/types";
 import { getPathByPictureUrl } from "@/src/helpers/getPathByPictureUrl";
 
 interface iAdditionalsModalProps {
@@ -18,9 +18,21 @@ interface iAdditionalsModalProps {
 }
 
 export function Additionals({ type }: iAdditionalsModalProps) {
-    const { additionals, updateAdditionalState, setAdditionals, selectAdditionalState } = useContext(ProductContext)
+    const { additionals, updateAdditionalState, setAdditionals, selectAdditionalState, productEditDataState, updateProductState } = useContext(ProductContext)
     const [updateAdditional, setUpdateAdditional] = updateAdditionalState
     const [selectAdditional, setSelectAdditional] = selectAdditionalState
+    const [productEditData, setProductEditData] = productEditDataState
+    const [product_additionals, setProduct_additionals] = useState<iProductAdditionals["data"]>([])
+
+    useEffect(() => {
+        if (updateProductState[0] !== null) {
+            const getPoductAdditionals = async () => {
+                const { data } = await supabase.from("product_additionals").select("*").eq("product_id", updateProductState[0]!.id)
+                data ? setProduct_additionals([...data]) : null
+            }
+            getPoductAdditionals()
+        }
+    }, [updateProductState])
 
     const handleDeleteAdditional = async (additional: iAdditional["data"]) => {
         const { path } = getPathByPictureUrl(additional.picture_url)
@@ -35,14 +47,29 @@ export function Additionals({ type }: iAdditionalsModalProps) {
         alert("adicional deletado com sucesso.")
     }
 
-    const handleSelectAdditional = (additional: iAdditional["data"]) => {
+    const handleSelectAdditional = async (additional: iAdditional["data"]) => {
 
         if (selectAdditional.some(a => a.id === additional.id)) {
             setSelectAdditional((state) => {
                 state.splice(state.findIndex((a) => a.id === additional.id), 1);
                 return [...state];
             });
+            if (updateProductState[0] !== null) {
+                if (product_additionals.some(pa => pa.additional_id === additional.id)) {
+                    setProductEditData(state => state ?
+                        [...state, { select_id: null, additional_id: additional.id, type: "deleted" }] :
+                        [{ select_id: null, additional_id: additional.id, type: "deleted" }]
+                    )
+                    return
+                }
+            }
             return
+        }
+        if (updateProductState[0] !== null) {
+            setProductEditData(state => state ?
+                [...state, { select_id: null, additional_id: additional.id, type: "added" }] :
+                [{ select_id: null, additional_id: additional.id, type: "added" }]
+            )
         }
         setSelectAdditional(state => [...state, additional])
     }

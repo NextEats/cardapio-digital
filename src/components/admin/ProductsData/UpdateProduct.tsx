@@ -33,23 +33,18 @@ const updateProductDefaultValue: updateProduct = {
 };
 
 export function UpdateProduct({ }: iUpdateProductProps) {
-    const { restaurant, categories, selectAdditionalState, updateProductState, selectSelectState, product_options_state } = useContext(ProductContext)
+    const { restaurant, categories, selectAdditionalState, updateProductState, selectSelectState, productEditDataState, product_options_state } = useContext(ProductContext)
 
+    const [productEditData, setProductEditData] = productEditDataState
     const [updateProduct, setUpdateProduct] = updateProductState
     const [selectAdditional, setSelectAdditional] = selectAdditionalState
     const [setectSelect, setSelectSelect] = selectSelectState
     const [product_options, setProduct_options] = product_options_state
     const [imageProview, setImageProview] = useState<string | null>(null)
 
-    const [oldAdditionals, setOldAdditionals] = useState<iAdditionals["data"]>([])
-
     const { register, getValues, setValue, handleSubmit, reset, formState: { isSubmitting } } = useForm<updateProduct>({
         resolver: zodResolver(updateProductValidationSchema),
         defaultValues: updateProductDefaultValue
-    })
-
-    useEffect(() => {
-        setOldAdditionals(selectAdditional)
     })
 
     useEffect(() => {
@@ -59,6 +54,7 @@ export function UpdateProduct({ }: iUpdateProductProps) {
             setValue("name", updateProduct?.name!)
             setValue("price", updateProduct?.price!)
             setValue("category_id", updateProduct?.category_id!)
+            setValue("picture", updateProduct?.picture_url)
         }
     }, [updateProduct, setValue])
 
@@ -82,49 +78,87 @@ export function UpdateProduct({ }: iUpdateProductProps) {
     const handleUpdateProduct = async (data: updateProduct) => {
         const { category_id, description, name, price, picture } = data
         console.log(data)
-        console.log(
-            oldAdditionals
-        )
-        console.log(
-            selectAdditional.filter(a => oldAdditionals.some(oldA => oldA.id !== a.id))
-        )
-        // let pictureUrl
-        // if (typeof picture[0] == "string" ) {
-        //     pictureUrl = picture
-        // } else{
-        //     const file: File = picture[0]
-        //     const { filePath } = getFilePath({ file, slug: restaurant.slug })
-        //     const { data: uploadData, error } = await supabase.storage.from('teste')
-        //     .upload(filePath, file, { upsert: true })
+        console.log("productEditData", productEditData)
 
-        //     if (!uploadData) {
-        //         alert("Não foi possivel criar o produto.")
-        //         return
-        //     }
-        //     const { data: { publicUrl } } = await supabase.storage.from('teste').getPublicUrl(uploadData.path)
-        //  pictureUrl = publicUrl   
-        // }
-        //     const { data: productData } = await api.post(`api/products/${restaurant.id}`, {
-        //         name,
-        //         picture_url: pictureUrl,
-        //         price,
-        //         description,
-        //     category_id,
-        // })
+        let pictureUrl
+        if (typeof picture === "string") {
+            pictureUrl = picture
+        } else {
+            const file: File = picture[0]
+            const { filePath } = getFilePath({ file, slug: restaurant.slug })
+            const { data: uploadData, error } = await supabase.storage.from('teste')
+                .upload(filePath, file, { upsert: true })
 
-        // selectAdditional.forEach(async add => {
-        //     await supabase.from("product_additionals").insert({
-        //         additional_id: add.id,
-        //         product_id: productData[0].id,
-        //     })
-        // })
-        // setectSelect.forEach(async s => {
-        //     await supabase.from("product_selects").insert({
-        //         select_id: s.id,
-        //         product_id: productData[0].id,
-        //     })
-        // })
+            if (!uploadData) {
+                alert("Não foi possivel criar o produto.")
+                return
+            }
+            const { data: { publicUrl } } = await supabase.storage.from('teste').getPublicUrl(uploadData.path)
+            pictureUrl = publicUrl
+        }
+        const { data: productData, status } = await supabase.from("products").update({
+            name,
+            picture_url: pictureUrl,
+            price,
+            description,
+            category_id,
+        }).eq("id", updateProduct?.id).select("*")
+        if (!productData) {
+            alert("Erro ao editar produto. Contate o suporte.")
+            return
+        }
+        console.log("status", status)
+        if (productEditData !== null) {
+            productEditData.forEach(async ped => {
 
+                if (ped.additional_id !== null) {
+                    ped.type === "deleted" ?
+                        await deleteProductAdditional({ additional_id: ped.additional_id, product_id: productData[0].id, })
+                        : ped.type === "added" ?
+                            await createProductAdditional({ additional_id: ped.additional_id, product_id: productData[0].id, })
+                            : null
+                }
+                if (ped.select_id !== null) {
+                    ped.type === "deleted" ?
+                        await deleteProductSelect({ select_id: ped.select_id, product_id: productData[0].id, })
+                        : ped.type === "added" ?
+                            await createProductSelect({ select_id: ped.select_id, product_id: productData[0].id, })
+                            : null
+                }
+
+            })
+        }
+
+
+    }
+
+    const deleteProductAdditional = async ({ additional_id, product_id }: { additional_id: number, product_id: number }) => {
+        const { data } = await supabase.from("product_additionals").delete().match({
+            additional_id,
+            product_id,
+        })
+        console.log("1", data)
+    }
+    const createProductAdditional = async ({ additional_id, product_id }: { additional_id: number, product_id: number }) => {
+        const { data } = await supabase.from("product_additionals").insert({
+            additional_id,
+            product_id,
+        })
+        console.log("2", data)
+    }
+    const deleteProductSelect = async ({ select_id, product_id }: { select_id: number, product_id: number }) => {
+        const { data } = await supabase.from("product_selects").delete().match({
+            select_id,
+            product_id,
+        })
+        console.log("1", data)
+    }
+    const createProductSelect = async ({ select_id, product_id }: { select_id: number, product_id: number }) => {
+        const { data } = await supabase.from("product_selects").insert({
+            select_id,
+            product_id,
+        })
+        console.log("2", data)
     }
 
     const handleGoBack = () => {

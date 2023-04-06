@@ -1,6 +1,6 @@
 
 import { ProductContext } from "@/src/contexts/ProductContext"
-import { useContext, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import * as Dialog from '@radix-ui/react-dialog';
 import { FiX } from "react-icons/fi";
 import { BsFillPencilFill, BsPlusLg, BsThreeDotsVertical } from "react-icons/bs";
@@ -8,7 +8,7 @@ import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import Image from "next/image";
 import { CreateSelect } from "./CreateSelect";
 import { CreateProductOption } from "./CreateProductOption";
-import { iProductOption, iSelect } from "@/src/types/types";
+import { iProductOption, iProductSelects, iSelect } from "@/src/types/types";
 import { UpdateSelect } from "./UpdateSelects";
 import { UpdateProductOption } from "./UpdateProductOption";
 import { supabase } from "@/src/server/api";
@@ -20,29 +20,57 @@ interface iSelectsProps {
 }
 
 export function Selects({ type }: iSelectsProps) {
-    const { selectsState, product_options_state, selectSelectState } = useContext(ProductContext)
+    const { selectsState, product_options_state, selectSelectState, productEditDataState, updateProductState } = useContext(ProductContext)
     const [setectSelect, setSelectSelect] = selectSelectState
     const [selectToCreateOption, setSelectToCreateOption] = useState<iSelect["data"] | null>(null)
     const [isUpadatingSelect, setIsUpadatingSelect] = useState<iSelect["data"] | null>(null)
     const [updateOption, setUpdateOption] = useState<iProductOption["data"] | null>(null)
 
+    const [productEditData, setProductEditData] = productEditDataState
     const [selects, setSelects] = selectsState
     const [product_options, setProduct_options] = product_options_state
+
+    const [product_selects, setProduct_selects] = useState<iProductSelects["data"]>([])
+
+    useEffect(() => {
+        if (updateProductState[0] !== null) {
+            const getPoductAdditionals = async () => {
+                const { data } = await supabase.from("product_selects").select("*").eq("product_id", updateProductState[0]!.id)
+                data ? setProduct_selects([...data]) : null
+            }
+            getPoductAdditionals()
+        }
+    }, [updateProductState])
 
     const handleSelectSelect = (select: iSelect["data"]) => {
         if (setectSelect.some(s => s.id === select.id)) {
             setSelectSelect((state) => {
-                state.splice(state.findIndex((a) => a.id === select.id), 1);
+                state.splice(state.findIndex((s) => s.id === select.id), 1);
                 return [...state];
             });
+            if (updateProductState[0] !== null) {
+                if (product_selects.some(ps => ps.select_id === select.id)) {
+                    setProductEditData(state => state ?
+                        [...state, { additional_id: null, select_id: select.id, type: "deleted" }] :
+                        [{ additional_id: null, select_id: select.id, type: "deleted" }]
+                    )
+                    return
+                }
+            }
             return
+        }
+        if (updateProductState[0] !== null) {
+            setProductEditData(state => state ?
+                [...state, { additional_id: null, select_id: select.id, type: "added" }] :
+                [{ additional_id: null, select_id: select.id, type: "added" }]
+            )
         }
         setSelectSelect(state => [...state, select])
     }
 
     const handleDeleteSelect = async (select: iSelect["data"]) => {
         const { data } = await supabase.from("product_selects").select("*").eq("select_id", select.id)
-        console.log(data)
+
         if (data && data.length > 0) {
             const isConfirmed = confirm("Esta personalização está a alguns produtos. Tem certeza de que deseja excluí-la?");
             if (isConfirmed) {

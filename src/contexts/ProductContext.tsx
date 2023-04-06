@@ -20,10 +20,13 @@ import {
     iRestaurant,
     iSelects,
 } from '../types/types';
-import { getProductAdditionalsFetch } from '../fetch/productAdditionals/getProductAdditionals';
-import { getProductSelectsFetch } from '../fetch/productSelects/getProductSelects';
 import { supabase } from '../server/api';
 
+interface iProductEditDataState {
+    type: "deleted" | "added";
+    additional_id: number | null;
+    select_id: number | null;
+}
 interface iProductContextProps {
     products: iProductsWithFKData[];
     setProducts: Dispatch<SetStateAction<iProductsWithFKData[]>>
@@ -35,7 +38,7 @@ interface iProductContextProps {
     additional_categories: iAdditionalCategories["data"]
     product_options_state: [iProductOptions["data"] | null, Dispatch<SetStateAction<iProductOptions["data"] | null>>]
     //
-
+    productEditDataState: [iProductEditDataState[] | null, Dispatch<SetStateAction<iProductEditDataState[] | null>>]
     selectSelectState: [iSelects["data"], Dispatch<SetStateAction<iSelects["data"]>>]
     selectAdditionalState: [iAdditionals["data"], Dispatch<SetStateAction<iAdditionals["data"]>>]
     updateProductState: [iProduct["data"] | null, Dispatch<SetStateAction<iProduct["data"] | null>>]
@@ -83,10 +86,7 @@ export default function ProductContextProvider({
     const [updateCategoryState, setUpdateCategoryState] = useState<iProductCategory["data"] | iAdditionalCategory["data"] | null>(null)
     const [additionals, setAdditionals] = useState<iAdditionals["data"]>([])
     const updateAdditionalState = useState<iAdditional["data"] | null>(null)
-    const product_options_state = useState<iProductOptions["data"] | null>(null)
-    const selectsState = useState<iSelects["data"] | null>(null)
     const isCreatingProductState = useState(false)
-    const updateProductState = useState<iProduct["data"] | null>(null)
 
     const selectAdditionalState = useState<iAdditionals["data"]>([])
     const [selectAdditional, setSelectAdditional] = selectAdditionalState
@@ -94,10 +94,16 @@ export default function ProductContextProvider({
     const selectSelectState = useState<iSelects["data"]>([])
     const [setectSelect, setSelectSelect] = selectSelectState
 
+    const selectsState = useState<iSelects["data"] | null>(null)
     const [selects, setSelects] = selectsState
+
+    const product_options_state = useState<iProductOptions["data"] | null>(null)
     const [product_options, setProduct_options] = product_options_state
-    const [isCreatingProduct, setIsCreatingProduct] = isCreatingProductState
+
+    const updateProductState = useState<iProduct["data"] | null>(null)
     const [updateProduct, setUpdateProduct] = updateProductState
+
+    const productEditDataState = useState<iProductEditDataState[] | null>(null)
 
     useEffect(() => {
         setProducts(productsData)
@@ -128,9 +134,6 @@ export default function ProductContextProvider({
             }
         })
     }, [products, filter])
-    console.log(products, filteredProducts)
-    // useEffect(() =>     setProducts(filteredProducts), [filteredProducts])
-
 
     const hanleViewProduct = async (product: iProduct["data"]) => {
 
@@ -163,6 +166,7 @@ export default function ProductContextProvider({
                 additional_categories,
                 product_options_state,
                 //           states
+                productEditDataState,
                 selectSelectState,
                 selectAdditionalState,
                 isCreatingProductState,

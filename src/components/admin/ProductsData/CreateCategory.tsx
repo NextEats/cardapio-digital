@@ -44,29 +44,24 @@ export function CreateCategory({ categoryType }: iCreateCategoryProps) {
   const newOrder = watch('order');
 
   const handleCreateCategory = async () => {
-    // e.preventDefault()
     const name = getValues('name');
     const order = getValues('order');
     if (categoryType === 'product_category') {
-      const category = await supabase
-        .from('product_categories')
-        .insert({
-          name,
-          category_order: order!,
-          restaurant_id: restaurant.id,
-        })
-        .select('*');
+      await supabase.from('product_categories').insert({
+        name,
+        category_order: order!,
+        restaurant_id: restaurant.id,
+      });
     }
     if (categoryType === 'additional_category') {
-      const category = await supabase
-        .from('additional_categories')
-        .insert({
-          name,
-          category_order: order,
-          restaurant_id: restaurant.id,
-        })
-        .select('*');
+      await supabase.from('additional_categories').insert({
+        name,
+        category_order: order,
+        restaurant_id: restaurant.id,
+      });
     }
+
+    location.reload();
   };
 
   let sequence = getAscendingCategoriesOrderSequence(categories);

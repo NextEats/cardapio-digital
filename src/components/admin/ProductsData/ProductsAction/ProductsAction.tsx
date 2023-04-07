@@ -15,7 +15,7 @@ const ProductsAction = () => {
   const [isChangingProductPrice, setIsChangingProductPrice] = useState(false);
   const styleD = 'text-blue-400 cursor-pointer';
 
-  const { productSelected, setProducts, setFilter, isCreatingProductState } =
+  const { productSelected, setFilter, isCreatingProductState } =
     useContext(ProductContext);
 
   const [isCreatingProduct, setIsCreatingProduct] = isCreatingProductState;
@@ -32,6 +32,12 @@ const ProductsAction = () => {
 
   return (
     <>
+      {isChangingProductPrice ? (
+        <ChangeProductsPrice
+          isChangingProductPrice={isChangingProductPrice}
+          setIsChangingProductPrice={setIsChangingProductPrice}
+        />
+      ) : null}
       <div className="flex flex-col lg:flex-row items-center justify-between mb-6">
         <input
           type="text"
@@ -41,39 +47,33 @@ const ProductsAction = () => {
                     border focus:border-brand-light-orange outline-none rounded-sm"
         />
 
-        <div className="flex  items-center gap-2 mt-3">
+        <div className="flex items-center gap-2 mt-3">
           {productSelected.length === 0 ? (
             <div className="flex items-center transition flex-col md:flex-row">
               <div className="w-full lg:w-auto">
-                <span className={`` + styleD}>
+                <span className={styleD}>
                   <CategoriesModal categoryType="product_category" />
                 </span>
               </div>
-              <div className="w-full  lg:w-auto">
-                <span className={`` + styleD}>
+              <div className="w-full lg:w-auto">
+                <span className={styleD}>
                   <AdditionalsModal type="list" />
                 </span>
               </div>
-              <div className="w-full  lg:w-auto">
-                <span className={`` + styleD}>
+              <div className="w-full lg:w-auto">
+                <span className={styleD}>
                   <SelectsModal type="list" />
                 </span>
               </div>
             </div>
           ) : (
             <div className="flex mr-3 transition">
-              {isChangingProductPrice ? (
-                <ChangeProductsPrice
-                  isChangingProductPrice={isChangingProductPrice}
-                  setIsChangingProductPrice={setIsChangingProductPrice}
-                />
-              ) : null}
               <DropdownMenu.Root>
                 <DropdownMenu.Trigger>
-                  <button className="text-brand-dark-orange hover:bg-brand-dark-orange hover:text-white flex items-center gap-4 pl-8 pr-2 py-1 rounded border-2 border-brand-dark-orange transition">
-                    <span className="leading-none font-semibold"> Ações </span>{' '}
-                    <RiArrowDownSLine className="" size={24} />
-                  </button>
+                  <div className="text-brand-dark-orange hover:bg-brand-dark-orange hover:text-white flex items-center gap-4 pl-8 pr-2 py-1 rounded border-2 border-brand-dark-orange transition">
+                    <span className="leading-none font-semibold">Ações</span>{' '}
+                    <RiArrowDownSLine size={24} />
+                  </div>
                 </DropdownMenu.Trigger>
                 <DropdownMenu.Portal>
                   <DropdownMenu.Content
@@ -81,18 +81,20 @@ const ProductsAction = () => {
                     sideOffset={5}
                   >
                     <DropdownMenu.Item
-                      onClick={() => setIsChangingProductPrice(true)}
-                      className="group hover:text-text-brand-light-orange text-[13px] leading-none text-violet11 items-center rounded-[3px] flex pl-5 gap-3 hover:bg-white-blue cursor-pointer h-9 pr-[5px] relative"
+                      onClick={() =>
+                        setIsChangingProductPrice(!isChangingProductPrice)
+                      }
+                      className="group hover:text-text-brand-light-orange text-[13px] leading-none items-center rounded-[3px] flex pl-5 gap-3 hover:bg-white-blue cursor-pointer h-9 pr-[5px] relative"
                     >
-                      <BsFillPencilFill size={16} className="" />
+                      <BsFillPencilFill size={16} />
                       <span className="text-base">Alterar Preço</span>
                     </DropdownMenu.Item>
                     <DropdownMenu.Item
                       onClick={() => handleDeleteProducts()}
-                      className="group hover:text-text-brand-light-orange text-[13px] leading-none text-violet11 items-center rounded-[3px] flex pl-5 gap-3 hover:bg-white-blue cursor-pointer h-9 pr-[5px] relative"
+                      className="group hover:text-text-brand-light-orange text-[13px] leading-none items-center rounded-[3px] flex pl-5 gap-3 hover:bg-white-blue cursor-pointer h-9 pr-[5px] relative"
                     >
-                      <BiTrash size={20} className="" />
-                      <span className="text-base"> Excluir </span>
+                      <BiTrash size={20} />
+                      <span className="text-base">Excluir</span>
                     </DropdownMenu.Item>
                     <DropdownMenu.Arrow className="fill-white" />
                   </DropdownMenu.Content>

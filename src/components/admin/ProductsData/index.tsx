@@ -14,7 +14,7 @@ export function ProductsData({ }: iProductsDataProps) {
     const [updateProduct, setUpdateProduct] = updateProductState
 
     return (
-        <div className="">
+        <div className="h-full">
             {updateProduct === null && !isCreatingProduct ?
                 <div className={`min-h-[400px] h-full bg-white shadow-md rounded-md p-4`}>
                     <ProductsAction />

@@ -50,7 +50,7 @@ export default function Products({
         additional_categories={additional_categories}
         product_optionsData={product_options}
       >
-        <div className="p-5 flex flex-col gap-3">
+        <div className="flex flex-col gap-3">
           <ProductsData />
         </div>
       </ProductContextProvider>

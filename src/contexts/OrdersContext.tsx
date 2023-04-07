@@ -1,38 +1,35 @@
 import {
-    iStatusReducer,
-    statusReducer,
+  iStatusReducer,
+  statusReducer,
 } from '@/src/reducers/statusReducer/reducer';
 import { createContext, ReactNode, useReducer } from 'react';
 
 interface iOrdersContext {
-    ordersState: iStatusReducer;
-    ordersDispatch: React.Dispatch<any>;
+  ordersState: iStatusReducer;
+  ordersDispatch: React.Dispatch<any>;
 }
 
 const initialState: iStatusReducer = {
-    orders: [],
-    isOpenOrderModal: false,
-    orderId: 0,
+  orders: [],
+  isOpenOrderModal: false,
+  orderId: 0,
 };
 
 export const OrdersContext = createContext<iOrdersContext>({
-    ordersState: initialState,
-    ordersDispatch: () => null,
+  ordersState: initialState,
+  ordersDispatch: () => null,
 });
 
 interface iOrdersProviderProps {
-    children: ReactNode;
+  children: ReactNode;
 }
 
 export const OrdersProvider = ({ children }: iOrdersProviderProps) => {
-    const [ordersState, ordersDispatch] = useReducer(
-        statusReducer,
-        initialState
-    );
+  const [ordersState, ordersDispatch] = useReducer(statusReducer, initialState);
 
-    return (
-        <OrdersContext.Provider value={{ ordersState, ordersDispatch }}>
-            {children}
-        </OrdersContext.Provider>
-    );
+  return (
+    <OrdersContext.Provider value={{ ordersState, ordersDispatch }}>
+      {children}
+    </OrdersContext.Provider>
+  );
 };

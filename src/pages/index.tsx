@@ -1,3 +1,2 @@
-export default function Homepage() {
-    return <>Página Inicial em construção</>;
-}
+import Homepage from './homepage';
+export default Homepage;

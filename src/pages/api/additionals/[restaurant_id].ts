@@ -7,7 +7,7 @@ import { updateAdditionalsFetch } from "src/fetch/additionals/updateAdditionals"
 export default async function getAdditionalsByRestaurantId(req: NextApiRequest, res: NextApiResponse) {
     const { method, query, body } = req
     const restaurant_id = Number(query.restaurant_id)
-    const { name, price, picture_url, id } = body
+    const { name, price, picture_url, additional_category_id, id } = body
 
     switch (method) {
         case 'GET':
@@ -21,7 +21,7 @@ export default async function getAdditionalsByRestaurantId(req: NextApiRequest, 
         case 'POST':
             try {
                 const additionals = await postAdditionalFetch({
-                    name, price, picture_url, restaurant_id
+                    name, price, picture_url, additional_category_id, restaurant_id
                 })
                 res.status(200).send(additionals)
             } catch {

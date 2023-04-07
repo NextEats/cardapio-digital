@@ -6,6 +6,7 @@ import { useContext, useRef } from 'react';
 import { BsGear } from 'react-icons/bs';
 import { FiX } from 'react-icons/fi';
 import { GiTable } from 'react-icons/gi';
+import { toast } from 'react-toastify';
 import { CardapioDigitalButton } from '../cardapio-digital/CardapioDigitalButton';
 import CustomerAtTheTable from './CustomerAtTheTable';
 import OrderTableDetails from './OrderTableDetails';
@@ -28,10 +29,15 @@ export default function TableModal() {
         ordersTables,
     } = useContext(TableContext);
 
+    console.log('tableData', tableData);
+
     async function handleFinishOrder() {
         const foundCashBoxes = cashBoxes.find((c) => c.is_open === true);
         if (foundCashBoxes === undefined) {
-            alert('O Pedido só pode ser feito se o caixa estiver aberto.');
+            // alert('O Pedido só pode ser feito se o caixa estiver aberto.');
+            toast.error('O Pedido só pode ser feito se o caixa estiver aberto.', {
+                theme: "light",
+            })
             return;
         }
 
@@ -184,59 +190,59 @@ export default function TableModal() {
                             <div className="flex flex-col flex-1 gap-4 max-h-[150px] lg:max-h-[350px] overflow-auto scrollbar-custom">
                                 {tableState.productsSelected
                                     ? tableState.productsSelected.map(
-                                        (orderProductData, index) => {
-                                            if (
-                                                orderProductData.product ===
-                                                null
-                                            )
-                                                return;
-                                            if (
-                                                orderProductData.table_id !==
-                                                openedTableModal!.id
-                                            )
-                                                return;
-                                            return (
-                                                <CustomerAtTheTable
-                                                    key={index}
-                                                    orderStatus="em análise"
-                                                    orderProductData={
-                                                        orderProductData
-                                                    }
-                                                />
-                                            );
-                                        }
-                                    )
+                                          (orderProductData, index) => {
+                                              if (
+                                                  orderProductData.product ===
+                                                  null
+                                              )
+                                                  return;
+                                              if (
+                                                  orderProductData.table_id !==
+                                                  openedTableModal!.id
+                                              )
+                                                  return;
+                                              return (
+                                                  <CustomerAtTheTable
+                                                      key={index}
+                                                      orderStatus="em análise"
+                                                      orderProductData={
+                                                          orderProductData
+                                                      }
+                                                  />
+                                              );
+                                          }
+                                      )
                                     : null}
                                 {tableData.productsDeliveredData
                                     ? tableData.productsDeliveredData.map(
-                                        (orderProductData, index) => {
-                                            return (
-                                                <CustomerAtTheTable
-                                                    key={index}
-                                                    orderStatus={'entregue'}
-                                                    orderProductData={
-                                                        orderProductData
-                                                    }
-                                                />
-                                            );
-                                        }
-                                    )
+                                          (orderProductData, index) => {
+                                              return (
+                                                  <CustomerAtTheTable
+                                                      key={index}
+                                                      orderStatus={'entregue'}
+                                                      orderProductData={
+                                                          orderProductData
+                                                      }
+                                                  />
+                                              );
+                                          }
+                                      )
                                     : null}
 
                                 {tableData.productsInProductionData
                                     ? tableData.productsInProductionData.map(
-                                        (orderProductData, index) => {
-                                            return (
-                                                <CustomerAtTheTable
-                                                    key={index}
-                                                    orderStatus="em produção"
-                                                    orderProductData={
-                                                        orderProductData
-                                                    }
-                                                />
-                                            );
-                                        }
-                                    )
+                                          (orderProductData, index) => {
+                                              return (
+                                                  <CustomerAtTheTable
+                                                      key={index}
+                                                      orderStatus="em produção"
+                                                      orderProductData={
+                                                          orderProductData
+                                                      }
+                                                  />
+                                              );
+                                          }
+                                      )
                                     : null}
                             </div>
 
@@ -246,7 +252,7 @@ export default function TableModal() {
                             <div className="w-full flex items-center justify-end gap-3 mt-4 ">
                                 {tableData.productsInProductionData !==
                                     undefined &&
-                                    tableData.productsInProductionData?.length >
+                                tableData.productsInProductionData?.length >
                                     0 ? (
                                     <CardapioDigitalButton
                                         name="Entregar Pedido"

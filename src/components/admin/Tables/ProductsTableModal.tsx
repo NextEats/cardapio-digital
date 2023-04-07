@@ -26,6 +26,7 @@ export default function ProductsTableModal({ }: iProductTableModalProps) {
         name: null,
         category: 0,
     });
+
     const [categoryId, setCategoryId] = useState(0);
 
     const filteredProducts = products.filter((product) => {

@@ -8,13 +8,11 @@ import { FormEvent, useContext, useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import * as zod from 'zod';
 import Button from '../Button';
-import {
-    returnDistanceInMeters,
-    SubmitForm,
-} from '../Checkout/subcomponents/SubmitForm';
 import DynamicProductsList from '../DynamicProductsList';
 import RestaurantInfoHeader from '../RestaurantInfoHeader';
 import SubmitOrderForm from '../SubmitOrderForm';
+import { returnDistanceInMeters, SubmitForm } from './SubmitForm';
+import ThankYouPage from './ThankYou';
 
 export type tTabs = 'delivery' | 'takeout';
 
@@ -28,11 +26,17 @@ const newOrderFormValidationSchema = zod.object({
     paymentMethod: zod.number(),
     deliveryForm: zod.number(),
     change_value: zod.number(),
+    neighborhood: zod.string(),
+    street: zod.string(),
 });
 
 type NewOrderFormData = zod.infer<typeof newOrderFormValidationSchema>;
 
 export default function Cart() {
+    const [orderNumber, setOrderNumber] = useState<number | undefined>(
+        undefined
+    );
+    const [isDone, setIsDone] = useState(false);
     const [isReadyToSubmit, setIsReadyToSubmit] = useState(false);
 
     const newOrderForm = useForm<NewOrderFormData>({
@@ -47,6 +51,8 @@ export default function Cart() {
             number: '',
             deliveryForm: 1,
             change_value: 0,
+            neighborhood: '',
+            street: '',
         },
     });
 
@@ -69,7 +75,6 @@ export default function Cart() {
                 products,
                 restaurantId: restaurant?.id,
             });
-            console.log('price', price);
             setSubtotalPrice(price ? price : 0);
         }
 
@@ -120,7 +125,6 @@ export default function Cart() {
                 .eq('restaurant_id', restaurant?.id);
 
             foundDeliveryFee = delivery_fees_data!.find((df) => {
-                console.log(distance_in_km!, df.end_km!, df.start_km!);
                 return (
                     distance_in_km! <= df.end_km! &&
                     distance_in_km! >= df.start_km!
@@ -143,8 +147,6 @@ export default function Cart() {
     }, [cep, number, restaurant, watch]);
 
     useEffect(() => {
-        console.log('useEffect');
-
         if (getValues('deliveryForm') == 2) {
             const doesNameInputIsFilled = !!getValues('name');
             const doesPaymentMethodInputIsFilled = !!getValues('paymentMethod');
@@ -156,8 +158,6 @@ export default function Cart() {
                 doesPaymentMethodInputIsFilled &&
                 doesWhatsAppNumberInputIsFilled;
 
-            console.log('isAllRequiredFieldsFilled', isAllRequiredFieldsFilled);
-
             setIsReadyToSubmit(isAllRequiredFieldsFilled);
         } else {
             const isAllRequiredFieldsFilled =
@@ -167,16 +167,18 @@ export default function Cart() {
                 !!getValues('number') &&
                 !!getValues('whatsappNumber');
 
-            console.log(isAllRequiredFieldsFilled);
-
             setIsReadyToSubmit(isAllRequiredFieldsFilled);
         }
-    }, [getValues]);
+    });
 
     if (!restaurant) {
         handleCloseModal();
         return null;
     }
+
+    const isPhoneValid =
+        String(watch('whatsappNumber')).replace(/\D/g, '').length < 11;
+    const isCepValid = String(watch('cep')).replace(/\D/g, '').length < 8;
 
     const handleFinishOrder = (e: FormEvent) => {
         e.preventDefault();
@@ -189,9 +191,12 @@ export default function Cart() {
             paymentMethod,
             deliveryForm,
             change_value,
+            neighborhood,
+            street,
         } = getValues();
-        console.log(getValues());
+
         SubmitForm({
+            setOrderNumber,
             setDeliveryFee,
             name,
             number,
@@ -203,8 +208,17 @@ export default function Cart() {
             change_value,
             deliveryForm: Number(deliveryForm),
             complement,
+            neighborhood,
+            street,
         });
+        setIsDone(true);
     };
+
+    if (isDone && orderNumber) {
+        return (
+            <ThankYouPage deliveryFee={deliveryFee} orderNumber={orderNumber} />
+        );
+    }
 
     return (
         <div className="w-screen h-screen flex justify-center items-center fixed z-[2000]">
@@ -213,10 +227,7 @@ export default function Cart() {
                     onClick={handleCloseModal}
                     className="bg-black opacity-90 h-full fixed w-screen cursor-pointer"
                 ></div>
-                <form
-                    // onSubmit={handleSubmit(handleFinishOrder)}
-                    className="h-[95vh] overflow-y-auto px-2 pb-10 bg-white rounded-xl shadow-md max-w-[500px] w-[95%] z-[2000]"
-                >
+                <form className="h-[95vh] overflow-y-auto px-2 pb-10 bg-white rounded-xl shadow-md max-w-[500px] w-[95%] z-[2000]">
                     <CloseModalButton
                         className="ml-auto mr-4 mt-4"
                         handleCloseModal={handleCloseModal}
@@ -235,7 +246,16 @@ export default function Cart() {
                                         <span className="font-semibold">
                                             Subtotal
                                         </span>
-                                        <span>R$ {subtotalPrice}</span>
+                                        <span>
+                                            R${' '}
+                                            {subtotalPrice.toLocaleString(
+                                                'pt-BR',
+                                                {
+                                                    minimumFractionDigits: 2,
+                                                    maximumFractionDigits: 2,
+                                                }
+                                            )}
+                                        </span>
                                     </div>
                                 ) : null}
                                 {`${watch('deliveryForm')}` == '1' &&
@@ -246,7 +266,16 @@ export default function Cart() {
                                         <span className="font-semibold">
                                             Taxa de Entrega
                                         </span>
-                                        <span>R$ {deliveryFee}</span>
+                                        <span>
+                                            R${' '}
+                                            {deliveryFee.toLocaleString(
+                                                'pt-BR',
+                                                {
+                                                    minimumFractionDigits: 2,
+                                                    maximumFractionDigits: 2,
+                                                }
+                                            )}
+                                        </span>
                                     </div>
                                 ) : null}
 
@@ -255,13 +284,17 @@ export default function Cart() {
                                     <span>
                                         R${' '}
                                         {deliveryFee &&
-                                        watch('deliveryForm') == 1
-                                            ? subtotalPrice + deliveryFee
-                                            : subtotalPrice}
+                                            (watch('deliveryForm') == 1
+                                                ? subtotalPrice + deliveryFee
+                                                : subtotalPrice
+                                            ).toLocaleString('pt-BR', {
+                                                minimumFractionDigits: 2,
+                                                maximumFractionDigits: 2,
+                                            })}
                                     </span>
                                 </div>
                             </div>
-                            <div className="mt-7">
+                            <div className="mt-7 mb-12">
                                 <Button
                                     text={'confirmar pedido'}
                                     onClick={handleFinishOrder}

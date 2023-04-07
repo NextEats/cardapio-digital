@@ -1,88 +1,120 @@
-import { DigitalMenuContext } from '@/src/contexts/DigitalMenuContext';
-import cep from 'cep-promise';
+import cepPromise from 'cep-promise';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useContext, useEffect, useState } from 'react';
 import { FaClock } from 'react-icons/fa';
-import { MdExpandMore, MdLocationOn } from 'react-icons/md';
+import { MdLocationOn } from 'react-icons/md';
 
-export default function RestaurantHeader() {
-    const { restaurant, modals } = useContext(DigitalMenuContext);
+import { DigitalMenuContext } from '@/src/contexts/DigitalMenuContext';
+import { supabase } from '@/src/server/api';
+import { iCashBox } from '@/src/types/types';
 
+function RestaurantHeader() {
+    const { modals, restaurant } = useContext(DigitalMenuContext);
     const [street, setStreet] = useState<string>('');
+    const [currentCashbox, setCurrentCashbox] = useState<any>();
 
     useEffect(() => {
-        if (restaurant?.addresses.cep) {
-            cep(restaurant?.addresses.cep).then((res) => {
-                setStreet(res.street);
-            });
+        async function fetchAddress() {
+            if (restaurant?.addresses.cep) {
+                const address = await cepPromise(restaurant?.addresses.cep);
+                setStreet(address.street);
+            }
         }
+        fetchAddress();
     }, [restaurant?.addresses.cep]);
 
-    if (!restaurant) {
-        return <></>;
-    }
+    const handleOperatingTimeClick = () =>
+        modals?.set((prev) => ({
+            ...prev,
+            operatingTime: true,
+        }));
+
+    const iconsClasses =
+        'flex items-center justify-center h-12 w-12 border border-gray-500 hover:text-white text-gray-500 rounded-full cursor-pointer transition-all ease-in-out duration-300 hover:bg-gray-600';
+
+    useEffect(() => {
+        async function getCurrentCashbox() {
+            const { data: currentCashBoxData } = await supabase
+                .from('cash_boxes')
+                .select('*')
+                .match({ restaurant_id: restaurant!.id, is_open: true });
+
+            const currentCashBox =
+                currentCashBoxData![0] as unknown as iCashBox['data'];
+
+            setCurrentCashbox(currentCashBox);
+        }
+        getCurrentCashbox();
+    }, []);
+
+    if (!restaurant) return null;
 
     return (
-        <div>
-            <div
-                style={{
-                    background:
-                        'linear-gradient(to bottom, rgba(32, 32, 32, 0.106), rgba(24, 24, 24, 0.859)), url(' +
-                        restaurant.banner_url +
-                        ') no-repeat',
-                    backgroundSize: 'cover',
-                    backgroundOrigin: 'padding-box, content-box',
-                }}
-                className="h-[230px] w-full"
-            ></div>
-            <div className="mx-3 my-7 flex flex-row">
-                <Image
-                    src={restaurant.picture_url}
-                    alt={restaurant.name}
-                    width={130}
-                    height={130}
-                    className="rounded-md"
-                />
-                <div className="ml-5 h-100 flex mt-7 flex-col">
-                    <h1 className="text-2xl font-semibold text-[#3e3e3e]">
-                        {restaurant.name}
-                    </h1>
-                </div>
-            </div>
-            <div className="flex flex-col 3xs:flex-row gap-2 mt-2 ml-3 pb-3 pr-2">
-                {restaurant.addresses.google_maps_link && (
-                    <Link
-                        href={restaurant.addresses.google_maps_link}
-                        target="_blank"
-                    >
-                        <div className="flex items-center justify-center bg-gray-800 px-5 py-2 rounded-md cursor-pointer transition-all ease-in-out duration-300 hover:bg-gray-600">
-                            <MdLocationOn className="inline text-white text-xl mr-2" />
-                            <span className="text-white text-sm pr-2">
-                                {street}, {restaurant.addresses.number}
-                            </span>
-                        </div>
-                    </Link>
-                )}
-
+        <div className="flex justify-center flex-col mb-5">
+            {restaurant.banner_url && (
                 <div
-                    onClick={() =>
-                        modals?.set((prev) => {
-                            return {
-                                ...prev,
-                                operatingTime: true,
-                            };
-                        })
-                    }
-                    className="flex items-center justify-center bg-green-800 px-5 py-2 rounded-md cursor-pointer transition-all ease-in-out duration-300 hover:bg-gray-600"
-                >
-                    <FaClock className="inline text-white text-xl mr-2" />
-                    <span className="text-white text-sm">
-                        Horário de Funcionamento
-                    </span>
-                    <MdExpandMore className="inline text-white text-xl ml-2" />
+                    className="h-[230px] w-full flex justify-center items-center xl:rounded relative xl:mt-3 "
+                    style={{
+                        backgroundImage: `url(${restaurant.banner_url})`,
+                        backgroundSize: 'auto 100%',
+                        backgroundRepeat: 'no-repeat',
+                        backgroundPosition: 'center center',
+                    }}
+                />
+            )}
+
+            <div className="-mt-12 mx-auto w-[90%] bg-white p-5 rounded flex flex-col md:flex-row items-center z-[0] shadow-lg">
+                <div className="flex flew-row">
+                    <Image
+                        src={restaurant.picture_url}
+                        alt={restaurant.name}
+                        width={130}
+                        height={130}
+                        className="rounded-md"
+                    />
+                    <div className="ml-5 flex justify-center h-[130px] py-2 flex-col">
+                        <h1 className="text-2xl font-semibold text-[#3e3e3e]">
+                            {restaurant.name}
+                        </h1>
+                        {currentCashbox ? (
+                            <span className="mt-1 text-green-600 font-semibold">
+                                Aberto Agora
+                            </span>
+                        ) : (
+                            <span className="mt-1 text-red-600 font-semibold">
+                                Fechado Agora
+                            </span>
+                        )}
+                    </div>
+                </div>
+                <div className="mx-auto mt-7 sm;mt-0 sm:ml-auto sm:mr-0">
+                    <div className="flex flex-row gap-x-2">
+                        {restaurant.addresses.google_maps_link && (
+                            <Link
+                                href={restaurant.addresses.google_maps_link}
+                                target="_blank"
+                            >
+                                <div className={iconsClasses}>
+                                    <MdLocationOn className="inline text-3xl" />
+                                </div>
+                            </Link>
+                        )}
+
+                        <div
+                            className={iconsClasses}
+                            onClick={handleOperatingTimeClick}
+                        >
+                            <FaClock className="inline text-2xl" />
+                        </div>
+                        {/* <div className={iconsClasses}>
+                            <FaDollarSign className="inline text-2xl" />
+                        </div> */}
+                    </div>
                 </div>
             </div>
         </div>
     );
 }
+
+export default RestaurantHeader;

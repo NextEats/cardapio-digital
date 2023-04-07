@@ -188,6 +188,7 @@ export interface Database {
       }
       additionals: {
         Row: {
+          active: boolean
           additional_category_id: number | null
           created_at: string | null
           id: number
@@ -197,6 +198,7 @@ export interface Database {
           restaurant_id: number | null
         }
         Insert: {
+          active?: boolean
           additional_category_id?: number | null
           created_at?: string | null
           id?: number
@@ -206,6 +208,7 @@ export interface Database {
           restaurant_id?: number | null
         }
         Update: {
+          active?: boolean
           additional_category_id?: number | null
           created_at?: string | null
           id?: number
@@ -637,27 +640,33 @@ export interface Database {
       }
       product_options: {
         Row: {
+          active: boolean | null
           created_at: string | null
           id: number
           is_default_value: boolean
           name: string
           picture_url: string
+          price: number | null
           select_id: number
         }
         Insert: {
+          active?: boolean | null
           created_at?: string | null
           id?: number
           is_default_value?: boolean
           name: string
           picture_url: string
+          price?: number | null
           select_id: number
         }
         Update: {
+          active?: boolean | null
           created_at?: string | null
           id?: number
           is_default_value?: boolean
           name?: string
           picture_url?: string
+          price?: number | null
           select_id?: number
         }
       }
@@ -712,30 +721,36 @@ export interface Database {
       }
       products: {
         Row: {
+          active: boolean
           category_id: number
           created_at: string | null
           description: string
           id: number
+          is_deleted: boolean
           name: string
           picture_url: string
           price: number
           restaurant_id: number | null
         }
         Insert: {
+          active?: boolean
           category_id: number
           created_at?: string | null
           description: string
           id?: number
+          is_deleted?: boolean
           name: string
           picture_url: string
           price: number
           restaurant_id?: number | null
         }
         Update: {
+          active?: boolean
           category_id?: number
           created_at?: string | null
           description?: string
           id?: number
+          is_deleted?: boolean
           name?: string
           picture_url?: string
           price?: number
@@ -957,24 +972,33 @@ export interface Database {
       }
       selects: {
         Row: {
+          active: boolean
           created_at: string | null
+          has_default_price: boolean
           id: number
           max_selected_options: number
           name: string
+          price: number | null
           restaurant_id: number | null
         }
         Insert: {
+          active?: boolean
           created_at?: string | null
+          has_default_price?: boolean
           id?: number
           max_selected_options?: number
           name: string
+          price?: number | null
           restaurant_id?: number | null
         }
         Update: {
+          active?: boolean
           created_at?: string | null
+          has_default_price?: boolean
           id?: number
           max_selected_options?: number
           name?: string
+          price?: number | null
           restaurant_id?: number | null
         }
       }
@@ -1190,6 +1214,7 @@ export interface Database {
           owner: string | null
           path_tokens: string[] | null
           updated_at: string | null
+          version: string | null
         }
         Insert: {
           bucket_id?: string | null
@@ -1201,6 +1226,7 @@ export interface Database {
           owner?: string | null
           path_tokens?: string[] | null
           updated_at?: string | null
+          version?: string | null
         }
         Update: {
           bucket_id?: string | null
@@ -1212,6 +1238,7 @@ export interface Database {
           owner?: string | null
           path_tokens?: string[] | null
           updated_at?: string | null
+          version?: string | null
         }
       }
     }
@@ -1244,7 +1271,7 @@ export interface Database {
         Args: {
           name: string
         }
-        Returns: string[]
+        Returns: unknown
       }
       get_size_by_bucket: {
         Args: Record<PropertyKey, never>

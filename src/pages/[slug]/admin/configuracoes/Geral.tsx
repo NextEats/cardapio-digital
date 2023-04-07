@@ -1,110 +1,118 @@
 import { AdminContext } from '@/src/contexts/adminContext';
-import { supabase } from '@/src/server/api';
+import { updateRestaurant } from '@/src/fetch/restaurant/updateRestaurant';
+import { deleteOldRestaurantImageFromBucket } from '@/src/helpers/deleteOldRestaurantImageFromBucket';
+import { getImagePublicUrl } from '@/src/helpers/getImagePublicUrl';
+import { serverURL, supabase } from '@/src/server/api';
+import { zodResolver } from '@hookform/resolvers/zod';
 import Image from 'next/image';
-import { useContext, useState } from 'react';
+import { useRouter } from 'next/router';
+import { useContext, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { BiEditAlt } from 'react-icons/bi';
 import InputMask from 'react-input-mask';
+import * as zod from "zod"
+
+const restaurantDataSchema = zod.object({
+    cep: zod.string(),
+    name: zod.string(),
+    slug: zod.string(),
+    restaurantLogo: zod.any()
+})
+
+type iRestaurantData = zod.infer<typeof restaurantDataSchema>
 
 export default function Geral() {
 
-    type uploadedFile = {
-        path: string
-    }
-    type imagePublicUrl = {
-        data: {
-            publicUrl: string
-        }
-    }
-    
-    const [inputChangeLogo, setInputChangeLogo] = useState(false);
+    const { restaurant } = useContext(AdminContext);
+    const [imageSrc, setImageSrc] = useState(restaurant?.picture_url);
+    const [imageBlob, setImageBlob] = useState('');
 
     const {
         register,
         handleSubmit,
         formState: { errors },
-    } = useForm();
-    const { restaurant } = useContext(AdminContext);
-
-    const onSubmit = async (data: any, e: any) => {
-        let imagePublicUrl : imagePublicUrl = {
-            data: {
-                publicUrl: ''
-            }
+        watch, 
+        setValue
+    } = useForm<iRestaurantData>({
+        resolver: zodResolver(restaurantDataSchema),
+        defaultValues: {
         }
-        let uploadedFile : uploadedFile = {
-            path: ''
-        }
+    });
 
-        const file = data.restaurantLogo[0];
+    useEffect(() => {
+        setImageSrc(restaurant?.picture_url)
+    }, [restaurant?.picture_url])
+
+    const handleImageChange = (data: any) => {
+        const file = data[0];
+        setImageBlob(URL.createObjectURL(file));
+        setValue('restaurantLogo', file)
+    }
+
+    const onSubmit = async (data: iRestaurantData) => {
+
+        const oldImageUrl = restaurant?.picture_url 
+        const oldImageUrlArray = oldImageUrl!.split('/');  
+        const oldImageName = oldImageUrlArray.at(-1)
+        const file = data?.restaurantLogo;
 
         const { data: imageList } = await supabase
         .storage.
         from('restaurant-pictures').
-        list();
+        list(); 
 
-        const imageAlreadySaved = imageList!.find((image) => image.name === file.name);
-
-        if (!imageAlreadySaved) { 
-            console.log("não existe")
-            const { data, error: uploadError } = await supabase
-            .storage.
-            from('restaurant-pictures').
-            upload(`${file.name}`, file);
-
-            if (uploadError) {
-                console.log(uploadError);
-                return;
-            }
-            uploadedFile = data;
-            imagePublicUrl = await supabase
-            .storage
-            .from('restaurant-pictures')
-            .getPublicUrl(uploadedFile.path);
-        }else{
-            imagePublicUrl = await supabase
-            .storage
-            .from('restaurant-pictures')
-            .getPublicUrl(imageAlreadySaved!.name);
+        const imageAlreadySaved = imageList!.find((image) => image?.name === file?.name);
+        
+        if(imageAlreadySaved) {
+            deleteOldRestaurantImageFromBucket(imageAlreadySaved.name)
         }
 
-        async function updateRestaurant() {
-            await supabase
-                .from('restaurants')
-                .update({
-                    name: data.name,
-                    slug: data.slug,
-                    picture_url: imagePublicUrl.data.publicUrl,
-                })
-                .eq('id', restaurant?.id);
+        const { data: savedFile, error: uploadError } = await supabase
+        .storage.
+        from('restaurant-pictures').
+        upload(`${file?.name}`, file);
+
+        if (uploadError) {
+            console.log(uploadError);
         }
-        updateRestaurant();
+
+        const publicUrl = getImagePublicUrl(savedFile?.path as string)
+
+        if(publicUrl){
+            setImageSrc(publicUrl.data.publicUrl);
+            const newImageUrl = await updateRestaurant(publicUrl.data.publicUrl, data, restaurant?.id)
+            restaurant!.picture_url = newImageUrl;
+            setImageSrc(newImageUrl)
+        }
+
+        if(!imageAlreadySaved) {
+            deleteOldRestaurantImageFromBucket(oldImageName)
+        }
     };
 
-    const handleRestaurantLogoChange = () => {
-        setInputChangeLogo(!inputChangeLogo)
-    }
-
     if (!restaurant) {
-        return <></>;
+        return <p>Carregando Restaurante</p>;
     }
 
     return (
         <div className="w-full max-w-[600px]">
             <form onSubmit={handleSubmit(onSubmit)}>
                 <div className="flex flex-col gap-y-5">
-                    <Image
-                        src={restaurant.picture_url}
-                        alt={restaurant.picture_url}
-                        width={100}
-                        height={100}
-                    />
+                    <div className='flex justify-start'>
+                        <Image
+                            src={imageBlob ? imageBlob : (imageSrc ? imageSrc : restaurant.picture_url)}
+                            alt={restaurant?.picture_url}
+                            width={100}
+                            height={100}
+                        />
 
-                    <BiEditAlt className='cursor-pointer m-2' onClick={handleRestaurantLogoChange}/>
-
-                    {inputChangeLogo ? (
-                        <input {...register('restaurantLogo')} type="file" />
-                    ) : null}
+                        <label htmlFor="editImage" className="cursor-pointer w-fit">
+                            <BiEditAlt className='cursor-pointer m-2' fontSize={'1.5em'}/>
+                        </label>
+                    
+                        <input id='editImage' {...register('restaurantLogo')} onChange={(e) => handleImageChange(e.target.files)} className="hidden" type="file" />
+                    </div>
+                    
 
                     <label className="w-full">
                         <span className="text-sm font-semibold text-[#4b4b4b]">
@@ -139,7 +147,7 @@ export default function Geral() {
                             className="mt-2 w-full focus:outline-none border border-[#d1d1d1] rounded-sm py-2 pl-4"
                             placeholder="Escreva aqui o cep do seu estabelecimento..."
                             type="text"
-                            defaultValue={restaurant.addresses.cep}
+                            defaultValue={restaurant?.addresses?.cep}
                             {...register('cep')}
                         />
                     </label>

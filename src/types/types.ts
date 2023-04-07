@@ -399,6 +399,10 @@ export interface iDeliveryFees {
     data: Array<Database['public']['Tables']['delivery_fees']['Row']>;
 }
 
+export type iProductsWithFKData = iProduct['data'] & {
+    category_id: iProductCategory['data'];
+};
+
 export type iOrdersWithFKData = iOrder['data'] & {
     payment_methods: iPaymentMethod['data'];
     order_types: iOrderTypes['data'];
@@ -433,3 +437,18 @@ export type tUserDetailsWithFKData =
     Database['public']['Tables']['user_details']['Row'] & {
         restaurants: Database['public']['Tables']['restaurants']['Row'];
     };
+
+export interface iCashboxManagement {
+    ordersData: iOrdersWithFKData[];
+    orderStatuss: iInsertOrderStatuss['data'];
+    ordersProductsData: iOrdersProducts['data'];
+    products: iProducts['data'];
+    clients: iInsertClients['data'];
+    contacts: iInsertContacts['data'];
+    addresses: iInsertAddresses['data'];
+    cashBoxes: iCashBoxes['data'];
+    additionals: iAdditionals['data'];
+    selects: iSelects['data'];
+    ordersTablesData: iOrdersTablesWithFkData[];
+    restaurant: iRestaurantWithFKData;
+}

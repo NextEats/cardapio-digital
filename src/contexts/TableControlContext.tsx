@@ -8,6 +8,7 @@ import {
     useReducer,
     useState,
 } from 'react';
+import { toast } from 'react-toastify';
 import {
     getOrdersProductsData,
     iOrdersProductsData,
@@ -68,9 +69,9 @@ interface iTableContextProps {
     ordersTables: iOrdersTablesWithFkData[];
     restaurant: iRestaurant['data'];
     tableDispatch: Dispatch<any>;
-    orders: iOrders["data"]
+    orders: iOrders['data'];
     tableState: iTableReducer;
-    paymentMethod: iPaymentMethodsRestaurantsWithFKData[]
+    paymentMethod: iPaymentMethodsRestaurantsWithFKData[];
     updateTable: (
         is_active: boolean,
         is_occupied: boolean,
@@ -88,11 +89,11 @@ interface iTableContextProviderProps {
     products: iProducts['data'];
     productAdditionals: iProductAdditionals['data'];
     ordersProducts: iOrdersProducts['data'];
-    orders: iOrders["data"]
+    orders: iOrders['data'];
     categories: iProductCategories['data'];
     ordersTables: iOrdersTablesWithFkData[];
     cashBoxes: iCashBoxes['data'];
-    paymentMethod: iPaymentMethodsRestaurantsWithFKData[]
+    paymentMethod: iPaymentMethodsRestaurantsWithFKData[];
 }
 
 export const TableContext = createContext({} as iTableContextProps);
@@ -110,7 +111,7 @@ export default function TableContextProvider({
     cashBoxes,
     categories,
     ordersTables,
-    paymentMethod
+    paymentMethod,
 }: iTableContextProviderProps) {
     const [tableState, tableDispatch] = useReducer(
         tableReducer,
@@ -133,6 +134,10 @@ export default function TableContextProvider({
         useState(false);
     const [isOpenedCreateTableModal, setIsOpenedCreateTableModal] =
         useState(false);
+    const [tableInProductionData, setTableInProductionData] = useState<{
+        productsData: iOrdersProductsData[] | undefined;
+        tableBill: number;
+    }>();
 
     useEffect(() => {
         const getTables = async () => {
@@ -143,8 +148,8 @@ export default function TableContextProvider({
         };
         getTables();
     }, [restaurant]);
-
-    const tableInProductionData = useMemo(() => {
+    // let tableInProductionData
+    useEffect(() => {
         if (!openedTableModal) return;
 
         const ordersTableInProductionFiltered = ordersTables.filter((ot) => {
@@ -154,11 +159,29 @@ export default function TableContextProvider({
                 ot.orders.order_status.status_name === 'em produção'
             );
         });
-        const ordersProductsFiltered = ordersProducts.filter((op) =>
-            ordersTableInProductionFiltered.some(
-                (ot) => ot.orders.id === op.order_id
-            )
+        console.log(ordersTableInProductionFiltered);
+
+        // const ordersProductsFiltered = ordersProducts.filter((op) =>
+        //     ordersTableInProductionFiltered.some(
+        //         (ot) => ot.orders.id === op.order_id
+        //     )
+        // );
+
+        const ordersProductsFiltered = ordersProducts.filter((op) => {
+            const relevantOrdersTableInProduction =
+                ordersTableInProductionFiltered.filter(
+                    (ot) =>
+                        typeof ot.orders.id === 'number' &&
+                        ot.orders.id === op.order_id
+                );
+            return relevantOrdersTableInProduction.length > 0;
+        });
+
+        console.log(
+            'ordersProducts',
+            ordersProducts.find((op) => op.order_id === 1071)
         );
+        console.log(ordersProductsFiltered);
         const tableProductIds = ordersProductsFiltered.map(
             (op) => op.product_id
         );
@@ -191,12 +214,20 @@ export default function TableContextProvider({
             },
             0
         );
-
-        return {
+        setTableInProductionData({
             productsData: ordersProductsDataTable,
             tableBill: totalPriceOfProducts + totalPriceOfAdditionals,
-        };
-    }, [openedTableModal, ordersTables, ordersProducts, products, additionals, selects]);
+        });
+
+        // return
+    }, [
+        openedTableModal,
+        ordersTables,
+        ordersProducts,
+        products,
+        additionals,
+        selects,
+    ]);
 
     const tableDeliveredData = useMemo(() => {
         if (!openedTableModal) return;
@@ -250,14 +281,39 @@ export default function TableContextProvider({
             productsData: ordersProductsDataTable,
             tableBill: totalPriceOfProducts + totalPriceOfAdditionals,
         };
-    }, [openedTableModal, ordersTables, ordersProducts, products, additionals, selects]);
+    }, [
+        openedTableModal,
+        ordersTables,
+        ordersProducts,
+        products,
+        additionals,
+        selects,
+    ]);
 
     async function createNewtable(cheirAmount: string, tableName: string) {
         if (tableName === '') {
-            alert('O nome da mesa é obrigatório');
+            // alert('O nome da mesa é obrigatório');
+            toast.error('O nome da mesa é obrigatório.'
+            , {
+                theme: "light",
+            })
             return;
         }
-        const novaMessa: iTables['data'] = await api.post(
+
+        const tableList = await api.get(
+            'api/table_control/' + restaurant.id,
+        );
+
+        const tableAlreadyExists = tableList.data.find((table: any) => table.name.toLowerCase().replace(/\s/g, "") === tableName.toLowerCase().replace(/\s/g, ""));
+        
+        if (tableAlreadyExists) {
+            toast.error('Essa mesa já existe. Por favor escolha outro nome.', {
+                theme: "light",
+            })
+            return;
+        }
+
+        const novaMesa: iTables['data'] = await api.post(
             'api/table_control/' + restaurant.id,
             {
                 chair_ammount: cheirAmount,
@@ -334,21 +390,21 @@ export default function TableContextProvider({
                 tableData:
                     tableDeliveredData !== undefined
                         ? {
-                            productsInProductionData:
-                                tableInProductionData?.productsData,
-                            productsDeliveredData:
-                                tableDeliveredData.productsData,
-                            tableBill:
-                                tableInProductionData !== undefined
-                                    ? tableDeliveredData.tableBill +
-                                    tableInProductionData.tableBill
-                                    : tableDeliveredData.tableBill,
-                        }
+                              productsInProductionData:
+                                  tableInProductionData?.productsData,
+                              productsDeliveredData:
+                                  tableDeliveredData.productsData,
+                              tableBill:
+                                  tableInProductionData !== undefined
+                                      ? tableDeliveredData.tableBill +
+                                        tableInProductionData.tableBill
+                                      : tableDeliveredData.tableBill,
+                          }
                         : {
-                            productsInProductionData: undefined,
-                            productsDeliveredData: undefined,
-                            tableBill: 0,
-                        },
+                              productsInProductionData: undefined,
+                              productsDeliveredData: undefined,
+                              tableBill: 0,
+                          },
 
                 additionals,
                 paymentMethod,

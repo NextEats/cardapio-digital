@@ -27,7 +27,7 @@ import { Dispatch, SetStateAction } from 'react';
 import * as NavigationMenu from '@radix-ui/react-navigation-menu';
 import { BsArrowLeftCircle } from 'react-icons/bs';
 import { IoIosArrowDown } from 'react-icons/io';
-import { ToastContainer } from 'react-toastify';
+import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { CardapioDigitalButton } from '../CardapioDigitalButton';
 import { Additional } from './Additional';
@@ -98,7 +98,11 @@ export default function EditableMenuProductCard({
 
     async function handleCreateProduct() {
         if (products.some((p) => p.name === state.productInformation.name)) {
-            alert('Já existe um propduto com esse nome');
+            // alert('Já existe um produto com esse nome');
+            toast.error('Já existe um produto com esse nome'
+            ,{
+                theme: "light",
+            })
             return;
         }
         await createProduct(state, productOptions, additionals, restaurant);

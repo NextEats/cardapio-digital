@@ -1,5 +1,6 @@
 import { ProductContext } from '@/src/contexts/ProductContext';
 import { getFilePath } from '@/src/helpers/getFilePath';
+import { getPathByPictureUrl } from '@/src/helpers/getPathByPictureUrl';
 import { supabase } from '@/src/server/api';
 import { iProductOption } from '@/src/types/types';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -79,7 +80,7 @@ export function UpdateProductOption({
     }
   }, [updateOption, setValue]);
 
-  const handleCreateProductOption = async (data: productOptionData) => {
+  const handleUpdateProductOption = async (data: productOptionData) => {
     const { option_name, option_price, option_picture_url, default_value } =
       data;
 
@@ -87,10 +88,13 @@ export function UpdateProductOption({
     if (typeof option_picture_url === 'string') {
       pictureUrl = option_picture_url;
     } else {
+      const { path } = getPathByPictureUrl(updateOption?.picture_url!);
+
+      supabase.storage.from('product-options-pictures').remove([path!]);
       const file: File = option_picture_url[0];
       const { filePath } = getFilePath({ file, slug: restaurant.slug });
       const { data: uploadData, error } = await supabase.storage
-        .from('teste')
+        .from('product-options-pictures')
         .upload(filePath, file, { upsert: true });
 
       if (!uploadData) {
@@ -101,7 +105,9 @@ export function UpdateProductOption({
       }
       const {
         data: { publicUrl },
-      } = await supabase.storage.from('teste').getPublicUrl(uploadData.path);
+      } = await supabase.storage
+        .from('product-options-pictures')
+        .getPublicUrl(uploadData.path);
       pictureUrl = publicUrl;
     }
 
@@ -150,7 +156,7 @@ export function UpdateProductOption({
           />
           <Dialog.Content className="data-[state=open]:animate-contentShow fixed top-[34%] left-[50%] z-40 h-auto w-[460px] translate-x-[-50%] translate-y-[-50%] rounded-[6px] bg-white p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none">
             <form
-              onSubmit={handleSubmit(handleCreateProductOption)}
+              onSubmit={handleSubmit(handleUpdateProductOption)}
               className="flex flex-col"
             >
               <Dialog.Title className="text-mauve12 flex flex-1 items-center justify-between m-0 text-[17px] font-medium mb-3">

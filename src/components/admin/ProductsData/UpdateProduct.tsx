@@ -112,7 +112,7 @@ export function UpdateProduct({}: iUpdateProductProps) {
       const file: File = picture[0];
       const { filePath } = getFilePath({ file, slug: restaurant.slug });
       const { data: uploadData, error } = await supabase.storage
-        .from('teste')
+        .from('product-pictures')
         .upload(filePath, file, { upsert: true });
 
       if (!uploadData) {

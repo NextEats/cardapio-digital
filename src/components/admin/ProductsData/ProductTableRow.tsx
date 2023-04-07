@@ -4,7 +4,15 @@ import * as Switch from '@radix-ui/react-switch';
 import Image from 'next/image';
 import { useContext } from 'react';
 
-const ProductTableRow = ({ product, handleSelectProduct }: any) => {
+import { iProductsWithFKData } from '../../../types/types';
+
+const ProductTableRow = ({
+  product,
+  handleSelectProduct,
+}: {
+  product: iProductsWithFKData;
+  handleSelectProduct: ({ product }: { product: iProductsWithFKData }) => void;
+}) => {
   const { products, setProducts, productSelected, hanleViewProduct } =
     useContext(ProductContext);
 
@@ -38,12 +46,15 @@ const ProductTableRow = ({ product, handleSelectProduct }: any) => {
   if (!product) return null;
 
   return (
-    <tr key={product.id} className="border-t-[1px] border-t-gray-300 ">
+    <tr
+      key={product.id}
+      className="border-t-[1px] border-t-gray-300 cursor-pointer hover:bg-[#00000008] transition"
+    >
       <td className={`` + tdDefaultStyle}>
         <input
           type="checkbox"
           checked={productSelected.some(p => product.id === p.id)}
-          className="h-5 w-5  cursor-pointer"
+          className="h-5 w-5  cursor-pointer transition"
           onChange={e => handleSelectProduct({ product })}
         />
       </td>

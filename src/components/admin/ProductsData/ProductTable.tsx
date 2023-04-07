@@ -10,9 +10,9 @@ export function ProductTable() {
   const { productsFiltered, handleSelectProduct } = useProductSelection();
 
   return (
-    <div className={`bg-white`}>
+    <div className="bg-white p-4">
       <div className="h-full overflow-auto">
-        <table className="p-2 w-full">
+        <table className="p-2 w-full transition">
           <thead>
             <tr>
               <th className={thDefaultStyle}>
@@ -30,7 +30,7 @@ export function ProductTable() {
               <th className={`max-w-28 ${thDefaultStyle}`}> Status </th>
             </tr>
           </thead>
-          <tbody className="overflow-y-scroll">
+          <tbody className="overflow-y-scroll transition">
             {productsFiltered.map((product, index) => (
               <ProductTableRow
                 key={product.id}

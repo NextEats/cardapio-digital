@@ -50,7 +50,7 @@ export function AdditionalsModal({ type }: iAdditionalsModalProps) {
   const handleDeleteAdditional = async (additional: iAdditional['data']) => {
     const { path } = getPathByPictureUrl(additional.picture_url);
     await Promise.all([
-      supabase.storage.from('teste').remove([path!]),
+      supabase.storage.from('additionals-pictures').remove([path!]),
       supabase.from('additionals').delete().eq('id', additional.id),
     ]);
     setAdditionals(state => {

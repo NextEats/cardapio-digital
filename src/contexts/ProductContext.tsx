@@ -13,7 +13,6 @@ import {
   iAdditionalCategories,
   iAdditionalCategory,
   iAdditionals,
-  iProduct,
   iProductCategories,
   iProductCategory,
   iProductOptions,
@@ -57,8 +56,8 @@ interface iProductContextProps {
     Dispatch<SetStateAction<iAdditionals['data']>>
   ];
   updateProductState: [
-    iProduct['data'] | null,
-    Dispatch<SetStateAction<iProduct['data'] | null>>
+    iProductsWithFKData | null,
+    Dispatch<SetStateAction<iProductsWithFKData | null>>
   ];
   isCreatingProductState: [boolean, Dispatch<SetStateAction<boolean>>];
   updateAdditionalState: [
@@ -86,7 +85,7 @@ interface iProductContextProps {
     name: string | null;
     category: number | null;
   };
-  hanleViewProduct: (product: iProduct['data']) => void;
+  hanleViewProduct: (product: iProductsWithFKData) => void;
 }
 interface iProductContextProviderProps {
   children: ReactNode;
@@ -134,7 +133,7 @@ export default function ProductContextProvider({
   const product_options_state = useState<iProductOptions['data'] | null>(null);
   const [product_options, setProduct_options] = product_options_state;
 
-  const updateProductState = useState<iProduct['data'] | null>(null);
+  const updateProductState = useState<iProductsWithFKData | null>(null);
   const [updateProduct, setUpdateProduct] = updateProductState;
 
   const productEditDataState = useState<iProductEditDataState[] | null>(null);
@@ -178,7 +177,7 @@ export default function ProductContextProvider({
     });
   }, [products, filter]);
 
-  const hanleViewProduct = async (product: iProduct['data']) => {
+  const hanleViewProduct = async (product: iProductsWithFKData) => {
     const [product_additionals, product_selects] = await Promise.all([
       supabase
         .from('product_additionals')
@@ -200,7 +199,7 @@ export default function ProductContextProvider({
   return (
     <ProductContext.Provider
       value={{
-        //           ferchs
+        // fetchs
         products: filteredProducts,
         setProducts,
         categories: !categories ? [] : categories,
@@ -210,7 +209,7 @@ export default function ProductContextProvider({
         selectsState,
         additional_categories,
         product_options_state,
-        //           states
+        // states
         productEditDataState,
         selectSelectState,
         selectAdditionalState,

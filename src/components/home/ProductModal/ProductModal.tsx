@@ -169,20 +169,22 @@ export default function ProductModal() {
             ></textarea>
           </form>
           <div className="mb-12">
-            {productSelects && allOptionsSelected ? (
-              <SubmitButtons handleSubmit={handleSubmit} />
-            ) : (
-              <SubmitButtons
-                handleSubmit={() =>
-                  toast.error(
-                    'Para finalizar o produto, selecione ao menos uma opção de cada ingrediente.',
-                    {
-                      theme: 'light',
-                    }
-                  )
-                }
-              />
-            )}
+            {/* {productSelects && allOptionsSelected ? ( */}
+            <SubmitButtons handleSubmit={handleSubmit} />
+            {/*
+            // ) : (
+            //   <SubmitButtons
+            //     handleSubmit={() =>
+            //       toast.error(
+            //         'Para finalizar o produto, selecione ao menos uma opção de cada ingrediente.',
+            //         {
+            //           theme: 'light',
+            //         }
+            //       )
+            //     }
+            //   />
+            // )}
+            */}
           </div>
         </div>
       </div>

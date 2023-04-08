@@ -1,5 +1,6 @@
 import { ProductContext } from '@/src/contexts/ProductContext';
 import { getFilePath } from '@/src/helpers/getFilePath';
+import { getPathByPictureUrl } from '@/src/helpers/getPathByPictureUrl';
 import { supabase } from '@/src/server/api';
 import { iAdditional, iProductsWithFKData, iSelect } from '@/src/types/types';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -109,6 +110,10 @@ export function UpdateProduct({}: iUpdateProductProps) {
     if (typeof picture === 'string') {
       pictureUrl = picture;
     } else {
+      const { path } = getPathByPictureUrl(updateProduct?.picture_url!);
+
+      supabase.storage.from('product-pictures').remove([path!]);
+
       const file: File = picture[0];
       const { filePath } = getFilePath({ file, slug: restaurant.slug });
       const { data: uploadData, error } = await supabase.storage
@@ -121,7 +126,9 @@ export function UpdateProduct({}: iUpdateProductProps) {
       }
       const {
         data: { publicUrl },
-      } = await supabase.storage.from('teste').getPublicUrl(uploadData.path);
+      } = await supabase.storage
+        .from('product-pictures')
+        .getPublicUrl(uploadData.path);
       pictureUrl = publicUrl;
     }
     const { data: productData } = await supabase
@@ -191,6 +198,8 @@ export function UpdateProduct({}: iUpdateProductProps) {
       }
     };
     updateProductState();
+    setUpdateProduct(null);
+    setProductEditData(null);
   };
 
   const deleteProductAdditional = async ({
@@ -365,7 +374,7 @@ export function UpdateProduct({}: iUpdateProductProps) {
             </label>
             <textarea
               {...register('description')}
-              className="scrollbar-custom w-full h-28 lg:flex-1 border resize-none border-gray-300 py-2 px-2 text-base font-normal leading-none rounded 
+              className="scrollbar-custom w-full h-28 lg:flex-1 border resize-none border-gray-300 py-2 px-2 text-base font-normal leading-none rounded
               outline-none focus:border-blue-400 "
               placeholder="ex.: Banana"
             ></textarea>

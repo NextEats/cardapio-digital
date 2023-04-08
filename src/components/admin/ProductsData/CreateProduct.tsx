@@ -1,7 +1,7 @@
 import { ProductContext } from '@/src/contexts/ProductContext';
 import { getFilePath } from '@/src/helpers/getFilePath';
-import { api, supabase } from '@/src/server/api';
-import { iAdditional, iSelect } from '@/src/types/types';
+import { supabase } from '@/src/server/api';
+import { iAdditional, iProductsWithFKData, iSelect } from '@/src/types/types';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Image from 'next/image';
 import { useContext, useState } from 'react';
@@ -40,6 +40,7 @@ export function CreateProduct({}: iCreateProductProps) {
     categories,
     selectAdditionalState,
     selectSelectState,
+    setProducts,
     product_options_state,
   } = useContext(ProductContext);
   const [isCreatingProduct, setIsCreatingProduct] = isCreatingProductState;
@@ -86,7 +87,7 @@ export function CreateProduct({}: iCreateProductProps) {
     const file: File = picture[0];
     const { filePath } = getFilePath({ file, slug: restaurant.slug });
     const { data: uploadData, error } = await supabase.storage
-      .from('teste')
+      .from('product-pictures')
       .upload(filePath, file, { upsert: true });
 
     if (!uploadData) {
@@ -99,16 +100,34 @@ export function CreateProduct({}: iCreateProductProps) {
       .from('product-pictures')
       .getPublicUrl(uploadData.path);
 
-    const { data: productData } = await api.post(
-      `api/products/${restaurant.id}`,
-      {
+    // const { data: productData } = await api.post(
+    //   `api/products/${restaurant.id}`,
+    //   {
+    //     name,
+    //     picture_url: publicUrl,
+    //     price,
+    //     description,
+    //     category_id,
+    //   }
+    //   );
+    const { data: productData } = await supabase
+      .from('products')
+      .insert({
         name,
         picture_url: publicUrl,
         price,
         description,
         category_id,
-      }
-    );
+        active: true,
+        is_deleted: false,
+        restaurant_id: restaurant.id,
+      })
+      .select('*, category_id ( * )');
+
+    if (!productData) {
+      alert('Não foi possivel criar o producto ');
+      return;
+    }
 
     selectAdditional.forEach(async add => {
       await supabase.from('product_additionals').insert({
@@ -121,6 +140,11 @@ export function CreateProduct({}: iCreateProductProps) {
         select_id: s.id,
         product_id: productData[0].id,
       });
+    });
+
+    setProducts(state => {
+      // Adiciona o novo produto
+      return [...state, { ...(productData[0] as iProductsWithFKData) }];
     });
 
     reset();
@@ -248,7 +272,7 @@ export function CreateProduct({}: iCreateProductProps) {
             </label>
             <textarea
               {...register('description')}
-              className="scrollbar-custom w-full h-28 lg:flex-1 border resize-none border-gray-300 py-2 px-2 text-base font-normal leading-none rounded 
+              className="scrollbar-custom w-full h-28 lg:flex-1 border resize-none border-gray-300 py-2 px-2 text-base font-normal leading-none rounded
               outline-none focus:border-blue-400 "
               placeholder="ex.: Banana"
             ></textarea>

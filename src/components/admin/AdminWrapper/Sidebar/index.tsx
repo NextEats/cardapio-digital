@@ -1,12 +1,12 @@
-import { AdminContext } from "@/src/contexts/adminContext";
-import { useRouter } from "next/router";
-import { useContext } from "react";
-import { AiOutlineAreaChart } from "react-icons/ai";
-import { FaCog, FaMotorcycle } from "react-icons/fa";
-import { IoMdExit, IoMdRestaurant } from "react-icons/io";
-import { MdFastfood } from "react-icons/md";
-import { RiMoneyDollarBoxFill } from "react-icons/ri";
-import SidebarListItem from "../../SidebarListItem";
+import { AdminContext } from '@/src/contexts/adminContext';
+import { useRouter } from 'next/router';
+import { useContext } from 'react';
+import { AiOutlineAreaChart } from 'react-icons/ai';
+import { FaCog, FaMotorcycle } from 'react-icons/fa';
+import { IoMdExit, IoMdRestaurant } from 'react-icons/io';
+import { MdFastfood } from 'react-icons/md';
+import { RiMoneyDollarBoxFill } from 'react-icons/ri';
+import SidebarListItem from '../../SidebarListItem';
 interface iSidebar {
   isSidebarOpen: boolean;
 }
@@ -21,7 +21,7 @@ export default function Sidebar({ isSidebarOpen }: iSidebar) {
     <>
       <div
         className={`select-none bg-[#1A1F23] w-60 h-screen absolute transition-[left] duration-500 ease-in-out ${
-          isSidebarOpen ? "left-0" : "-left-64"
+          isSidebarOpen ? 'left-0' : '-left-64'
         } flex flex-col shadow-2xl`}
       >
         <ul className="flex flex-col mt-5">

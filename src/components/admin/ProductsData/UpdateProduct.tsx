@@ -199,6 +199,7 @@ export function UpdateProduct({}: iUpdateProductProps) {
     };
     updateProductState();
     setUpdateProduct(null);
+    setProductEditData(null);
   };
 
   const deleteProductAdditional = async ({

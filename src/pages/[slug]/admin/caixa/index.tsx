@@ -62,31 +62,43 @@ const CashboxManagement = (props: iCashboxManagement) => {
   const cashBoxOpened = cashBoxes.find((cb: any) => cb.is_open === true);
   const ordersGroupedByOrderStatus = groupOrdersByStatus(ordersData);
 
+  if (!restaurant) {
+    return null;
+  }
+
   let res: any = {};
 
-  if (
-    ordersGroupedByOrderStatus['entregue'] &&
-    ordersGroupedByOrderStatus['cancelado'] &&
-    ordersGroupedByOrderStatus['em produção']
-  ) {
-    res['entregue'] = ordersGroupedByOrderStatus['entregue']
-      ? ordersGroupedByOrderStatus['entregue'].filter(
-          elem => elem.cash_box_id === cashBoxOpened?.id
-        )
-      : [];
+  console.log('ordersGroupedByOrderStatus', ordersGroupedByOrderStatus);
 
+  if (ordersGroupedByOrderStatus['entregue']) {
+    res['entregue'] = ordersGroupedByOrderStatus['entregue']
+      ? ordersGroupedByOrderStatus['entregue'].filter(elem => {
+          return elem.cash_box_id === cashBoxOpened?.id;
+        })
+      : [];
+  }
+
+  if (ordersGroupedByOrderStatus['cancelado']) {
     res['cancelado'] = ordersGroupedByOrderStatus['cancelado']
       ? ordersGroupedByOrderStatus['cancelado'].filter(
           elem => elem.cash_box_id === cashBoxOpened?.id
         )
       : [];
+  }
 
+  if (ordersGroupedByOrderStatus['em produção']) {
     res['em produção'] = ordersGroupedByOrderStatus['em produção']
       ? ordersGroupedByOrderStatus['em produção'].filter(
           elem => elem.cash_box_id === cashBoxOpened?.id
         )
       : [];
-  } else {
+  }
+
+  if (
+    !ordersGroupedByOrderStatus['entregue'] &&
+    !ordersGroupedByOrderStatus['cancelado'] &&
+    !ordersGroupedByOrderStatus['em produção']
+  ) {
     res = ordersGroupedByOrderStatus;
   }
 
@@ -98,9 +110,7 @@ const CashboxManagement = (props: iCashboxManagement) => {
     selects,
   });
 
-  if (!restaurant) {
-    return null;
-  }
+  console.log(billingAmount);
 
   return (
     <AdminWrapper>

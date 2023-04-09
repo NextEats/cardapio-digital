@@ -1,14 +1,13 @@
-import { api } from "@/src/server/api";
-import { iCashBox, iOrdersWithFKData } from "@/src/types/types";
-import { useState } from "react";
-import { toast } from "react-toastify";
-import { CardapioDigitalButton } from "../../cardapio-digital/CardapioDigitalButton";
-import CashClosingReportModal from "../CashClosingReportModal";
+import { api } from '@/src/server/api';
+import { iCashBox, iOrdersWithFKData } from '@/src/types/types';
+import { useState } from 'react';
+import { CardapioDigitalButton } from '../../cardapio-digital/CardapioDigitalButton';
+import CashClosingReportModal from '../CashClosingReportModal';
 
 interface iCashBoxButtons {
   ordersGroupedByOrderStatus: { [key: string]: iOrdersWithFKData[] };
   restaurantId: number;
-  cashBoxState: iCashBox["data"] | undefined;
+  cashBoxState: iCashBox['data'] | undefined;
   billing: number;
 }
 
@@ -23,36 +22,37 @@ export default function CashBoxButtons({
     useState(false);
 
   async function handleOpenCashBox() {
-    const cashBox = await api.post("api/cash_boxes/open", {
+    await api.post('api/cash_boxes/open', {
       restaurant_id: restaurantId,
     });
     setOpenCashBoxState(true);
+    location.reload();
   }
 
   function getOrdersWithCashBoxId(arr: any) {
-    if (!arr["entregue"]) {
+    if (!arr['entregue']) {
       return;
     }
 
-    const res = arr["entregue"].filter(
+    const res = arr['entregue'].filter(
       (order: any) => order.cash_box_id === cashBoxState?.id
     );
-    console.log(res);
+
     return res;
   }
   async function openCashBoxReportToCloseCashBox() {
-    if (
-      ordersGroupedByOrderStatus["em análise"] ||
-      ordersGroupedByOrderStatus["a caminho"]
-    ) {
-      toast.error(
-        "Para fechar o caixa, todos os pedidos precisam ser entregues.",
-        {
-          theme: "light",
-        }
-      );
-      return;
-    }
+    // if (
+    //   ordersGroupedByOrderStatus['em análise'] ||
+    //   ordersGroupedByOrderStatus['a caminho']
+    // ) {
+    //   toast.error(
+    //     'Para fechar o caixa, todos os pedidos precisam ser entregues.',
+    //     {
+    //       theme: 'light',
+    //     }
+    //   );
+    //   return;
+    // }
     setOpenCashBoxClosingReportModal(true);
   }
 

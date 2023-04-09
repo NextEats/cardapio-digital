@@ -1,36 +1,37 @@
-import { ProductContext } from "@/src/contexts/ProductContext";
-import { getFilePath } from "@/src/helpers/getFilePath";
-import { api, supabase } from "@/src/server/api";
-import { iAdditional, iSelect } from "@/src/types/types";
-import { zodResolver } from "@hookform/resolvers/zod";
-import Image from "next/image";
-import { useContext, useState } from "react";
-import { useForm } from "react-hook-form";
-import { BsUpload } from "react-icons/bs";
-import { FiTrash2 } from "react-icons/fi";
-import * as zod from "zod";
-import { Additionals } from "./Additionals";
-import { Selects } from "./Selects";
+import { ProductContext } from '@/src/contexts/ProductContext';
+import { getFilePath } from '@/src/helpers/getFilePath';
+import { supabase } from '@/src/server/api';
+import { iAdditional, iProductsWithFKData, iSelect } from '@/src/types/types';
+import { zodResolver } from '@hookform/resolvers/zod';
+import Image from 'next/image';
+import { useContext, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { BsUpload } from 'react-icons/bs';
+import { FiTrash2 } from 'react-icons/fi';
+import { toast } from 'react-toastify';
+import * as zod from 'zod';
+import { AdditionalsModal } from './ProductsAction/AdditionalsModal';
+import { SelectsModal } from './ProductsAction/SelectsModal';
 
 interface iCreateProductProps {}
 
 const newProductValidationSchema = zod.object({
-  name: zod.string().min(1, { message: "O nome do produto é obrigatório." }),
+  name: zod.string().min(1, { message: 'O nome do produto é obrigatório.' }),
   price: zod.number(),
   category_id: zod.number(),
   picture: zod.any().nullable(),
   description: zod
     .string()
-    .min(1, { message: "A descrição do produto é obrigatório." }),
+    .min(1, { message: 'A descrição do produto é obrigatório.' }),
 });
 
 type newProduct = zod.infer<typeof newProductValidationSchema>;
 const newProductDefaultValue: newProduct = {
   picture: null,
-  name: "",
+  name: '',
   price: 0,
   category_id: 0,
-  description: "",
+  description: '',
 };
 
 export function CreateProduct({}: iCreateProductProps) {
@@ -40,6 +41,7 @@ export function CreateProduct({}: iCreateProductProps) {
     categories,
     selectAdditionalState,
     selectSelectState,
+    setProducts,
     product_options_state,
   } = useContext(ProductContext);
   const [isCreatingProduct, setIsCreatingProduct] = isCreatingProductState;
@@ -50,8 +52,6 @@ export function CreateProduct({}: iCreateProductProps) {
 
   const {
     register,
-    getValues,
-    setValue,
     handleSubmit,
     reset,
     formState: { isSubmitting },
@@ -60,20 +60,20 @@ export function CreateProduct({}: iCreateProductProps) {
     defaultValues: newProductDefaultValue,
   });
 
-  const handleRemoveAdditional = async (additional: iAdditional["data"]) => {
-    setSelectAdditional((state) => {
+  const handleRemoveAdditional = async (additional: iAdditional['data']) => {
+    setSelectAdditional(state => {
       state.splice(
-        state.findIndex((a) => a.id === additional.id),
+        state.findIndex(a => a.id === additional.id),
         1
       );
       return [...state];
     });
   };
 
-  const handleRemoveSelect = async (select: iSelect["data"]) => {
-    setSelectSelect((state) => {
+  const handleRemoveSelect = async (select: iSelect['data']) => {
+    setSelectSelect(state => {
       state.splice(
-        state.findIndex((a) => a.id === select.id),
+        state.findIndex(a => a.id === select.id),
         1
       );
       return [...state];
@@ -83,42 +83,68 @@ export function CreateProduct({}: iCreateProductProps) {
   const handleCreateProduct = async (data: newProduct) => {
     const { category_id, description, name, price, picture } = data;
 
+    if (!picture) {
+      toast.error('Por favor, adicione uma imagem para criar o produto.', {
+        theme: 'light',
+      });
+      return;
+    }
+
     const file: File = picture[0];
+
     const { filePath } = getFilePath({ file, slug: restaurant.slug });
     const { data: uploadData, error } = await supabase.storage
-      .from("teste")
+      .from('product-pictures')
       .upload(filePath, file, { upsert: true });
 
     if (!uploadData) {
-      alert("Não foi possivel criar o produto.");
+      toast.error('Não foi possivel criar o produto.', {
+        theme: 'light',
+      });
       return;
     }
     const {
       data: { publicUrl },
-    } = await supabase.storage.from("teste").getPublicUrl(uploadData.path);
+    } = await supabase.storage
+      .from('product-pictures')
+      .getPublicUrl(uploadData.path);
 
-    const { data: productData } = await api.post(
-      `api/products/${restaurant.id}`,
-      {
+    const { data: productData } = await supabase
+      .from('products')
+      .insert({
         name,
         picture_url: publicUrl,
         price,
         description,
         category_id,
-      }
-    );
+        active: true,
+        is_deleted: false,
+        restaurant_id: restaurant.id,
+      })
+      .select('*, category_id ( * )');
 
-    selectAdditional.forEach(async (add) => {
-      await supabase.from("product_additionals").insert({
+    if (!productData) {
+      toast.error('Não foi possivel criar o produto.', {
+        theme: 'light',
+      });
+      return;
+    }
+
+    selectAdditional.forEach(async add => {
+      await supabase.from('product_additionals').insert({
         additional_id: add.id,
         product_id: productData[0].id,
       });
     });
-    setectSelect.forEach(async (s) => {
-      await supabase.from("product_selects").insert({
+    setectSelect.forEach(async s => {
+      await supabase.from('product_selects').insert({
         select_id: s.id,
         product_id: productData[0].id,
       });
+    });
+
+    setProducts(state => {
+      return [...state, { ...(productData[0] as iProductsWithFKData) }];
     });
 
     reset();
@@ -139,8 +165,8 @@ export function CreateProduct({}: iCreateProductProps) {
           type="button"
           className="text-blue-400"
         >
-          {" "}
-          voltar{" "}
+          {' '}
+          voltar{' '}
         </button>
         <button
           type="submit"
@@ -157,7 +183,7 @@ export function CreateProduct({}: iCreateProductProps) {
             id="picture_url"
             type="file"
             accept="image/*"
-            {...register("picture", {
+            {...register('picture', {
               setValueAs: (value: FileList) => value,
               onChange(event) {
                 const picturteUrl = URL.createObjectURL(event.target.files[0]);
@@ -193,13 +219,13 @@ export function CreateProduct({}: iCreateProductProps) {
 
           <div className="max-h-[300px] flex flex-col flex-1">
             <label className="text-lg font-medium" htmlFor="">
-              {" "}
-              Nome{" "}
+              {' '}
+              Nome{' '}
             </label>
             <input
               className="w-full border border-gray-300 py-1 px-2 text-base font-normal leading-none rounded outline-none focus:border-blue-400 mb-2"
               type="text"
-              {...register("name")}
+              {...register('name')}
               placeholder="ex.: Banana"
             />
 
@@ -211,12 +237,12 @@ export function CreateProduct({}: iCreateProductProps) {
                 Preço
                 <div className="flex items-center">
                   <p className="py-[3.5px] px-2 bg-gray-300 text-gray-500 rounded-l-sm text-base">
-                    R${" "}
+                    R${' '}
                   </p>
                   <input
                     className="w-full border border-gray-300 py-1 px-2 text-base font-semibold leading-none rounded-r outline-none focus:border-blue-400"
                     type="number"
-                    {...register("price", { valueAsNumber: true })}
+                    {...register('price', { valueAsNumber: true })}
                   />
                 </div>
               </label>
@@ -226,11 +252,11 @@ export function CreateProduct({}: iCreateProductProps) {
               >
                 Categoria
                 <select
-                  {...register("category_id", { valueAsNumber: true })}
+                  {...register('category_id', { valueAsNumber: true })}
                   className="w-full border border-gray-300 py-1 px-2 text-base font-semibold leading-none rounded outline-none focus:border-blue-400"
                 >
                   <option value="select">Selecione</option>
-                  {categories.map((category) => {
+                  {categories.map(category => {
                     return (
                       <option key={category.id} value={category.id}>
                         {category.name}
@@ -245,8 +271,8 @@ export function CreateProduct({}: iCreateProductProps) {
               Descrição
             </label>
             <textarea
-              {...register("description")}
-              className="scrollbar-custom w-full h-28 lg:flex-1 border resize-none border-gray-300 py-2 px-2 text-base font-normal leading-none rounded 
+              {...register('description')}
+              className="scrollbar-custom w-full h-28 lg:flex-1 border resize-none border-gray-300 py-2 px-2 text-base font-normal leading-none rounded
               outline-none focus:border-blue-400 "
               placeholder="ex.: Banana"
             ></textarea>
@@ -257,11 +283,11 @@ export function CreateProduct({}: iCreateProductProps) {
           <div className=" border border-gray-300 p-4">
             <div className="flex items-center justify-between">
               <span className="text-base font-bold">Adicionais </span>
-              <Additionals type="select_additionals" />
+              <AdditionalsModal type="select_additionals" />
             </div>
 
             <div className="flex flex-col gap-2 mt-3">
-              {selectAdditional.map((additional) => {
+              {selectAdditional.map(additional => {
                 return (
                   <div
                     key={additional.id}
@@ -276,8 +302,8 @@ export function CreateProduct({}: iCreateProductProps) {
                     />
                     <div className="flex flex-col mt-2">
                       <span className="w-[180px] truncate text-lg font-semibold">
-                        {" "}
-                        {additional.name}{" "}
+                        {' '}
+                        {additional.name}{' '}
                       </span>
                     </div>
                     <FiTrash2
@@ -291,10 +317,10 @@ export function CreateProduct({}: iCreateProductProps) {
           </div>
           <div className=" border border-gray-300 p-4">
             <div className="flex items-center justify-between">
-              <span className="font-bold">Personalisações </span>
-              <Selects type="select_selects" />
+              <span className="font-bold">Personalizações</span>
+              <SelectsModal type="select_selects" />
             </div>
-            {setectSelect.map((select) => {
+            {setectSelect.map(select => {
               return (
                 <div
                   key={select.id}
@@ -307,10 +333,9 @@ export function CreateProduct({}: iCreateProductProps) {
                       onClick={() => handleRemoveSelect(select)}
                       className="text-xl text-red-500 cursor-pointer hover:scale-125 hover:transition-all ease-in-out"
                     />
-                    {/* </div> */}
                   </div>
                   <div className="flex flex-wrap gap-2">
-                    {product_options?.map((product_option) => {
+                    {product_options?.map(product_option => {
                       if (product_option.select_id !== select.id) return;
                       return (
                         <div key={product_option.id}>
@@ -330,7 +355,7 @@ export function CreateProduct({}: iCreateProductProps) {
                                   src={product_option.picture_url}
                                   alt={product_option.name}
                                   className={
-                                    "w-full h-full relative rounded-lg object-cover"
+                                    'w-full h-full relative rounded-lg object-cover'
                                   }
                                   width={326}
                                   height={358}

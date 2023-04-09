@@ -1,36 +1,37 @@
-import { ProductContext } from "@/src/contexts/ProductContext";
-import { getFilePath } from "@/src/helpers/getFilePath";
-import { supabase } from "@/src/server/api";
-import { iAdditional, iSelect } from "@/src/types/types";
-import { zodResolver } from "@hookform/resolvers/zod";
-import Image from "next/image";
-import { useContext, useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { BsUpload } from "react-icons/bs";
-import { FiTrash2 } from "react-icons/fi";
-import * as zod from "zod";
-import { Additionals } from "./Additionals";
-import { Selects } from "./Selects";
+import { ProductContext } from '@/src/contexts/ProductContext';
+import { getFilePath } from '@/src/helpers/getFilePath';
+import { getPathByPictureUrl } from '@/src/helpers/getPathByPictureUrl';
+import { supabase } from '@/src/server/api';
+import { iAdditional, iProductsWithFKData, iSelect } from '@/src/types/types';
+import { zodResolver } from '@hookform/resolvers/zod';
+import Image from 'next/image';
+import { useContext, useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { BsUpload } from 'react-icons/bs';
+import { FiTrash2 } from 'react-icons/fi';
+import * as zod from 'zod';
+import { AdditionalsModal } from './ProductsAction/AdditionalsModal';
+import { SelectsModal } from './ProductsAction/SelectsModal';
 
 interface iUpdateProductProps {}
 
 const updateProductValidationSchema = zod.object({
-  name: zod.string().min(1, { message: "O nome do produto é obrigatório." }),
+  name: zod.string().min(1, { message: 'O nome do produto é obrigatório.' }),
   price: zod.number(),
   category_id: zod.number(),
   picture: zod.any().nullable(),
   description: zod
     .string()
-    .min(1, { message: "A descrição do produto é obrigatório." }),
+    .min(1, { message: 'A descrição do produto é obrigatório.' }),
 });
 
 type updateProduct = zod.infer<typeof updateProductValidationSchema>;
 const updateProductDefaultValue: updateProduct = {
   picture: null,
-  name: "",
+  name: '',
   price: 0,
   category_id: 0,
-  description: "",
+  description: '',
 };
 
 export function UpdateProduct({}: iUpdateProductProps) {
@@ -42,6 +43,8 @@ export function UpdateProduct({}: iUpdateProductProps) {
     selectSelectState,
     productEditDataState,
     product_options_state,
+    products,
+    setProducts,
   } = useContext(ProductContext);
 
   const [productEditData, setProductEditData] = productEditDataState;
@@ -53,10 +56,8 @@ export function UpdateProduct({}: iUpdateProductProps) {
 
   const {
     register,
-    getValues,
     setValue,
     handleSubmit,
-    reset,
     formState: { isSubmitting },
   } = useForm<updateProduct>({
     resolver: zodResolver(updateProductValidationSchema),
@@ -66,36 +67,36 @@ export function UpdateProduct({}: iUpdateProductProps) {
   useEffect(() => {
     if (typeof updateProduct !== null) {
       setImageProview(updateProduct?.picture_url!);
-      setValue("description", updateProduct?.description!);
-      setValue("name", updateProduct?.name!);
-      setValue("price", updateProduct?.price!);
-      setValue("category_id", updateProduct?.category_id!);
-      setValue("picture", updateProduct?.picture_url);
+      setValue('description', updateProduct?.description!);
+      setValue('name', updateProduct?.name!);
+      setValue('price', updateProduct?.price!);
+      setValue('category_id', updateProduct?.category_id.id!);
+      setValue('picture', updateProduct?.picture_url);
     }
   }, [updateProduct, setValue]);
 
-  const handleRemoveAdditional = async (additional: iAdditional["data"]) => {
+  const handleRemoveAdditional = async (additional: iAdditional['data']) => {
     await supabase
-      .from("product_additionals")
+      .from('product_additionals')
       .delete()
       .match({ product_id: updateProduct!.id, additional_id: additional.id });
-    setSelectAdditional((state) => {
+    setSelectAdditional(state => {
       state.splice(
-        state.findIndex((a) => a.id === additional.id),
+        state.findIndex(a => a.id === additional.id),
         1
       );
       return [...state];
     });
   };
 
-  const handleRemoveSelect = async (select: iSelect["data"]) => {
+  const handleRemoveSelect = async (select: iSelect['data']) => {
     await supabase
-      .from("product_selects")
+      .from('product_selects')
       .delete()
       .match({ product_id: updateProduct!.id, select_id: select.id });
-    setSelectSelect((state) => {
+    setSelectSelect(state => {
       state.splice(
-        state.findIndex((a) => a.id === select.id),
+        state.findIndex(a => a.id === select.id),
         1
       );
       return [...state];
@@ -104,30 +105,34 @@ export function UpdateProduct({}: iUpdateProductProps) {
 
   const handleUpdateProduct = async (data: updateProduct) => {
     const { category_id, description, name, price, picture } = data;
-    console.log(data);
-    console.log("productEditData", productEditData);
 
     let pictureUrl;
-    if (typeof picture === "string") {
+    if (typeof picture === 'string') {
       pictureUrl = picture;
     } else {
+      const { path } = getPathByPictureUrl(updateProduct?.picture_url!);
+
+      supabase.storage.from('product-pictures').remove([path!]);
+
       const file: File = picture[0];
       const { filePath } = getFilePath({ file, slug: restaurant.slug });
       const { data: uploadData, error } = await supabase.storage
-        .from("teste")
+        .from('product-pictures')
         .upload(filePath, file, { upsert: true });
 
       if (!uploadData) {
-        alert("Não foi possivel criar o produto.");
+        alert('Não foi possivel criar o produto.');
         return;
       }
       const {
         data: { publicUrl },
-      } = await supabase.storage.from("teste").getPublicUrl(uploadData.path);
+      } = await supabase.storage
+        .from('product-pictures')
+        .getPublicUrl(uploadData.path);
       pictureUrl = publicUrl;
     }
-    const { data: productData, status } = await supabase
-      .from("products")
+    const { data: productData } = await supabase
+      .from('products')
       .update({
         name,
         picture_url: pictureUrl,
@@ -135,22 +140,22 @@ export function UpdateProduct({}: iUpdateProductProps) {
         description,
         category_id,
       })
-      .eq("id", updateProduct?.id)
-      .select("*");
+      .eq('id', updateProduct?.id)
+      .select('*');
     if (!productData) {
-      alert("Erro ao editar produto. Contate o suporte.");
+      alert('Erro ao editar produto. Contate o suporte.');
       return;
     }
-    console.log("status", status);
+
     if (productEditData !== null) {
-      productEditData.forEach(async (ped) => {
+      productEditData.forEach(async ped => {
         if (ped.additional_id !== null) {
-          ped.type === "deleted"
+          ped.type === 'deleted'
             ? await deleteProductAdditional({
                 additional_id: ped.additional_id,
                 product_id: productData[0].id,
               })
-            : ped.type === "added"
+            : ped.type === 'added'
             ? await createProductAdditional({
                 additional_id: ped.additional_id,
                 product_id: productData[0].id,
@@ -158,12 +163,12 @@ export function UpdateProduct({}: iUpdateProductProps) {
             : null;
         }
         if (ped.select_id !== null) {
-          ped.type === "deleted"
+          ped.type === 'deleted'
             ? await deleteProductSelect({
                 select_id: ped.select_id,
                 product_id: productData[0].id,
               })
-            : ped.type === "added"
+            : ped.type === 'added'
             ? await createProductSelect({
                 select_id: ped.select_id,
                 product_id: productData[0].id,
@@ -172,6 +177,29 @@ export function UpdateProduct({}: iUpdateProductProps) {
         }
       });
     }
+
+    const updateProductState = async () => {
+      const { data } = await supabase
+        .from('products')
+        .select('*, category_id ( * )')
+        .match({ is_deleted: false, id: productData[0].id });
+
+      if (data && data[0]) {
+        const newProduct = data[0];
+        setProducts(state => {
+          const index = state.findIndex(p => p.id === productData[0].id);
+          // Remove o produto antigo
+          const newState = [...state];
+          newState.splice(index, 1);
+
+          // Adiciona o novo produto
+          return [...newState, { ...(newProduct as iProductsWithFKData) }];
+        });
+      }
+    };
+    updateProductState();
+    setUpdateProduct(null);
+    setProductEditData(null);
   };
 
   const deleteProductAdditional = async ({
@@ -181,11 +209,10 @@ export function UpdateProduct({}: iUpdateProductProps) {
     additional_id: number;
     product_id: number;
   }) => {
-    const { data } = await supabase.from("product_additionals").delete().match({
+    const { data } = await supabase.from('product_additionals').delete().match({
       additional_id,
       product_id,
     });
-    console.log("1", data);
   };
   const createProductAdditional = async ({
     additional_id,
@@ -194,11 +221,10 @@ export function UpdateProduct({}: iUpdateProductProps) {
     additional_id: number;
     product_id: number;
   }) => {
-    const { data } = await supabase.from("product_additionals").insert({
+    const { data } = await supabase.from('product_additionals').insert({
       additional_id,
       product_id,
     });
-    console.log("2", data);
   };
   const deleteProductSelect = async ({
     select_id,
@@ -207,11 +233,10 @@ export function UpdateProduct({}: iUpdateProductProps) {
     select_id: number;
     product_id: number;
   }) => {
-    const { data } = await supabase.from("product_selects").delete().match({
+    const { data } = await supabase.from('product_selects').delete().match({
       select_id,
       product_id,
     });
-    console.log("1", data);
   };
   const createProductSelect = async ({
     select_id,
@@ -220,11 +245,10 @@ export function UpdateProduct({}: iUpdateProductProps) {
     select_id: number;
     product_id: number;
   }) => {
-    const { data } = await supabase.from("product_selects").insert({
+    const { data } = await supabase.from('product_selects').insert({
       select_id,
       product_id,
     });
-    console.log("2", data);
   };
 
   const handleGoBack = () => {
@@ -241,8 +265,8 @@ export function UpdateProduct({}: iUpdateProductProps) {
           type="button"
           className="text-blue-400"
         >
-          {" "}
-          voltar{" "}
+          {' '}
+          voltar{' '}
         </button>
         <button
           type="submit"
@@ -259,7 +283,7 @@ export function UpdateProduct({}: iUpdateProductProps) {
             id="picture_url"
             type="file"
             accept="image/*"
-            {...register("picture", {
+            {...register('picture', {
               setValueAs: (value: FileList) => value,
               onChange(event) {
                 const picturteUrl = URL.createObjectURL(event.target.files[0]);
@@ -296,13 +320,13 @@ export function UpdateProduct({}: iUpdateProductProps) {
           {/* <div> */}
           <div className="max-h-[300px] flex flex-col flex-1">
             <label className="text-lg font-medium" htmlFor="">
-              {" "}
-              Nome{" "}
+              {' '}
+              Nome{' '}
             </label>
             <input
               className="w-full border border-gray-300 py-1 px-2 text-base font-normal leading-none rounded outline-none focus:border-blue-400 mb-2"
               type="text"
-              {...register("name")}
+              {...register('name')}
               placeholder="ex.: Banana"
             />
 
@@ -311,16 +335,16 @@ export function UpdateProduct({}: iUpdateProductProps) {
                 htmlFor=""
                 className="text-lg font-medium w-full lg:w-[30%]"
               >
-                {" "}
+                {' '}
                 Preço
                 <div className="flex items-center ">
                   <p className="py-[3.5px] px-2 bg-gray-300 text-gray-500 rounded-l-md text-base">
-                    R${" "}
+                    R${' '}
                   </p>
                   <input
                     className="w-full border border-gray-300 py-1 px-2 text-base font-semibold leading-none rounded-r outline-none focus:border-blue-400"
                     type="number"
-                    {...register("price", { valueAsNumber: true })}
+                    {...register('price', { valueAsNumber: true })}
                   />
                 </div>
               </label>
@@ -330,11 +354,11 @@ export function UpdateProduct({}: iUpdateProductProps) {
               >
                 Categoria
                 <select
-                  {...register("category_id", { valueAsNumber: true })}
+                  {...register('category_id', { valueAsNumber: true })}
                   className="w-full border border-gray-300 py-1 px-2 text-base font-semibold leading-none rounded outline-none focus:border-blue-400"
                 >
                   <option value="select">Selecione</option>
-                  {categories.map((category) => {
+                  {categories.map(category => {
                     return (
                       <option key={category.id} value={category.id}>
                         {category.name}
@@ -349,8 +373,8 @@ export function UpdateProduct({}: iUpdateProductProps) {
               Descrição
             </label>
             <textarea
-              {...register("description")}
-              className="scrollbar-custom w-full h-28 lg:flex-1 border resize-none border-gray-300 py-2 px-2 text-base font-normal leading-none rounded 
+              {...register('description')}
+              className="scrollbar-custom w-full h-28 lg:flex-1 border resize-none border-gray-300 py-2 px-2 text-base font-normal leading-none rounded
               outline-none focus:border-blue-400 "
               placeholder="ex.: Banana"
             ></textarea>
@@ -362,11 +386,11 @@ export function UpdateProduct({}: iUpdateProductProps) {
           <div className=" border border-gray-300 p-4">
             <div className="flex items-center justify-between">
               <span className="text-base font-bold">Adicionais </span>
-              <Additionals type="select_additionals" />
+              <AdditionalsModal type="select_additionals" />
             </div>
 
             <div className="flex flex-col gap-2 mt-3">
-              {selectAdditional.map((additional) => {
+              {selectAdditional.map(additional => {
                 return (
                   <div
                     key={additional.id}
@@ -381,12 +405,9 @@ export function UpdateProduct({}: iUpdateProductProps) {
                     />
                     <div className="flex flex-col mt-2">
                       <span className="w-[180px] truncate text-lg font-semibold">
-                        {" "}
-                        {additional.name}{" "}
+                        {' '}
+                        {additional.name}{' '}
                       </span>
-                      {/* <span className=""> R$ {additional.price.toLocaleString("pt-BR", {
-                                        minimumFractionDigits: 2, maximumFractionDigits: 2
-                                    })} </span> */}
                     </div>
                     <FiTrash2
                       onClick={() => handleRemoveAdditional(additional)}
@@ -400,9 +421,9 @@ export function UpdateProduct({}: iUpdateProductProps) {
           <div className=" border border-gray-300 p-4">
             <div className="flex items-center justify-between">
               <span className="font-bold">Personalisações </span>
-              <Selects type="select_selects" />
+              <SelectsModal type="select_selects" />
             </div>
-            {setectSelect.map((select) => {
+            {setectSelect.map(select => {
               return (
                 <div
                   key={select.id}
@@ -410,15 +431,13 @@ export function UpdateProduct({}: iUpdateProductProps) {
                 >
                   <div className="flex items-center justify-between">
                     <span className="w-[160px] truncate"> {select.name} </span>
-                    {/* <div className="flex item-center gap-2"> */}
                     <FiTrash2
                       onClick={() => handleRemoveSelect(select)}
                       className="text-xl text-red-500 cursor-pointer hover:scale-125 hover:transition-all ease-in-out"
                     />
-                    {/* </div> */}
                   </div>
                   <div className="flex flex-wrap gap-2">
-                    {product_options?.map((product_option) => {
+                    {product_options?.map(product_option => {
                       if (product_option.select_id !== select.id) return;
                       return (
                         <div key={product_option.id}>
@@ -438,7 +457,7 @@ export function UpdateProduct({}: iUpdateProductProps) {
                                   src={product_option.picture_url}
                                   alt={product_option.name}
                                   className={
-                                    "w-full h-full relative rounded-lg object-cover"
+                                    'w-full h-full relative rounded-lg object-cover'
                                   }
                                   width={326}
                                   height={358}

@@ -1,13 +1,13 @@
-import AdminWrapper from "@/src/components/admin/AdminWrapper";
-import { ProductsData } from "@/src/components/admin/ProductsData";
-import ProductContextProvider from "@/src/contexts/ProductContext";
-import { getAdditionalsByRestaurantIdFetch } from "@/src/fetch/additionals/getAdditionals";
-import { getProductOptionsFetch } from "@/src/fetch/productOptions/getProductOptions";
-import { getProductWithFKDataByRestaurantIdFetch } from "@/src/fetch/products/getProductWithFKDataByRestaurantId";
-import { getProductsCategoriesByRestaurantIdFetch } from "@/src/fetch/productsCategories/getProductsCategoriesByRestaurantId";
-import { getRestaurantBySlugFetch } from "@/src/fetch/restaurant/getRestaurantBySlug";
-import { getSelectsByRestaurantIdFetch } from "@/src/fetch/selects/getSelectsByRestaurantId";
-import { supabase } from "@/src/server/api";
+import AdminWrapper from '@/src/components/admin/AdminWrapper';
+import { ProductsData } from '@/src/components/admin/ProductsData';
+import ProductContextProvider from '@/src/contexts/ProductContext';
+import { getAdditionalsByRestaurantIdFetch } from '@/src/fetch/additionals/getAdditionals';
+import { getProductOptionsFetch } from '@/src/fetch/productOptions/getProductOptions';
+import { getProductWithFKDataByRestaurantIdFetch } from '@/src/fetch/products/getProductWithFKDataByRestaurantId';
+import { getProductsCategoriesByRestaurantIdFetch } from '@/src/fetch/productsCategories/getProductsCategoriesByRestaurantId';
+import { getRestaurantBySlugFetch } from '@/src/fetch/restaurant/getRestaurantBySlug';
+import { getSelectsByRestaurantIdFetch } from '@/src/fetch/selects/getSelectsByRestaurantId';
+import { supabase } from '@/src/server/api';
 import {
   iAdditionalCategories,
   iAdditionals,
@@ -16,17 +16,17 @@ import {
   iProductsWithFKData,
   iRestaurant,
   iSelects,
-} from "@/src/types/types";
-import { GetStaticPaths, GetStaticProps } from "next";
+} from '@/src/types/types';
+import { GetStaticPaths, GetStaticProps } from 'next';
 
 interface iProdcutsProps {
-  restaurant: iRestaurant["data"];
+  restaurant: iRestaurant['data'];
   productsData: iProductsWithFKData[];
-  categories: iProductCategories["data"];
-  additionals: iAdditionals["data"];
-  selects: iSelects["data"];
-  additional_categories: iAdditionalCategories["data"];
-  product_options: iProductOptions["data"];
+  categories: iProductCategories['data'];
+  additionals: iAdditionals['data'];
+  selects: iSelects['data'];
+  additional_categories: iAdditionalCategories['data'];
+  product_options: iProductOptions['data'];
 }
 
 export default function Products({
@@ -38,7 +38,6 @@ export default function Products({
   additional_categories,
   product_options,
 }: iProdcutsProps) {
-  console.log(productsData);
   return (
     <AdminWrapper>
       <ProductContextProvider
@@ -84,9 +83,9 @@ export const getStaticProps: GetStaticProps<
     getProductsCategoriesByRestaurantIdFetch(restaurant.id),
     getSelectsByRestaurantIdFetch(restaurant.id),
     supabase
-      .from("additional_categories")
-      .select("*")
-      .eq("restaurant_id", restaurant.id),
+      .from('additional_categories')
+      .select('*')
+      .eq('restaurant_id', restaurant.id),
     getProductOptionsFetch(),
   ]);
 

@@ -73,9 +73,6 @@ const CashboxManagement = (props: iCashboxManagement) => {
   if (ordersGroupedByOrderStatus['entregue']) {
     res['entregue'] = ordersGroupedByOrderStatus['entregue']
       ? ordersGroupedByOrderStatus['entregue'].filter(elem => {
-          console.log('elem.cash_box_id', elem.cash_box_id);
-          console.log('cashBoxOpened.id', cashBoxOpened?.id);
-
           return elem.cash_box_id === cashBoxOpened?.id;
         })
       : [];
@@ -104,8 +101,6 @@ const CashboxManagement = (props: iCashboxManagement) => {
   ) {
     res = ordersGroupedByOrderStatus;
   }
-
-  console.log('res', res);
 
   const billingAmount = calculateBilling({
     ordersGroupedByOrderStatus: res,

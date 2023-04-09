@@ -93,10 +93,12 @@ export default function CashClosingReportModal({
     value: number;
   }
 
-  function getPaymentTotals(orders: iOrdersWithFKData[]): Payment[] {
+  function getPaymentTotals(orders: any): Payment[] {
     const paymentTotals: Payment[] = [];
+    console.log('orders', orders);
     if (!orders) return [];
-    orders.forEach(order => {
+
+    orders.forEach((order: any) => {
       const paymentMethod = order.payment_methods.name;
       const orderValue = getOrderValue(order);
 
@@ -140,10 +142,10 @@ export default function CashClosingReportModal({
   if (!ordersGroupedByOrderStatus) {
     totalValueOfDoneOrders = 0;
   } else {
-    totalValueOfDoneOrders = getPaymentTotals(
-      ordersGroupedByOrderStatus['entregue']
-    );
+    totalValueOfDoneOrders = getPaymentTotals(ordersGroupedByOrderStatus);
   }
+
+  console.log('totalValueOfDoneOrders', totalValueOfDoneOrders);
 
   const canceledOrders = ordersGroupedByOrderStatus['cancelado'];
 

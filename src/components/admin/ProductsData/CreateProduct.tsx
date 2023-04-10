@@ -17,7 +17,9 @@ interface iCreateProductProps {}
 
 const newProductValidationSchema = zod.object({
   name: zod.string().min(1, { message: 'O nome do produto é obrigatório.' }),
-  price: zod.number(),
+  price: zod
+    .number()
+    .min(0, { message: 'O preço do produto precisa ser maior que R$ 00,00.' }),
   category_id: zod.number(),
   picture: zod.any().nullable(),
   description: zod
@@ -54,7 +56,7 @@ export function CreateProduct({}: iCreateProductProps) {
     register,
     handleSubmit,
     reset,
-    formState: { isSubmitting },
+    formState: { errors, isSubmitting },
   } = useForm<newProduct>({
     resolver: zodResolver(newProductValidationSchema),
     defaultValues: newProductDefaultValue,
@@ -228,7 +230,11 @@ export function CreateProduct({}: iCreateProductProps) {
               {...register('name')}
               placeholder="ex.: Banana"
             />
-
+            {errors.name ? (
+              <p className={`text-red-500 text-sm font-light mb-2`}>
+                {errors.name.message}
+              </p>
+            ) : null}
             <div className="flex 3xs:items-center 3xs:flex-row flex-col gap-2 w-full">
               <label
                 htmlFor=""
@@ -242,8 +248,14 @@ export function CreateProduct({}: iCreateProductProps) {
                   <input
                     className="w-full border border-gray-300 py-1 px-2 text-base font-semibold leading-none rounded-r outline-none focus:border-blue-400"
                     type="number"
+                    min="0"
                     {...register('price', { valueAsNumber: true })}
                   />
+                  {errors.price ? (
+                    <p className={`text-red-500 text-sm font-light mb-2`}>
+                      {errors.price.message}
+                    </p>
+                  ) : null}
                 </div>
               </label>
               <label

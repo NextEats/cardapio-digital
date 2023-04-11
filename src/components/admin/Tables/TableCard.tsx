@@ -1,6 +1,4 @@
-import { TableContext } from '@/src/contexts/TableControlContext';
 import { iTable } from '@/src/types/types';
-import { useContext } from 'react';
 import { BsPeople } from 'react-icons/bs';
 import { GiTable } from 'react-icons/gi';
 
@@ -9,12 +7,7 @@ interface iTableProps {
 }
 
 export default function TableCard({ table }: iTableProps) {
-  const { ordersTables } = useContext(TableContext);
   if (!table) return <></>;
-
-  const thisTable = ordersTables.filter(
-    (elem, index) => elem.tables.id === table.id
-  );
 
   const tableStatusColor = ` ${
     table.is_occupied

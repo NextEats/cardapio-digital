@@ -3,15 +3,10 @@ import * as Dialog from '@radix-ui/react-dialog';
 import { useContext } from 'react';
 import { FiX } from 'react-icons/fi';
 import Table from './TableCard';
-import TableModal from './TableModal';
+// import TableModal from './TableModal';
 
 export default function InactiveTablesModal() {
-  const {
-    tables,
-    setOpenedTableModal,
-    openedTableModal,
-    isOpenedInactiveTablesModalState,
-  } = useContext(TableContext);
+  const { tables, isOpenedInactiveTablesModalState } = useContext(TableContext);
 
   return (
     <div>
@@ -34,14 +29,14 @@ export default function InactiveTablesModal() {
               Mesas Inativas
             </Dialog.Title>
 
-            {openedTableModal ? <TableModal /> : null}
+            {/* {openedTableModal ? <TableModal /> : null} */}
 
             <div className="h-96 overflow-auto scrollbar-custom p-2">
               <div className="flex flex-col md:grid md:grid-cols-2 gap-5">
                 {tables.map((t, index) => {
                   if (t.is_active === false) return;
                   return (
-                    <button key={index} onClick={() => setOpenedTableModal(t)}>
+                    <button key={index}>
                       <Table table={t} />
                     </button>
                   );

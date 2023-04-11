@@ -1,7 +1,6 @@
 import { TableContext } from '@/src/contexts/TableControlContext';
 import { iTable } from '@/src/types/types';
 import { useContext } from 'react';
-import { CardapioDigitalButton } from '../cardapio-digital/CardapioDigitalButton';
 import CreateTableModal from './CreateTableModal';
 import InactiveTablesModal from './InactiveTables';
 import TableCard from './TableCard';
@@ -10,8 +9,7 @@ import { serverURL } from '@/src/server/api';
 import Link from 'next/link';
 
 export default function Tables() {
-  const { tables, setIsOpenedCreateTableModal, restaurant } =
-    useContext(TableContext);
+  const { tables, restaurant } = useContext(TableContext);
 
   const handleOpenTable = (table: iTable['data']) => {
     // setOpenedTableModal(table);
@@ -20,14 +18,8 @@ export default function Tables() {
   return (
     <div>
       {/* {openedTableModal ? <TableModal /> : null} */}
-      <div className="flex flex-1 items-center justify-between mb-4">
+      <div className="flex flex-1 items-center justify-end mb-4">
         <CreateTableModal />
-        <CardapioDigitalButton
-          name="Nova Mesa"
-          h="h-9"
-          w="w-36"
-          onClick={() => setIsOpenedCreateTableModal(true)}
-        />
       </div>
       <span className="flex flex-1 items-center justify-end m-2">
         {<InactiveTablesModal />}
@@ -38,7 +30,7 @@ export default function Tables() {
           return (
             <button key={index} onClick={() => handleOpenTable(t)}>
               <Link
-                href={`${serverURL}/${restaurant.slug}/admin/table-control//${t.table_slug}`}
+                href={`${serverURL}${restaurant.slug}/admin/table-control/${t.table_slug}`}
                 prefetch={false}
               >
                 <TableCard table={t} />

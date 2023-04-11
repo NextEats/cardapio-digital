@@ -57,8 +57,6 @@ const CashboxManagement = (props: iCashboxManagement) => {
     restaurant,
   } = props;
 
-  console.log('activeCashBox', activeCashBox);
-
   const cashBoxOpened = cashBoxes.find((cb: any) => cb.is_open === true);
   const ordersGroupedByOrderStatus = groupOrdersByStatus(ordersData);
 
@@ -67,8 +65,6 @@ const CashboxManagement = (props: iCashboxManagement) => {
   }
 
   let res: any = {};
-
-  console.log('ordersGroupedByOrderStatus', ordersGroupedByOrderStatus);
 
   if (ordersGroupedByOrderStatus['entregue']) {
     res['entregue'] = ordersGroupedByOrderStatus['entregue']

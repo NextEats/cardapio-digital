@@ -1,13 +1,13 @@
-import { TableContext } from "@/src/contexts/TableControlContext";
+import { TableContext } from '@/src/contexts/TableControlContext';
 import {
   changeAdditionalQuantityAction,
   selectAdditionalAction,
-} from "@/src/reducers/tableReducer/action";
-import { iAdditional } from "@/src/types/types";
-import Image from "next/image";
-import { useContext } from "react";
-import { BsPlusCircleFill } from "react-icons/bs";
-import { FaMinus, FaPlus } from "react-icons/fa";
+} from '@/src/reducers/tableReducer/action';
+import { iAdditional } from '@/src/types/types';
+import Image from 'next/image';
+import { useContext } from 'react';
+import { BsPlusCircleFill } from 'react-icons/bs';
+import { FaMinus, FaPlus } from 'react-icons/fa';
 
 export default function TableAdditionals() {
   const {
@@ -18,7 +18,7 @@ export default function TableAdditionals() {
     viewProduct,
   } = useContext(TableContext);
 
-  function handleSelectAdditional(additional: iAdditional["data"]) {
+  function handleSelectAdditional(additional: iAdditional['data']) {
     tableDispatch(selectAdditionalAction(additional));
   }
 
@@ -29,24 +29,24 @@ export default function TableAdditionals() {
     tableDispatch(changeAdditionalQuantityAction(isIncrement, additionalId));
   }
 
-  const additionalByProductId = additionals.filter((a) => {
+  const additionalByProductId = additionals.filter(a => {
     return productAdditionals.some(
-      (pa) => pa.additional_id === a.id && pa.product_id === viewProduct?.id
+      pa => pa.additional_id === a.id && pa.product_id === viewProduct?.id
     );
   });
 
   return (
     <>
-      {additionalByProductId.map((additional) => {
+      {additionalByProductId.map(additional => {
         const additionalHasAlreadyBeenSelected =
           tableState.quantityAdditionals.some(
-            (aq) => aq.additionalId === additional.id
+            aq => aq.additionalId === additional.id
           );
         const additionalQuantity = tableState.quantityAdditionals.find(
-          (aq) => aq.additionalId === additional.id
+          aq => aq.additionalId === additional.id
         );
         if (additional.active === false) {
-          return "";
+          return '';
         }
         return (
           <div
@@ -87,7 +87,7 @@ export default function TableAdditionals() {
                       <FaMinus />
                     </button>
                     <span className="">
-                      {additionalQuantity ? additionalQuantity.quantity : ""}
+                      {additionalQuantity ? additionalQuantity.quantity : ''}
                     </span>
                     <button
                       className="w-6 text-md flex items-center justify-center"

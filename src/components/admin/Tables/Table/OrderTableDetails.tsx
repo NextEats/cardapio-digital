@@ -1,9 +1,7 @@
 import { TableContext } from '@/src/contexts/TableControlContext';
 import { iOrdersProductsData } from '@/src/helpers/getOrdersProductsData';
 import { useContext, useRef, useState } from 'react';
-import { AiOutlinePrinter } from 'react-icons/ai';
-import ReactToPrint from 'react-to-print';
-import FinishServicePopover from './FinishServicePopover';
+// import FinishServicePopover from './Table/FinishServicePopover';
 
 export default function OrderTableDetails() {
   const { tableData, openedTableModal, ordersTables } =
@@ -177,7 +175,7 @@ export default function OrderTableDetails() {
           </p>
         </div>
       </div>
-      <div className="flex items-center gap-2 mt-4 w-[298px] ml-auto">
+      {/* <div className="flex items-center gap-2 mt-4 w-[298px] ml-auto">
         {openedTableModal?.is_occupied && !enableFinishServiceButton ? (
           <FinishServicePopover />
         ) : (
@@ -199,7 +197,7 @@ export default function OrderTableDetails() {
             );
           }}
         />
-      </div>
+      </div> */}
     </div>
   );
 }

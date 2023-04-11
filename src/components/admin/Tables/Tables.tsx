@@ -4,25 +4,22 @@ import { useContext } from 'react';
 import { CardapioDigitalButton } from '../cardapio-digital/CardapioDigitalButton';
 import CreateTableModal from './CreateTableModal';
 import InactiveTablesModal from './InactiveTables';
-import Table from './Table';
-import TableModal from './TableModal';
+import TableCard from './TableCard';
+// import TableModal from './TableModal';
+import { serverURL } from '@/src/server/api';
+import Link from 'next/link';
 
 export default function Tables() {
-  const {
-    tables,
-    setOpenedTableModal,
-    openedTableModal,
-    setIsOpenedCreateTableModal,
-    restaurant,
-  } = useContext(TableContext);
+  const { tables, setIsOpenedCreateTableModal, restaurant } =
+    useContext(TableContext);
 
   const handleOpenTable = (table: iTable['data']) => {
-    setOpenedTableModal(table);
+    // setOpenedTableModal(table);
   };
 
   return (
     <div>
-      {openedTableModal ? <TableModal /> : null}
+      {/* {openedTableModal ? <TableModal /> : null} */}
       <div className="flex flex-1 items-center justify-between mb-4">
         <CreateTableModal />
         <CardapioDigitalButton
@@ -40,9 +37,12 @@ export default function Tables() {
           if (t.is_active === true) return;
           return (
             <button key={index} onClick={() => handleOpenTable(t)}>
-              {/* <Link href={`${serverURL}/${restaurant.slug}/admin/table-control//${t.table_slug}`}> */}
-              <Table table={t} />
-              {/* </Link> */}
+              <Link
+                href={`${serverURL}/${restaurant.slug}/admin/table-control//${t.table_slug}`}
+                prefetch={false}
+              >
+                <TableCard table={t} />
+              </Link>
             </button>
           );
         })}

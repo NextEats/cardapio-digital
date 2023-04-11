@@ -8,7 +8,7 @@ interface iTableProps {
   table: iTable['data'];
 }
 
-export default function Table({ table }: iTableProps) {
+export default function TableCard({ table }: iTableProps) {
   const { ordersTables } = useContext(TableContext);
   if (!table) return <></>;
 

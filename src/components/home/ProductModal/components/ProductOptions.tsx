@@ -1,31 +1,33 @@
 import SelectComponent from './SelectComponent';
 
 interface iProductOptions {
-    product_id: string;
-    productSelects: any;
-    selectOption: any;
+  product_id: string;
+  productSelects: any;
+  selectOption: any;
 }
 
 export default function ProductOptions({
-    product_id,
-    productSelects,
-    selectOption,
+  product_id,
+  productSelects,
+  selectOption,
 }: iProductOptions) {
-    return (
-        <div>
-            {productSelects.map((select: any, selectIndex: any) => {
-                console.log(select);
-                return (
-                    <SelectComponent
-                        select={select}
-                        key={selectIndex}
-                        index={selectIndex}
-                        handleOptionClick={(optionIndex: number) => {
-                            selectOption(selectIndex, optionIndex);
-                        }}
-                    />
-                );
-            })}
-        </div>
-    );
+  return (
+    <div>
+      {productSelects.map((select: any, selectIndex: any) => {
+        if (!select.active) {
+          return null;
+        }
+        return (
+          <SelectComponent
+            select={select}
+            key={selectIndex}
+            index={selectIndex}
+            handleOptionClick={(optionIndex: number) => {
+              selectOption(selectIndex, optionIndex);
+            }}
+          />
+        );
+      })}
+    </div>
+  );
 }

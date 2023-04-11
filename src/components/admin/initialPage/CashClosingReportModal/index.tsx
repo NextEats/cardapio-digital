@@ -1,5 +1,5 @@
-import { getOrdersProductsData } from "@/src/helpers/getOrdersProductsData";
-import { api, supabase } from "@/src/server/api";
+import { getOrdersProductsData } from '@/src/helpers/getOrdersProductsData';
+import { api, supabase } from '@/src/server/api';
 import {
   iAdditionals,
   iCashBox,
@@ -8,23 +8,23 @@ import {
   iProducts,
   iSelects,
   iUserDetails,
-} from "@/src/types/types";
-import * as Dialog from "@radix-ui/react-dialog";
-import { useUser } from "@supabase/auth-helpers-react";
-import { format } from "date-fns";
-import { ptBR } from "date-fns/locale";
-import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
-import { FiX } from "react-icons/fi";
-import ReactToPrint from "react-to-print";
-import { toast } from "react-toastify";
-import { CardapioDigitalButton } from "../../cardapio-digital/CardapioDigitalButton";
+} from '@/src/types/types';
+import * as Dialog from '@radix-ui/react-dialog';
+import { useUser } from '@supabase/auth-helpers-react';
+import { format } from 'date-fns';
+import { ptBR } from 'date-fns/locale';
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
+import { FiX } from 'react-icons/fi';
+import ReactToPrint from 'react-to-print';
+import { toast } from 'react-toastify';
+import { CardapioDigitalButton } from '../../cardapio-digital/CardapioDigitalButton';
 
 interface CashClosingReportModalProps {
   setOpenCashBoxClosingReportModal: Dispatch<SetStateAction<boolean>>;
   openCashBoxClosingReportModal: boolean;
   ordersGroupedByOrderStatus: { [key: string]: iOrdersWithFKData[] };
   restaurantId: number;
-  cashBoxState: iCashBox["data"] | undefined;
+  cashBoxState: iCashBox['data'] | undefined;
   billing: number;
 }
 
@@ -36,13 +36,13 @@ export default function CashClosingReportModal({
   openCashBoxClosingReportModal,
   setOpenCashBoxClosingReportModal,
 }: CashClosingReportModalProps) {
-  const [ordersProducts, setOrdersProducts] = useState<iOrdersProducts["data"]>(
+  const [ordersProducts, setOrdersProducts] = useState<iOrdersProducts['data']>(
     []
   );
-  const [additionals, setAdditionals] = useState<iAdditionals["data"]>([]);
-  const [selects, setSelects] = useState<iSelects["data"]>([]);
-  const [products, setProducts] = useState<iProducts["data"]>([]);
-  const [usersData, setUsersData] = useState<iUserDetails["data"] | null>(null);
+  const [additionals, setAdditionals] = useState<iAdditionals['data']>([]);
+  const [selects, setSelects] = useState<iSelects['data']>([]);
+  const [products, setProducts] = useState<iProducts['data']>([]);
+  const [usersData, setUsersData] = useState<iUserDetails['data'] | null>(null);
   const CashBoxReportComponent = useRef<HTMLDivElement>(null);
 
   const user = useUser();
@@ -59,32 +59,33 @@ export default function CashClosingReportModal({
       const productsData = await api.get(`api/products/${restaurantId}`);
       setProducts(productsData.data);
       const getUserData = await supabase
-        .from("user_details")
+        .from('user_details')
         .select()
-        .eq("user_id", user?.id);
+        .eq('user_id', user?.id);
       if (getUserData.data) setUsersData(getUserData.data[0]);
       const selectsData = await api.get(`api/selects/${restaurantId}`);
-      setSelects(selectsData.data as iSelects["data"]);
+      setSelects(selectsData.data as iSelects['data']);
     }
     fetchData();
   }, [restaurantId, user]);
 
   async function handleCloseCashBox() {
     if (
-      ordersGroupedByOrderStatus["em análise"] ||
-      ordersGroupedByOrderStatus["a caminho"]
+      ordersGroupedByOrderStatus['em análise'] ||
+      ordersGroupedByOrderStatus['a caminho']
     ) {
       toast.error(
-        "Para fechar o caixa, todos os pedidos precisam ser entregues.",
+        'Para fechar o caixa, todos os pedidos precisam ser entregues.',
         {
-          theme: "light",
+          theme: 'light',
         }
       );
       return;
     }
-    const cashBox = await api.post("api/cash_boxes/close", {
+    await api.post('api/cash_boxes/close', {
       restaurant_id: restaurantId,
     });
+    location.reload();
     setOpenCashBoxClosingReportModal(false);
   }
   interface Payment {
@@ -92,15 +93,17 @@ export default function CashClosingReportModal({
     value: number;
   }
 
-  function getPaymentTotals(orders: iOrdersWithFKData[]): Payment[] {
+  function getPaymentTotals(orders: any): Payment[] {
     const paymentTotals: Payment[] = [];
+    console.log('orders', orders);
     if (!orders) return [];
-    orders.forEach((order) => {
+
+    orders.forEach((order: any) => {
       const paymentMethod = order.payment_methods.name;
       const orderValue = getOrderValue(order);
 
       const paymentTotalIndex = paymentTotals.findIndex(
-        (payment) => payment.payment_method === paymentMethod
+        payment => payment.payment_method === paymentMethod
       );
 
       if (paymentTotalIndex === -1) {
@@ -118,7 +121,7 @@ export default function CashClosingReportModal({
 
   function getOrderValue(order: iOrdersWithFKData): number {
     const ordersProductFiltered = ordersProducts.filter(
-      (op) => op.order_id === order.id
+      op => op.order_id === order.id
     );
 
     const totalPriceOfOrder = getOrdersProductsData({
@@ -132,19 +135,19 @@ export default function CashClosingReportModal({
     return deliveryFees + totalPriceOfOrder;
   }
 
-  const textStyles = "text-[10px]";
+  const textStyles = 'text-[10px]';
 
   let totalValueOfDoneOrders: any;
 
   if (!ordersGroupedByOrderStatus) {
     totalValueOfDoneOrders = 0;
   } else {
-    totalValueOfDoneOrders = getPaymentTotals(
-      ordersGroupedByOrderStatus["entregue"]
-    );
+    totalValueOfDoneOrders = getPaymentTotals(ordersGroupedByOrderStatus);
   }
 
-  const canceledOrders = ordersGroupedByOrderStatus["cancelado"];
+  console.log('totalValueOfDoneOrders', totalValueOfDoneOrders);
+
+  const canceledOrders = ordersGroupedByOrderStatus['cancelado'];
 
   const totalValueOfCanceledOrdersGroupedByPaymentMethod =
     getPaymentTotals(canceledOrders);
@@ -175,7 +178,7 @@ export default function CashClosingReportModal({
 
               <div className="max-w-full">
                 <p className={`${textStyles}`}>
-                  Usuário:{" "}
+                  Usuário:{' '}
                   <span className="font-bold">
                     {usersData ? usersData.name : null}
                   </span>
@@ -186,13 +189,13 @@ export default function CashClosingReportModal({
 
                 {cashBoxState ? (
                   <p className={`${textStyles}`}>
-                    Data de abertura:{" "}
+                    Data de abertura:{' '}
                     <span className="font-bold">
-                      {format(cashBoxOpenedAt, "P", {
+                      {format(cashBoxOpenedAt, 'P', {
                         locale: ptBR,
-                      })}{" "}
-                      {format(cashBoxOpenedAt, "HH")} {":"}{" "}
-                      {format(cashBoxOpenedAt, "mm")}
+                      })}{' '}
+                      {format(cashBoxOpenedAt, 'HH')} {':'}{' '}
+                      {format(cashBoxOpenedAt, 'mm')}
                     </span>
                   </p>
                 ) : null}
@@ -200,17 +203,17 @@ export default function CashClosingReportModal({
                   Saldo abertura: <span className="font-bold">0,00</span>
                 </p>
                 <p className={`${textStyles}`}>
-                  Data de fechamento:{" "}
+                  Data de fechamento:{' '}
                   <span className="font-bold">
-                    {format(moment, "P", { locale: ptBR })}{" "}
-                    {format(moment, "HH")} {":"}
-                    {format(moment, "mm")}
+                    {format(moment, 'P', { locale: ptBR })}{' '}
+                    {format(moment, 'HH')} {':'}
+                    {format(moment, 'mm')}
                   </span>
                 </p>
                 <p className={`${textStyles}`}>
-                  Saldo fechamento:{" "}
+                  Saldo fechamento:{' '}
                   <span className="font-bold">
-                    {billing.toLocaleString("pt-BR", {
+                    {billing.toLocaleString('pt-BR', {
                       minimumFractionDigits: 2,
                       maximumFractionDigits: 2,
                     })}
@@ -230,12 +233,12 @@ export default function CashClosingReportModal({
                             key={index}
                             className={`${textStyles}  font-medium`}
                           >
-                            {" "}
-                            {paymentMethods.payment_method}: R${" "}
-                            {paymentMethods.value.toLocaleString("pt-BR", {
+                            {' '}
+                            {paymentMethods.payment_method}: R${' '}
+                            {paymentMethods.value.toLocaleString('pt-BR', {
                               maximumFractionDigits: 2,
                               minimumFractionDigits: 2,
-                            })}{" "}
+                            })}{' '}
                           </p>
                         );
                       }

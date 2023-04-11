@@ -44,9 +44,9 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
   return {
     props: {
       restaurant,
-      table,
+      table: table[0],
       orders_products,
-      orders_tables,
+      orders_tables: orders_tables![0],
       order: orders_tables![0].orders,
     },
   };

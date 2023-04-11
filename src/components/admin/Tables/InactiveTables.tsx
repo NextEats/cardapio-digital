@@ -1,4 +1,4 @@
-import { TableContext } from '@/src/contexts/TableControlContext';
+import { TableControlContext } from '@/src/contexts/TableControlContext';
 import * as Dialog from '@radix-ui/react-dialog';
 import { useContext } from 'react';
 import { FiX } from 'react-icons/fi';
@@ -6,7 +6,8 @@ import Table from './TableCard';
 // import TableModal from './TableModal';
 
 export default function InactiveTablesModal() {
-  const { tables, isOpenedInactiveTablesModalState } = useContext(TableContext);
+  const { tables, isOpenedInactiveTablesModalState } =
+    useContext(TableControlContext);
 
   return (
     <div>

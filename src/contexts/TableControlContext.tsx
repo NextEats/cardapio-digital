@@ -32,7 +32,7 @@ import {
   iTables,
 } from '../types/types';
 
-interface iTableContextProps {
+interface iTableControlContextProps {
   tables: iTables['data']; // sssss
 
   // setIsOpenedProductTableModal: Dispatch<SetStateAction<boolean>>;
@@ -75,7 +75,7 @@ interface iTableContextProps {
   // createNewtable: (cheirAmount: string, tableName: string) => Promise<void>;
   // deleteTable: () => Promise<void>;
 }
-interface iTableContextProviderProps {
+interface iTableControlContextProviderProps {
   children: ReactNode;
   restaurant: iRestaurant['data'];
   additionals: iAdditionals['data'];
@@ -91,9 +91,11 @@ interface iTableContextProviderProps {
   paymentMethod: iPaymentMethodsRestaurantsWithFKData[];
 }
 
-export const TableContext = createContext({} as iTableContextProps);
+export const TableControlContext = createContext(
+  {} as iTableControlContextProps
+);
 
-export default function TableContextProvider({
+export default function TableControlContextProvider({
   children,
   restaurant,
   products,
@@ -107,7 +109,7 @@ export default function TableContextProvider({
   categories,
   ordersTables,
   paymentMethod,
-}: iTableContextProviderProps) {
+}: iTableControlContextProviderProps) {
   const [tableState, tableDispatch] = useReducer(
     tableReducer,
     tableReducerDefaultValues
@@ -353,7 +355,7 @@ export default function TableContextProvider({
   }
 
   return (
-    <TableContext.Provider
+    <TableControlContext.Provider
       value={{
         tables, // sssss
         // setIsOpenedProductTableModal,
@@ -408,6 +410,6 @@ export default function TableContextProvider({
       }}
     >
       {children}
-    </TableContext.Provider>
+    </TableControlContext.Provider>
   );
 }

@@ -1,13 +1,11 @@
-import { TableContext } from '@/src/contexts/TableControlContext';
 import * as Dialog from '@radix-ui/react-dialog';
-import { useContext, useState } from 'react';
+import { useState } from 'react';
 import { FiX } from 'react-icons/fi';
 import InputWithLabel from '../../InputWithLabel';
 import { CardapioDigitalButton } from '../cardapio-digital/CardapioDigitalButton';
 interface iCreateTableModalProps {}
 
 export default function CreateTableModal({}: iCreateTableModalProps) {
-  const {} = useContext(TableContext);
   const [tableName, setTableName] = useState('');
   const [cheirAmount, setCheirAmount] = useState('4');
 

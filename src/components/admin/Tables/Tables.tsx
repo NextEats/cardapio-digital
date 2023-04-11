@@ -1,4 +1,4 @@
-import { TableContext } from '@/src/contexts/TableControlContext';
+import { TableControlContext } from '@/src/contexts/TableControlContext';
 import { iTable } from '@/src/types/types';
 import { useContext } from 'react';
 import CreateTableModal from './CreateTableModal';
@@ -9,7 +9,7 @@ import { serverURL } from '@/src/server/api';
 import Link from 'next/link';
 
 export default function Tables() {
-  const { tables, restaurant } = useContext(TableContext);
+  const { tables, restaurant } = useContext(TableControlContext);
 
   const handleOpenTable = (table: iTable['data']) => {
     // setOpenedTableModal(table);

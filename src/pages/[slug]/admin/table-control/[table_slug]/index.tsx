@@ -3,7 +3,8 @@ import TableContextProvider from '@/src/contexts/TableContext';
 import { getRestaurantBySlugFetch } from '@/src/fetch/restaurant/getRestaurantBySlug';
 import { supabase } from '@/src/server/api';
 import {
-  iOrders,
+  iOrder,
+  iOrdersProducts,
   iOrdersTablesWithFkData,
   iRestaurantWithFKData,
   iTable,
@@ -14,8 +15,8 @@ interface iTableProps {
   restaurant: iRestaurantWithFKData;
   table: iTable['data'];
   orders_tables: iOrdersTablesWithFkData;
-  orders_products: iOrders['data'];
-  order: iOrders['data'];
+  orders_products: iOrdersProducts['data'];
+  order: iOrder['data'];
 }
 
 export const getServerSideProps: GetServerSideProps = async ({ query }) => {

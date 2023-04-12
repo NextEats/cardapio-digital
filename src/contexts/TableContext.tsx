@@ -1,6 +1,7 @@
 import { createContext, ReactNode } from 'react';
 import {
-  iOrders,
+  iOrder,
+  iOrdersProducts,
   iOrdersTablesWithFkData,
   iRestaurant,
   iTable,
@@ -10,15 +11,15 @@ interface iTableContextProps {
   table: iTable['data'];
   restaurant: iRestaurant['data'];
   orders_tables: iOrdersTablesWithFkData;
-  orders_products: iOrders['data'];
-  order: iOrders['data'];
+  orders_products: iOrdersProducts['data'];
+  order: iOrder['data'];
 }
 interface iTableContextProviderProps {
   children: ReactNode;
   restaurant: iRestaurant['data'];
   orders_tables: iOrdersTablesWithFkData;
-  orders_products: iOrders['data'];
-  order: iOrders['data'];
+  orders_products: iOrdersProducts['data'];
+  order: iOrder['data'];
   table: iTable['data'];
 }
 

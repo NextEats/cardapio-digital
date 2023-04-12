@@ -20,10 +20,10 @@ export default function BottonNavigationBar({}: iBottonNavigationBarProps) {
       </Link>
       <Link
         className="py-2"
-        href={`${serverURL}${restaurant.slug}/admin/table-control`}
+        href={`${serverURL}${restaurant.slug}/admin/table-control/${table.table_slug}/payments`}
         prefetch={false}
       >
-        Voltar
+        Pagamentos
       </Link>
       <Link
         className="py-2"

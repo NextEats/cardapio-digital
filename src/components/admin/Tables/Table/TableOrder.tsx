@@ -8,7 +8,7 @@ export default function TableOrder({}: iTableOrderProps) {
   const { table, order, orders_products } = useContext(TableContext);
 
   return (
-    <div className="flex gap-3 pt-6 pb-4 px-12 ">
+    <div className="flex flex-1">
       <RadixOrderAccordion orders={[order]} orders_products={orders_products} />
     </div>
   );

@@ -18,7 +18,7 @@ export function RadixOrderAccordion({
   const { table } = useContext(TableContext);
 
   return (
-    <div className="">
+    <div className="w-full max-w-[900px]">
       <Accordion.Root
         className="bg-white w-full rounded-md shadow-md"
         type="single"
@@ -30,7 +30,7 @@ export function RadixOrderAccordion({
             op => op.order_id === order.id
           );
           return (
-            <AccordionItem key={order.id} value={`${order.id}`}>
+            <AccordionItem className="" key={order.id} value={`${order.id}`}>
               <AccordionTrigger># {order.number} </AccordionTrigger>
               <AccordionContent>
                 {ordersProductsFilterdByOrderId.map(order_product => {

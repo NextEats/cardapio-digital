@@ -9,7 +9,7 @@ export default function TableHeader({}: iTableHeaderProps) {
   console.log(table);
 
   return (
-    <div className="flex items-center gap-3 pt-6 pb-4 px-12 ">
+    <div className="flex items-center gap-3 pt-6 pb-4 px-12 bg-bg-page-light">
       <Image
         className="h-10 w-10"
         src="/table_icon.jpg"

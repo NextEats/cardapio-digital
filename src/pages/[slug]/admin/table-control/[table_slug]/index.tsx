@@ -60,6 +60,7 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
     .select('*, orders (*) ')
     .eq('table_id', table[0].id)
     .eq('has_been_paid', false);
+  console.log([orders_tables![0].order_id!]);
   const orders_products =
     await getOrdersProductsWithFKProducdDataByOrdersIdsFetch({
       ordersIds: [orders_tables![0].order_id!],

@@ -14,11 +14,11 @@ export const AccordionContent = ({
 }: AccordionContentProps) => (
   <Accordion.Content
     className={
-      'text-mauve11 bg-mauve2 data-[state=open]:animate-slideDown data-[state=closed]:animate-slideUp overflow-hidden text-[15px] ' +
+      'data-[state=open]:animate-slideDown data-[state=closed]:animate-slideUp overflow-hidden' +
       className
     }
     {...props}
   >
-    <div className="py-[15px] px-5">{children}</div>
+    <div className="py-2 px-3 bg-white-blue">{children}</div>
   </Accordion.Content>
 );

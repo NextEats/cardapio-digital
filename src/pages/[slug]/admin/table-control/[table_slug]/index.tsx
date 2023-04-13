@@ -1,10 +1,11 @@
 import Table from '@/src/components/admin/Tables/Table';
 import TableContextProvider from '@/src/contexts/TableContext';
+import { getOrdersProductsWithFKProducdDataByOrdersIdsFetch } from '@/src/fetch/ordersProducts/getOrdersProductsWithFKProducdDataByOrdersIds';
 import { getRestaurantBySlugFetch } from '@/src/fetch/restaurant/getRestaurantBySlug';
 import { supabase } from '@/src/server/api';
 import {
   iOrder,
-  iOrdersProducts,
+  iOrdersProductsWithFKProducdData,
   iOrdersTablesWithFkData,
   iRestaurantWithFKData,
   iTable,
@@ -15,7 +16,7 @@ interface iTableProps {
   restaurant: iRestaurantWithFKData;
   table: iTable['data'];
   orders_tables: iOrdersTablesWithFkData;
-  orders_products: iOrdersProducts['data'];
+  orders_products: iOrdersProductsWithFKProducdData[];
   order: iOrder['data'];
 }
 
@@ -59,10 +60,15 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
     .select('*, orders (*) ')
     .eq('table_id', table[0].id)
     .eq('has_been_paid', false);
-  const { data: orders_products } = await supabase
-    .from('orders_products')
-    .select('*')
-    .eq('order_id', orders_tables![0].order_id);
+  const orders_products =
+    await getOrdersProductsWithFKProducdDataByOrdersIdsFetch({
+      ordersIds: [orders_tables![0].order_id!],
+    });
+
+  // await supabase
+  //   .from('orders_products')
+  //   .select('*')
+  //   .eq('order_id', orders_tables![0].order_id);
 
   return {
     props: {

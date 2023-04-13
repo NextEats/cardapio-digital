@@ -1,3 +1,4 @@
+import { Payments } from '@/src/components/admin/Tables/Table/Payment';
 import { getRestaurantBySlugFetch } from '@/src/fetch/restaurant/getRestaurantBySlug';
 import { iRestaurantWithFKData } from '@/src/types/types';
 import { GetServerSideProps } from 'next';
@@ -16,6 +17,10 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
   };
 };
 
-export default function Payments({ restaurant }: iPaymentsProps) {
-  return <div className="flex flex-col gap-8">dfadsfadsf</div>;
+export default function PaymentsPage({ restaurant }: iPaymentsProps) {
+  return (
+    <div className="flex flex-col gap-8">
+      <Payments />
+    </div>
+  );
 }

@@ -19,6 +19,28 @@ interface iTableProps {
   order: iOrder['data'];
 }
 
+export default function TablePage({
+  restaurant,
+  table,
+  orders_products,
+  orders_tables,
+  order,
+}: iTableProps) {
+  return (
+    <div className="flex flex-col gap-8">
+      <TableContextProvider
+        restaurant={restaurant}
+        table={table}
+        orders_products={orders_products}
+        orders_tables={orders_tables}
+        order={order}
+      >
+        <Table />
+      </TableContextProvider>
+    </div>
+  );
+}
+
 export const getServerSideProps: GetServerSideProps = async ({ query }) => {
   const restaurant = await getRestaurantBySlugFetch(query.slug);
 
@@ -52,25 +74,3 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
     },
   };
 };
-
-export default function TablePage({
-  restaurant,
-  table,
-  orders_products,
-  orders_tables,
-  order,
-}: iTableProps) {
-  return (
-    <div className="flex flex-col gap-8">
-      <TableContextProvider
-        restaurant={restaurant}
-        table={table}
-        orders_products={orders_products}
-        orders_tables={orders_tables}
-        order={order}
-      >
-        <Table />
-      </TableContextProvider>
-    </div>
-  );
-}

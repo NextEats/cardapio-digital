@@ -435,19 +435,3 @@ export type tUserDetailsWithFKData =
   Database['public']['Tables']['user_details']['Row'] & {
     restaurants: Database['public']['Tables']['restaurants']['Row'];
   };
-
-export interface iCashboxManagement {
-  ordersData: iOrdersWithFKData[];
-  activeCashBox: iCashBox | null;
-  orderStatuss: iInsertOrderStatuss['data'];
-  ordersProductsData: iOrdersProducts['data'];
-  products: iProducts['data'];
-  clients: iInsertClients['data'];
-  contacts: iInsertContacts['data'];
-  addresses: iInsertAddresses['data'];
-  cashBoxes: iCashBoxes['data'];
-  additionals: iAdditionals['data'];
-  selects: iSelects['data'];
-  ordersTablesData: iOrdersTablesWithFkData[];
-  restaurant: iRestaurantWithFKData;
-}

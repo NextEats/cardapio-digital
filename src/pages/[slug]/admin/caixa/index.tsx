@@ -1,12 +1,38 @@
 import AdminWrapper from '@/src/components/admin/AdminWrapper';
-import CashBoxButtons from '@/src/components/admin/initialPage/CashBoxButtons';
 import { getRestaurantBySlugFetch } from '@/src/fetch/restaurant/getRestaurantBySlug';
-import { getRestaurantResources } from '@/src/fetch/restaurantResources';
-import { calculateBilling } from '@/src/helpers/calculateBilling';
-import { groupOrdersByStatus } from '@/src/helpers/groupOrdersByStatus';
 import { supabase } from '@/src/server/api';
-import { iCashBox, iCashboxManagement } from '@/src/types/types';
+import {
+  iAdditionals,
+  iCashBox,
+  iCashBoxes,
+  iInsertAddresses,
+  iInsertClients,
+  iInsertContacts,
+  iInsertOrderStatuss,
+  iOrdersProducts,
+  iOrdersTablesWithFkData,
+  iOrdersWithFKData,
+  iProducts,
+  iRestaurantWithFKData,
+  iSelects,
+} from '@/src/types/types';
 import { GetServerSideProps } from 'next';
+
+export interface iCashboxManagement {
+  ordersData: iOrdersWithFKData[];
+  activeCashBox: iCashBox | null;
+  orderStatuss: iInsertOrderStatuss['data'];
+  ordersProductsData: iOrdersProducts['data'];
+  products: iProducts['data'];
+  clients: iInsertClients['data'];
+  contacts: iInsertContacts['data'];
+  addresses: iInsertAddresses['data'];
+  cashBoxes: iCashBoxes['data'];
+  additionals: iAdditionals['data'];
+  selects: iSelects['data'];
+  ordersTablesData: iOrdersTablesWithFkData[];
+  restaurant: iRestaurantWithFKData;
+}
 
 async function getActiveCashBoxByTheRestaurantID(restaurant_id: number) {
   const { data } = await supabase
@@ -23,22 +49,28 @@ async function getActiveCashBoxByTheRestaurantID(restaurant_id: number) {
 
 export const getServerSideProps: GetServerSideProps = async context => {
   const restaurant = await getRestaurantBySlugFetch(context.query.slug);
-  const resources = await getRestaurantResources(restaurant.id);
+  // const resources = await getRestaurantResources(restaurant.id);
 
   const activeCashBox = await getActiveCashBoxByTheRestaurantID(restaurant.id);
 
-  const ordersFromTheActiveCashBox = activeCashBox
-    ? await supabase
-        .from('orders')
-        .select('*')
-        .match({ cashbox_id: activeCashBox.id })
-    : null;
+  const { data: ordersFromTheActiveCashBox } = await supabase
+    .from('orders')
+    .select('*')
+    .match({ cashbox_id: activeCashBox!.id });
 
-  console.log('ordersFromTheActiveCashBox', ordersFromTheActiveCashBox);
+  const orders_ids = ordersFromTheActiveCashBox
+    ? ordersFromTheActiveCashBox!.map(o => o.id)
+    : [];
+
+  const { data: ordersProductsByOrdersIds } = await supabase
+    .from('orders_products')
+    .select('*')
+    .in('order_id', orders_ids);
 
   return {
     props: {
-      ...resources,
+      // ...activeCashBox,
+      ordersProductsData: ordersProductsByOrdersIds,
       activeCashBox: activeCashBox ? activeCashBox : null,
       restaurant,
     },
@@ -46,21 +78,13 @@ export const getServerSideProps: GetServerSideProps = async context => {
 };
 
 const CashboxManagement = (props: iCashboxManagement) => {
-  const {
-    ordersData,
-    activeCashBox,
-    ordersProductsData,
-    products,
-    cashBoxes,
-    additionals,
-    selects,
-    restaurant,
-  } = props;
+  const { activeCashBox, ordersProductsData, cashBoxes, restaurant } = props;
 
+  console.log('ordersProductsData', ordersProductsData);
   console.log('activeCashBox', activeCashBox);
 
-  const cashBoxOpened = cashBoxes.find((cb: any) => cb.is_open === true);
-  const ordersGroupedByOrderStatus = groupOrdersByStatus(ordersData);
+  // const cashBoxOpened = cashBoxes.find((cb: any) => cb.is_open === true);
+  // const ordersGroupedByOrderStatus = groupOrdersByStatus(ordersData);
 
   if (!restaurant) {
     return null;
@@ -68,58 +92,59 @@ const CashboxManagement = (props: iCashboxManagement) => {
 
   let res: any = {};
 
-  console.log('ordersGroupedByOrderStatus', ordersGroupedByOrderStatus);
+  // console.log('ordersGroupedByOrderStatus', ordersGroupedByOrderStatus);
 
-  if (ordersGroupedByOrderStatus['entregue']) {
-    res['entregue'] = ordersGroupedByOrderStatus['entregue']
-      ? ordersGroupedByOrderStatus['entregue'].filter(elem => {
-          return elem.cash_box_id === cashBoxOpened?.id;
-        })
-      : [];
-  }
+  // if (ordersGroupedByOrderStatus['entregue']) {
+  //   res['entregue'] = ordersGroupedByOrderStatus['entregue']
+  //     ? ordersGroupedByOrderStatus['entregue'].filter(elem => {
+  //         return elem.cash_box_id === cashBoxOpened?.id;
+  //       })
+  //     : [];
+  // }
 
-  if (ordersGroupedByOrderStatus['cancelado']) {
-    res['cancelado'] = ordersGroupedByOrderStatus['cancelado']
-      ? ordersGroupedByOrderStatus['cancelado'].filter(
-          elem => elem.cash_box_id === cashBoxOpened?.id
-        )
-      : [];
-  }
+  // if (ordersGroupedByOrderStatus['cancelado']) {
+  //   res['cancelado'] = ordersGroupedByOrderStatus['cancelado']
+  //     ? ordersGroupedByOrderStatus['cancelado'].filter(
+  //         elem => elem.cash_box_id === cashBoxOpened?.id
+  //       )
+  //     : [];
+  // }
 
-  if (ordersGroupedByOrderStatus['em produção']) {
-    res['em produção'] = ordersGroupedByOrderStatus['em produção']
-      ? ordersGroupedByOrderStatus['em produção'].filter(
-          elem => elem.cash_box_id === cashBoxOpened?.id
-        )
-      : [];
-  }
+  // if (ordersGroupedByOrderStatus['em produção']) {
+  //   res['em produção'] = ordersGroupedByOrderStatus['em produção']
+  //     ? ordersGroupedByOrderStatus['em produção'].filter(
+  //         elem => elem.cash_box_id === cashBoxOpened?.id
+  //       )
+  //     : [];
+  // }
 
-  if (
-    !ordersGroupedByOrderStatus['entregue'] &&
-    !ordersGroupedByOrderStatus['cancelado'] &&
-    !ordersGroupedByOrderStatus['em produção']
-  ) {
-    res = ordersGroupedByOrderStatus;
-  }
+  // if (
+  //   !ordersGroupedByOrderStatus['entregue'] &&
+  //   !ordersGroupedByOrderStatus['cancelado'] &&
+  //   !ordersGroupedByOrderStatus['em produção']
+  // ) {
+  //   res = ordersGroupedByOrderStatus;
+  // }
 
-  const billingAmount = calculateBilling({
-    ordersGroupedByOrderStatus: res,
-    ordersProductsData,
-    additionals,
-    products,
-    selects,
-  });
+  // const billingAmount = calculateBilling({
+  //   ordersGroupedByOrderStatus: res,
+  //   ordersProductsData,
+  //   additionals,
+  //   products,
+  //   selects,
+  // });
 
-  console.log(billingAmount);
+  // console.log(billingAmount);
 
   return (
     <AdminWrapper>
-      <CashBoxButtons
-        cashBoxState={cashBoxOpened}
+      <div></div>
+      {/* <CashBox
+        cashBoxState={activeCashBox}
         restaurantId={restaurant.id}
         ordersGroupedByOrderStatus={res}
-        billing={billingAmount}
-      />
+        billing={69}
+      /> */}
     </AdminWrapper>
   );
 };

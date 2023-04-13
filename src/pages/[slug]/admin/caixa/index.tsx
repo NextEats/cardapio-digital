@@ -1,36 +1,17 @@
 import AdminWrapper from '@/src/components/admin/AdminWrapper';
+import { getOrdersProductsWithFKDataByOrdersIdsFetch } from '@/src/fetch/ordersProducts/getOrdersProductsWithFKDataByOrdersIds';
 import { getRestaurantBySlugFetch } from '@/src/fetch/restaurant/getRestaurantBySlug';
 import { supabase } from '@/src/server/api';
 import {
-  iAdditionals,
   iCashBox,
-  iCashBoxes,
-  iInsertAddresses,
-  iInsertClients,
-  iInsertContacts,
-  iInsertOrderStatuss,
-  iOrdersProducts,
-  iOrdersTablesWithFkData,
-  iOrdersWithFKData,
-  iProducts,
+  iOrdersProductsWithFKData,
   iRestaurantWithFKData,
-  iSelects,
 } from '@/src/types/types';
 import { GetServerSideProps } from 'next';
 
 export interface iCashboxManagement {
-  ordersData: iOrdersWithFKData[];
   activeCashBox: iCashBox | null;
-  orderStatuss: iInsertOrderStatuss['data'];
-  ordersProductsData: iOrdersProducts['data'];
-  products: iProducts['data'];
-  clients: iInsertClients['data'];
-  contacts: iInsertContacts['data'];
-  addresses: iInsertAddresses['data'];
-  cashBoxes: iCashBoxes['data'];
-  additionals: iAdditionals['data'];
-  selects: iSelects['data'];
-  ordersTablesData: iOrdersTablesWithFkData[];
+  ordersProductsData: iOrdersProductsWithFKData[];
   restaurant: iRestaurantWithFKData;
 }
 
@@ -58,18 +39,24 @@ export const getServerSideProps: GetServerSideProps = async context => {
     .select('*')
     .match({ cashbox_id: activeCashBox!.id });
 
+  console.log('ordersFromTheActiveCashBox', ordersFromTheActiveCashBox);
+  console.log('ordersFromTheActiveCashBox');
+
   const orders_ids = ordersFromTheActiveCashBox
     ? ordersFromTheActiveCashBox!.map(o => o.id)
     : [];
 
-  const { data: ordersProductsByOrdersIds } = await supabase
-    .from('orders_products')
-    .select('*')
-    .in('order_id', orders_ids);
+  // const {data: ordersProductsByOrdersIds} = await supabase
+  // .from('orders_products')
+  // .select('*')
+  // .in("order_id", orders_ids)
+  const ordersProductsByOrdersIds =
+    await getOrdersProductsWithFKDataByOrdersIdsFetch({
+      ordersIds: orders_ids,
+    });
 
   return {
     props: {
-      // ...activeCashBox,
       ordersProductsData: ordersProductsByOrdersIds,
       activeCashBox: activeCashBox ? activeCashBox : null,
       restaurant,
@@ -78,10 +65,7 @@ export const getServerSideProps: GetServerSideProps = async context => {
 };
 
 const CashboxManagement = (props: iCashboxManagement) => {
-  const { activeCashBox, ordersProductsData, cashBoxes, restaurant } = props;
-
-  console.log('ordersProductsData', ordersProductsData);
-  console.log('activeCashBox', activeCashBox);
+  const { activeCashBox, ordersProductsData, restaurant } = props;
 
   // const cashBoxOpened = cashBoxes.find((cb: any) => cb.is_open === true);
   // const ordersGroupedByOrderStatus = groupOrdersByStatus(ordersData);
@@ -92,7 +76,7 @@ const CashboxManagement = (props: iCashboxManagement) => {
 
   let res: any = {};
 
-  // console.log('ordersGroupedByOrderStatus', ordersGroupedByOrderStatus);
+  console.log('ordersProductsData', ordersProductsData);
 
   // if (ordersGroupedByOrderStatus['entregue']) {
   //   res['entregue'] = ordersGroupedByOrderStatus['entregue']

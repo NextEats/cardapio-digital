@@ -408,6 +408,21 @@ export type iOrdersProductsWithFKProducdData = iOrderProduct['data'] & {
     options: iProductOptions['data'];
   }[];
 };
+export type iOrdersProductsWithFKData = iOrderProduct['data'] & {
+  orders: iOrders['data'] & {
+    status: iOrderStatus['data'];
+    payment_method: iPaymentMethod['data'];
+  };
+  products: iProduct['data'];
+  additionals: {
+    additional: iAdditional['data'];
+    quantity: number;
+  }[];
+  selectsWithOptions: {
+    id: number;
+    options: iProductOptions['data'];
+  }[];
+};
 
 export type iProductsWithFKData = iProduct['data'] & {
   category_id: iProductCategory['data'];

@@ -5,6 +5,7 @@ interface Button {
   txtColor?: string;
   OnClick?: Function;
   Type?: 'button' | 'submit' | 'reset' | undefined;
+  fullWhidth?: boolean;
 }
 
 export default function Button(props: Button) {
@@ -17,7 +18,9 @@ export default function Button(props: Button) {
     <button
       className={`bg-${props.bgColor || 'blue'}-500 text-${
         props.txtColor || 'white'
-      } py-2 px-4 rounded-md mb-4 mt-4 ml-2 mr-2`}
+      } py-2 px-4 rounded-md mb-4 mt-4 ml-2 mr-2 ${
+        props.fullWhidth ? 'w-full' : ''
+      }`}
       disabled={props.Disabled}
       {...props}
       onClick={() => onClickFunc()}

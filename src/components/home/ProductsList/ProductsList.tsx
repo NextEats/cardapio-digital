@@ -55,7 +55,7 @@ function CategoriesNavbar({ groupedProductsData }: any) {
 
   return (
     <div
-      className={`w-full flex flex-row lg:justify-center scrollbar-custom fixed pl-3 py-2 left-0 top-0 whitespace-nowrap overflow-auto bg-gray-100 z-10 touch-auto transition-all ease-in-out duration-300 ${
+      className={`lg:w-8/12 px-4 lg:px-0 m-auto flex flex-row lg:justify-center scrollbar-custom fixed py-2 left-0 right-0 top-0 whitespace-nowrap overflow-auto bg-gray-100 z-10 touch-auto transition-all ease-in-out duration-300 ${
         isVisible ? 'opacity-100' : 'opacity-0'
       }`}
     >

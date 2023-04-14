@@ -24,7 +24,7 @@ interface CashClosingReportModalProps {
   openCashBoxClosingReportModal: boolean;
   ordersGroupedByOrderStatus: { [key: string]: iOrdersWithFKData[] };
   restaurantId: number;
-  cashBoxState: iCashBox['data'] | undefined;
+  cashBoxState: iCashBox['data'] | undefined | null;
   billing: number;
 }
 

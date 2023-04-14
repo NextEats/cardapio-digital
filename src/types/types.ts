@@ -397,6 +397,33 @@ export interface iDeliveryFees {
   data: Array<Database['public']['Tables']['delivery_fees']['Row']>;
 }
 
+export type iOrdersProductsWithFKProducdData = iOrderProduct['data'] & {
+  products: iProduct['data'];
+  additionals: {
+    additional: iAdditional['data'];
+    quantity: number;
+  }[];
+  selectsWithOptions: {
+    id: number;
+    options: iProductOptions['data'];
+  }[];
+};
+export type iOrdersProductsWithFKData = iOrderProduct['data'] & {
+  orders: iOrders['data'] & {
+    status: iOrderStatus['data'];
+    payment_method: iPaymentMethod['data'];
+  };
+  products: iProduct['data'];
+  additionals: {
+    additional: iAdditional['data'];
+    quantity: number;
+  }[];
+  selectsWithOptions: {
+    id: number;
+    options: iProductOptions['data'];
+  }[];
+};
+
 export type iProductsWithFKData = iProduct['data'] & {
   category_id: iProductCategory['data'];
 };
@@ -435,19 +462,3 @@ export type tUserDetailsWithFKData =
   Database['public']['Tables']['user_details']['Row'] & {
     restaurants: Database['public']['Tables']['restaurants']['Row'];
   };
-
-export interface iCashboxManagement {
-  ordersData: iOrdersWithFKData[];
-  activeCashBox: iCashBox | null;
-  orderStatuss: iInsertOrderStatuss['data'];
-  ordersProductsData: iOrdersProducts['data'];
-  products: iProducts['data'];
-  clients: iInsertClients['data'];
-  contacts: iInsertContacts['data'];
-  addresses: iInsertAddresses['data'];
-  cashBoxes: iCashBoxes['data'];
-  additionals: iAdditionals['data'];
-  selects: iSelects['data'];
-  ordersTablesData: iOrdersTablesWithFkData[];
-  restaurant: iRestaurantWithFKData;
-}

@@ -449,6 +449,9 @@ export type iOrdersTablesWithFkData = iOrdersTable['data'] & {
   };
   tables: iTable['data'];
 };
+export type iOrdersTablesWithOrderFkData = iOrdersTable['data'] & {
+  orders: iOrder['data'];
+};
 export interface iDigitalMenuData {
   restaurant: iRestaurantWithFKData;
   groupedProducts: any;

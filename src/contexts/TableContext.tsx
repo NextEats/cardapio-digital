@@ -4,13 +4,19 @@ import {
   ReactNode,
   SetStateAction,
   useMemo,
+  useReducer,
   useState,
 } from 'react';
+import {
+  iTableReducer,
+  tableReducer,
+  tableReducerDefaultValues,
+} from '../reducers/tableReducer/reducer';
 import {
   iAdditionals,
   iOrder,
   iOrdersProductsWithFKProducdData,
-  iOrdersTablesWithFkData,
+  iOrdersTablesWithOrderFkData,
   iProduct,
   iProductAdditionals,
   iProductCategories,
@@ -22,9 +28,9 @@ import {
 interface iTableContextProps {
   table: iTable['data'];
   restaurant: iRestaurant['data'];
-  orders_tables: iOrdersTablesWithFkData;
+  orders_tables: iOrdersTablesWithOrderFkData;
   orders_products: iOrdersProductsWithFKProducdData[];
-  order: iOrder['data'];
+  order: iOrder['data'] | null;
   additionalByProductId: iAdditionals['data'];
   products: iProducts['data'];
   categories: iProductCategories['data'];
@@ -33,13 +39,15 @@ interface iTableContextProps {
     iProduct['data'] | null,
     Dispatch<SetStateAction<iProduct['data'] | null>>
   ];
+  tableDispatch: Dispatch<any>;
+  tableState: iTableReducer;
 }
 interface iTableContextProviderProps {
   children: ReactNode;
   restaurant: iRestaurant['data'];
-  orders_tables: iOrdersTablesWithFkData;
+  orders_tables: iOrdersTablesWithOrderFkData;
   orders_products: iOrdersProductsWithFKProducdData[];
-  order: iOrder['data'];
+  order: iOrder['data'] | null;
   table: iTable['data'];
   additionals: iAdditionals['data'];
   products: iProducts['data'];
@@ -63,6 +71,11 @@ export default function TableContextProvider({
 }: iTableContextProviderProps) {
   const viewProductState = useState<iProduct['data'] | null>(null);
 
+  const [tableState, tableDispatch] = useReducer(
+    tableReducer,
+    tableReducerDefaultValues
+  );
+
   const additionalByProductId = useMemo(() => {
     return additionals.filter(a => {
       return product_additionals.some(
@@ -85,6 +98,8 @@ export default function TableContextProvider({
         categories,
         product_additionals,
         viewProductState,
+        tableDispatch,
+        tableState,
       }}
     >
       {children}

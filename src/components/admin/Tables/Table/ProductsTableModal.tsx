@@ -1,14 +1,17 @@
 import { TableContext } from '@/src/contexts/TableContext';
+import { selectProductAction } from '@/src/reducers/tableReducer/action';
 import * as Dialog from '@radix-ui/react-dialog';
 import Image from 'next/image';
 import { ChangeEvent, useContext, useState } from 'react';
 import { FiX } from 'react-icons/fi';
 import { CardapioDigitalButton } from '../../cardapio-digital/CardapioDigitalButton';
+import ProductModal from './productModal';
 
 interface iProductTableModalProps {}
 
 export default function ProductsTableModal({}: iProductTableModalProps) {
-  const { products, viewProductState, categories } = useContext(TableContext);
+  const { products, viewProductState, categories, tableState, tableDispatch } =
+    useContext(TableContext);
 
   const [viewProduct, setViewProduct] = viewProductState;
 
@@ -53,7 +56,7 @@ export default function ProductsTableModal({}: iProductTableModalProps) {
 
   return (
     <div>
-      {/* {viewProduct ? <ProductModal /> : null} */}
+      {viewProduct ? <ProductModal /> : null}
       <Dialog.Root>
         <Dialog.Trigger>Produtos</Dialog.Trigger>
         <Dialog.Portal>
@@ -98,7 +101,7 @@ export default function ProductsTableModal({}: iProductTableModalProps) {
                                         }`
                       }
                     >
-                      <span> {category.name} </span>
+                      <span className="truncate"> {category.name} </span>
                     </div>
                   );
                 })}
@@ -111,7 +114,7 @@ export default function ProductsTableModal({}: iProductTableModalProps) {
                       key={product.id}
                       onClick={() => {
                         setViewProduct(product);
-                        // tableDispatch(selectProductAction(product));
+                        tableDispatch(selectProductAction(product));
                       }}
                       className="bg-white shadow-sm max-h-24 sm:h-24 flex flex-1 items-center rounded-md p-2 hover:shadow-md hover:transition-all ease-in-out cursor-pointer relative"
                     >
@@ -141,12 +144,7 @@ export default function ProductsTableModal({}: iProductTableModalProps) {
                 })}
               </div>
               <div className="w-full flex items-center justify-end gap-3">
-                <CardapioDigitalButton
-                  name="Cancelar"
-                  h="h-9"
-                  w="w-44"
-                  // onClick={() => setIsOpenedProductTableModal(false)}
-                />
+                <CardapioDigitalButton name="Cancelar" h="h-9" w="w-44" />
               </div>
             </div>
             <Dialog.Close className="fixed top-3 right-3 text-gray-600">

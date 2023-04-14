@@ -2,6 +2,7 @@ import Table from '@/src/components/admin/Tables/Table';
 import TableContextProvider from '@/src/contexts/TableContext';
 import { getAdditionalsByRestaurantIdFetch } from '@/src/fetch/additionals/getAdditionals';
 import { getOrdersProductsWithFKProducdDataByOrdersIdsFetch } from '@/src/fetch/ordersProducts/getOrdersProductsWithFKProducdDataByOrdersIds';
+import { getOrdersTablesByTableId } from '@/src/fetch/ordersTables/getOrdersTablesByTableId';
 import { getProductAdditionalsFetch } from '@/src/fetch/productAdditionals/getProductAdditionals';
 import { getProductsByRestaurantIdFetch } from '@/src/fetch/products/getProductsByRestaurantId';
 import { getProductsCategoriesByRestaurantIdFetch } from '@/src/fetch/productsCategories/getProductsCategoriesByRestaurantId';
@@ -11,7 +12,7 @@ import {
   iAdditionals,
   iOrder,
   iOrdersProductsWithFKProducdData,
-  iOrdersTablesWithFkData,
+  iOrdersTablesWithOrderFkData,
   iProductAdditionals,
   iProductCategories,
   iProducts,
@@ -24,9 +25,9 @@ interface iTableProps {
   categories: iProductCategories['data'];
   restaurant: iRestaurantWithFKData;
   table: iTable['data'];
-  orders_tables: iOrdersTablesWithFkData;
+  orders_tables: iOrdersTablesWithOrderFkData;
   orders_products: iOrdersProductsWithFKProducdData[];
-  order: iOrder['data'];
+  order: iOrder['data'] | null;
   additionals: iAdditionals['data'];
   products: iProducts['data'];
   product_additionals: iProductAdditionals['data'];
@@ -75,11 +76,10 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
       props: { restaurant },
     };
   }
-  const { data: orders_tables } = await supabase
-    .from('orders_tables')
-    .select('*, orders (*) ')
-    .eq('table_id', table[0].id)
-    .eq('has_been_paid', false);
+
+  const orders_tables = await getOrdersTablesByTableId({
+    table_id: table[0].id,
+  });
 
   const [
     orders_products,
@@ -88,9 +88,11 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
     categories,
     product_additionals,
   ] = await Promise.all([
-    getOrdersProductsWithFKProducdDataByOrdersIdsFetch({
-      ordersIds: [orders_tables![0].order_id!],
-    }),
+    orders_tables
+      ? getOrdersProductsWithFKProducdDataByOrdersIdsFetch({
+          ordersIds: [orders_tables.order_id!],
+        })
+      : [],
     getAdditionalsByRestaurantIdFetch(restaurant.id),
     getProductsByRestaurantIdFetch(restaurant.id),
     getProductsCategoriesByRestaurantIdFetch(restaurant.id),
@@ -105,8 +107,8 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
       additionals,
       table: table[0],
       orders_products,
-      orders_tables: orders_tables![0],
-      order: orders_tables![0].orders,
+      orders_tables: orders_tables ? orders_tables : null,
+      order: orders_tables?.orders ? orders_tables.orders : null,
       product_additionals,
     },
   };

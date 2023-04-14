@@ -11,6 +11,9 @@ import { QuantitySelector } from '../../../QuantitySelector';
 import { CardapioDigitalButton } from '../../cardapio-digital/CardapioDigitalButton';
 // import TableAdditionals from './TableAdditionals';
 import { TableContext } from '@/src/contexts/TableContext';
+import { filterOptionsSelected } from '@/src/helpers/filterOptionsSelected';
+import { addProductAction } from '@/src/reducers/tableReducer/action';
+import { api } from '@/src/server/api';
 import TableAdditionals from './TableAdditionals';
 
 const productInformationValidationSchema = zod.object({
@@ -30,10 +33,15 @@ export default function ProductModal() {
       },
     });
 
-  // const [viewProduct, setViewProduct] = useState<'' | null>(null)
-
-  const { table, restaurant, additionalByProductId, viewProductState } =
-    useContext(TableContext);
+  const {
+    table,
+    tableState,
+    additionalByProductId,
+    viewProductState,
+    tableDispatch,
+    restaurant,
+    order,
+  } = useContext(TableContext);
 
   const [viewProduct, setViewProduct] = viewProductState;
 
@@ -42,27 +50,105 @@ export default function ProductModal() {
   );
   const [quantity, setQuantity] = useState(1);
 
-  // const additionalByProductId = additionals.filter(a => {
-  //   return productAdditionals.some(
-  //     pa => pa.id === a.id && pa.product_id === viewProduct?.id
-  //   );
-  // });
-
   function handleConfirmProduct() {
     const observation = getValues('observation');
 
-    // setViewProduct(null);
-    // setIsOpenedProductTableModal(false);
-    // tableDispatch(
-    //   addProductAction({
-    //     product: viewProduct!,
-    //     productSelects,
-    //     table_id: openedTableModal!.id,
-    //     quantity,
-    //     observation,
-    //   })
-    // );
-    reset();
+    tableDispatch(
+      addProductAction({
+        product: viewProduct!,
+        productSelects,
+        table_id: table.id,
+        quantity,
+        observation,
+      })
+    );
+
+    setTimeout(() => {
+      handleFinishOrder();
+
+      setViewProduct(null);
+      reset();
+    }, 50);
+  }
+
+  // useMemo(() => {
+
+  //   handleFinishOrder(productsOfTheTable)
+  // }, [tableState.productsSelected, table.id])
+
+  async function handleFinishOrder() {
+    // const foundCashBoxes = cashBoxes.find(c => c.is_open === true);
+    // if (foundCashBoxes === undefined) {
+    //   toast.error('O Pedido só pode ser feito se o caixa estiver aberto.', {
+    //     theme: 'light',
+    //   });
+    //   return;
+    // }
+
+    // const orderDataByCashBoxId = await supabase.from('orders').select('*')
+    //   .match({
+    //     restaurant_id: restaurant!.id,
+    //     cash_box_id: foundCashBoxes.id,
+    //   });
+
+    // const orderPosition = orderDataByCashBoxId.data
+    //   ? orderDataByCashBoxId?.data.length + 1
+    //   : 1;
+
+    // const orderData = await api.post(`api/orders/${restaurant.id}`, {
+    //   order_type_id: 3,
+    //   cash_box_id: foundCashBoxes.id,
+    //   order_status_id: 3,
+    //   payment_method_id: 7,
+    //   number: orderPosition,
+    // });
+
+    // if (orderData === null) return;
+    const productsOfTheTable = tableState.productsSelected.filter(
+      p => p.table_id === table.id
+    );
+
+    console.log(productsOfTheTable);
+    productsOfTheTable.forEach(async ps => {
+      const additionals_data = ps.quantityAdditionals.reduce(
+        (acc: { quantity: number; additional_id: number }[], item) => {
+          return (acc = [
+            ...acc,
+            {
+              quantity: item.quantity,
+              additional_id: item.additionalId,
+            },
+          ]);
+        },
+        []
+      );
+      const selects_data = filterOptionsSelected({
+        productsOptionsSelected: ps.productSelects ? ps.productSelects : [],
+      });
+      // for (let i = 0; i < ps.quantity; i++) {
+      const ordersProductsData = await api.post(`api/orders_products/`, {
+        order_id: order!.id,
+        table_id: table.id,
+        product_id: ps.product?.id,
+        selects_data,
+        additionals_data,
+        observation: ps.observation,
+        total_price: ps.totalPrice,
+        quantity: ps.quantity,
+      });
+      // }
+    });
+    // const ordersTablesData = await api.post(`api/orders_tables/`, {
+    //   order_id: order!.id,
+    //   table_id: table.id,
+    //   has_been_paid: false,
+    // });
+
+    if (table.is_occupied === false) {
+      // await updateTable(false, true, table.id!);
+    }
+
+    // window.location.reload();
   }
 
   return (
@@ -127,13 +213,13 @@ export default function ProductModal() {
               </div>
             </div>
             <div className="w-full flex items-center justify-end gap-3">
-              {/* <span className="text-lg font-semibold text-green-500">
+              <span className="text-lg font-semibold text-green-500">
                 R$
                 {(tableState.totalPrice * quantity).toLocaleString('pt-BR', {
                   minimumFractionDigits: 2,
                   maximumFractionDigits: 2,
                 })}
-              </span> */}
+              </span>
               <CardapioDigitalButton
                 name="Confirmar"
                 h="h-9"

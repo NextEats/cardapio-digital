@@ -1,38 +1,43 @@
 import { TableContext } from '@/src/contexts/TableContext';
+import {
+  changeAdditionalQuantityAction,
+  selectAdditionalAction,
+} from '@/src/reducers/tableReducer/action';
+import { iAdditional } from '@/src/types/types';
 import Image from 'next/image';
 import { useContext } from 'react';
+import { BsPlusCircleFill } from 'react-icons/bs';
+import { FaMinus, FaPlus } from 'react-icons/fa';
 
 export default function TableAdditionals() {
-  const { additionalByProductId, product_additionals } =
-    useContext(TableContext);
+  const {
+    additionalByProductId,
+    product_additionals,
+    tableState,
+    tableDispatch,
+  } = useContext(TableContext);
 
-  // function handleSelectAdditional(additional: iAdditional['data']) {
-  //   tableDispatch(selectAdditionalAction(additional));
-  // }
+  function handleSelectAdditional(additional: iAdditional['data']) {
+    tableDispatch(selectAdditionalAction(additional));
+  }
 
-  // function changeAdditionalQuantity(
-  //   isIncrement: boolean,
-  //   additionalId: number
-  // ) {
-  //   tableDispatch(changeAdditionalQuantityAction(isIncrement, additionalId));
-  // }
-
-  // const additionalByProductId = additionals.filter(a => {
-  //   return product_additionals.some(
-  //     pa => pa.additional_id === a.id && pa.product_id === viewProduct?.id
-  //   );
-  // });
+  function changeAdditionalQuantity(
+    isIncrement: boolean,
+    additionalId: number
+  ) {
+    tableDispatch(changeAdditionalQuantityAction(isIncrement, additionalId));
+  }
 
   return (
     <>
       {additionalByProductId.map(additional => {
-        // const additionalHasAlreadyBeenSelected =
-        //   tableState.quantityAdditionals.some(
-        //     aq => aq.additionalId === additional.id
-        //   );
-        // const additionalQuantity = tableState.quantityAdditionals.find(
-        //   aq => aq.additionalId === additional.id
-        // );
+        const additionalHasAlreadyBeenSelected =
+          tableState.quantityAdditionals.some(
+            aq => aq.additionalId === additional.id
+          );
+        const additionalQuantity = tableState.quantityAdditionals.find(
+          aq => aq.additionalId === additional.id
+        );
         if (additional.active === false) {
           return '';
         }
@@ -57,7 +62,7 @@ export default function TableAdditionals() {
                   R${additional?.price}
                 </p>
               </div>
-              {/* <div>
+              <div>
                 {!additionalHasAlreadyBeenSelected ? (
                   <BsPlusCircleFill
                     size={24}
@@ -87,7 +92,7 @@ export default function TableAdditionals() {
                     </button>
                   </div>
                 )}
-              </div> */}
+              </div>
             </div>
           </div>
         );

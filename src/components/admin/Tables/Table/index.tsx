@@ -13,7 +13,7 @@ import ProductsTableModal from './ProductsTableModal';
 interface iTableProps {}
 
 export default function Table({}: iTableProps) {
-  const { table, restaurant, additionals } = useContext(TableContext);
+  const { table, restaurant } = useContext(TableContext);
 
   const BottonNavigationBarOptionTable: iBottonNavigationBarProps['options'] = [
     {

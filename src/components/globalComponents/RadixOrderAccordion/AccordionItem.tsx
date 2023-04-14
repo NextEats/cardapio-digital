@@ -27,5 +27,3 @@ export const AccordionItem = ({
     </Accordion.Item>
   );
 };
-
-AccordionItem.displayName = 'AccordionItem';

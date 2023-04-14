@@ -6,13 +6,14 @@ import { useContext } from 'react';
 import BottonNavigationBar, {
   iBottonNavigationBarProps,
 } from '../../../globalComponents/BottonNavigationBar';
-import TableConfigModal from './TableConfigModal';
-import TableContent from './TableContent';
+import TableConfigModal from './feito/TableConfigModal';
+import TableContent from './feito/TableContent';
+import ProductsTableModal from './ProductsTableModal';
 
 interface iTableProps {}
 
 export default function Table({}: iTableProps) {
-  const { table, restaurant } = useContext(TableContext);
+  const { table, restaurant, additionals } = useContext(TableContext);
 
   const BottonNavigationBarOptionTable: iBottonNavigationBarProps['options'] = [
     {
@@ -34,10 +35,10 @@ export default function Table({}: iTableProps) {
       title: 'Configurações',
       openDialogTrigger: <TableConfigModal />,
     },
-    // {
-    //   title: "Produtos",
-    //   openDialogTrigger:  <ProductsTableModal />
-    // },
+    {
+      title: 'Produtos',
+      openDialogTrigger: <ProductsTableModal />,
+    },
   ];
 
   return (

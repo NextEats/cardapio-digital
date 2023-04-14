@@ -6,7 +6,7 @@ import { useContext } from 'react';
 import { FaHome } from 'react-icons/fa';
 import { FiX } from 'react-icons/fi';
 import { toast } from 'react-toastify';
-import { CardapioDigitalButton } from '../../cardapio-digital/CardapioDigitalButton';
+import { CardapioDigitalButton } from '../../../cardapio-digital/CardapioDigitalButton';
 import RadioGroupItem from './RadioGroupItem';
 
 interface iTableConfigModalProps {}

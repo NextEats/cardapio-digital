@@ -255,6 +255,7 @@ export interface Database {
           closed_at: string | null;
           created_at: string | null;
           id: number;
+          'initial_value ': number;
           is_open: boolean | null;
           opened_at: string | null;
           restaurant_id: number | null;
@@ -263,6 +264,7 @@ export interface Database {
           closed_at?: string | null;
           created_at?: string | null;
           id?: number;
+          'initial_value '?: number;
           is_open?: boolean | null;
           opened_at?: string | null;
           restaurant_id?: number | null;
@@ -271,6 +273,7 @@ export interface Database {
           closed_at?: string | null;
           created_at?: string | null;
           id?: number;
+          'initial_value '?: number;
           is_open?: boolean | null;
           opened_at?: string | null;
           restaurant_id?: number | null;
@@ -491,7 +494,9 @@ export interface Database {
           observation: string | null;
           order_id: number;
           product_id: number;
+          quantity: number;
           selects_data: Json | null;
+          total_price: number;
         };
         Insert: {
           additionals_data?: Json | null;
@@ -500,7 +505,9 @@ export interface Database {
           observation?: string | null;
           order_id: number;
           product_id: number;
+          quantity?: number;
           selects_data?: Json | null;
+          total_price?: number;
         };
         Update: {
           additionals_data?: Json | null;
@@ -509,7 +516,9 @@ export interface Database {
           observation?: string | null;
           order_id?: number;
           product_id?: number;
+          quantity?: number;
           selects_data?: Json | null;
+          total_price?: number;
         };
       };
       orders_tables: {
@@ -1000,6 +1009,29 @@ export interface Database {
           name?: string;
           price?: number | null;
           restaurant_id?: number | null;
+        };
+      };
+      table_paymants: {
+        Row: {
+          created_at: string | null;
+          id: number;
+          order_table_id: number | null;
+          payment_mathod_id: number | null;
+          value: number | null;
+        };
+        Insert: {
+          created_at?: string | null;
+          id?: number;
+          order_table_id?: number | null;
+          payment_mathod_id?: number | null;
+          value?: number | null;
+        };
+        Update: {
+          created_at?: string | null;
+          id?: number;
+          order_table_id?: number | null;
+          payment_mathod_id?: number | null;
+          value?: number | null;
         };
       };
       tables: {

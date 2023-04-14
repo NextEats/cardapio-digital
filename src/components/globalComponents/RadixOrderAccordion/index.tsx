@@ -2,9 +2,9 @@ import { TableContext } from '@/src/contexts/TableContext';
 import { iOrders, iOrdersProductsWithFKProducdData } from '@/src/types/types';
 import * as Accordion from '@radix-ui/react-accordion';
 import { useContext } from 'react';
-import { BsThreeDotsVertical } from 'react-icons/bs';
 import { AccordionContent } from './AccordionContent';
 import { AccordionItem } from './AccordionItem';
+import { AccordionOrdersActions } from './AccordionOrdersActions';
 import { AccordionTrigger } from './AccordionTrigger';
 
 interface iRadixAccordionProps {
@@ -56,10 +56,11 @@ export function RadixOrderAccordion({
                             )}
                           </span>
                         </p>
-                        <BsThreeDotsVertical
+                        <AccordionOrdersActions />
+                        {/* <BsThreeDotsVertical
                           size={16}
                           className="text-gray-400"
-                        />
+                        /> */}
                       </div>
 
                       <span className="w-full px-3 text-sm text-brand-light-orange">

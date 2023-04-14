@@ -45,7 +45,9 @@ export const getServerSideProps: GetServerSideProps = async context => {
 
   const { data: ordersProductsByOrdersIds } = await supabase
     .from('orders_products')
-    .select('*')
+    .select(
+      'product_id, order_id, total_price, quantity, id, products (*), orders (*)'
+    )
     .in('order_id', orders_ids);
 
   //   const ordersProductsByOrdersIds =

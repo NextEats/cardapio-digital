@@ -6,7 +6,7 @@ export interface iBottonNavigationBarProps {
   options: {
     url?: string;
     prefetch?: boolean;
-    title: string;
+    title: string | ReactNode;
     icon?: ReactNode;
     openDialogTrigger?: ReactNode;
     button?: ReactNode;
@@ -24,6 +24,7 @@ export default function BottonNavigationBar({
         if (option.openDialogTrigger) {
           return <div key={index}>{option.openDialogTrigger}</div>;
         }
+        if (!option.url) return null;
         return (
           <Link
             key={index}

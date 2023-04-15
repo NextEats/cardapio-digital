@@ -31,6 +31,7 @@ interface iTableProps {
   additionals: iAdditionals['data'];
   products: iProducts['data'];
   product_additionals: iProductAdditionals['data'];
+  table_paymants_values: number;
 }
 
 export default function TablePage({
@@ -43,6 +44,7 @@ export default function TablePage({
   products,
   categories,
   product_additionals,
+  table_paymants_values,
 }: iTableProps) {
   return (
     <div className="flex flex-col gap-8">
@@ -56,6 +58,7 @@ export default function TablePage({
         orders_products={orders_products}
         orders_tables={orders_tables}
         order={order}
+        table_paymants_values={table_paymants_values}
       >
         <Table />
       </TableContextProvider>
@@ -87,6 +90,7 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
     products,
     categories,
     product_additionals,
+    table_paymants_values_data,
   ] = await Promise.all([
     orders_tables
       ? getOrdersProductsWithFKProducdDataByOrdersIdsFetch({
@@ -97,7 +101,20 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
     getProductsByRestaurantIdFetch(restaurant.id),
     getProductsCategoriesByRestaurantIdFetch(restaurant.id),
     getProductAdditionalsFetch(),
+    orders_tables && orders_tables
+      ? supabase
+          .from('table_paymants')
+          .select('velue')
+          .eq('order_table_id', orders_tables.id)
+      : null,
   ]);
+
+  const table_paymants_values = table_paymants_values_data?.data
+    ? (table_paymants_values_data?.data).reduce(
+        (acc, item) => acc + (item.velue as number),
+        0
+      )
+    : 0;
 
   console.log(orders_products);
 
@@ -112,6 +129,7 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
       orders_tables: orders_tables ? orders_tables : null,
       order: orders_tables?.orders ? orders_tables.orders : null,
       product_additionals,
+      table_paymants_values,
     },
   };
 };

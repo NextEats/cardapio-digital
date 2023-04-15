@@ -6,9 +6,9 @@ import { useContext } from 'react';
 import BottonNavigationBar, {
   iBottonNavigationBarProps,
 } from '../../../globalComponents/BottonNavigationBar';
+import ProductsTableModal from './feito/ProductsTableModal';
 import TableConfigModal from './feito/TableConfigModal';
 import TableContent from './feito/TableContent';
-import ProductsTableModal from './ProductsTableModal';
 
 interface iTableProps {}
 
@@ -18,17 +18,17 @@ export default function Table({}: iTableProps) {
   const BottonNavigationBarOptionTable: iBottonNavigationBarProps['options'] = [
     {
       prefetch: false,
-      title: 'voltar',
-      url: `${serverURL}${restaurant.slug}/admin/table-control`,
+      title: (
+        <div className="relative px-3">
+          <span>Finalizar atendimento</span>
+          <div className="absolute top-1 right-0 bg-red-orange h-3 w-3 rounded-full"></div>
+        </div>
+      ),
+      url: '',
     },
     {
       prefetch: false,
       title: 'Pagamentos',
-      url: `${serverURL}${restaurant.slug}/admin/table-control/${table.table_slug}/payments`,
-    },
-    {
-      prefetch: false,
-      title: 'voltar',
       url: `${serverURL}${restaurant.slug}/admin/table-control/${table.table_slug}/payments`,
     },
     {
@@ -38,6 +38,11 @@ export default function Table({}: iTableProps) {
     {
       title: 'Produtos',
       openDialogTrigger: <ProductsTableModal />,
+    },
+    {
+      prefetch: false,
+      title: 'voltar',
+      url: `${serverURL}${restaurant.slug}/admin/table-control`,
     },
   ];
 

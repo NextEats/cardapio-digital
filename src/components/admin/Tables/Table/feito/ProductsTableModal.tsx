@@ -4,7 +4,7 @@ import * as Dialog from '@radix-ui/react-dialog';
 import Image from 'next/image';
 import { ChangeEvent, useContext, useState } from 'react';
 import { FiX } from 'react-icons/fi';
-import { CardapioDigitalButton } from '../../cardapio-digital/CardapioDigitalButton';
+import { CardapioDigitalButton } from '../../../cardapio-digital/CardapioDigitalButton';
 import ProductModal from './productModal';
 
 interface iProductTableModalProps {}

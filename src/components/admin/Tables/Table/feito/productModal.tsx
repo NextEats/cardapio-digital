@@ -6,9 +6,9 @@ import { useContext, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { FiX } from 'react-icons/fi';
 import * as zod from 'zod';
-import SelectComponent from '../../../home/ProductModal/components/SelectComponent';
-import { QuantitySelector } from '../../../QuantitySelector';
-import { CardapioDigitalButton } from '../../cardapio-digital/CardapioDigitalButton';
+import SelectComponent from '../../../../home/ProductModal/components/SelectComponent';
+import { QuantitySelector } from '../../../../QuantitySelector';
+import { CardapioDigitalButton } from '../../../cardapio-digital/CardapioDigitalButton';
 // import TableAdditionals from './TableAdditionals';
 import { TableContext } from '@/src/contexts/TableContext';
 import { filterOptionsSelected } from '@/src/helpers/filterOptionsSelected';
@@ -39,7 +39,6 @@ export default function ProductModal() {
     additionalByProductId,
     viewProductState,
     tableDispatch,
-    restaurant,
     order,
   } = useContext(TableContext);
 
@@ -62,53 +61,18 @@ export default function ProductModal() {
         observation,
       })
     );
-
     setTimeout(() => {
       handleFinishOrder();
-
       setViewProduct(null);
       reset();
     }, 50);
   }
 
-  // useMemo(() => {
-
-  //   handleFinishOrder(productsOfTheTable)
-  // }, [tableState.productsSelected, table.id])
-
   async function handleFinishOrder() {
-    // const foundCashBoxes = cashBoxes.find(c => c.is_open === true);
-    // if (foundCashBoxes === undefined) {
-    //   toast.error('O Pedido só pode ser feito se o caixa estiver aberto.', {
-    //     theme: 'light',
-    //   });
-    //   return;
-    // }
-
-    // const orderDataByCashBoxId = await supabase.from('orders').select('*')
-    //   .match({
-    //     restaurant_id: restaurant!.id,
-    //     cash_box_id: foundCashBoxes.id,
-    //   });
-
-    // const orderPosition = orderDataByCashBoxId.data
-    //   ? orderDataByCashBoxId?.data.length + 1
-    //   : 1;
-
-    // const orderData = await api.post(`api/orders/${restaurant.id}`, {
-    //   order_type_id: 3,
-    //   cash_box_id: foundCashBoxes.id,
-    //   order_status_id: 3,
-    //   payment_method_id: 7,
-    //   number: orderPosition,
-    // });
-
-    // if (orderData === null) return;
     const productsOfTheTable = tableState.productsSelected.filter(
       p => p.table_id === table.id
     );
 
-    console.log(productsOfTheTable);
     productsOfTheTable.forEach(async ps => {
       const additionals_data = ps.quantityAdditionals.reduce(
         (acc: { quantity: number; additional_id: number }[], item) => {
@@ -125,7 +89,7 @@ export default function ProductModal() {
       const selects_data = filterOptionsSelected({
         productsOptionsSelected: ps.productSelects ? ps.productSelects : [],
       });
-      // for (let i = 0; i < ps.quantity; i++) {
+
       const ordersProductsData = await api.post(`api/orders_products/`, {
         order_id: order!.id,
         table_id: table.id,
@@ -136,19 +100,13 @@ export default function ProductModal() {
         total_price: ps.totalPrice,
         quantity: ps.quantity,
       });
-      // }
     });
-    // const ordersTablesData = await api.post(`api/orders_tables/`, {
-    //   order_id: order!.id,
-    //   table_id: table.id,
-    //   has_been_paid: false,
-    // });
 
     if (table.is_occupied === false) {
       // await updateTable(false, true, table.id!);
     }
 
-    // window.location.reload();
+    window.location.reload();
   }
 
   return (

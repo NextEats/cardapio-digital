@@ -1,5 +1,4 @@
 import { iTablePaymentMethodsWithPaymentFKData } from '@/src/types/types';
-import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import ValueCard from '../feito/ValueCard';
@@ -34,18 +33,6 @@ export function PaymentContent({
           value={`${totalPayd}`}
           borderColor="border-blue-500"
         />
-        <div className="flex flex-1 gap-2">
-          <button className="flex items-center justify-center rounded text-white text-base cursor-pointer w-32 h-9 bg-white-blue">
-            {' '}
-            Cancelar{' '}
-          </button>
-          <Link
-            href={``}
-            className="flex flex-1 items-center justify-center rounded text-white text-base cursor-pointer w-32 h-9 bg-orange-500 hover:bg-red-orange transition"
-          >
-            Pagar{' '}
-          </Link>
-        </div>
       </div>
       <div className="w-full max-w-[900px]">
         <PaymentsTable tablePaymentsState={tablePaymentsState} />

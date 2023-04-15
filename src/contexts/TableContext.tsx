@@ -41,6 +41,7 @@ interface iTableContextProps {
   ];
   tableDispatch: Dispatch<any>;
   tableState: iTableReducer;
+  table_paymants_values: number;
 }
 interface iTableContextProviderProps {
   children: ReactNode;
@@ -53,6 +54,7 @@ interface iTableContextProviderProps {
   products: iProducts['data'];
   categories: iProductCategories['data'];
   product_additionals: iProductAdditionals['data'];
+  table_paymants_values: number;
 }
 
 export const TableContext = createContext({} as iTableContextProps);
@@ -68,6 +70,7 @@ export default function TableContextProvider({
   products,
   categories,
   product_additionals,
+  table_paymants_values,
 }: iTableContextProviderProps) {
   const viewProductState = useState<iProduct['data'] | null>(null);
 
@@ -100,6 +103,7 @@ export default function TableContextProvider({
         viewProductState,
         tableDispatch,
         tableState,
+        table_paymants_values,
       }}
     >
       {children}

@@ -1,9 +1,11 @@
+import PageHeaders from '@/src/components/globalComponents/PageHeaders';
 import { serverURL, supabase } from '@/src/server/api';
 import { iPaymentMethodsRestaurantsWithFKData } from '@/src/types/types';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useForm } from 'react-hook-form';
+import { MdOutlineAttachMoney } from 'react-icons/md';
 import * as zod from 'zod';
 
 interface iProcessProps {
@@ -49,10 +51,14 @@ export default function Process({
   };
 
   return (
-    <div className={`h-[calc(100%-80px)] w-screen px-16 py-4 `}>
+    <div className={`h-screen w-screen `}>
+      <PageHeaders
+        title="Novo pagamento"
+        icon={<MdOutlineAttachMoney size={32} />}
+      />
       <form
         onSubmit={handleSubmit(handleSubmitPayment)}
-        className="grid grid-cols-2 gap-20 justify-center"
+        className="grid grid-cols-2 gap-20 justify-center px-16 py-4"
       >
         <div className="flex flex-col gap-6">
           <label htmlFor="" className="flex flex-col gap-1 ">

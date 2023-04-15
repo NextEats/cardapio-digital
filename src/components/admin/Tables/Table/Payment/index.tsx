@@ -1,6 +1,6 @@
 import PageHeaders from '@/src/components/globalComponents/PageHeaders';
 import { serverURL } from '@/src/server/api';
-import { iTablePayments } from '@/src/types/types';
+import { iTablePaymentMethodsWithPaymentFKData } from '@/src/types/types';
 import { useRouter } from 'next/router';
 import { MdOutlineAttachMoney } from 'react-icons/md';
 import BottonNavigationBar, {
@@ -10,7 +10,7 @@ import { PaymentContent } from './PaymentContent';
 
 interface iPaymentsProps {
   total_orders_products_price: number;
-  table_payments: iTablePayments['data'];
+  table_payments: iTablePaymentMethodsWithPaymentFKData[];
 }
 
 export function Payments({
@@ -24,6 +24,11 @@ export function Payments({
       prefetch: false,
       title: 'voltar',
       url: `${serverURL}${query.slug}/admin/table-control/${query.table_slug}`,
+    },
+    {
+      prefetch: false,
+      title: 'Adicionar pagamento',
+      url: `${serverURL}${query.slug}/admin/table-control/${query.table_slug}/payments/process`,
     },
   ];
 

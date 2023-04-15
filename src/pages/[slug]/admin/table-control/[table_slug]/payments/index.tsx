@@ -5,13 +5,13 @@ import { supabase } from '@/src/server/api';
 import {
   iOrdersProductsWithFKProducdData,
   iRestaurantWithFKData,
-  iTablePayments,
+  iTablePaymentMethodsWithPaymentFKData,
 } from '@/src/types/types';
 import { GetServerSideProps } from 'next';
 
 interface iPaymentsProps {
   restaurant: iRestaurantWithFKData;
-  table_payments: iTablePayments['data'];
+  table_payments: iTablePaymentMethodsWithPaymentFKData[];
   total_orders_products_price: number;
 }
 
@@ -63,7 +63,7 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
     orders_tables && orders_tables[0]
       ? supabase
           .from('table_paymants')
-          .select('*')
+          .select('*, payment_methods (*)')
           .eq('order_table_id', orders_tables[0].id)
       : null,
     orders_tables && orders_tables[0]

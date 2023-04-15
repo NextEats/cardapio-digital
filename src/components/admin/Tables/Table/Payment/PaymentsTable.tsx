@@ -1,11 +1,29 @@
-import { iTablePayments } from '@/src/types/types';
+import { supabase } from '@/src/server/api';
+import { iTablePaymentMethodsWithPaymentFKData } from '@/src/types/types';
+import { Dispatch, SetStateAction } from 'react';
 import { FaRegTrashAlt } from 'react-icons/fa';
 
 interface iPaymentsTableProps {
-  table_payments: iTablePayments['data'];
+  tablePaymentsState: [
+    iTablePaymentMethodsWithPaymentFKData[],
+    Dispatch<SetStateAction<iTablePaymentMethodsWithPaymentFKData[]>>
+  ];
 }
 
-export function PaymentsTable({ table_payments }: iPaymentsTableProps) {
+export function PaymentsTable({ tablePaymentsState }: iPaymentsTableProps) {
+  const [table_payments, set_table_payments] = tablePaymentsState;
+
+  const handleDeleteTablePayments = async (id: number) => {
+    const data = await supabase.from('table_paymants').delete().eq('id', id);
+    set_table_payments(state => {
+      state.splice(
+        state.findIndex(tp => tp.id === id),
+        1
+      );
+      return [...state];
+    });
+  };
+
   return (
     <div className="flex flex-1">
       <table className="w-full">
@@ -30,18 +48,23 @@ export function PaymentsTable({ table_payments }: iPaymentsTableProps) {
                     className="first:border-t-0 border-t border-t-white-blue"
                   >
                     <td className="w-full text-lg font-semibold pr-3">
-                      dinheiro
+                      {table_payment.payment_methods.name}
                     </td>
                     <td>
                       <div className="flex items-center justify-between w-28">
                         <span>
                           R${' '}
-                          {(30).toLocaleString('pt-BR', {
+                          {table_payment.value.toLocaleString('pt-BR', {
                             minimumFractionDigits: 2,
                             maximumFractionDigits: 2,
                           })}
                         </span>
-                        <FaRegTrashAlt className="text-red-orange cursor-pointer" />
+                        <FaRegTrashAlt
+                          onClick={() =>
+                            handleDeleteTablePayments(table_payment.id)
+                          }
+                          className="text-red-orange cursor-pointer"
+                        />
                       </div>
                     </td>
                   </tr>

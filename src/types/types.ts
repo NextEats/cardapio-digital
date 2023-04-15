@@ -437,6 +437,9 @@ export type iOrdersProductsWithFKData = iOrderProduct['data'] & {
     options: iProductOptions['data'];
   }[];
 };
+export type iTablePaymentMethodsWithPaymentFKData = iTablePayment['data'] & {
+  payment_methods: iPaymentMethod['data'];
+};
 
 export type iProductsWithFKData = iProduct['data'] & {
   category_id: iProductCategory['data'];

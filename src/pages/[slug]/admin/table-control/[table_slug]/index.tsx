@@ -99,6 +99,8 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
     getProductAdditionalsFetch(),
   ]);
 
+  console.log(orders_products);
+
   return {
     props: {
       categories,

@@ -50,30 +50,22 @@ export async function getOrdersProductsWithFKProducdDataByOrdersIdsFetch({
     return [];
   }
 
-  const orderProductFormated = data.reduce(
-    (acc: iOrdersProductsWithFKProducdData[], item: iOrderProductData) => {
-      const products = item.products as iProduct['data'];
-      let additionals: iNewAdditionalsData[] = [];
-      const getAdditionalsFormatter = async () => {
-        const [additionalsData] = await Promise.all([
-          formatAdditionalsData(item.additionals_data),
-        ]);
-        additionals = additionalsData;
-      };
-      getAdditionalsFormatter();
-      const selects = formatSelectData(item.selects_data);
+  const orderProductFormated: iOrdersProductsWithFKProducdData[] = [];
 
-      const newItem = {
-        ...item,
-        products,
-        selectsWithOptions: selects,
-        additionals: additionals,
-      };
+  for (const item of data) {
+    const products = item.products as iProduct['data'];
+    const additionals = await formatAdditionalsData(item.additionals_data);
+    const selects = formatSelectData(item.selects_data);
 
-      return [...acc, newItem];
-    },
-    []
-  );
+    const newItem: iOrdersProductsWithFKProducdData = {
+      ...item,
+      products,
+      selectsWithOptions: selects,
+      additionals: additionals,
+    };
+
+    orderProductFormated.push(newItem);
+  }
 
   return orderProductFormated;
 }

@@ -394,6 +394,23 @@ export interface Database {
           picture_url?: string;
         };
       };
+      o_p_teste: {
+        Row: {
+          created_at: string | null;
+          id: number;
+          price: number | null;
+        };
+        Insert: {
+          created_at?: string | null;
+          id?: number;
+          price?: number | null;
+        };
+        Update: {
+          created_at?: string | null;
+          id?: number;
+          price?: number | null;
+        };
+      };
       operating_time_restaurants: {
         Row: {
           created_at: string | null;
@@ -1017,21 +1034,21 @@ export interface Database {
           id: number;
           order_table_id: number | null;
           payment_mathod_id: number | null;
-          value: number | null;
+          value: number;
         };
         Insert: {
           created_at?: string | null;
           id?: number;
           order_table_id?: number | null;
           payment_mathod_id?: number | null;
-          value?: number | null;
+          value: number;
         };
         Update: {
           created_at?: string | null;
           id?: number;
           order_table_id?: number | null;
           payment_mathod_id?: number | null;
-          value?: number | null;
+          value?: number;
         };
       };
       tables: {
@@ -1169,7 +1186,26 @@ export interface Database {
       };
     };
     Views: {
-      [_ in never]: never;
+      tabela_order_view: {
+        Row: {
+          additionals_data: Json | null;
+          created_at: string | null;
+          id: number | null;
+          observation: string | null;
+          order_id: number | null;
+          product_id: number | null;
+          quantity: number | null;
+          selects_data: Json | null;
+          total_price: number | null;
+          total_price_calc: number | null;
+        };
+      };
+      tabelatotal: {
+        Row: {
+          order_product_id: number | null;
+          total_price: number | null;
+        };
+      };
     };
     Functions: {
       [_ in never]: never;

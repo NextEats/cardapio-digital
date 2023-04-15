@@ -51,7 +51,7 @@ export function RadixOrderAccordion({
                         className="flex flex-1 flex-col gap-[2px]"
                       >
                         <div className="flex items-center gap-2">
-                          <p className="text-md flex flex-1 items-center justify-between">
+                          <div className="text-md flex flex-1 items-center justify-between">
                             <div>
                               <span className="text-sm">
                                 {order_product.quantity} X{' '}
@@ -68,7 +68,7 @@ export function RadixOrderAccordion({
                                 }
                               )}
                             </span>
-                          </p>
+                          </div>
                           <AccordionOrdersActions />
                         </div>
 
@@ -89,7 +89,7 @@ export function RadixOrderAccordion({
                         <div className="flex flex-col items-center text-sm px-6">
                           {order_product.additionals.map(additional => {
                             return (
-                              <p
+                              <div
                                 key={additional.additional.id}
                                 className="text-md flex flex-1 items-center justify-between text-gray-400"
                               >
@@ -108,7 +108,7 @@ export function RadixOrderAccordion({
                                     }
                                   )}
                                 </span>
-                              </p>
+                              </div>
                             );
                           })}
                         </div>

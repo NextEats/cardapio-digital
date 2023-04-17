@@ -64,13 +64,13 @@ export function RadixOrderAccordion({
                             </div>
                             <span className="text-green-400">
                               R${' '}
-                              {order_product.products.price.toLocaleString(
-                                'pt-BR',
-                                {
-                                  minimumFractionDigits: 2,
-                                  maximumFractionDigits: 2,
-                                }
-                              )}
+                              {(
+                                order_product.total_price *
+                                order_product.quantity
+                              ).toLocaleString('pt-BR', {
+                                minimumFractionDigits: 2,
+                                maximumFractionDigits: 2,
+                              })}
                             </span>
                           </div>
                           <AccordionOrdersActions />
@@ -104,13 +104,13 @@ export function RadixOrderAccordion({
                                 </span>
                                 <span>
                                   R${' '}
-                                  {additional.additional.price.toLocaleString(
-                                    'pt-BR',
-                                    {
-                                      minimumFractionDigits: 2,
-                                      maximumFractionDigits: 2,
-                                    }
-                                  )}
+                                  {(
+                                    additional.additional.price *
+                                    additional.quantity
+                                  ).toLocaleString('pt-BR', {
+                                    minimumFractionDigits: 2,
+                                    maximumFractionDigits: 2,
+                                  })}
                                 </span>
                               </div>
                             );

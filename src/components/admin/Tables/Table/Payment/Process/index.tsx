@@ -38,7 +38,10 @@ export default function Process({
   const paymentMethodId = watch('paymentMethodsId');
   const router = useRouter();
 
+  console.log(paymentMethodId);
+
   const handleSubmitPayment = async (data: NewPaymentFormData) => {
+    console.log(data);
     const { data: table_payment_data } = await supabase
       .from('table_paymants')
       .insert({
@@ -46,7 +49,7 @@ export default function Process({
         order_table_id: order_table_id,
         payment_mathod_id: data.paymentMethodsId,
       });
-    console.log(table_payment_data);
+
     // window.location.href = `${serverURL}${router.query.slug}/admin/table-control/${router.query.table_slug}/payments`
   };
 
@@ -86,7 +89,6 @@ export default function Process({
         </div>
         <div className="flex flex-col gap-2 w-full">
           {payment_method_restaurant.map(payment_method => {
-            console.log(paymentMethodId === payment_method.id);
             return (
               <div key={payment_method.id} className="w-full">
                 <button
@@ -97,11 +99,10 @@ export default function Process({
                       payment_method.payment_methods.id
                     )
                   }
-                  className={`flex w-full items-center rounded h-9 px-3 bg-white shadow-sm
-                  ${
-                    paymentMethodId === payment_method.payment_methods.id
-                      ? ' bg-orange-400'
-                      : ''
+                  className={`flex w-full items-center rounded h-9 px-3 shadow-sm ${
+                    paymentMethodId == payment_method.payment_methods.id
+                      ? '  bg-orange-500'
+                      : ' bg-white'
                   } `}
                 >
                   {payment_method.payment_methods.name}

@@ -1,5 +1,6 @@
 import { iOrders, iOrdersProductsWithFKProducdData } from '@/src/types/types';
 import * as Accordion from '@radix-ui/react-accordion';
+import { MdOutlinePrint } from 'react-icons/md';
 import { AccordionContent } from './AccordionContent';
 import { AccordionItem } from './AccordionItem';
 import { AccordionOrdersActions } from './AccordionOrdersActions';
@@ -40,8 +41,11 @@ export function RadixOrderAccordion({
             );
             return (
               <AccordionItem className="" key={order.id} value={`${order.id}`}>
-                <AccordionTrigger>
-                  # {order.number.toString().padStart(5, '0')}
+                <AccordionTrigger className="flex items-center ">
+                  <span> # {order.number.toString().padStart(5, '0')}</span>
+                  <button>
+                    <MdOutlinePrint size={24} />
+                  </button>
                 </AccordionTrigger>
                 <AccordionContent>
                   {ordersProductsFilterdByOrderId.map(order_product => {

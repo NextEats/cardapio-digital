@@ -1,5 +1,6 @@
 import PageHeaders from '@/src/components/globalComponents/PageHeaders';
 import { serverURL } from '@/src/server/api';
+import { iTablePaymentMethodsWithPaymentFKData } from '@/src/types/types';
 import { useRouter } from 'next/router';
 import { MdOutlineAttachMoney } from 'react-icons/md';
 import BottonNavigationBar, {
@@ -7,9 +8,15 @@ import BottonNavigationBar, {
 } from '../../../../globalComponents/BottonNavigationBar';
 import { PaymentContent } from './PaymentContent';
 
-interface iPaymentsProps {}
+interface iPaymentsProps {
+  total_orders_products_price: number;
+  table_payments: iTablePaymentMethodsWithPaymentFKData[];
+}
 
-export function Payments({}: iPaymentsProps) {
+export function Payments({
+  table_payments,
+  total_orders_products_price,
+}: iPaymentsProps) {
   const { query } = useRouter();
 
   const BottonNavigationBarOption: iBottonNavigationBarProps['options'] = [
@@ -17,6 +24,11 @@ export function Payments({}: iPaymentsProps) {
       prefetch: false,
       title: 'voltar',
       url: `${serverURL}${query.slug}/admin/table-control/${query.table_slug}`,
+    },
+    {
+      prefetch: false,
+      title: 'Adicionar pagamento',
+      url: `${serverURL}${query.slug}/admin/table-control/${query.table_slug}/payments/process`,
     },
   ];
 
@@ -26,7 +38,10 @@ export function Payments({}: iPaymentsProps) {
         title="Pagar conta"
         icon={<MdOutlineAttachMoney size={32} />}
       />
-      <PaymentContent />
+      <PaymentContent
+        table_payments={table_payments}
+        total_orders_products_price={total_orders_products_price}
+      />
       <BottonNavigationBar options={BottonNavigationBarOption} />
     </div>
   );

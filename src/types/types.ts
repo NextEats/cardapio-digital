@@ -147,9 +147,23 @@ export interface iRestaurantOrderType {
 export interface iRestaurantOrderTypes {
   data: Array<Database['public']['Tables']['restaurant_order_type']['Row']>;
 }
+export interface iTablePayment {
+  data: Database['public']['Tables']['table_paymants']['Row'];
+}
+
+export interface iTablePayments {
+  data: Array<Database['public']['Tables']['table_paymants']['Row']>;
+}
 
 // ==================   INSERTS  =====================
 
+export interface iInsertTablePayment {
+  data: Database['public']['Tables']['table_paymants']['Insert'];
+}
+
+export interface iInsertTablePayments {
+  data: Array<Database['public']['Tables']['table_paymants']['Insert']>;
+}
 export interface iInsertRestaurantOrderType {
   data: Database['public']['Tables']['restaurant_order_type']['Insert'];
 }
@@ -423,6 +437,9 @@ export type iOrdersProductsWithFKData = iOrderProduct['data'] & {
     options: iProductOptions['data'];
   }[];
 };
+export type iTablePaymentMethodsWithPaymentFKData = iTablePayment['data'] & {
+  payment_methods: iPaymentMethod['data'];
+};
 
 export type iProductsWithFKData = iProduct['data'] & {
   category_id: iProductCategory['data'];
@@ -448,6 +465,9 @@ export type iOrdersTablesWithFkData = iOrdersTable['data'] & {
     order_status: iOrderStatus['data'];
   };
   tables: iTable['data'];
+};
+export type iOrdersTablesWithOrderFkData = iOrdersTable['data'] & {
+  orders: iOrder['data'];
 };
 export interface iDigitalMenuData {
   restaurant: iRestaurantWithFKData;

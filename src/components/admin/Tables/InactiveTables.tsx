@@ -1,12 +1,14 @@
 import { TableControlContext } from '@/src/contexts/TableControlContext';
+import { serverURL } from '@/src/server/api';
 import * as Dialog from '@radix-ui/react-dialog';
+import Link from 'next/link';
 import { useContext } from 'react';
 import { FiX } from 'react-icons/fi';
-import Table from './TableCard';
+import TableCard from './TableCard';
 // import TableModal from './TableModal';
 
 export default function InactiveTablesModal() {
-  const { tables, isOpenedInactiveTablesModalState } =
+  const { tables, isOpenedInactiveTablesModalState, restaurant } =
     useContext(TableControlContext);
 
   return (
@@ -16,7 +18,6 @@ export default function InactiveTablesModal() {
           onClick={() => isOpenedInactiveTablesModalState.set(true)}
         >
           <span className="text-lg font-semibold text-gray-500">
-            {' '}
             Mesas inativas
           </span>
         </Dialog.Trigger>
@@ -30,16 +31,18 @@ export default function InactiveTablesModal() {
               Mesas Inativas
             </Dialog.Title>
 
-            {/* {openedTableModal ? <TableModal /> : null} */}
-
             <div className="h-96 overflow-auto scrollbar-custom p-2">
               <div className="flex flex-col md:grid md:grid-cols-2 gap-5">
                 {tables.map((t, index) => {
                   if (t.is_active === false) return;
                   return (
-                    <button key={index}>
-                      <Table table={t} />
-                    </button>
+                    <Link
+                      key={index}
+                      href={`${serverURL}${restaurant.slug}/admin/table-control/${t.table_slug}`}
+                      prefetch={false}
+                    >
+                      <TableCard table={t} />
+                    </Link>
                   );
                 })}
               </div>

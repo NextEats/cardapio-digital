@@ -1,5 +1,4 @@
 import { TableControlContext } from '@/src/contexts/TableControlContext';
-import { iTable } from '@/src/types/types';
 import { useContext } from 'react';
 import CreateTableModal from './CreateTableModal';
 import InactiveTablesModal from './InactiveTables';
@@ -11,13 +10,8 @@ import Link from 'next/link';
 export default function Tables() {
   const { tables, restaurant } = useContext(TableControlContext);
 
-  const handleOpenTable = (table: iTable['data']) => {
-    // setOpenedTableModal(table);
-  };
-
   return (
     <div>
-      {/* {openedTableModal ? <TableModal /> : null} */}
       <div className="flex flex-1 items-center justify-end mb-4">
         <CreateTableModal />
       </div>
@@ -28,14 +22,13 @@ export default function Tables() {
         {tables.map((t, index) => {
           if (t.is_active === true) return;
           return (
-            <button key={index} onClick={() => handleOpenTable(t)}>
-              <Link
-                href={`${serverURL}${restaurant.slug}/admin/table-control/${t.table_slug}`}
-                prefetch={false}
-              >
-                <TableCard table={t} />
-              </Link>
-            </button>
+            <Link
+              key={index}
+              href={`${serverURL}${restaurant.slug}/admin/table-control/${t.table_slug}`}
+              prefetch={false}
+            >
+              <TableCard table={t} />
+            </Link>
           );
         })}
       </div>

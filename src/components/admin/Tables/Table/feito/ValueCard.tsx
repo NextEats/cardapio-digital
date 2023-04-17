@@ -14,7 +14,14 @@ export default function ValueCard({
       className={`flex flex-col gap-2 px-4 py-2 border w-[250px] lg:w-[350px] rounded-[3px] ${borderColor}`}
     >
       <span className="w-full"> {title} </span>
-      <span className="w-full text-right"> R$ {value} </span>
+      <span className="w-full text-right">
+        {' '}
+        R${' '}
+        {value.toLocaleString('pt-BR', {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        })}{' '}
+      </span>
     </div>
   );
 }

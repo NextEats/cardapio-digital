@@ -9,7 +9,10 @@ export default function TableOrder({}: iTableOrderProps) {
 
   return (
     <div className="flex flex-1">
-      <RadixOrderAccordion orders={[order]} orders_products={orders_products} />
+      <RadixOrderAccordion
+        orders={order ? [order] : []}
+        orders_products={orders_products}
+      />
     </div>
   );
 }

@@ -2,65 +2,72 @@ import { TableContext } from '@/src/contexts/TableContext';
 import { api } from '@/src/server/api';
 import * as Dialog from '@radix-ui/react-dialog';
 import * as RadioGroup from '@radix-ui/react-radio-group';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { FaHome } from 'react-icons/fa';
 import { FiX } from 'react-icons/fi';
 import { toast } from 'react-toastify';
-import { CardapioDigitalButton } from '../../cardapio-digital/CardapioDigitalButton';
+import { CardapioDigitalButton } from '../../../cardapio-digital/CardapioDigitalButton';
 import RadioGroupItem from './RadioGroupItem';
 
 interface iTableConfigModalProps {}
 
 export default function TableConfigModal({}: iTableConfigModalProps) {
-  const { table, orders_tables, restaurant } = useContext(TableContext);
-  // const [tableStatus, setTableStatus] = useState('');
+  const {
+    table,
+    orders_tables,
+    orders_products,
+    restaurant,
+    table_paymants_values,
+  } = useContext(TableContext);
+  const [tableStatus, setTableStatus] = useState('');
   const statusDefaultValue = table.is_active
     ? 'is_active'
     : table.is_occupied
     ? 'is_occupied'
     : 'free';
 
-  // async function handleUpdateTable() {
-  //   if (
-  //     tableData.productsInProductionData !== undefined &&
-  //     tableData.productsInProductionData.length > 0
-  //   ) {
-  //     // alert("A mesa só pode ser fechada ou inativada se todos os pedidos estiverem sido entregues.")
-  //     toast.error(
-  //       'A mesa só pode ser fechada ou inativada se todos os pedidos estiverem sido entregues.',
-  //       {
-  //         theme: 'light',
-  //       }
-  //     );
-  //     return;
-  //   }
+  async function updateTable({
+    is_active,
+    is_occupied,
+  }: {
+    is_active: boolean;
+    is_occupied: boolean;
+  }) {
+    const tableUpdated = await api.put(`api/table_control/${restaurant.id!}`, {
+      chair_ammount: table.chair_ammount,
+      is_active,
+      is_occupied,
+      table_id: table.id!,
+    });
+  }
 
-  //   switch (tableStatus) {
-  //     case 'is_active':
-  //       await updateTable(true, false, openedTableModal?.id!);
-  //       break;
-  //     case 'is_occupied':
-  //       await updateTable(false, true, openedTableModal?.id!);
-  //       break;
-  //     case 'free':
-  //       await updateTable(false, false, openedTableModal?.id!);
-  //       break;
-  //     default:
-  //       null;
-  //   }
-  // }
+  async function handleUpdateTable() {
+    const totalSpent = orders_products.reduce((acc, item) => {
+      return (acc = acc + item.total_price * item.quantity);
+    }, 0);
+    if (table_paymants_values < totalSpent) {
+      toast.error(
+        'A mesa só pode ser fechada ou inativada quando o atendimento for finalizado.',
+        {
+          theme: 'light',
+        }
+      );
+      return;
+    }
+
+    if ('is_active') await updateTable({ is_active: true, is_occupied: false });
+    else if ('is_occupied')
+      await updateTable({ is_active: false, is_occupied: true });
+    else if ('free')
+      await updateTable({ is_active: false, is_occupied: false });
+  }
 
   async function deleteTable() {
     await api.delete(`api/table_control/${restaurant.id!}`, {
       data: { table_id: table.id },
     });
-
-    // setTables((state) => {
-    //     const tableIndex = state.findIndex((t) => t.id === table_id);
-    //     state.splice(tableIndex, 1);
-    //     return [...state];
-    // });
   }
+
   async function handleDeleteTable() {
     if (!orders_tables.has_been_paid) {
       toast.error(
@@ -102,7 +109,7 @@ export default function TableConfigModal({}: iTableConfigModalProps) {
                 className="flex flex-col sm:flex-row gap-3 sm:gap-10 "
                 defaultValue={statusDefaultValue}
                 aria-label="View density"
-                // onValueChange={value => setTableStatus(value)}
+                onValueChange={value => setTableStatus(value)}
               >
                 <RadioGroupItem
                   value="free"
@@ -129,7 +136,7 @@ export default function TableConfigModal({}: iTableConfigModalProps) {
                 name="Confirmar"
                 h="h-9"
                 w="w-44"
-                // onClick={() => handleUpdateTable()}
+                onClick={() => handleUpdateTable()}
               />
             </div>
 

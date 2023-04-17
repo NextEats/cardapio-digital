@@ -6,7 +6,7 @@ export interface iBottonNavigationBarProps {
   options: {
     url?: string;
     prefetch?: boolean;
-    title: string;
+    title: string | ReactNode;
     icon?: ReactNode;
     openDialogTrigger?: ReactNode;
     button?: ReactNode;
@@ -19,11 +19,12 @@ export default function BottonNavigationBar({
   const { table, restaurant } = useContext(TableContext);
 
   return (
-    <div className="fixed bottom-0 left-0 w-full flex items-center justify-around py-4 px-12 ">
+    <div className="fixed bottom-0 left-0 w-full flex items-center justify-around py-4 px-12 border border-t border-t-white-blue">
       {options.map((option, index) => {
         if (option.openDialogTrigger) {
           return <div key={index}>{option.openDialogTrigger}</div>;
         }
+        if (!option.url) return null;
         return (
           <Link
             key={index}

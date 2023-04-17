@@ -1,9 +1,23 @@
+import { supabase } from '@/src/server/api';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
-import { BsFillPencilFill, BsThreeDotsVertical } from 'react-icons/bs';
+import { BsThreeDotsVertical } from 'react-icons/bs';
+import { FaRegTrashAlt } from 'react-icons/fa';
 
-type AccordionOrdersActionsProps = {};
+type iAccordionOrdersActionsProps = {
+  order_prodcut_id: number;
+};
 
-export const AccordionOrdersActions = ({}: AccordionOrdersActionsProps) => {
+export default function AccordionOrdersActions({
+  order_prodcut_id,
+}: iAccordionOrdersActionsProps) {
+  const handleDeleteOrderProdcut = async () => {
+    const { data } = await supabase
+      .from('orders_products')
+      .delete()
+      .eq('id', order_prodcut_id);
+    // window.location.reload()
+  };
+
   return (
     <div>
       <DropdownMenu.Root>
@@ -16,12 +30,12 @@ export const AccordionOrdersActions = ({}: AccordionOrdersActionsProps) => {
             sideOffset={5}
           >
             <DropdownMenu.Item
-              // onClick={() => setUpdateCategoryState(category)}
+              onClick={() => handleDeleteOrderProdcut()}
               className="group text-[13px] leading-none text-violet11 rounded-[3px] flex items-center gap-3 hover:bg-white-blue cursor-pointer h-9 px-[5px]
                                                             relative pl-[25px]"
             >
-              <BsFillPencilFill size={16} />
-              <span className="text-base">Editar categoria</span>
+              <FaRegTrashAlt size={16} />
+              <span className="text-base">Excluir produto</span>
             </DropdownMenu.Item>
             <DropdownMenu.Arrow className="fill-white" />
           </DropdownMenu.Content>
@@ -29,4 +43,4 @@ export const AccordionOrdersActions = ({}: AccordionOrdersActionsProps) => {
       </DropdownMenu.Root>
     </div>
   );
-};
+}

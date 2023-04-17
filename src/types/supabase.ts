@@ -254,6 +254,7 @@ export interface Database {
         Row: {
           closed_at: string | null;
           created_at: string | null;
+          final_value: number;
           id: number;
           'initial_value ': number;
           is_open: boolean | null;
@@ -263,6 +264,7 @@ export interface Database {
         Insert: {
           closed_at?: string | null;
           created_at?: string | null;
+          final_value?: number;
           id?: number;
           'initial_value '?: number;
           is_open?: boolean | null;
@@ -272,6 +274,7 @@ export interface Database {
         Update: {
           closed_at?: string | null;
           created_at?: string | null;
+          final_value?: number;
           id?: number;
           'initial_value '?: number;
           is_open?: boolean | null;
@@ -1028,7 +1031,7 @@ export interface Database {
           restaurant_id?: number | null;
         };
       };
-      table_paymants: {
+      table_payments: {
         Row: {
           created_at: string | null;
           id: number;

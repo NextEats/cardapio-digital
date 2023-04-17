@@ -8,13 +8,13 @@ export default function TableValueCards() {
   const totalSpent = orders_products.reduce((acc, item) => {
     return (acc = acc + item.total_price * item.quantity);
   }, 0);
-  console.log(orders_products);
+
   return (
     <div className="flex 2md:flex-col gap-3 p-3">
       <ValueCard title="Total gasto" value={`${totalSpent}`} />
       <ValueCard
         title="Total pago"
-        value={`${totalSpent - table_paymants_values}`}
+        value={`${table_paymants_values}`}
         borderColor="border-blue-500"
       />
     </div>

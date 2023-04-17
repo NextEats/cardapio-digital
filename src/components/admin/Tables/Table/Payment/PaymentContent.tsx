@@ -16,7 +16,7 @@ export function PaymentContent({
   const tablePaymentsState = useState(table_payments);
 
   const totalPayd = table_payments.reduce((acc, item) => {
-    return (acc = item.value * item.value);
+    return (acc = acc + item.value);
   }, 0);
 
   const router = useRouter();

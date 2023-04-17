@@ -62,7 +62,7 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
   const [table_payments, orders_products] = await Promise.all([
     orders_tables && orders_tables[0]
       ? supabase
-          .from('table_paymants')
+          .from('table_payments')
           .select('*, payment_methods (*)')
           .eq('order_table_id', orders_tables[0].id)
       : null,
@@ -72,6 +72,7 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
         })
       : [],
   ]);
+  console.log(table_payments);
 
   const total_orders_products_price = (
     orders_products as iOrdersProductsWithFKProducdData[]

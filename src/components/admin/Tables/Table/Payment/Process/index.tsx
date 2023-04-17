@@ -43,7 +43,7 @@ export default function Process({
   const handleSubmitPayment = async (data: NewPaymentFormData) => {
     console.log(data);
     const { data: table_payment_data } = await supabase
-      .from('table_paymants')
+      .from('table_payments')
       .insert({
         value: data.value,
         order_table_id: order_table_id,

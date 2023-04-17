@@ -3,7 +3,7 @@ import * as Accordion from '@radix-ui/react-accordion';
 import { MdOutlinePrint } from 'react-icons/md';
 import { AccordionContent } from './AccordionContent';
 import { AccordionItem } from './AccordionItem';
-import { AccordionOrdersActions } from './AccordionOrdersActions';
+import AccordionOrdersActions from './AccordionOrdersActions';
 import { AccordionTrigger } from './AccordionTrigger';
 
 interface iRadixAccordionProps {
@@ -15,8 +15,6 @@ export function RadixOrderAccordion({
   orders,
   orders_products,
 }: iRadixAccordionProps) {
-  console.log(orders);
-
   return (
     <div className="w-full max-w-[900px]">
       <Accordion.Root
@@ -43,9 +41,9 @@ export function RadixOrderAccordion({
               <AccordionItem className="" key={order.id} value={`${order.id}`}>
                 <AccordionTrigger className="flex items-center ">
                   <span> # {order.number.toString().padStart(5, '0')}</span>
-                  <button>
+                  <div>
                     <MdOutlinePrint size={24} />
-                  </button>
+                  </div>
                 </AccordionTrigger>
                 <AccordionContent>
                   {ordersProductsFilterdByOrderId.map(order_product => {
@@ -73,7 +71,9 @@ export function RadixOrderAccordion({
                               })}
                             </span>
                           </div>
-                          <AccordionOrdersActions />
+                          <AccordionOrdersActions
+                            order_prodcut_id={order_product.id}
+                          />
                         </div>
 
                         <span className="w-full px-3 text-sm text-brand-light-orange">

@@ -103,20 +103,20 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
     getProductAdditionalsFetch(),
     orders_tables && orders_tables
       ? supabase
-          .from('table_paymants')
-          .select('velue')
+          .from('table_payments')
+          .select('value')
           .eq('order_table_id', orders_tables.id)
       : null,
   ]);
 
+  console.log(table_paymants_values_data);
+
   const table_paymants_values = table_paymants_values_data?.data
     ? (table_paymants_values_data?.data).reduce(
-        (acc, item) => acc + (item.velue as number),
+        (acc, item) => acc + (item.value as number),
         0
       )
     : 0;
-
-  console.log(orders_products);
 
   return {
     props: {

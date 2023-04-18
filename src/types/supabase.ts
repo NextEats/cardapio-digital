@@ -256,7 +256,7 @@ export interface Database {
           created_at: string | null;
           final_value: number;
           id: number;
-          'initial_value ': number;
+          initial_value: number;
           is_open: boolean | null;
           opened_at: string | null;
           restaurant_id: number | null;
@@ -266,7 +266,7 @@ export interface Database {
           created_at?: string | null;
           final_value?: number;
           id?: number;
-          'initial_value '?: number;
+          initial_value?: number;
           is_open?: boolean | null;
           opened_at?: string | null;
           restaurant_id?: number | null;
@@ -276,7 +276,7 @@ export interface Database {
           created_at?: string | null;
           final_value?: number;
           id?: number;
-          'initial_value '?: number;
+          initial_value?: number;
           is_open?: boolean | null;
           opened_at?: string | null;
           restaurant_id?: number | null;
@@ -1189,6 +1189,20 @@ export interface Database {
       };
     };
     Views: {
+      orders_products_by_restaurant: {
+        Row: {
+          order_cash_box_id: number | null;
+          order_created_at: string | null;
+          order_id: number | null;
+          order_restaurant_id: number | null;
+          orders_products_id: number | null;
+          product_created_at: string | null;
+          product_description: string | null;
+          product_id: number | null;
+          product_name: string | null;
+          product_price: number | null;
+        };
+      };
       tabela_order_view: {
         Row: {
           additionals_data: Json | null;
@@ -1211,7 +1225,22 @@ export interface Database {
       };
     };
     Functions: {
-      [_ in never]: never;
+      get_orders_products_by_restaurant_id: {
+        Args: {
+          p_restaurant_id: number;
+        };
+        Returns: {
+          orders_products_id: number;
+          order_id: number;
+          product_id: number;
+          order_created_at: string;
+          order_restaurant_id: number;
+          product_created_at: string;
+          product_name: string;
+          product_description: string;
+          product_price: number;
+        }[];
+      };
     };
     Enums: {
       [_ in never]: never;

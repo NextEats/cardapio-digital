@@ -1,16 +1,10 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import Button from '@/src/components/nButton';
-import { api } from '@/src/server/api';
 import {
   iCashBox,
   iOrdersProductsWithFKData,
   iOrdersWithFKData,
 } from '@/src/types/types';
 import { useState } from 'react';
-import TextFiled from '../../Inputs';
-import Modal from '../../Modal';
-import ModalBody from '../../Modal/ModalBody';
-import ModalFooter from '../../Modal/ModalFooter';
 import CashClosingReportModal from '../initialPage/CashClosingReportModal';
 
 interface iCashBoxButtons {
@@ -19,8 +13,6 @@ interface iCashBoxButtons {
   cashBoxState: iCashBox['data'] | undefined | null;
   billing: number;
   ordersProducts: iOrdersProductsWithFKData[];
-  totalMesa: number;
-  totalDeli: number;
 }
 
 export function CashBox({
@@ -29,21 +21,10 @@ export function CashBox({
   cashBoxState,
   billing,
   ordersProducts,
-  totalMesa,
-  totalDeli,
 }: iCashBoxButtons) {
   const [openCashBoxState, setOpenCashBoxState] = useState(false);
   const [openCashBoxClosingReportModal, setOpenCashBoxClosingReportModal] =
     useState(false);
-
-  async function handleOpenCashBox() {
-    await api.post('api/cash_boxes/open', {
-      restaurant_id: restaurantId,
-      initial_value: valorInicial,
-    });
-    setOpenCashBoxState(true);
-    // location.reload();
-  }
 
   function getOrdersWithCashBoxId(arr: any) {
     if (!arr['entregue']) {
@@ -56,29 +37,11 @@ export function CashBox({
 
     return res;
   }
-  async function openCashBoxReportToCloseCashBox() {
-    setOpenCashBoxClosingReportModal(true);
-  }
 
   if (!ordersGroupedByOrderStatus) {
     return null;
   }
 
-  const [openModal, setOpenModal] = useState(false);
-  const [valorInicial, setvalorInicial] = useState(0);
-  function closeModal() {
-    setOpenModal(!openModal);
-  }
-  function OnSubmit() {
-    handleOpenCashBox();
-  }
-  function CloseOpenCashBox() {
-    if (cashBoxState !== null) {
-      openCashBoxReportToCloseCashBox();
-    } else {
-      closeModal();
-    }
-  }
   return (
     <>
       <div className="grid grid-cols-4 gap-4 text-black w-full">
@@ -86,38 +49,6 @@ export function CashBox({
           <h1 className="text-2xl font-bold text-black">
             $ {cashBoxState !== null ? 'Caixa Aberto 🟢' : 'Caixa Fechado 🔴'}
           </h1>
-        </div>
-        <div className="col-span-4 md:col-span-1">
-          <Button
-            OnClick={CloseOpenCashBox}
-            text={cashBoxState !== null ? 'Fechar Caixa' : 'Abrir Caixa'}
-            bgColor="orange"
-            fullWhidth
-          />
-        </div>
-        <div className="flex flex-col col-span-4 md:col-span-1 items-start bg-white border-2 rounded-md border-orange-400 shadow-black shadow-shadow-500 p-4">
-          <h2 className="text-gray-900">Saldo Inicial</h2>
-          <h3 className="text-base font-medium text-navy-700 text-right w-full">
-            R$ 300,00
-          </h3>
-        </div>
-        <div className="flex flex-col col-span-4 md:col-span-1 items-start bg-white border-2 rounded-md border-green-400 shadow-black shadow-shadow-500 p-4">
-          <h2 className="text-gray-900">Total Do Delivery</h2>
-          <h3 className="text-base font-medium text-navy-700 text-right w-full">
-            R$ {totalDeli}
-          </h3>
-        </div>
-        <div className="flex flex-col col-span-4 md:col-span-1 items-start bg-white border-2 rounded-md border-orange-400 shadow-black shadow-shadow-500 p-4">
-          <h2 className="text-gray-900">Saldo Total</h2>
-          <h3 className="text-base font-medium text-navy-700 text-right w-full">
-            R$ {totalDeli + totalMesa}
-          </h3>
-        </div>
-        <div className="flex flex-col col-span-4 md:col-span-1 items-start bg-white border-2 rounded-md border-green-400 shadow-black shadow-shadow-500 p-4">
-          <h2 className="text-gray-900">Total das Mesas</h2>
-          <h3 className="text-base font-medium text-navy-700 text-right w-full">
-            R$ {totalMesa}
-          </h3>
         </div>
 
         <div className="flex flex-col col-span-4 md:col-span-2 p-4 mt-4 shadow shadow-gray-400">
@@ -216,26 +147,6 @@ export function CashBox({
         setOpenCashBoxClosingReportModal={setOpenCashBoxClosingReportModal}
         billing={billing}
       />
-      <Modal
-        showModal={openModal}
-        title={'Caixa'}
-        closeFunction={closeModal}
-        onSubmitFunction={OnSubmit}
-      >
-        <ModalBody>
-          <TextFiled
-            required
-            Type="number"
-            value={valorInicial}
-            setValue={setvalorInicial}
-            placeHolder="00,00"
-            label="Digite o valor inicial do caixa."
-          />
-        </ModalBody>
-        <ModalFooter>
-          <Button Type="submit" text="Cadastrar" />
-        </ModalFooter>
-      </Modal>
     </>
   );
 }

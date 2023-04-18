@@ -1,7 +1,7 @@
 import { iTablePaymentMethodsWithPaymentFKData } from '@/src/types/types';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
-import ValueCard from '../feito/ValueCard';
+import ValueCard from '../../../../globalComponents/ValueCard';
 import { PaymentsTable } from './PaymentsTable';
 
 interface iPaymentContentProps {

@@ -76,7 +76,7 @@ export default function Table({}: iTableProps) {
         number: nextOrderNumber,
         order_type_id: 3,
         restaurant_id: restaurant.id,
-        order_status_id: 1,
+        order_status_id: 3,
         cash_box_id: cashBoxData[0].id,
       })
       .select('*');

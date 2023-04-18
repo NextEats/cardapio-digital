@@ -1,5 +1,7 @@
 import AdminWrapper from '@/src/components/admin/AdminWrapper';
 import { CashBox } from '@/src/components/admin/CashBox';
+import CashBillingCards from '@/src/components/admin/CashBox/CashBillingCards';
+import CashHeader from '@/src/components/admin/CashBox/CashHeader';
 import { getRestaurantBySlugFetch } from '@/src/fetch/restaurant/getRestaurantBySlug';
 import { supabase } from '@/src/server/api';
 import {
@@ -13,6 +15,7 @@ export interface iCashboxManagement {
   activeCashBox: iCashBox['data'] | null;
   ordersProductsData: iOrdersProductsWithFKData[];
   restaurant: iRestaurantWithFKData;
+  thereArePendingOrders: boolean;
 }
 
 async function getActiveCashBoxByTheRestaurantID(restaurant_id: number) {
@@ -35,7 +38,7 @@ export const getServerSideProps: GetServerSideProps = async context => {
     return {
       props: {
         ordersProductsData: null,
-        activeCashBox: activeCashBox ? activeCashBox : null,
+        activeCashBox,
         restaurant,
       },
     };
@@ -45,6 +48,17 @@ export const getServerSideProps: GetServerSideProps = async context => {
     .select('*')
     .eq('cash_box_id', activeCashBox!.id);
 
+  const thereArePendingOrders =
+    ordersFromTheActiveCashBox === null ||
+    ordersFromTheActiveCashBox?.some(order => {
+      return (
+        order.order_status_id === 2 ||
+        order.order_status_id === 3 ||
+        order.order_status_id === 4
+      );
+    });
+
+  console.log(ordersFromTheActiveCashBox);
   const orders_ids = ordersFromTheActiveCashBox
     ? ordersFromTheActiveCashBox!.map(o => o.id)
     : [];
@@ -59,14 +73,20 @@ export const getServerSideProps: GetServerSideProps = async context => {
   return {
     props: {
       ordersProductsData: ordersProductsByOrdersIds,
-      activeCashBox: activeCashBox ? activeCashBox : null,
+      activeCashBox,
       restaurant,
+      thereArePendingOrders,
     },
   };
 };
 
 export default function CashboxPage(props: iCashboxManagement) {
-  const { activeCashBox, ordersProductsData, restaurant } = props;
+  const {
+    activeCashBox,
+    ordersProductsData,
+    restaurant,
+    thereArePendingOrders,
+  } = props;
   if (!restaurant) {
     return null;
   }
@@ -83,20 +103,23 @@ export default function CashboxPage(props: iCashboxManagement) {
       }
     });
 
-  console.log('ordersProductsData', ordersProductsData);
-  console.log('activeCashBox', activeCashBox);
-
   return (
     <AdminWrapper>
-      <CashBox
-        cashBoxState={activeCashBox}
-        restaurantId={restaurant.id}
-        ordersProducts={ordersProductsData || []}
-        ordersGroupedByOrderStatus={res}
-        totalMesa={totalMesa}
-        totalDeli={totalDeli}
-        billing={69}
-      />
+      <div>
+        <CashHeader
+          restaurantId={restaurant.id}
+          activeCashBox={activeCashBox}
+          thereArePendingOrders={thereArePendingOrders}
+        />
+        <CashBillingCards totalMesa={totalMesa} totalDeli={totalDeli} />
+        <CashBox
+          cashBoxState={activeCashBox}
+          restaurantId={restaurant.id}
+          ordersProducts={ordersProductsData || []}
+          ordersGroupedByOrderStatus={res}
+          billing={69}
+        />
+      </div>
     </AdminWrapper>
   );
 }

@@ -1,21 +1,36 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import Button from '@/src/components/nButton';
 import { api } from '@/src/server/api';
-import { iCashBox, iOrdersWithFKData } from '@/src/types/types';
+import {
+  iCashBox,
+  iOrdersProductsWithFKData,
+  iOrdersWithFKData,
+} from '@/src/types/types';
 import { useState } from 'react';
+import TextFiled from '../../Inputs';
+import Modal from '../../Modal';
+import ModalBody from '../../Modal/ModalBody';
+import ModalFooter from '../../Modal/ModalFooter';
 import CashClosingReportModal from '../initialPage/CashClosingReportModal';
 
 interface iCashBoxButtons {
   ordersGroupedByOrderStatus: { [key: string]: iOrdersWithFKData[] };
   restaurantId: number;
-  cashBoxState: iCashBox['data'] | undefined;
+  cashBoxState: iCashBox['data'] | undefined | null;
   billing: number;
+  ordersProducts: iOrdersProductsWithFKData[];
+  totalMesa: number;
+  totalDeli: number;
 }
 
-export default function CashBoxButtons({
+export function CashBox({
   ordersGroupedByOrderStatus,
   restaurantId,
   cashBoxState,
   billing,
+  ordersProducts,
+  totalMesa,
+  totalDeli,
 }: iCashBoxButtons) {
   const [openCashBoxState, setOpenCashBoxState] = useState(false);
   const [openCashBoxClosingReportModal, setOpenCashBoxClosingReportModal] =
@@ -24,9 +39,10 @@ export default function CashBoxButtons({
   async function handleOpenCashBox() {
     await api.post('api/cash_boxes/open', {
       restaurant_id: restaurantId,
+      initial_value: valorInicial,
     });
     setOpenCashBoxState(true);
-    location.reload();
+    // location.reload();
   }
 
   function getOrdersWithCashBoxId(arr: any) {
@@ -48,25 +64,33 @@ export default function CashBoxButtons({
     return null;
   }
 
+  const [openModal, setOpenModal] = useState(false);
+  const [valorInicial, setvalorInicial] = useState(0);
+  function closeModal() {
+    setOpenModal(!openModal);
+  }
+  function OnSubmit() {
+    handleOpenCashBox();
+  }
+  function CloseOpenCashBox() {
+    if (cashBoxState !== null) {
+      openCashBoxReportToCloseCashBox();
+    } else {
+      closeModal();
+    }
+  }
   return (
     <>
       <div className="grid grid-cols-4 gap-4 text-black w-full">
         <div className="flex items-center col-span-4 md:col-span-3">
           <h1 className="text-2xl font-bold text-black">
-            ${' '}
-            {cashBoxState !== undefined
-              ? 'Caixa Aberto 🟢'
-              : 'Caixa Fechado 🔴'}
+            $ {cashBoxState !== null ? 'Caixa Aberto 🟢' : 'Caixa Fechado 🔴'}
           </h1>
         </div>
         <div className="col-span-4 md:col-span-1">
           <Button
-            OnClick={
-              cashBoxState !== undefined
-                ? openCashBoxReportToCloseCashBox
-                : handleOpenCashBox
-            }
-            text={cashBoxState !== undefined ? 'Fechar Caixa' : 'Abrir Caixa'}
+            OnClick={CloseOpenCashBox}
+            text={cashBoxState !== null ? 'Fechar Caixa' : 'Abrir Caixa'}
             bgColor="orange"
             fullWhidth
           />
@@ -80,19 +104,19 @@ export default function CashBoxButtons({
         <div className="flex flex-col col-span-4 md:col-span-1 items-start bg-white border-2 rounded-md border-green-400 shadow-black shadow-shadow-500 p-4">
           <h2 className="text-gray-900">Total Do Delivery</h2>
           <h3 className="text-base font-medium text-navy-700 text-right w-full">
-            R$ 300,00
+            R$ {totalDeli}
           </h3>
         </div>
         <div className="flex flex-col col-span-4 md:col-span-1 items-start bg-white border-2 rounded-md border-orange-400 shadow-black shadow-shadow-500 p-4">
           <h2 className="text-gray-900">Saldo Total</h2>
           <h3 className="text-base font-medium text-navy-700 text-right w-full">
-            R$ 4023,00
+            R$ {totalDeli + totalMesa}
           </h3>
         </div>
         <div className="flex flex-col col-span-4 md:col-span-1 items-start bg-white border-2 rounded-md border-green-400 shadow-black shadow-shadow-500 p-4">
           <h2 className="text-gray-900">Total das Mesas</h2>
           <h3 className="text-base font-medium text-navy-700 text-right w-full">
-            R$ 4023,00
+            R$ {totalMesa}
           </h3>
         </div>
 
@@ -104,35 +128,24 @@ export default function CashBoxButtons({
                   Forma de Pagamento
                 </th>
                 <th className="text-gray-900 px-6 py-4 text-center">
-                  Valor Saida
+                  Valor Entrada
                 </th>
               </tr>
             </thead>
             <tbody>
-              <tr className="border-b">
-                <td className="text-gray-500 px-6 py-4 whitespace-nowrap">
-                  Cartão de Crédito
-                </td>
-                <td className="text-gray-500 px-6 py-4 whitespace-nowrap text-center">
-                  R$ 843,50
-                </td>
-              </tr>
-              <tr className="border-b">
-                <td className="text-gray-500 px-6 py-4 whitespace-nowrap">
-                  Cartão de Crédito
-                </td>
-                <td className="text-gray-500 px-6 py-4 whitespace-nowrap text-center">
-                  R$ 843,50
-                </td>
-              </tr>
-              <tr className="border-b">
-                <td className="text-gray-500 px-6 py-4 whitespace-nowrap">
-                  Cartão de Crédito
-                </td>
-                <td className="text-gray-500 px-6 py-4 whitespace-nowrap text-center">
-                  R$ 843,50
-                </td>
-              </tr>
+              {ordersProducts.map(item => {
+                if (item.orders.payment_methods.name === 'MESA') return null;
+                return (
+                  <tr key={item.id} className="border-b">
+                    <td className="text-gray-500 px-6 py-4 whitespace-nowrap">
+                      {item.orders.payment_methods.name}
+                    </td>
+                    <td className="text-gray-500 px-6 py-4 whitespace-nowrap text-center">
+                      R$ {item.total_price * item.quantity}
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>
@@ -151,18 +164,23 @@ export default function CashBoxButtons({
               </tr>
             </thead>
             <tbody>
-              <tr className="border-b">
-                <td className="text-gray-500 px-6 py-4 whitespace-nowrap text-center">
-                  1
-                </td>
-                <td className="text-gray-500 px-6 py-4 whitespace-nowrap">
-                  Cancelado
-                </td>
-                <td className="text-gray-500 px-6 py-4 whitespace-nowrap text-center">
-                  R$ 843,50
-                </td>
-              </tr>
-              <tr className="border-b">
+              {ordersProducts.map(item => {
+                if (item.orders.payment_methods.name === 'MESA') return null;
+                return (
+                  <tr key={item.id} className="border-b">
+                    <td className="text-gray-500 px-6 py-4 whitespace-nowrap text-center">
+                      {item.id}
+                    </td>
+                    <td className="text-gray-500 px-6 py-4 whitespace-nowrap">
+                      {item.orders.order_status.status_name}
+                    </td>
+                    <td className="text-gray-500 px-6 py-4 whitespace-nowrap text-center">
+                      R$ {item.total_price * item.quantity}
+                    </td>
+                  </tr>
+                );
+              })}
+              {/* <tr className="border-b">
                 <td className="text-gray-500 px-6 py-4 whitespace-nowrap text-center">
                   2
                 </td>
@@ -183,7 +201,7 @@ export default function CashBoxButtons({
                 <td className="text-gray-500 px-6 py-4 whitespace-nowrap text-center">
                   R$ 843,50
                 </td>
-              </tr>
+              </tr> */}
             </tbody>
           </table>
         </div>
@@ -198,6 +216,26 @@ export default function CashBoxButtons({
         setOpenCashBoxClosingReportModal={setOpenCashBoxClosingReportModal}
         billing={billing}
       />
+      <Modal
+        showModal={openModal}
+        title={'Caixa'}
+        closeFunction={closeModal}
+        onSubmitFunction={OnSubmit}
+      >
+        <ModalBody>
+          <TextFiled
+            required
+            Type="number"
+            value={valorInicial}
+            setValue={setvalorInicial}
+            placeHolder="00,00"
+            label="Digite o valor inicial do caixa."
+          />
+        </ModalBody>
+        <ModalFooter>
+          <Button Type="submit" text="Cadastrar" />
+        </ModalFooter>
+      </Modal>
     </>
   );
 }

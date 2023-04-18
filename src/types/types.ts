@@ -148,21 +148,21 @@ export interface iRestaurantOrderTypes {
   data: Array<Database['public']['Tables']['restaurant_order_type']['Row']>;
 }
 export interface iTablePayment {
-  data: Database['public']['Tables']['table_paymants']['Row'];
+  data: Database['public']['Tables']['table_payments']['Row'];
 }
 
 export interface iTablePayments {
-  data: Array<Database['public']['Tables']['table_paymants']['Row']>;
+  data: Array<Database['public']['Tables']['table_payments']['Row']>;
 }
 
 // ==================   INSERTS  =====================
 
 export interface iInsertTablePayment {
-  data: Database['public']['Tables']['table_paymants']['Insert'];
+  data: Database['public']['Tables']['table_payments']['Insert'];
 }
 
 export interface iInsertTablePayments {
-  data: Array<Database['public']['Tables']['table_paymants']['Insert']>;
+  data: Array<Database['public']['Tables']['table_payments']['Insert']>;
 }
 export interface iInsertRestaurantOrderType {
   data: Database['public']['Tables']['restaurant_order_type']['Insert'];

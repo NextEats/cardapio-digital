@@ -5,7 +5,7 @@ import {
   iOrdersWithFKData,
 } from '@/src/types/types';
 import { useState } from 'react';
-import CashClosingReportModal from '../initialPage/CashClosingReportModal';
+import FormOfPayment from './FormOfPayment';
 
 interface iCashBoxButtons {
   ordersGroupedByOrderStatus: { [key: string]: iOrdersWithFKData[] };
@@ -45,40 +45,14 @@ export function CashBox({
   return (
     <>
       <div className="grid grid-cols-4 gap-4 text-black w-full">
-        <div className="flex items-center col-span-4 md:col-span-3">
+        {/* <div className="flex items-center col-span-4 md:col-span-3">
           <h1 className="text-2xl font-bold text-black">
             $ {cashBoxState !== null ? 'Caixa Aberto 🟢' : 'Caixa Fechado 🔴'}
           </h1>
-        </div>
+        </div> */}
 
         <div className="flex flex-col col-span-4 md:col-span-2 p-4 mt-4 shadow shadow-gray-400">
-          <table className="min-w-full">
-            <thead className="bg-white border-b">
-              <tr>
-                <th className="text-gray-900 px-6 py-4 text-left">
-                  Forma de Pagamento
-                </th>
-                <th className="text-gray-900 px-6 py-4 text-center">
-                  Valor Entrada
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {ordersProducts.map(item => {
-                if (item.orders.payment_methods.name === 'MESA') return null;
-                return (
-                  <tr key={item.id} className="border-b">
-                    <td className="text-gray-500 px-6 py-4 whitespace-nowrap">
-                      {item.orders.payment_methods.name}
-                    </td>
-                    <td className="text-gray-500 px-6 py-4 whitespace-nowrap text-center">
-                      R$ {item.total_price * item.quantity}
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+          <FormOfPayment ordersProducts={ordersProducts} />
         </div>
 
         <div className="flex flex-col col-span-4 md:col-span-2 p-4 mt-4 shadow shadow-gray-400">
@@ -137,7 +111,7 @@ export function CashBox({
           </table>
         </div>
       </div>
-      <CashClosingReportModal
+      {/* <CashClosingReportModal
         cashBoxState={cashBoxState}
         ordersGroupedByOrderStatus={getOrdersWithCashBoxId(
           ordersGroupedByOrderStatus
@@ -146,7 +120,7 @@ export function CashBox({
         openCashBoxClosingReportModal={openCashBoxClosingReportModal}
         setOpenCashBoxClosingReportModal={setOpenCashBoxClosingReportModal}
         billing={billing}
-      />
+      /> */}
     </>
   );
 }

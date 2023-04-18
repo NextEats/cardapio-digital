@@ -423,7 +423,7 @@ export type iOrdersProductsWithFKProducdData = iOrderProduct['data'] & {
   }[];
 };
 export type iOrdersProductsWithFKData = iOrderProduct['data'] & {
-  orders: iOrders['data'] & {
+  orders: iOrder['data'] & {
     order_status: iOrderStatus['data'];
     payment_methods: iPaymentMethod['data'];
   };

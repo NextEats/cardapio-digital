@@ -1,5 +1,4 @@
 import { api } from '@/src/server/api';
-import { iCashBox } from '@/src/types/types';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as Dialog from '@radix-ui/react-dialog';
 import { useForm } from 'react-hook-form';
@@ -7,7 +6,6 @@ import * as zod from 'zod';
 
 interface iOpenCashBoxModalProps {
   restaurantId: number;
-  activeCashBox: iCashBox['data'] | null;
 }
 
 const newCashBoxFormValidationSchema = zod.object({
@@ -20,31 +18,31 @@ type NewCashBoxFormData = zod.infer<typeof newCashBoxFormValidationSchema>;
 
 export default function OpenCashBoxModal({
   restaurantId,
-  activeCashBox,
 }: iOpenCashBoxModalProps) {
-  const { handleSubmit, register, reset, setValue, watch } =
-    useForm<NewCashBoxFormData>({
-      resolver: zodResolver(newCashBoxFormValidationSchema),
-      defaultValues: {
-        initialValue: 0,
-      },
-    });
+  const {
+    handleSubmit,
+    register,
+    formState: { isSubmitting },
+  } = useForm<NewCashBoxFormData>({
+    resolver: zodResolver(newCashBoxFormValidationSchema),
+    defaultValues: {
+      initialValue: 0,
+    },
+  });
 
   async function handleOpenCashBox(data: NewCashBoxFormData) {
     await api.post('api/cash_boxes/open', {
       restaurant_id: restaurantId,
       initial_value: data.initialValue,
     });
-    // location.reload();
+    location.reload();
   }
 
   return (
     <>
       <Dialog.Root>
-        <Dialog.Trigger>
-          <button className="flex items-center gap-1 justify-center text-white leading-5 font-semibold rounded transition-all ease-in-out w-48 h-9 bg-green-500">
-            Abrir caixa
-          </button>
+        <Dialog.Trigger className="flex items-center gap-1 justify-center text-white leading-5 font-semibold rounded transition-all ease-in-out w-48 h-9 bg-green-500">
+          Abrir caixa
         </Dialog.Trigger>
 
         <Dialog.Portal>
@@ -59,27 +57,28 @@ export default function OpenCashBoxModal({
               onSubmit={handleSubmit(handleOpenCashBox)}
             >
               <input
+                {...register('initialValue', { valueAsNumber: true })}
                 type="number"
                 className="h-9 w-full px-2 outline-none border focus:border-orange-500 rounded"
               />
               <div className="flex items-center gap-2">
-                <Dialog.Close asChild>
+                <Dialog.Close asChild disabled={isSubmitting}>
                   <button
+                    type="button"
                     className="flex items-center justify-center rounded text-white text-base cursor-pointer w-[49%] h-9 bg-white-blue"
                     aria-label="Close"
                   >
                     Cancelar
                   </button>
                 </Dialog.Close>
-                <Dialog.Close asChild>
-                  <button
-                    type="submit"
-                    className={`flex flex-1 items-center justify-center rounded text-white text-base cursor-pointer w-[49%] h-9
-                      transition bg-orange-500 hover:bg-red-orange'`}
-                  >
-                    Abrir
-                  </button>
-                </Dialog.Close>
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className={`flex flex-1 items-center justify-center rounded text-white text-base cursor-pointer w-[49%] h-9
+                      transition bg-orange-500  hover:bg-red-orange disabled:bg-gray-400`}
+                >
+                  Abrir
+                </button>
               </div>
             </form>
           </Dialog.Content>

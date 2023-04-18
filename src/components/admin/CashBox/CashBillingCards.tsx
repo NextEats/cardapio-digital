@@ -2,22 +2,24 @@ import ValueCard from '../../globalComponents/ValueCard';
 
 interface iCashBillingCardsProps {
   totalMesa: number;
-  totalDeli: number;
+  totalDelivery: number;
+  cashBoxInitialValue: number;
 }
 
 export default function CashBillingCards({
-  totalDeli,
+  totalDelivery,
   totalMesa,
+  cashBoxInitialValue,
 }: iCashBillingCardsProps) {
   return (
     <div className="grid grid-cols-4 gap-3">
-      <ValueCard title="Saldo Inicial" value={300} />
+      <ValueCard title="Saldo Inicial" value={cashBoxInitialValue} />
       <ValueCard
         title="Total Do Delivery"
-        value={totalDeli}
+        value={totalDelivery}
         borderColor="border-green-500"
       />
-      <ValueCard title="Saldo Total" value={totalDeli + totalMesa} />
+      <ValueCard title="Saldo Total" value={totalDelivery + totalMesa} />
       <ValueCard
         title="Total das Mesas"
         value={totalMesa}

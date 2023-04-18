@@ -37,8 +37,8 @@ export const getServerSideProps: GetServerSideProps = async context => {
   if (!activeCashBox) {
     return {
       props: {
-        ordersProductsData: null,
-        activeCashBox,
+        ordersProductsData: [],
+        activeCashBox: null,
         restaurant,
       },
     };
@@ -48,17 +48,17 @@ export const getServerSideProps: GetServerSideProps = async context => {
     .select('*')
     .eq('cash_box_id', activeCashBox!.id);
 
-  const thereArePendingOrders =
-    ordersFromTheActiveCashBox === null ||
-    ordersFromTheActiveCashBox?.some(order => {
-      return (
-        order.order_status_id === 2 ||
-        order.order_status_id === 3 ||
-        order.order_status_id === 4
-      );
-    });
+  const thereArePendingOrders: boolean =
+    ordersFromTheActiveCashBox !== null
+      ? ordersFromTheActiveCashBox?.some(order => {
+          return (
+            order.order_status_id === 2 ||
+            order.order_status_id === 3 ||
+            order.order_status_id === 4
+          );
+        })
+      : false;
 
-  console.log(ordersFromTheActiveCashBox);
   const orders_ids = ordersFromTheActiveCashBox
     ? ordersFromTheActiveCashBox!.map(o => o.id)
     : [];
@@ -87,38 +87,50 @@ export default function CashboxPage(props: iCashboxManagement) {
     restaurant,
     thereArePendingOrders,
   } = props;
-  if (!restaurant) {
-    return null;
-  }
 
-  let res: any = {};
-  let totalDeli = 0;
+  let totalDelivery = 0;
   let totalMesa = 0;
   if (ordersProductsData)
     ordersProductsData.map(item => {
       if (item.orders.payment_methods.name === 'MESA') {
         totalMesa = totalMesa + item.total_price * item.quantity;
       } else {
-        totalDeli = totalDeli + item.total_price * item.quantity;
+        totalDelivery = totalDelivery + item.total_price * item.quantity;
       }
     });
+
+  console.log(
+    'totalMesa',
+    totalMesa,
+    'totalDelivery',
+    totalDelivery,
+    'restaurantId',
+    restaurant.id,
+    'activeCashBox',
+    activeCashBox,
+    'thereArePendingOrders',
+    thereArePendingOrders,
+    'ordersProducts',
+    ordersProductsData
+  );
 
   return (
     <AdminWrapper>
       <div>
         <CashHeader
+          totalMesa={totalMesa}
+          totalDelivery={totalDelivery}
           restaurantId={restaurant.id}
           activeCashBox={activeCashBox}
           thereArePendingOrders={thereArePendingOrders}
+          ordersProducts={ordersProductsData}
         />
-        <CashBillingCards totalMesa={totalMesa} totalDeli={totalDeli} />
-        <CashBox
-          cashBoxState={activeCashBox}
-          restaurantId={restaurant.id}
-          ordersProducts={ordersProductsData || []}
-          ordersGroupedByOrderStatus={res}
-          billing={69}
+        <CashBillingCards
+          totalMesa={totalMesa}
+          totalDelivery={totalDelivery}
+          cashBoxInitialValue={activeCashBox ? activeCashBox?.initial_value : 0}
         />
+        <CashBox ordersProducts={ordersProductsData || []} />
       </div>
     </AdminWrapper>
   );

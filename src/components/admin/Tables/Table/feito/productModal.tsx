@@ -90,6 +90,7 @@ export default function ProductModal() {
         productsOptionsSelected: ps.productSelects ? ps.productSelects : [],
       });
 
+      console.log(ps.totalPrice / ps.quantity, ps.quantity);
       const ordersProductsData = await api.post(`api/orders_products/`, {
         order_id: order!.id,
         table_id: table.id,
@@ -97,7 +98,7 @@ export default function ProductModal() {
         selects_data,
         additionals_data,
         observation: ps.observation,
-        total_price: ps.totalPrice,
+        total_price: ps.totalPrice / ps.quantity,
         quantity: ps.quantity,
       });
     });

@@ -38,10 +38,7 @@ export default function Process({
   const paymentMethodId = watch('paymentMethodsId');
   const router = useRouter();
 
-  console.log(paymentMethodId);
-
   const handleSubmitPayment = async (data: NewPaymentFormData) => {
-    console.log(data);
     const { data: table_payment_data } = await supabase
       .from('table_payments')
       .insert({
@@ -49,8 +46,7 @@ export default function Process({
         order_table_id: order_table_id,
         payment_mathod_id: data.paymentMethodsId,
       });
-
-    // window.location.href = `${serverURL}${router.query.slug}/admin/table-control/${router.query.table_slug}/payments`
+    reset();
   };
 
   return (

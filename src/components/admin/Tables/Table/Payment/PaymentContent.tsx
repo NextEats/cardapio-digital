@@ -21,13 +21,15 @@ export function PaymentContent({
 
   const router = useRouter();
 
+  const amountDue =
+    total_orders_products_price - totalPayd >= 0
+      ? total_orders_products_price - totalPayd
+      : 0;
+
   return (
     <div className="h-[calc(100%-80px)] px-16 py-4 flex flex-col 2md:flex-row gap-3 lg:gap-10">
       <div className="flex 2md:flex-col gap-3 p-3">
-        <ValueCard
-          title="Falta"
-          value={`${total_orders_products_price - totalPayd}`}
-        />
+        <ValueCard title="Falta" value={`${amountDue}`} />
         <ValueCard
           title="Total pago"
           value={`${totalPayd}`}

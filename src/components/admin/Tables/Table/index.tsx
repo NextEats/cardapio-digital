@@ -1,12 +1,14 @@
 import PageHeaders from '@/src/components/globalComponents/PageHeaders';
 import { TableContext } from '@/src/contexts/TableContext';
-import { serverURL } from '@/src/server/api';
+import { serverURL, supabase } from '@/src/server/api';
 import Image from 'next/image';
 import { useContext, useRef } from 'react';
 import { useReactToPrint } from 'react-to-print';
+import { toast } from 'react-toastify';
 import BottonNavigationBar, {
   iBottonNavigationBarProps,
 } from '../../../globalComponents/BottonNavigationBar';
+import { ConfirmFinishServiceModal } from './ConfirmFinishServiceModal';
 import ProductsTableModal from './feito/ProductsTableModal';
 import TableConfigModal from './feito/TableConfigModal';
 import TableContent from './feito/TableContent';
@@ -15,21 +17,110 @@ import OrderTableDetails from './OrderTableDetails';
 interface iTableProps {}
 
 export default function Table({}: iTableProps) {
-  const { table, restaurant } = useContext(TableContext);
+  const {
+    table,
+    restaurant,
+    orders_tables,
+    table_paymants_values,
+    orders_products,
+  } = useContext(TableContext);
   const printOrderTableComponent = useRef<HTMLDivElement>(null);
 
   const handlePrint = useReactToPrint({
     content: () => printOrderTableComponent.current,
   });
 
+  const totalSpent = orders_products.reduce((acc, item) => {
+    return (acc = acc + item.total_price * item.quantity);
+  }, 0);
+
+  const isUnableToFinishService = table_paymants_values >= totalSpent;
+
+  const handleStartSrvice = async () => {
+    const { data: cashBoxData } = await supabase
+      .from('cash_boxes')
+      .select('id')
+      .match({
+        restaurant_id: restaurant.id,
+        is_open: true,
+      });
+
+    if (!cashBoxData) {
+      toast.error(
+        'O atendimento só pode ser iniciado se o caixa estiver aberto',
+        {
+          theme: 'light',
+        }
+      );
+      return;
+    }
+
+    const { data: orders } = await supabase
+      .from('orders')
+      .select('number')
+      .match({
+        restaurant_id: restaurant.id,
+        cash_box_id: cashBoxData[0].id,
+      });
+    // Mapeie a matriz de objetos para uma matriz de números de pedidos
+    const orderNumbers = orders ? orders.map(order => order.number) : [0];
+
+    // Encontre o maior número de pedido
+    const maxOrderNumber = Math.max(...orderNumbers);
+    const nextOrderNumber = maxOrderNumber + 1;
+
+    const { data: orderData } = await supabase
+      .from('orders')
+      .insert({
+        payment_method_id: 7,
+        number: nextOrderNumber,
+        order_type_id: 3,
+        restaurant_id: restaurant.id,
+        order_status_id: 1,
+        cash_box_id: cashBoxData[0].id,
+      })
+      .select('*');
+
+    if (!orderData) {
+      toast.error(
+        'Ocorreu um problema ao iniciar o atendimento. Se esse problema persistir, entre em contato com o suporte NextEats!',
+        { theme: 'light' }
+      );
+      return;
+    }
+    const { data: orderTableData } = await supabase
+      .from('orders_tables')
+      .insert({
+        order_id: orderData[0].id,
+        table_id: table.id,
+        has_been_paid: false,
+      })
+      .select('*');
+
+    window.location.reload();
+  };
+
   const BottonNavigationBarOptionTable: iBottonNavigationBarProps['options'] = [
     {
       prefetch: false,
       title: (
-        <button onClick={() => console.log('edu')} className="relative px-3">
-          <span>Finalizar atendimento</span>
-          <div className="absolute top-1 right-0 bg-red-orange h-3 w-3 rounded-full"></div>
-        </button>
+        <div className="relative px-3">
+          {orders_tables ? (
+            <>
+              <ConfirmFinishServiceModal />
+              <div
+                className={`absolute top-1 right-0 h-3 w-3 rounded-full ${
+                  isUnableToFinishService ? 'bg-green-500' : 'bg-red-orange'
+                }`}
+              ></div>
+            </>
+          ) : (
+            <button onClick={() => handleStartSrvice()}>
+              {' '}
+              Iniciar atendimento{' '}
+            </button>
+          )}
+        </div>
       ),
       url: '',
     },

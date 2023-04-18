@@ -15,7 +15,7 @@ export default function AccordionOrdersActions({
       .from('orders_products')
       .delete()
       .eq('id', order_prodcut_id);
-    // window.location.reload()
+    window.location.reload();
   };
 
   return (

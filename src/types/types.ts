@@ -147,9 +147,23 @@ export interface iRestaurantOrderType {
 export interface iRestaurantOrderTypes {
   data: Array<Database['public']['Tables']['restaurant_order_type']['Row']>;
 }
+export interface iTablePayment {
+  data: Database['public']['Tables']['table_payments']['Row'];
+}
+
+export interface iTablePayments {
+  data: Array<Database['public']['Tables']['table_payments']['Row']>;
+}
 
 // ==================   INSERTS  =====================
 
+export interface iInsertTablePayment {
+  data: Database['public']['Tables']['table_payments']['Insert'];
+}
+
+export interface iInsertTablePayments {
+  data: Array<Database['public']['Tables']['table_payments']['Insert']>;
+}
 export interface iInsertRestaurantOrderType {
   data: Database['public']['Tables']['restaurant_order_type']['Insert'];
 }
@@ -408,6 +422,7 @@ export type iOrdersProductsWithFKProducdData = iOrderProduct['data'] & {
     options: iProductOptions['data'];
   }[];
 };
+
 export type iOrdersProductsWithFKData = iOrderProduct['data'] & {
   orders: iOrder['data'] & {
     status: iOrderStatus['data'];

@@ -38,8 +38,6 @@ export async function getProductSelectWithOptions(productId: string) {
 
   const data = await Promise.all(promises);
 
-  console.log('data 444', data);
-
   const formattedData = data.map((select: any) => {
     return {
       id: select.id,

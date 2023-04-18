@@ -1,4 +1,21 @@
 import { supabase } from '@/src/server/api';
+import {
+  iCashBox,
+  iClient,
+  iDeliveryFee,
+  iRestaurantWithFKData,
+} from '@/src/types/types';
+
+interface iInsertOrder {
+  restaurant: iRestaurantWithFKData;
+  client: iClient['data'];
+  deliveryForm: number;
+  currentCashBox: iCashBox['data'];
+  foundDeliveryFee: iDeliveryFee['data'] | null | undefined;
+  payment_method: number;
+  change_value: number;
+  orderPosition: number;
+}
 
 export default async function insertOrder({
   restaurant,
@@ -9,7 +26,7 @@ export default async function insertOrder({
   payment_method,
   change_value,
   orderPosition,
-}) {
+}: iInsertOrder) {
   const { data: orderData, error: orderError } = await supabase
     .from('orders')
     .insert({

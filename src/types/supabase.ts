@@ -254,7 +254,9 @@ export interface Database {
         Row: {
           closed_at: string | null;
           created_at: string | null;
+          final_value: number;
           id: number;
+          initial_value: number;
           is_open: boolean | null;
           opened_at: string | null;
           restaurant_id: number | null;
@@ -262,7 +264,9 @@ export interface Database {
         Insert: {
           closed_at?: string | null;
           created_at?: string | null;
+          final_value?: number;
           id?: number;
+          initial_value?: number;
           is_open?: boolean | null;
           opened_at?: string | null;
           restaurant_id?: number | null;
@@ -270,7 +274,9 @@ export interface Database {
         Update: {
           closed_at?: string | null;
           created_at?: string | null;
+          final_value?: number;
           id?: number;
+          initial_value?: number;
           is_open?: boolean | null;
           opened_at?: string | null;
           restaurant_id?: number | null;
@@ -391,6 +397,23 @@ export interface Database {
           picture_url?: string;
         };
       };
+      o_p_teste: {
+        Row: {
+          created_at: string | null;
+          id: number;
+          price: number | null;
+        };
+        Insert: {
+          created_at?: string | null;
+          id?: number;
+          price?: number | null;
+        };
+        Update: {
+          created_at?: string | null;
+          id?: number;
+          price?: number | null;
+        };
+      };
       operating_time_restaurants: {
         Row: {
           created_at: string | null;
@@ -491,7 +514,9 @@ export interface Database {
           observation: string | null;
           order_id: number;
           product_id: number;
+          quantity: number;
           selects_data: Json | null;
+          total_price: number;
         };
         Insert: {
           additionals_data?: Json | null;
@@ -500,7 +525,9 @@ export interface Database {
           observation?: string | null;
           order_id: number;
           product_id: number;
+          quantity?: number;
           selects_data?: Json | null;
+          total_price?: number;
         };
         Update: {
           additionals_data?: Json | null;
@@ -509,7 +536,9 @@ export interface Database {
           observation?: string | null;
           order_id?: number;
           product_id?: number;
+          quantity?: number;
           selects_data?: Json | null;
+          total_price?: number;
         };
       };
       orders_tables: {
@@ -1002,6 +1031,29 @@ export interface Database {
           restaurant_id?: number | null;
         };
       };
+      table_payments: {
+        Row: {
+          created_at: string | null;
+          id: number;
+          order_table_id: number | null;
+          payment_mathod_id: number | null;
+          value: number;
+        };
+        Insert: {
+          created_at?: string | null;
+          id?: number;
+          order_table_id?: number | null;
+          payment_mathod_id?: number | null;
+          value: number;
+        };
+        Update: {
+          created_at?: string | null;
+          id?: number;
+          order_table_id?: number | null;
+          payment_mathod_id?: number | null;
+          value?: number;
+        };
+      };
       tables: {
         Row: {
           chair_ammount: number | null;
@@ -1137,10 +1189,58 @@ export interface Database {
       };
     };
     Views: {
-      [_ in never]: never;
+      orders_products_by_restaurant: {
+        Row: {
+          order_cash_box_id: number | null;
+          order_created_at: string | null;
+          order_id: number | null;
+          order_restaurant_id: number | null;
+          orders_products_id: number | null;
+          product_created_at: string | null;
+          product_description: string | null;
+          product_id: number | null;
+          product_name: string | null;
+          product_price: number | null;
+        };
+      };
+      tabela_order_view: {
+        Row: {
+          additionals_data: Json | null;
+          created_at: string | null;
+          id: number | null;
+          observation: string | null;
+          order_id: number | null;
+          product_id: number | null;
+          quantity: number | null;
+          selects_data: Json | null;
+          total_price: number | null;
+          total_price_calc: number | null;
+        };
+      };
+      tabelatotal: {
+        Row: {
+          order_product_id: number | null;
+          total_price: number | null;
+        };
+      };
     };
     Functions: {
-      [_ in never]: never;
+      get_orders_products_by_restaurant_id: {
+        Args: {
+          p_restaurant_id: number;
+        };
+        Returns: {
+          orders_products_id: number;
+          order_id: number;
+          product_id: number;
+          order_created_at: string;
+          order_restaurant_id: number;
+          product_created_at: string;
+          product_name: string;
+          product_description: string;
+          product_price: number;
+        }[];
+      };
     };
     Enums: {
       [_ in never]: never;

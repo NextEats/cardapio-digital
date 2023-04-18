@@ -409,9 +409,9 @@ export type iOrdersProductsWithFKProducdData = iOrderProduct['data'] & {
   }[];
 };
 export type iOrdersProductsWithFKData = iOrderProduct['data'] & {
-  orders: iOrders['data'] & {
+  orders: iOrder['data'] & {
     status: iOrderStatus['data'];
-    payment_method: iPaymentMethod['data'];
+    payment_methods: iPaymentMethod['data'];
   };
   products: iProduct['data'];
   additionals: {

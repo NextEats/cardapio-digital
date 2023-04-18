@@ -1,7 +1,8 @@
 import { calculateTotalOrderPrice } from '@/src/helpers/calculateTotalOrderPrice';
-import { supabase } from '@/src/server/api';
 import { iOrder } from '@/src/types/types';
 
+import { supabase, whatsappRestApi } from '@/src/server/api';
+import { toast } from 'react-toastify';
 import { iSubmitForm } from './types';
 import { checkCashBox } from './util/checkCashBox';
 import createAddressIfNeeded from './util/createAddressIfNeeded';
@@ -11,10 +12,44 @@ import findDeliveryFeeForTheDistance from './util/findDeliveryFeeForTheDistance'
 import getOrderPosition from './util/getOrderPosition';
 import insertOrder from './util/insertOrder';
 import insertOrderProducts from './util/insertOrderProducts';
-import sendDeliveryFeeMessage from './util/sendDeliveryFeeMessage';
-import sendOrderReceivedMessage from './util/sendOrderReceivedMessage';
-import sendTotalOrderPriceMessage from './util/sendTotalOrderPriceMessage';
+import { removeNonAlphaNumeric } from './util/removeNonAlphaNumeric';
 import storeAddressInfo from './util/storeAddressInfo';
+
+import cepPromise from 'cep-promise';
+
+async function returnStreetFromCep(cep: string) {
+  const cepInfo = await cepPromise(removeNonAlphaNumeric(cep));
+  console.log('cepInfo', cepInfo);
+
+  return cepInfo.street;
+}
+
+async function returnProductNameFromId(product_id: number) {
+  const { data } = await supabase
+    .from('products')
+    .select('name')
+    .eq('id', product_id);
+
+  if (data) {
+    console.log('data[0].name', data[0].name);
+    return data[0].name;
+  } else {
+    return '';
+  }
+}
+
+async function returnPaymentMethodFromId(payment_method_id: number) {
+  const { data } = await supabase
+    .from('payment_methods')
+    .select('name')
+    .eq('id', payment_method_id);
+
+  if (data) {
+    return data[0].name;
+  } else {
+    return '';
+  }
+}
 
 export async function SubmitForm({
   setOrderNumber,
@@ -32,100 +67,149 @@ export async function SubmitForm({
   neighborhood,
   street,
 }: iSubmitForm) {
-  try {
-    const foundDeliveryFee = await findDeliveryFeeForTheDistance({
-      restaurant_address_string: restaurant.address_string,
-      restaurant_slug: restaurant.slug,
-      restaurant_id: restaurant.id,
-      cep,
-      number,
-    });
+  const isDelivery = deliveryForm == 1;
+  const isPayingUsingPix = payment_method == 1;
 
-    const currentCashBox = await checkCashBox(restaurant);
-    if (!currentCashBox) return;
+  const foundDeliveryFee = await findDeliveryFeeForTheDistance({
+    restaurant_address_string: restaurant.address_string,
+    restaurant_slug: restaurant.slug,
+    restaurant_id: restaurant.id,
+    cep,
+    number,
+  });
 
-    const address = await createAddressIfNeeded(
-      deliveryForm,
-      cep,
-      number,
-      complement
+  const currentCashBox = await checkCashBox(restaurant);
+
+  if (!currentCashBox) {
+    toast.error('Este restaurante não está aberto.');
+    return;
+  }
+
+  const address = await createAddressIfNeeded(
+    deliveryForm,
+    cep,
+    number,
+    complement
+  );
+
+  if (!address && isDelivery) {
+    toast.error('Erro ao cadastrar endereço.');
+    return;
+  }
+
+  const contact = await createContact({ phone: whatsapp });
+
+  if (!contact) {
+    toast.error('Erro ao cadastrar contato.');
+    return;
+  }
+
+  const client = await createClient({
+    name,
+    address_id: address?.id,
+    contact_id: contact.id,
+  });
+
+  if (!client) {
+    toast.error('Erro ao cadastrar cliente.');
+    return;
+  }
+
+  const orderPosition = await getOrderPosition(restaurant);
+
+  const { orderData, orderError } = await insertOrder({
+    restaurant,
+    client,
+    deliveryForm,
+    currentCashBox,
+    foundDeliveryFee,
+    payment_method,
+    change_value,
+    orderPosition,
+  });
+
+  if (orderError) {
+    toast.error('Erro ao criar pedido.');
+    return;
+  }
+
+  storeAddressInfo(deliveryForm, cep, neighborhood, street, number, complement);
+
+  const order = orderData![0] as unknown as iOrder['data'];
+
+  setOrderNumber(order.number);
+
+  await insertOrderProducts(order, products);
+
+  const totalOrderPrice = await calculateTotalOrderPrice({
+    products,
+    restaurantId: restaurant.id,
+  });
+
+  if (foundDeliveryFee) {
+    setDeliveryFee(foundDeliveryFee.fee);
+  }
+
+  async function returnListOfProducts() {
+    if (!products.state) {
+      toast.error('Nenhum produto selecionado.');
+      return;
+    }
+
+    const listOfProducts = await Promise.all(
+      products.state.map(async (product, index) => {
+        const productName = await returnProductNameFromId(product.id);
+
+        return `${product.quantity}x - ${productName}\n`;
+      })
     );
 
-    const contact = await createContact({ phone: whatsapp });
+    var listOfProductsString = '';
 
-    if (!address || !contact) return;
-
-    const client = await createClient({
-      name,
-      address_id: address.id,
-      contact_id: contact.id,
-    });
-
-    if (!client) return;
-
-    const orderDataByCashBoxId = await supabase
-      .from('orders')
-      .select('*')
-      .eq('restaurant_id', restaurant?.id);
-
-    const orderPosition = getOrderPosition(orderDataByCashBoxId);
-
-    const { orderData, orderError } = await insertOrder({
-      restaurant,
-      client,
-      deliveryForm,
-      currentCashBox,
-      foundDeliveryFee,
-      payment_method,
-      change_value,
-      orderPosition,
-    });
-
-    if (orderError) return;
-
-    storeAddressInfo(
-      deliveryForm,
-      cep,
-      neighborhood,
-      street,
-      number,
-      complement
-    );
-
-    const order = orderData![0] as unknown as iOrder['data'];
-
-    setOrderNumber(order.number);
-
-    await insertOrderProducts(order, products);
-
-    await sendOrderReceivedMessage(restaurant, whatsapp);
-
-    const isDelivery = deliveryForm == 1;
-    const isPayingUsingPix = payment_method == 1;
-
-    if (isDelivery) {
-      await sendDeliveryFeeMessage(restaurant, whatsapp, foundDeliveryFee);
+    for (let i = 0; i < listOfProducts.length; i++) {
+      listOfProductsString += listOfProducts[i];
     }
 
-    const totalOrderPrice = await calculateTotalOrderPrice({
-      products,
-      restaurantId: restaurant.id,
+    return listOfProductsString;
+  }
+
+  async function sendWhatsAppMessage({ message }: { message: string }) {
+    try {
+      await whatsappRestApi.post('/send-message', {
+        id: restaurant.slug,
+        number: '55' + removeNonAlphaNumeric(whatsapp.toString()),
+        message: message,
+      });
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  const listOfProducts = await returnListOfProducts();
+
+  const messageOrderInfo = `📝 *Pedido #${orderPosition}:*\n\n${listOfProducts}\n 💳 _Método de Pagamento:_ ${await returnPaymentMethodFromId(
+    payment_method
+  )}\n${
+    foundDeliveryFee?.fee
+      ? '🏍 _Taxa de Entrega: R$ ' + foundDeliveryFee.fee + '_'
+      : ''
+  }\n${
+    isDelivery
+      ? `🏠 _Endereço: ${await returnStreetFromCep(cep.toString())}, ${number}_`
+      : ''
+  }\n\n*_Total: R$ ${totalOrderPrice}_*`;
+
+  sendWhatsAppMessage({
+    message: messageOrderInfo,
+  });
+
+  if (isPayingUsingPix) {
+    sendWhatsAppMessage({
+      message: `_Valor total: *R$ ${totalOrderPrice}*, pague com o PIX utilizando a chave abaixo._`,
     });
 
-    if (isPayingUsingPix) {
-      await sendTotalOrderPriceMessage(
-        restaurant,
-        whatsapp,
-        isDelivery,
-        foundDeliveryFee,
-        totalOrderPrice
-      );
-    }
-
-    if (foundDeliveryFee) {
-      setDeliveryFee(foundDeliveryFee.fee);
-    }
-  } catch (error) {
-    console.error(error);
+    sendWhatsAppMessage({
+      message: `${restaurant.pix}`,
+    });
   }
 }

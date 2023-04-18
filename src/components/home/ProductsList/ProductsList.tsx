@@ -4,6 +4,7 @@ import { FaSearch } from 'react-icons/fa';
 
 import { DigitalMenuContext } from '@/src/contexts/DigitalMenuContext';
 import toNormalForm from '@/src/helpers/stringToNormalForm';
+import { iProduct } from '@/src/types/types';
 import { useContext, useEffect, useState } from 'react';
 import AnchorLink from 'react-anchor-link-smooth-scroll';
 
@@ -109,14 +110,16 @@ function ProductsHorizontalList({ category }: { category: any }) {
       <h2 className="text-2xl mt-16 mb-4 text-gray-800">{category.name}</h2>
       <div className="grid md:grid-cols-2 xl:grid-cols-3  gap-3 ">
         {category.products
-          ? category.products.map((product: any, index: any) => {
+          ? category.products.map((product: iProduct['data'], index: any) => {
+              if (product.is_deleted) return null;
+
               return (
                 <div
                   key={index}
                   onClick={() => {
                     if (product.id && product.active) {
                       selectedProduct?.set(undefined);
-                      selectedProduct?.set(product.id);
+                      selectedProduct?.set(product.id.toString());
                     }
                   }}
                   className={

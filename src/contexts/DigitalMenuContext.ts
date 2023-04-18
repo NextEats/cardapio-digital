@@ -11,7 +11,7 @@ export interface iProductsReducer {
   id: number;
   observation: string;
   quantity: number;
-  additionals?: Array<any>;
+  additionals?: Array<{ additional_id: number; quantity: number }>;
   selects?: Array<any>;
 }
 

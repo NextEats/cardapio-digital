@@ -8,6 +8,7 @@ export default async function createAddressIfNeeded(
   complement: string | null
 ) {
   let address;
+
   if (deliveryForm === 1) {
     const { data: addressData } = await supabase
       .from('addresses')

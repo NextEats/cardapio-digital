@@ -7,7 +7,7 @@ export default async function createClient({
   contact_id,
 }: {
   name: string;
-  address_id: number;
+  address_id: number | null | undefined;
   contact_id: number;
 }) {
   const { data: clientData, error } = await supabase

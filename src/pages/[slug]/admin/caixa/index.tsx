@@ -1,5 +1,6 @@
 import AdminWrapper from '@/src/components/admin/AdminWrapper';
 import CashBox from '@/src/components/admin/CashBox';
+import { getActiveCashBoxByTheRestaurantID } from '@/src/fetch/cashBoxes/getActiveCashboxByRestaurantId';
 import { getRestaurantBySlugFetch } from '@/src/fetch/restaurant/getRestaurantBySlug';
 import { supabase } from '@/src/server/api';
 import {
@@ -13,19 +14,6 @@ export interface iCashboxManagement {
   activeCashBox: iCashBox['data'] | null;
   ordersProductsData: iOrdersProductsWithFKData[];
   restaurant: iRestaurantWithFKData;
-}
-
-async function getActiveCashBoxByTheRestaurantID(restaurant_id: number) {
-  const { data } = await supabase
-    .from('cash_boxes')
-    .select()
-    .match({ restaurant_id, is_open: true });
-
-  if (data) {
-    return data[0] as unknown as iCashBox['data'];
-  } else {
-    return null;
-  }
 }
 
 export const getServerSideProps: GetServerSideProps = async context => {

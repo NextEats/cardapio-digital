@@ -177,6 +177,9 @@ export default function Cart() {
 
   const handleFinishOrder = (e: FormEvent) => {
     e.preventDefault();
+
+    console.log('button click');
+
     const {
       cep,
       complement,
@@ -206,6 +209,7 @@ export default function Cart() {
       neighborhood,
       street,
     });
+
     setIsDone(true);
   };
 

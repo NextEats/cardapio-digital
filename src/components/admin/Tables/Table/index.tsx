@@ -11,10 +11,10 @@ import BottonNavigationBar, {
   iBottonNavigationBarProps,
 } from '../../../globalComponents/BottonNavigationBar';
 import { ConfirmFinishServiceModal } from './ConfirmFinishServiceModal';
+import OrderTableDetails from './OrderTableDetails';
 import ProductsTableModal from './feito/ProductsTableModal';
 import TableConfigModal from './feito/TableConfigModal';
 import TableContent from './feito/TableContent';
-import OrderTableDetails from './OrderTableDetails';
 
 interface iTableProps {}
 
@@ -123,7 +123,10 @@ export default function Table({}: iTableProps) {
               ></div>
             </>
           ) : (
-            <button> Iniciar atendimento</button>
+            <button onClick={() => handleStartSrvice()}>
+              {' '}
+              Iniciar atendimento
+            </button>
           )}
         </div>
       ),

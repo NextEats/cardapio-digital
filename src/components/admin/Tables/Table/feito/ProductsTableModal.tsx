@@ -3,6 +3,7 @@ import { selectProductAction } from '@/src/reducers/tableReducer/action';
 import * as Dialog from '@radix-ui/react-dialog';
 import Image from 'next/image';
 import { ChangeEvent, useContext, useState } from 'react';
+import { BsCart3 } from 'react-icons/bs';
 import { FiX } from 'react-icons/fi';
 import { CardapioDigitalButton } from '../../../cardapio-digital/CardapioDigitalButton';
 import ProductModal from './productModal';
@@ -58,7 +59,10 @@ export default function ProductsTableModal({}: iProductTableModalProps) {
     <div>
       {viewProduct ? <ProductModal /> : null}
       <Dialog.Root>
-        <Dialog.Trigger>Produtos</Dialog.Trigger>
+        <Dialog.Trigger className="flex items-center gap-2">
+          <BsCart3 size={24} />
+          <div className="hidden lg:flex">Produtos</div>
+        </Dialog.Trigger>
         <Dialog.Portal>
           <Dialog.Overlay className="w-screen h-screen flex items-center justify-center bg-black fixed inset-0 z-10 opacity-40 transition-all duration-300 ease-in-out" />
           <Dialog.Content className="fixed top-[7vh] right-1/2 z-20 translate-x-1/2 rounded-lg w-[350px] 2xs:w-[435px] sm:w-[600px] lg:w-[900px] h-[550px] bg-white shadow-md p-6">

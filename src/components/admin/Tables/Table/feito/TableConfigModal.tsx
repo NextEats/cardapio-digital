@@ -3,6 +3,7 @@ import { api } from '@/src/server/api';
 import * as Dialog from '@radix-ui/react-dialog';
 import * as RadioGroup from '@radix-ui/react-radio-group';
 import { useContext, useState } from 'react';
+import { BsGear } from 'react-icons/bs';
 import { FaHome } from 'react-icons/fa';
 import { FiX } from 'react-icons/fi';
 import { toast } from 'react-toastify';
@@ -84,7 +85,10 @@ export default function TableConfigModal({}: iTableConfigModalProps) {
   return (
     <>
       <Dialog.Root>
-        <Dialog.Trigger> Configurações </Dialog.Trigger>
+        <Dialog.Trigger className="flex items-center gap-2">
+          <BsGear size={24} />
+          <div className="hidden lg:flex">Configurações</div>
+        </Dialog.Trigger>
         <Dialog.Portal>
           <Dialog.Overlay className="w-screen h-screen flex items-center justify-center bg-black fixed inset-0 z-20 opacity-40 transition-all duration-300 ease-in-out" />
           <Dialog.Content

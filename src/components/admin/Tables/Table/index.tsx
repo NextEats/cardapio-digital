@@ -3,6 +3,8 @@ import { TableContext } from '@/src/contexts/TableContext';
 import { serverURL, supabase } from '@/src/server/api';
 import Image from 'next/image';
 import { useContext, useRef } from 'react';
+import { MdOutlineAttachMoney, MdOutlinePrint } from 'react-icons/md';
+import { RiArrowLeftSLine } from 'react-icons/ri';
 import { useReactToPrint } from 'react-to-print';
 import { toast } from 'react-toastify';
 import BottonNavigationBar, {
@@ -109,7 +111,7 @@ export default function Table({}: iTableProps) {
   const BottonNavigationBarOptionTable: iBottonNavigationBarProps['options'] = [
     {
       prefetch: false,
-      title: (
+      openDialogTrigger: (
         <div className="relative px-3">
           {orders_tables ? (
             <>
@@ -121,28 +123,38 @@ export default function Table({}: iTableProps) {
               ></div>
             </>
           ) : (
-            <button onClick={() => handleStartSrvice()}>
-              {' '}
-              Iniciar atendimento{' '}
-            </button>
+            <button> Iniciar atendimento</button>
           )}
         </div>
       ),
-      url: '',
+      icon: (
+        <MdOutlinePrint
+          size={26}
+          className="cursor-pointer"
+          onClick={() => handlePrint()}
+        />
+      ),
     },
     {
       prefetch: false,
-      title: (
+      openDialogTrigger: (
         <button onClick={() => handlePrint()} className="relative px-3">
           <span>Imprimir</span>
         </button>
       ),
-      url: ``,
+      icon: (
+        <MdOutlinePrint
+          size={26}
+          className="cursor-pointer"
+          onClick={() => handlePrint()}
+        />
+      ),
     },
     {
       prefetch: false,
       title: 'Pagamentos',
       url: `${serverURL}${restaurant.slug}/admin/table-control/${table.table_slug}/payments`,
+      icon: <MdOutlineAttachMoney size={28} />,
     },
     {
       title: 'Configurações',
@@ -156,6 +168,7 @@ export default function Table({}: iTableProps) {
       prefetch: false,
       title: 'voltar',
       url: `${serverURL}${restaurant.slug}/admin/table-control`,
+      icon: <RiArrowLeftSLine size={28} />,
     },
   ];
 

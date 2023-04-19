@@ -2,6 +2,7 @@ import { TableContext } from '@/src/contexts/TableContext';
 import { supabase } from '@/src/server/api';
 import * as Dialog from '@radix-ui/react-dialog';
 import { useContext } from 'react';
+import { MdOutlinePrint } from 'react-icons/md';
 interface iConfirmFinishServiceModalProps {}
 
 export function ConfirmFinishServiceModal({}: iConfirmFinishServiceModalProps) {
@@ -33,8 +34,9 @@ export function ConfirmFinishServiceModal({}: iConfirmFinishServiceModalProps) {
   return (
     <>
       <Dialog.Root>
-        <Dialog.Trigger asChild>
-          <span>Finalizar atendimento</span>
+        <Dialog.Trigger className="flex items-center gap-2">
+          <MdOutlinePrint size={26} />
+          <span className="hidden lg:flex"> Finalizar atendimento</span>
         </Dialog.Trigger>
         <Dialog.Portal>
           <Dialog.Overlay className="bg-blackA9 data-[state=open]:animate-overlayShow fixed inset-0" />

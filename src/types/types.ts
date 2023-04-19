@@ -473,6 +473,10 @@ export interface iUserDetails {
   data: Database['public']['Tables']['user_details']['Row'];
 }
 
+export interface iOrdersProductsView {
+  data: Database['public']['Views']['orders_products_by_restaurant']['Row'];
+}
+
 export type tUserDetailsWithFKData =
   Database['public']['Tables']['user_details']['Row'] & {
     restaurants: Database['public']['Tables']['restaurants']['Row'];

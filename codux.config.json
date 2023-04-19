@@ -1,0 +1,14 @@
+{
+  "newComponent": {
+    "componentsPath": "src/components"
+  },
+
+  "board-global-setup": "./src/board-global-setup.ts",
+  "tailwindcssConfig": "./src/tailwind.config.js",
+  "previewConfiguration": {
+    "environmentVariables": {
+      "NEXT_PUBLIC_SUPABASE_URL": "https://cceilpiizkukiqfodhec.supabase.co/",
+      "NEXT_PUBLIC_SUPABASE_ANON_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNjZWlscGlpemt1a2lxZm9kaGVjIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTY3MjkyNjU3MywiZXhwIjoxOTg4NTAyNTczfQ.b40-AdlRYn8i3foChwEMXkIuoLMaKu7aHoDUiyddtoA"
+    }
+  }
+}

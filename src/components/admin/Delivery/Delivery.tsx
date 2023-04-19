@@ -1,37 +1,14 @@
 import { DeliveryPageContext } from '@/src/contexts/DeliveryContextProvider';
-import { useContext } from 'react';
 
-// const MockedAccordionData = {
-//     orders: {
-//         cash_box_id:1,
-//         change_value: 1,
-//         client_id: 1,
-//         created_at: 1,
-//         delivery_fee_id: 1,
-//         id: 1,
-//         number: 1,
-//         order_status_id: 1,
-//         order_type_id: 1,
-//         payment_method_id: 1,
-//         restaurant_id: 1
-//       },
-//     orders_products: {
-//         products: iProduct['data'];
-//   additionals: {
-//     additional: iAdditional['data'];
-//     quantity: number;
-//   }[];
-//   selectsWithOptions: {
-//     id: number;
-//     options: iProductOptions['data'];
-//   }[];
-//     };
-//   }
+import * as Accordion from '@radix-ui/react-accordion';
+
+import { useContext } from 'react';
+import { AiFillCaretDown, AiFillCaretRight } from 'react-icons/ai';
+import { AccordionContent } from '../../globalComponents/RadixOrderAccordion/AccordionContent';
+import { AccordionItem } from '../../globalComponents/RadixOrderAccordion/AccordionItem';
+import { AccordionTrigger } from '../../globalComponents/RadixOrderAccordion/AccordionTrigger';
 
 export default function Delivery() {
-  const { order, orders_products, restaurant } =
-    useContext(DeliveryPageContext);
-
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
       <OrderAccordionStatus />
@@ -43,5 +20,46 @@ export default function Delivery() {
 }
 
 function OrderAccordionStatus() {
-  return <div>1</div>;
+  const { orders, ordersProducts } = useContext(DeliveryPageContext);
+
+  if (!ordersProducts) return null;
+
+  return (
+    <div className="bg-white p-4 rounded-md shadow-md">
+      <Accordion.Root
+        className="bg-white w-full rounded-md shadow-md"
+        type="single"
+        defaultValue={`a`}
+        collapsible
+      >
+        {ordersProducts.map((orderProduct, index: number) => {
+          return (
+            <AccordionItem
+              className=""
+              key={index}
+              value={`${orderProduct.o_number}`}
+            >
+              <AccordionTrigger className="flex items-center data-[state=open]:child:hidden">
+                <span>{orderProduct.o_number}</span>
+                <div>
+                  <AiFillCaretDown
+                    size={24}
+                    className="data-[state='closed']:hidden"
+                  />
+                  <AiFillCaretRight
+                    size={24}
+                    className="data-[state=closed]:hidden"
+                  />
+                </div>
+              </AccordionTrigger>
+              <AccordionContent>a</AccordionContent>
+            </AccordionItem>
+          );
+        })}
+      </Accordion.Root>
+      <pre className="mt-4 text-xs text-gray-600 whitespace-pre-wrap break-words">
+        ordersProducts: {JSON.stringify(ordersProducts, null, '\t')}
+      </pre>
+    </div>
+  );
 }

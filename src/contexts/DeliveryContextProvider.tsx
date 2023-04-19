@@ -1,20 +1,12 @@
-import { createContext, ReactNode } from 'react';
-import {
-  iOrder,
-  iOrdersProductsWithFKProducdData,
-  iRestaurant,
-} from '../types/types';
+import { iOrders, iOrdersProductsView } from '@/src/types/types';
+import { ReactNode, createContext } from 'react';
 
 interface iDeliveryPageContextProps {
-  restaurant: iRestaurant['data'];
-  orders_products: iOrdersProductsWithFKProducdData[];
-  order: iOrder['data'];
+  ordersProducts: Array<iOrdersProductsView['data']> | null;
+  orders: iOrders;
 }
-interface iDeliveryContextProviderProps {
+interface iDeliveryContextProvider extends iDeliveryPageContextProps {
   children: ReactNode;
-  restaurant: iRestaurant['data'];
-  orders_products: iOrdersProductsWithFKProducdData[];
-  order: iOrder['data'];
 }
 
 export const DeliveryPageContext = createContext(
@@ -23,16 +15,14 @@ export const DeliveryPageContext = createContext(
 
 export default function DeliveryPageContextProvider({
   children,
-  restaurant,
-  orders_products,
-  order,
-}: iDeliveryContextProviderProps) {
+  ordersProducts,
+  orders,
+}: iDeliveryContextProvider) {
   return (
     <DeliveryPageContext.Provider
       value={{
-        restaurant,
-        orders_products,
-        order,
+        ordersProducts,
+        orders,
       }}
     >
       {children}

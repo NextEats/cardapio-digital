@@ -15,7 +15,8 @@ export const AccordionTrigger = ({
   <Accordion.Header className="flex">
     <Accordion.Trigger
       className={
-        ' group flex h-[45px] flex-1 cursor-default items-center justify-between bg-white px-5 text-[15px] leading-none outline-none  border-2 border-x-white-blue border-t-white-blue' +
+        ` group flex h-[45px] flex-1 items-center justify-between bg-white 
+        px-5 text-[15px] leading-none outline-none cursor-pointer hover:bg-gray-200` +
         className
       }
       {...props}

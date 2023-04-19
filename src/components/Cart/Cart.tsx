@@ -2,7 +2,7 @@ import CloseModalButton from '@/src/components/CloseModalButton';
 import { DigitalMenuContext } from '@/src/contexts/DigitalMenuContext';
 import { calculateTotalOrderPrice } from '@/src/helpers/calculateTotalOrderPrice';
 import useProductsInCheckout from '@/src/hooks/useProductsInCheckout';
-import { supabase } from '@/src/server/api';
+import { api } from '@/src/server/api';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { FormEvent, useContext, useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
@@ -118,10 +118,9 @@ export default function Cart() {
         cep + ' ' + number
       );
 
-      const { data: delivery_fees_data } = await supabase
-        .from('delivery_fees')
-        .select('*')
-        .eq('restaurant_id', restaurant?.id);
+      const delivery_fees_data = await api.post('/api/delivery_fee', {
+        id: restaurant.id,
+      });
 
       foundDeliveryFee = delivery_fees_data!.find(df => {
         return distance_in_km! <= df.end_km! && distance_in_km! >= df.start_km!;
@@ -164,7 +163,7 @@ export default function Cart() {
 
       setIsReadyToSubmit(isAllRequiredFieldsFilled);
     }
-  });
+  }, [getValues]);
 
   if (!restaurant) {
     handleCloseModal();

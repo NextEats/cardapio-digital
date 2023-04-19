@@ -1191,16 +1191,34 @@ export interface Database {
     Views: {
       orders_products_by_restaurant: {
         Row: {
-          order_cash_box_id: number | null;
-          order_created_at: string | null;
-          order_id: number | null;
-          order_restaurant_id: number | null;
-          orders_products_id: number | null;
-          product_created_at: string | null;
-          product_description: string | null;
-          product_id: number | null;
-          product_name: string | null;
-          product_price: number | null;
+          o_cash_box_id: number | null;
+          o_change_value: number | null;
+          o_client_id: number | null;
+          o_created_at: string | null;
+          o_delivery_fee_id: number | null;
+          o_id: number | null;
+          o_number: number | null;
+          o_order_status_id: number | null;
+          o_order_type_id: number | null;
+          o_payment_method_id: number | null;
+          o_restaurant_id: number | null;
+          op_additionals_data: Json | null;
+          op_created_at: string | null;
+          op_id: number | null;
+          op_observation: string | null;
+          op_quantity: number | null;
+          op_selects_data: Json | null;
+          op_total_price: number | null;
+          p_active: boolean | null;
+          p_category_id: number | null;
+          p_created_at: string | null;
+          p_description: string | null;
+          p_id: number | null;
+          p_is_deleted: boolean | null;
+          p_name: string | null;
+          p_picture_url: string | null;
+          p_price: number | null;
+          p_restaurant_id: number | null;
         };
       };
       tabela_order_view: {

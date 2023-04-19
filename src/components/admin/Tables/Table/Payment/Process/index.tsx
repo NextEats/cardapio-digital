@@ -57,7 +57,7 @@ export default function Process({
       />
       <form
         onSubmit={handleSubmit(handleSubmitPayment)}
-        className="grid grid-cols-2 gap-20 justify-center px-16 py-4"
+        className="grid grid-cols-1 2md:grid-cols-2 gap-10 2md:gap-20 justify-center px-16 py-4"
       >
         <div className="flex flex-col gap-6">
           <label htmlFor="" className="flex flex-col gap-1 ">
@@ -71,19 +71,19 @@ export default function Process({
           <div className="flex items-center gap-2">
             <Link
               href={`${serverURL}${router.query.slug}/admin/table-control/${router.query.table_slug}/payments`}
-              className="flex items-center justify-center rounded text-white text-base cursor-pointer w-40 h-9 bg-white-blue"
+              className="flex flex-1 items-center justify-center rounded text-white text-base cursor-pointer h-9 bg-white-blue"
             >
               Cancelar
             </Link>
             <button
               type="submit"
-              className="flex flex-1 items-center justify-center rounded text-white text-base cursor-pointer w-32 h-9 bg-orange-500 hover:bg-red-orange transition"
+              className="flex flex-1 items-center justify-center rounded text-white text-base cursor-pointer h-9 bg-orange-500 hover:bg-red-orange transition"
             >
-              Adicionar pagamento
+              Adicionar
             </button>
           </div>
         </div>
-        <div className="flex flex-col gap-2 w-full">
+        <div className="flex flex-col gap-3 w-full">
           {payment_method_restaurant.map(payment_method => {
             return (
               <div key={payment_method.id} className="w-full">
@@ -95,7 +95,7 @@ export default function Process({
                       payment_method.payment_methods.id
                     )
                   }
-                  className={`flex w-full items-center rounded h-9 px-3 shadow-sm ${
+                  className={`flex w-full items-center rounded py-[6px] px-3 shadow-sm ${
                     paymentMethodId == payment_method.payment_methods.id
                       ? '  bg-orange-500'
                       : ' bg-white'

@@ -1,4 +1,4 @@
-import { iTablePaymentMethodsWithPaymentFKData } from '@/src/types/types';
+import { iTablePaymentWithPaymentFKData } from '@/src/types/types';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import ValueCard from '../../../../globalComponents/ValueCard';
@@ -6,7 +6,7 @@ import { PaymentsTable } from './PaymentsTable';
 
 interface iPaymentContentProps {
   total_orders_products_price: number;
-  table_payments: iTablePaymentMethodsWithPaymentFKData[];
+  table_payments: iTablePaymentWithPaymentFKData[];
 }
 
 export function PaymentContent({
@@ -27,8 +27,8 @@ export function PaymentContent({
       : 0;
 
   return (
-    <div className="h-[calc(100%-80px)] px-16 py-4 flex flex-col 2md:flex-row gap-3 lg:gap-10">
-      <div className="flex 2md:flex-col gap-3 p-3">
+    <div className="h-[calc(100%-80px)] px-6 3xs:px-16 py-4 flex flex-col 2md:flex-row gap-3 lg:gap-10">
+      <div className="flex flex-col 3xs:flex-row 2md:flex-col 2md:w-64 xl:w-80 gap-3 3xs:p-3">
         <ValueCard title="Falta" value={`${amountDue}`} />
         <ValueCard
           title="Total pago"

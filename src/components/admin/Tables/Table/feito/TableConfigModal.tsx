@@ -41,10 +41,10 @@ export default function TableConfigModal({}: iTableConfigModalProps) {
     });
   }
 
+  const totalSpent = orders_products.reduce((acc, item) => {
+    return (acc = acc + item.total_price * item.quantity);
+  }, 0);
   async function handleUpdateTable() {
-    const totalSpent = orders_products.reduce((acc, item) => {
-      return (acc = acc + item.total_price * item.quantity);
-    }, 0);
     if (table_paymants_values < totalSpent) {
       toast.error(
         'A mesa só pode ser fechada ou inativada quando o atendimento for finalizado.',

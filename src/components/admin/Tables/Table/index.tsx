@@ -9,10 +9,10 @@ import BottonNavigationBar, {
   iBottonNavigationBarProps,
 } from '../../../globalComponents/BottonNavigationBar';
 import { ConfirmFinishServiceModal } from './ConfirmFinishServiceModal';
-import OrderTableDetails from './OrderTableDetails';
 import ProductsTableModal from './feito/ProductsTableModal';
 import TableConfigModal from './feito/TableConfigModal';
 import TableContent from './feito/TableContent';
+import OrderTableDetails from './OrderTableDetails';
 
 interface iTableProps {}
 
@@ -48,9 +48,7 @@ export default function Table({}: iTableProps) {
     if (!cashBoxData) {
       toast.error(
         'O atendimento só pode ser iniciado se o caixa estiver aberto',
-        {
-          theme: 'light',
-        }
+        { theme: 'light' }
       );
       return;
     }
@@ -88,14 +86,17 @@ export default function Table({}: iTableProps) {
       );
       return;
     }
-    const { data: orderTableData } = await supabase
-      .from('orders_tables')
-      .insert({
-        order_id: orderData[0].id,
-        table_id: table.id,
-        has_been_paid: false,
-      })
-      .select('*');
+
+    const [] = await Promise.all([
+      supabase
+        .from('orders_tables')
+        .insert({
+          order_id: orderData[0].id,
+          table_id: table.id,
+          has_been_paid: false,
+        }),
+      supabase.from('tables').update({ is_occupied: true }).eq('id', table.id),
+    ]);
 
     window.location.reload();
   };

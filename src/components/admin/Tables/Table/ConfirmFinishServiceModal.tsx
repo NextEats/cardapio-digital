@@ -5,7 +5,7 @@ import { useContext } from 'react';
 interface iConfirmFinishServiceModalProps {}
 
 export function ConfirmFinishServiceModal({}: iConfirmFinishServiceModalProps) {
-  const { restaurant, orders_tables, orders_products, table_paymants_values } =
+  const { table, orders_tables, orders_products, table_paymants_values } =
     useContext(TableContext);
 
   const totalSpent = orders_products.reduce((acc, item) => {
@@ -15,21 +15,19 @@ export function ConfirmFinishServiceModal({}: iConfirmFinishServiceModalProps) {
   const isUnableToFinishService = table_paymants_values >= totalSpent;
 
   const handleFinishService = async () => {
-    const { data: orderData } = await supabase
-      .from('orders')
-      .update({
-        order_status_id: 1,
-      })
-      .eq('id', orders_tables.orders.id);
-    const { data: orderTableData } = await supabase
-      .from('orders_tables')
-      .update({
-        has_been_paid: true,
-      })
-      .eq('id', orders_tables.id);
+    const [] = await Promise.all([
+      supabase
+        .from('orders')
+        .update({ order_status_id: 1 })
+        .eq('id', orders_tables.orders.id),
+      supabase
+        .from('orders_tables')
+        .update({ has_been_paid: true })
+        .eq('id', orders_tables.id),
+      supabase.from('tables').update({ is_occupied: false }).eq('id', table.id),
+    ]);
     window.location.reload();
   };
-
   console.log(isUnableToFinishService);
 
   return (
@@ -50,8 +48,8 @@ export function ConfirmFinishServiceModal({}: iConfirmFinishServiceModalProps) {
                 <p>Deseja finalizar o tentendimento?</p>
               ) : (
                 <p>
-                  O atendimento só poderá ser concluído após o pagamento do
-                  valor total.
+                  O atendimento só poderá ser concluído após o pagamento total
+                  da conta.
                 </p>
               )}
 

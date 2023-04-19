@@ -53,14 +53,17 @@ export function RadixOrderAccordion({
                         className="flex flex-1 flex-col gap-[2px]"
                       >
                         <div className="flex items-center gap-2">
-                          <div className="text-md flex flex-1 items-center justify-between">
-                            <div>
-                              <span className="text-sm">
+                          <div className="text-md flex flex-1 gap-2  items-center justify-between">
+                            <div className="flex flex-1 items-center">
+                              <span className="text-sm ">
                                 {order_product.quantity} X{' '}
                               </span>
-                              <span> - {order_product.products.name}</span>
+                              <span className="w-24 xs:w-auto truncate">
+                                {' '}
+                                - {order_product.products.name}
+                              </span>
                             </div>
-                            <span className="text-green-400">
+                            <span className="text-green-400 truncate">
                               R${' '}
                               {(
                                 order_product.total_price *
@@ -90,19 +93,19 @@ export function RadixOrderAccordion({
                             });
                           })}
                         </div>
-                        <div className="flex flex-col items-center text-sm px-6">
+                        <div className="flex flex-col justify-center text-sm px-6">
                           {order_product.additionals.map(additional => {
                             return (
                               <div
                                 key={additional.additional.id}
-                                className="text-md flex flex-1 items-center justify-between text-gray-400"
+                                className="text-md flex flex-1 gap-2 items-center justify-between text-gray-400"
                               >
-                                <span className="">
+                                <span className="truncate">
                                   {' '}
                                   {additional.quantity} X -{' '}
                                   {additional.additional.name}{' '}
                                 </span>
-                                <span>
+                                <span className="">
                                   R${' '}
                                   {(
                                     additional.additional.price *

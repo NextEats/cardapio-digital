@@ -10,7 +10,7 @@ export default function TableValueCards() {
   }, 0);
 
   return (
-    <div className="flex 2md:flex-col gap-3 p-3">
+    <div className="flex flex-col 3xs:flex-row 2md:flex-col 2md:w-64 xl:w-80 gap-3 3xs:p-3">
       <ValueCard title="Total gasto" value={`${totalSpent}`} />
       <ValueCard
         title="Total pago"

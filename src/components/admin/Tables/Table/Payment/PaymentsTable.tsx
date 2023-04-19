@@ -1,12 +1,12 @@
 import { supabase } from '@/src/server/api';
-import { iTablePaymentMethodsWithPaymentFKData } from '@/src/types/types';
+import { iTablePaymentWithPaymentFKData } from '@/src/types/types';
 import { Dispatch, SetStateAction } from 'react';
 import { FaRegTrashAlt } from 'react-icons/fa';
 
 interface iPaymentsTableProps {
   tablePaymentsState: [
-    iTablePaymentMethodsWithPaymentFKData[],
-    Dispatch<SetStateAction<iTablePaymentMethodsWithPaymentFKData[]>>
+    iTablePaymentWithPaymentFKData[],
+    Dispatch<SetStateAction<iTablePaymentWithPaymentFKData[]>>
   ];
 }
 
@@ -14,7 +14,7 @@ export function PaymentsTable({ tablePaymentsState }: iPaymentsTableProps) {
   const [table_payments, set_table_payments] = tablePaymentsState;
 
   const handleDeleteTablePayments = async (id: number) => {
-    const data = await supabase.from('table_paymants').delete().eq('id', id);
+    const data = await supabase.from('table_payments').delete().eq('id', id);
     set_table_payments(state => {
       state.splice(
         state.findIndex(tp => tp.id === id),

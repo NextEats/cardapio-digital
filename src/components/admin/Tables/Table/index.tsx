@@ -37,6 +37,13 @@ export default function Table({}: iTableProps) {
   const isUnableToFinishService = table_paymants_values >= totalSpent;
 
   const handleStartSrvice = async () => {
+    if (table.is_active) {
+      toast.error(
+        'O atendimento só pode ser iniciado se a mesa estiver ativa.',
+        { theme: 'light' }
+      );
+      return;
+    }
     const { data: cashBoxData } = await supabase
       .from('cash_boxes')
       .select('id')
@@ -88,13 +95,11 @@ export default function Table({}: iTableProps) {
     }
 
     const [] = await Promise.all([
-      supabase
-        .from('orders_tables')
-        .insert({
-          order_id: orderData[0].id,
-          table_id: table.id,
-          has_been_paid: false,
-        }),
+      supabase.from('orders_tables').insert({
+        order_id: orderData[0].id,
+        table_id: table.id,
+        has_been_paid: false,
+      }),
       supabase.from('tables').update({ is_occupied: true }).eq('id', table.id),
     ]);
 

@@ -55,11 +55,13 @@ export default function TableConfigModal({}: iTableConfigModalProps) {
       return;
     }
 
-    if ('is_active') await updateTable({ is_active: true, is_occupied: false });
+    if ('is_active')
+      await updateTable({ is_active: !table.is_active, is_occupied: false });
     else if ('is_occupied')
-      await updateTable({ is_active: false, is_occupied: true });
-    else if ('free')
-      await updateTable({ is_active: false, is_occupied: false });
+      await updateTable({ is_active: true, is_occupied: true });
+    else if ('free') await updateTable({ is_active: true, is_occupied: false });
+
+    window.location.reload();
   }
 
   async function deleteTable() {

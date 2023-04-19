@@ -13,7 +13,7 @@ export default function Tables() {
   return (
     <div>
       <div className="flex flex-1 items-center justify-end mb-4">
-        {false ? <CreateTableModal /> : null}
+        <CreateTableModal />
       </div>
       <span className="flex flex-1 items-center justify-end m-2">
         {<InactiveTablesModal />}

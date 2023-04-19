@@ -53,10 +53,10 @@ export default function CreateTableModal({}: iCreateTableModalProps) {
   return (
     <>
       <Dialog.Root>
-        <Dialog.Trigger>
-          <button className="flex items-center gap-1 justify-center text-white leading-5 font-semibold rounded disabled:bg-gray-600 transition-all ease-in-out w-36 h-9 bg-green-500">
-            Nova Mesa
-          </button>
+        <Dialog.Trigger className="flex items-center gap-1 justify-center text-white leading-5 font-semibold rounded disabled:bg-gray-600 transition-all ease-in-out w-36 h-9 bg-green-500">
+          {/* <button> */}
+          Nova Mesa
+          {/* </button> */}
         </Dialog.Trigger>
 
         <Dialog.Portal>

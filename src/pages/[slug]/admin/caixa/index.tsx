@@ -9,6 +9,7 @@ import {
   iCashBox,
   iOrdersProductsWithFKData,
   iRestaurantWithFKData,
+  iTablePaymentWithPaymentFKData,
 } from '@/src/types/types';
 import { GetServerSideProps } from 'next';
 
@@ -17,6 +18,7 @@ export interface iCashboxManagement {
   ordersProductsData: iOrdersProductsWithFKData[];
   restaurant: iRestaurantWithFKData;
   thereArePendingOrders: boolean;
+  tables_payments: iTablePaymentWithPaymentFKData[];
 }
 
 export const getServerSideProps: GetServerSideProps = async context => {
@@ -51,19 +53,30 @@ export const getServerSideProps: GetServerSideProps = async context => {
     ? ordersFromTheActiveCashBox!.map(o => o.id)
     : [];
 
-  const { data: ordersProductsByOrdersIds } = await supabase
-    .from('orders_products')
-    .select(
-      'product_id, order_id, total_price, quantity, id, products (*), orders (*, payment_methods (*), order_status(*) )'
-    )
-    .in('order_id', orders_ids);
+  const [ordersProductsByOrdersIds, ordersTablesData] = await Promise.all([
+    supabase
+      .from('orders_products')
+      .select(
+        '*, products (*), orders (*, payment_methods (*), order_status (*) )'
+      )
+      .in('order_id', orders_ids),
+    supabase.from('orders_tables').select('id').in('order_id', [orders_ids]),
+  ]);
+
+  const ordersTablesIds = ordersTablesData.data!.map(ot => ot.id);
+
+  const { data: tables_payments } = await supabase
+    .from('table_payments')
+    .select('*, payment_methods (*)')
+    .in('order_table_id', [ordersTablesIds]);
 
   return {
     props: {
-      ordersProductsData: ordersProductsByOrdersIds,
+      ordersProductsData: ordersProductsByOrdersIds.data,
       activeCashBox,
       restaurant,
       thereArePendingOrders,
+      tables_payments,
     },
   };
 };
@@ -74,6 +87,7 @@ export default function CashboxPage(props: iCashboxManagement) {
     ordersProductsData,
     restaurant,
     thereArePendingOrders,
+    tables_payments,
   } = props;
 
   let totalDelivery = 0;
@@ -87,21 +101,6 @@ export default function CashboxPage(props: iCashboxManagement) {
       }
     });
 
-  console.log(
-    'totalMesa',
-    totalMesa,
-    'totalDelivery',
-    totalDelivery,
-    'restaurantId',
-    restaurant.id,
-    'activeCashBox',
-    activeCashBox,
-    'thereArePendingOrders',
-    thereArePendingOrders,
-    'ordersProducts',
-    ordersProductsData
-  );
-
   return (
     <AdminWrapper>
       <div>
@@ -112,13 +111,17 @@ export default function CashboxPage(props: iCashboxManagement) {
           activeCashBox={activeCashBox}
           thereArePendingOrders={thereArePendingOrders}
           ordersProducts={ordersProductsData}
+          tables_payments={tables_payments}
         />
         <CashBillingCards
           totalMesa={totalMesa}
           totalDelivery={totalDelivery}
           cashBoxInitialValue={activeCashBox ? activeCashBox?.initial_value : 0}
         />
-        <CashBox ordersProducts={ordersProductsData || []} />
+        <CashBox
+          tables_payments={tables_payments}
+          ordersProducts={ordersProductsData || []}
+        />
       </div>
     </AdminWrapper>
   );

@@ -1,7 +1,11 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import { invoicingForEachOrderStatus } from '@/src/helpers/invoicingForEachOrderStatus';
 import { invoicingForEachPaymentMethod } from '@/src/helpers/invoicingForEachPaymentMethod';
-import { iCashBox, iOrdersProductsWithFKData } from '@/src/types/types';
+import {
+  iCashBox,
+  iOrdersProductsWithFKData,
+  iTablePaymentWithPaymentFKData,
+} from '@/src/types/types';
 import { RefObject } from 'react';
 
 interface iCashBoxReport {
@@ -10,6 +14,7 @@ interface iCashBoxReport {
   totalDelivery: number;
   activeCashBox: iCashBox['data'] | null;
   cashBoxReportRef: RefObject<HTMLDivElement>;
+  tables_payments: iTablePaymentWithPaymentFKData[];
 }
 
 export default function CashBoxReport({
@@ -18,6 +23,7 @@ export default function CashBoxReport({
   activeCashBox,
   totalDelivery,
   totalMesa,
+  tables_payments,
 }: iCashBoxReport) {
   const textStyles = 'text-[10px]';
 
@@ -34,6 +40,7 @@ export default function CashBoxReport({
 
   const invoicePaymentMethods = invoicingForEachPaymentMethod({
     ordersProducts,
+    tables_payments,
   });
 
   return (

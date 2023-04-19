@@ -1,14 +1,25 @@
 import { invoicingForEachPaymentMethod } from '@/src/helpers/invoicingForEachPaymentMethod';
-import { iOrdersProductsWithFKData } from '@/src/types/types';
+import {
+  iOrdersProductsWithFKData,
+  iTablePaymentWithPaymentFKData,
+} from '@/src/types/types';
 
 interface iFormOfPaymentProps {
   ordersProducts: iOrdersProductsWithFKData[];
+  tables_payments: iTablePaymentWithPaymentFKData[];
 }
 
-export default function FormOfPayment({ ordersProducts }: iFormOfPaymentProps) {
+export default function FormOfPayment({
+  ordersProducts,
+  tables_payments,
+}: iFormOfPaymentProps) {
   const invoicePaymentMethods = invoicingForEachPaymentMethod({
     ordersProducts,
+    tables_payments,
   });
+
+  console.log('invoicePaymentMethods', invoicePaymentMethods);
+  console.log('ordersProducts', ordersProducts);
 
   return (
     <table className="min-w-full">

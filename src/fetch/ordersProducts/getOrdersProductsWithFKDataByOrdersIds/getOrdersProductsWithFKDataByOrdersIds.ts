@@ -45,12 +45,12 @@ export async function getOrdersProductsWithFKDataByOrdersIdsFetch({
       .from('orders_products')
       .select(
         `
-            *, 
-            products (*), 
+            *,
+            products (*),
             orders (
-                *, 
-                status (*),
-                payment_methods (*) 
+                *,
+                order_status (*),
+                payment_methods (*)
             )
             `
       )

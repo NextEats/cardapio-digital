@@ -1,5 +1,9 @@
 import { supabase } from '@/src/server/api';
-import { iCashBox, iOrdersProductsWithFKData } from '@/src/types/types';
+import {
+  iCashBox,
+  iOrdersProductsWithFKData,
+  iTablePaymentWithPaymentFKData,
+} from '@/src/types/types';
 import { useRef } from 'react';
 import { MdOutlinePrint } from 'react-icons/md';
 import { useReactToPrint } from 'react-to-print';
@@ -15,6 +19,7 @@ interface iCashHeaderProps {
   activeCashBox: iCashBox['data'] | null;
   thereArePendingOrders: boolean;
   ordersProducts: iOrdersProductsWithFKData[];
+  tables_payments: iTablePaymentWithPaymentFKData[];
 }
 
 export default function CashHeader({
@@ -24,6 +29,7 @@ export default function CashHeader({
   totalDelivery,
   totalMesa,
   ordersProducts,
+  tables_payments,
 }: iCashHeaderProps) {
   async function closeOpenCashBox() {
     if (thereArePendingOrders) {
@@ -59,6 +65,7 @@ export default function CashHeader({
         activeCashBox={activeCashBox}
         totalMesa={totalMesa}
         cashBoxReportRef={cashBoxReportRef}
+        tables_payments={tables_payments}
       />
       <PageHeaders
         title={activeCashBox ? 'Caixa aberto' : 'Caixa fechado'}

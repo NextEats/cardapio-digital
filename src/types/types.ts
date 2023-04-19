@@ -425,7 +425,7 @@ export type iOrdersProductsWithFKProducdData = iOrderProduct['data'] & {
 
 export type iOrdersProductsWithFKData = iOrderProduct['data'] & {
   orders: iOrder['data'] & {
-    status: iOrderStatus['data'];
+    order_status: iOrderStatus['data'];
     payment_methods: iPaymentMethod['data'];
   };
   products: iProduct['data'];
@@ -439,6 +439,9 @@ export type iOrdersProductsWithFKData = iOrderProduct['data'] & {
   }[];
 };
 
+export type iTablePaymentWithPaymentFKData = iTablePayment['data'] & {
+  payment_methods: iPaymentMethod['data'];
+};
 export type iProductsWithFKData = iProduct['data'] & {
   category_id: iProductCategory['data'];
 };

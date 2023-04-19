@@ -77,13 +77,13 @@ export default function CashHeader({
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => closeOpenCashBox()}
-                  className="flex items-center gap-1 justify-center text-white leading-5 font-semibold rounded transition-all ease-in-out w-48 h-9 bg-orange-500 hover:bg-red-orange"
+                  className="flex items-center gap-1 justify-center text-white leading-5 font-semibold rounded transition-all ease-in-out w-20 sm:w-36 lg:w-48 h-9 bg-orange-500 hover:bg-red-orange"
                 >
-                  Fechar caixa
+                  Fechar
                 </button>
                 <button
                   onClick={() => printCashBoxReport()}
-                  className="flex items-center gap-1 justify-center text-black leading-5 font-semibold rounded transition-all ease-in-out w-16 h-9 bg-white-blue hover:bg-slate-300"
+                  className="flex items-center gap-1 justify-center text-black leading-5 font-semibold rounded transition-all ease-in-out w-14 sm:w-16 h-9 bg-white-blue hover:bg-slate-300"
                 >
                   <MdOutlinePrint size={26} />
                 </button>

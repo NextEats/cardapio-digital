@@ -1,3 +1,5 @@
+export const asdasd = '';
+
 // import { useEffect, useMemo, useReducer, useRef, useState } from 'react';
 // import NewRequests from '../../../components/admin/initialPage/NewRequests';
 // import OrderStatusCard from '../../../components/admin/initialPage/OrderStatusCard';

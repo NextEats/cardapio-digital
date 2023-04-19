@@ -3,13 +3,13 @@ import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import { FaRegTrashAlt } from 'react-icons/fa';
 
-type iAccordionOrdersActionsProps = {
+type iAccordionOrderProductActionsProps = {
   order_prodcut_id: number;
 };
 
-export default function AccordionOrdersActions({
+export default function AccordionOrderProductActions({
   order_prodcut_id,
-}: iAccordionOrdersActionsProps) {
+}: iAccordionOrderProductActionsProps) {
   const handleDeleteOrderProdcut = async () => {
     const { data } = await supabase
       .from('orders_products')
@@ -31,8 +31,7 @@ export default function AccordionOrdersActions({
           >
             <DropdownMenu.Item
               onClick={() => handleDeleteOrderProdcut()}
-              className="group text-[13px] leading-none text-violet11 rounded-[3px] flex items-center gap-3 hover:bg-white-blue cursor-pointer h-9 px-[5px]
-                                                            relative pl-[25px]"
+              className="group text-[13px] leading-none text-violet11 rounded-[3px] flex items-center gap-3 hover:bg-white-blue cursor-pointer h-9 px-[5px] relative pl-[25px]"
             >
               <FaRegTrashAlt size={16} />
               <span className="text-base">Excluir produto</span>

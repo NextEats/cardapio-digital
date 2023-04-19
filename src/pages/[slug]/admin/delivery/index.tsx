@@ -2,14 +2,19 @@ import AdminWrapper from '@/src/components/admin/AdminWrapper';
 import Delivery from '@/src/components/admin/Delivery';
 import DeliveryContextProvider from '@/src/contexts/DeliveryContextProvider';
 import { getActiveCashBoxByTheRestaurantID } from '@/src/fetch/cashBoxes/getActiveCashboxByRestaurantId';
+import { getOrdersProductsWithFKDataByOrdersIdsFetch } from '@/src/fetch/ordersProducts/getOrdersProductsWithFKDataByOrdersIds';
 import { getRestaurantBySlugFetch } from '@/src/fetch/restaurant/getRestaurantBySlug';
 import { supabase } from '@/src/server/api';
-import { iOrders, iOrdersProductsView, iRestaurant } from '@/src/types/types';
+import {
+  iOrdersProductsWithFKDataToDelivery,
+  iOrdersWithStatusFKData,
+  iRestaurant,
+} from '@/src/types/types';
 import { GetServerSideProps } from 'next';
 interface iDeliveryPageProps {
   restaurant: iRestaurant['data'];
-  orders: iOrders;
-  ordersProducts: Array<iOrdersProductsView['data']> | null;
+  orders: iOrdersWithStatusFKData[];
+  ordersProducts: Array<iOrdersProductsWithFKDataToDelivery> | null;
 }
 
 export const getServerSideProps: GetServerSideProps = async context => {
@@ -18,16 +23,14 @@ export const getServerSideProps: GetServerSideProps = async context => {
 
   const { data: ordersFromTheActiveCashBox } = await supabase
     .from('orders')
-    .select('*')
+    .select('*, order_status (*), order_types (*)')
     .eq('cash_box_id', activeCashBox!.id);
 
-  const { data: ordersProducts } = await supabase
-    .from('orders_products_by_restaurant')
-    .select('*')
-    .match({
-      o_restaurant_id: restaurant.id,
-      o_cash_box_id: activeCashBox?.id,
-    });
+  const orders_ids = ordersFromTheActiveCashBox?.map(o => o.id);
+
+  const ordersProducts = await getOrdersProductsWithFKDataByOrdersIdsFetch({
+    ordersIds: orders_ids || [],
+  });
 
   return {
     props: {

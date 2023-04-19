@@ -1,4 +1,9 @@
-import { iOrders, iOrdersProductsWithFKProducdData } from '@/src/types/types';
+import {
+  iOrders,
+  iOrdersProductsWithFKDataToDelivery,
+  iOrdersProductsWithFKProducdData,
+  iOrdersWithStatusFKData,
+} from '@/src/types/types';
 import * as Accordion from '@radix-ui/react-accordion';
 import { MdOutlinePrint } from 'react-icons/md';
 import { AccordionContent } from './AccordionContent';
@@ -7,13 +12,17 @@ import AccordionOrdersActions from './AccordionOrdersActions';
 import { AccordionTrigger } from './AccordionTrigger';
 
 interface iRadixAccordionProps {
-  orders: iOrders['data'];
-  orders_products: iOrdersProductsWithFKProducdData[];
+  orders: iOrders['data'] | iOrdersWithStatusFKData[];
+  orders_products:
+    | iOrdersProductsWithFKProducdData[]
+    | iOrdersProductsWithFKDataToDelivery[];
+  isToDelivery?: boolean;
 }
 
 export function RadixOrderAccordion({
   orders,
   orders_products,
+  isToDelivery = false,
 }: iRadixAccordionProps) {
   return (
     <div className="w-full max-w-[900px]">
@@ -34,6 +43,7 @@ export function RadixOrderAccordion({
           </AccordionItem>
         ) : (
           orders.map(order => {
+            if (isToDelivery && order.order_type_id === 3) return null;
             const ordersProductsFilterdByOrderId = orders_products.filter(
               op => op.order_id === order.id
             );

@@ -1,9 +1,12 @@
-import { iOrders, iOrdersProductsView } from '@/src/types/types';
-import { ReactNode, createContext } from 'react';
+import {
+  iOrdersProductsWithFKDataToDelivery,
+  iOrdersWithStatusFKData,
+} from '@/src/types/types';
+import { createContext, ReactNode } from 'react';
 
 interface iDeliveryPageContextProps {
-  ordersProducts: Array<iOrdersProductsView['data']> | null;
-  orders: iOrders;
+  ordersProducts: Array<iOrdersProductsWithFKDataToDelivery> | null;
+  orders: iOrdersWithStatusFKData[];
 }
 interface iDeliveryContextProvider extends iDeliveryPageContextProps {
   children: ReactNode;

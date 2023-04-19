@@ -3,7 +3,7 @@ import { supabase } from '../../../server/api';
 import {
   iAdditional,
   iOrderProduct,
-  iOrdersProductsWithFKData,
+  iOrdersProductsWithFKDataToDelivery,
   iProduct,
   iProductOptions,
 } from '../../../types/types';
@@ -27,14 +27,14 @@ interface iSelectData {
 }
 
 type iOrdersProductsData = iOrderProduct['data'] & {
-  orders: iOrdersProductsWithFKData['orders'];
+  orders: iOrdersProductsWithFKDataToDelivery['orders'];
   products: iProduct['data'];
 };
 
 export async function getOrdersProductsWithFKDataByOrdersIdsFetch({
   ordersIds,
 }: iGetOrdersProductsWithFKDataByOrdersIdsFetchProps): Promise<
-  iOrdersProductsWithFKData[]
+  iOrdersProductsWithFKDataToDelivery[]
 > {
   const MAX_PER_PAGE = 1000;
   let currentPage = 0;
@@ -49,8 +49,14 @@ export async function getOrdersProductsWithFKDataByOrdersIdsFetch({
             products (*),
             orders (
                 *,
+                clients (
+                  *,
+                  contacts (*),
+                  addresses (*)
+                  ),
                 order_status (*),
-                payment_methods (*)
+                payment_methods (*),
+                delivery_fees (*)
             )
             `
       )
@@ -79,7 +85,7 @@ export async function getOrdersProductsWithFKDataByOrdersIdsFetch({
   }
 
   const orderProductFormated = allOrdersProducts.reduce(
-    (acc: iOrdersProductsWithFKData[], item: iOrdersProductsData) => {
+    (acc: iOrdersProductsWithFKDataToDelivery[], item: iOrdersProductsData) => {
       const products = item.products as iProduct['data'];
       let additionals: iNewAdditionalsData[] = [];
 
@@ -106,7 +112,7 @@ export async function getOrdersProductsWithFKDataByOrdersIdsFetch({
 
   console.log(allOrdersProducts);
 
-  return orderProductFormated as iOrdersProductsWithFKData[];
+  return orderProductFormated as iOrdersProductsWithFKDataToDelivery[];
 }
 
 async function formatAdditionalsData(additionalsData: Json) {

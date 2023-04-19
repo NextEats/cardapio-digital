@@ -423,6 +423,27 @@ export type iOrdersProductsWithFKProducdData = iOrderProduct['data'] & {
   }[];
 };
 
+export type iOrdersProductsWithFKDataToDelivery = iOrderProduct['data'] & {
+  orders: iOrder['data'] & {
+    order_status: iOrderStatus['data'];
+    payment_methods: iPaymentMethod['data'];
+    clients: iClient['data'] & {
+      contacts: iContact['data'];
+      addresses: iAddress['data'];
+    };
+    delivery_fees: iDeliveryFee['data'];
+  };
+  products: iProduct['data'];
+  additionals: {
+    additional: iAdditional['data'];
+    quantity: number;
+  }[];
+  selectsWithOptions: {
+    id: number;
+    options: iProductOptions['data'];
+  }[];
+};
+
 export type iOrdersProductsWithFKData = iOrderProduct['data'] & {
   orders: iOrder['data'] & {
     order_status: iOrderStatus['data'];
@@ -457,6 +478,10 @@ export type iOrdersWithFKData = iOrder['data'] & {
   };
   order_status: iOrderStatus['data'];
   delivery_fees: iDeliveryFee['data'];
+};
+export type iOrdersWithStatusFKData = iOrder['data'] & {
+  order_types: iOrderTypes['data'];
+  order_status: iOrderStatus['data'];
 };
 
 export type iOrdersTablesWithFkData = iOrdersTable['data'] & {

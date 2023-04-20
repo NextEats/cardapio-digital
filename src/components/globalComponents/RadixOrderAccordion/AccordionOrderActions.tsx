@@ -1,3 +1,4 @@
+import { supabase } from '@/src/server/api';
 import {
   iOrdersProductsWithFKDataToDelivery,
   iOrdersProductsWithFKProducdData,
@@ -5,8 +6,8 @@ import {
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import { useRef } from 'react';
 import { BsThreeDotsVertical } from 'react-icons/bs';
-import { FaRegTrashAlt } from 'react-icons/fa';
 import { useReactToPrint } from 'react-to-print';
+import AccordionPrintOrder from './AccordionPrintOrder';
 
 type iAccordionOrderActionsProps = {
   orders_products:
@@ -17,13 +18,41 @@ type iAccordionOrderActionsProps = {
 export default function AccordionOrderActions({
   orders_products,
 }: iAccordionOrderActionsProps) {
-  // const handleDeleteOrderProdcut = async () => {
-  //   const { data } = await supabase
-  //     .from('orders_products')
-  //     .delete()
-  //     .eq('id', order_prodcut_id);
-  //   window.location.reload();
-  // };
+  const handleCancelOrder = async () => {
+    const { data } = await supabase
+      .from('orders')
+      .update({
+        order_status_id: 5,
+      })
+      .eq('id', orders_products[0].order_id);
+  };
+
+  const handleSwitchToProduction = async () => {
+    const { data } = await supabase
+      .from('orders')
+      .update({
+        order_status_id: 3,
+      })
+      .eq('id', orders_products[0].order_id);
+  };
+
+  const handleSwitchToDelivery = async () => {
+    const { data } = await supabase
+      .from('orders')
+      .update({
+        order_status_id: 4,
+      })
+      .eq('id', orders_products[0].order_id);
+  };
+
+  const handleSwitchToDelivered = async () => {
+    const { data } = await supabase
+      .from('orders')
+      .update({
+        order_status_id: 1,
+      })
+      .eq('id', orders_products[0].order_id);
+  };
 
   const printOrderComponent = useRef<HTMLDivElement>(null);
 
@@ -33,9 +62,12 @@ export default function AccordionOrderActions({
 
   return (
     <div>
-      {/* <AccordionPrintOrder orders_products={orders_products} printOrderComponent={printOrderComponent} /> */}
+      <AccordionPrintOrder
+        orders_products={orders_products}
+        printOrderComponent={printOrderComponent}
+      />
       <DropdownMenu.Root>
-        <DropdownMenu.Trigger>
+        <DropdownMenu.Trigger className="p-2">
           <BsThreeDotsVertical size={16} className="text-gray-400" />
         </DropdownMenu.Trigger>
         <DropdownMenu.Portal>
@@ -47,9 +79,44 @@ export default function AccordionOrderActions({
               onClick={() => handlePrint()}
               className="group text-[13px] leading-none text-violet11 rounded-[3px] flex items-center gap-3 hover:bg-white-blue cursor-pointer h-9 px-[5px] relative pl-[25px]"
             >
-              <FaRegTrashAlt size={16} />
               <span className="text-base">Imprimir comanda</span>
             </DropdownMenu.Item>
+            {(orders_products[0] as iOrdersProductsWithFKDataToDelivery).orders
+              .order_status.status_name !== 'entregue' ? (
+              <DropdownMenu.Item
+                onClick={() => handleCancelOrder()}
+                className="group text-[13px] leading-none text-violet11 rounded-[3px] flex items-center gap-3 hover:bg-white-blue cursor-pointer h-9 px-[5px] relative pl-[25px]"
+              >
+                <span className="text-base">Cancelar pedido</span>
+              </DropdownMenu.Item>
+            ) : null}
+            {(orders_products[0] as iOrdersProductsWithFKDataToDelivery).orders
+              .order_status.status_name === 'em análise' ? (
+              <DropdownMenu.Item
+                onClick={() => handleSwitchToProduction()}
+                className="group text-[13px] leading-none text-violet11 rounded-[3px] flex items-center gap-3 hover:bg-white-blue cursor-pointer h-9 px-[5px] relative pl-[25px]"
+              >
+                <span className="text-base">Aceitar pedido</span>
+              </DropdownMenu.Item>
+            ) : null}
+            {(orders_products[0] as iOrdersProductsWithFKDataToDelivery).orders
+              .order_status.status_name === 'em produção' ? (
+              <DropdownMenu.Item
+                onClick={() => handleSwitchToDelivery()}
+                className="group text-[13px] leading-none text-violet11 rounded-[3px] flex items-center gap-3 hover:bg-white-blue cursor-pointer h-9 px-[5px] relative pl-[25px]"
+              >
+                <span className="text-base"> Mandar p/ entrega</span>
+              </DropdownMenu.Item>
+            ) : null}
+            {(orders_products[0] as iOrdersProductsWithFKDataToDelivery).orders
+              .order_status.status_name === 'a caminho' ? (
+              <DropdownMenu.Item
+                onClick={() => handleSwitchToDelivered()}
+                className="group text-[13px] leading-none text-violet11 rounded-[3px] flex items-center gap-3 hover:bg-white-blue cursor-pointer h-9 px-[5px] relative pl-[25px]"
+              >
+                <span className="text-base">Pedido entregue</span>
+              </DropdownMenu.Item>
+            ) : null}
             <DropdownMenu.Arrow className="fill-white" />
           </DropdownMenu.Content>
         </DropdownMenu.Portal>

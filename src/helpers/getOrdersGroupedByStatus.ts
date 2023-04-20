@@ -4,6 +4,14 @@ interface iGetOrdersGroupedByStatusProps {
   orders: iOrdersWithStatusFKData[];
 }
 
+const requiredStatusNames = [
+  'em análise',
+  'em produção',
+  'a caminho',
+  'entregue',
+  'cancelado',
+];
+
 export function getOrdersGroupedByStatus({
   orders,
 }: iGetOrdersGroupedByStatusProps) {
@@ -29,5 +37,22 @@ export function getOrdersGroupedByStatus({
     },
     []
   );
+
+  // Add missing status names with empty orders arrays
+  for (const statusName of requiredStatusNames) {
+    if (!ordersGrouped.some(o => o.status_name === statusName)) {
+      ordersGrouped.push({ status_name: statusName, orders: [] });
+    }
+  }
+
+  // Sort the ordersGrouped array based on the required order of status names
+  ordersGrouped.sort(
+    (a, b) => getStatusOrder(a.status_name) - getStatusOrder(b.status_name)
+  );
+
   return ordersGrouped;
+}
+
+function getStatusOrder(statusName: string): number {
+  return requiredStatusNames.indexOf(statusName);
 }

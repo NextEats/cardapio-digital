@@ -1,6 +1,6 @@
 import AdminWrapper from '@/src/components/admin/AdminWrapper';
 import Delivery from '@/src/components/admin/Delivery';
-import DeliveryContextProvider from '@/src/contexts/DeliveryContextProvider';
+import DeliveryContextProvider from '@/src/contexts/DeliveryContext';
 import { getActiveCashBoxByTheRestaurantID } from '@/src/fetch/cashBoxes/getActiveCashboxByRestaurantId';
 import { getOrdersProductsWithFKDataByOrdersIdsFetch } from '@/src/fetch/ordersProducts/getOrdersProductsWithFKDataByOrdersIds';
 import { getRestaurantBySlugFetch } from '@/src/fetch/restaurant/getRestaurantBySlug';
@@ -13,8 +13,8 @@ import {
 import { GetServerSideProps } from 'next';
 interface iDeliveryPageProps {
   restaurant: iRestaurant['data'];
-  orders: iOrdersWithStatusFKData[];
-  ordersProducts: Array<iOrdersProductsWithFKDataToDelivery> | null;
+  ordersData: iOrdersWithStatusFKData[];
+  ordersProductsData: Array<iOrdersProductsWithFKDataToDelivery> | null;
 }
 
 export const getServerSideProps: GetServerSideProps = async context => {
@@ -28,25 +28,31 @@ export const getServerSideProps: GetServerSideProps = async context => {
 
   const orders_ids = ordersFromTheActiveCashBox?.map(o => o.id);
 
-  const ordersProducts = await getOrdersProductsWithFKDataByOrdersIdsFetch({
+  const ordersProductsData = await getOrdersProductsWithFKDataByOrdersIdsFetch({
     ordersIds: orders_ids || [],
   });
 
   return {
     props: {
-      ordersProducts,
-      orders: ordersFromTheActiveCashBox,
+      restaurant,
+      ordersProductsData,
+      ordersData: ordersFromTheActiveCashBox,
     },
   };
 };
 
 export default function DeliveryPage({
-  orders,
-  ordersProducts,
+  ordersData,
+  ordersProductsData,
+  restaurant,
 }: iDeliveryPageProps) {
   return (
     <AdminWrapper>
-      <DeliveryContextProvider orders={orders} ordersProducts={ordersProducts}>
+      <DeliveryContextProvider
+        ordersData={ordersData}
+        restaurant={restaurant}
+        ordersProductsData={ordersProductsData}
+      >
         <Delivery />
       </DeliveryContextProvider>
     </AdminWrapper>

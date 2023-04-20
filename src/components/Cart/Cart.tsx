@@ -3,6 +3,7 @@ import { DigitalMenuContext } from '@/src/contexts/DigitalMenuContext';
 import { calculateTotalOrderPrice } from '@/src/helpers/calculateTotalOrderPrice';
 import useProductsInCheckout from '@/src/hooks/useProductsInCheckout';
 import { api } from '@/src/server/api';
+import { iDeliveryFee } from '@/src/types/types';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { FormEvent, useContext, useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
@@ -118,25 +119,22 @@ export default function Cart() {
         cep + ' ' + number
       );
 
-      const { data: delivery_fees_data } = await api.post(
-        '/api/delivery_fees',
-        {
-          id: restaurant!.id,
-        }
-      );
+      const { data: delivery_fees_data } = await api.post<
+        Array<iDeliveryFee['data']>
+      >('/api/delivery_fees', {
+        id: restaurant!.id,
+      });
 
-      console.log(delivery_fees_data);
+      foundDeliveryFee = delivery_fees_data!.find(df => {
+        return distance_in_km! <= df.end_km! && distance_in_km! >= df.start_km!;
+      });
 
-      // foundDeliveryFee = delivery_fees_data!.find(df => {
-      //   return distance_in_km! <= df.end_km! && distance_in_km! >= df.start_km!;
-      // });
+      if (!foundDeliveryFee) {
+        setDeliveryFee(0);
+        return;
+      }
 
-      // if (!foundDeliveryFee) {
-      //   setDeliveryFee(0);
-      //   return;
-      // }
-
-      // setDeliveryFee(foundDeliveryFee.fee);
+      setDeliveryFee(foundDeliveryFee.fee);
     }
 
     async function fetchData() {

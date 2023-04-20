@@ -56,11 +56,14 @@ export default function OpenCashBoxModal({
               className="w-full flex flex-col gap-6"
               onSubmit={handleSubmit(handleOpenCashBox)}
             >
-              <input
-                {...register('initialValue', { valueAsNumber: true })}
-                type="number"
-                className="h-9 w-full px-2 outline-none border focus:border-orange-500 rounded"
-              />
+              <div className="flex flex-col gap-2">
+                <label htmlFor=""> Valor inicial do caixa </label>
+                <input
+                  {...register('initialValue', { valueAsNumber: true })}
+                  type="number"
+                  className="h-9 w-full px-2 outline-none border focus:border-orange-500 rounded"
+                />
+              </div>
               <div className="flex items-center gap-2">
                 <Dialog.Close asChild disabled={isSubmitting}>
                   <button

@@ -125,18 +125,16 @@ export default function Cart() {
         }
       );
 
-      console.log(delivery_fees_data);
+      foundDeliveryFee = delivery_fees_data!.find(df => {
+        return distance_in_km! <= df.end_km! && distance_in_km! >= df.start_km!;
+      });
 
-      // foundDeliveryFee = delivery_fees_data!.find(df => {
-      //   return distance_in_km! <= df.end_km! && distance_in_km! >= df.start_km!;
-      // });
+      if (!foundDeliveryFee) {
+        setDeliveryFee(0);
+        return;
+      }
 
-      // if (!foundDeliveryFee) {
-      //   setDeliveryFee(0);
-      //   return;
-      // }
-
-      // setDeliveryFee(foundDeliveryFee.fee);
+      setDeliveryFee(foundDeliveryFee.fee);
     }
 
     async function fetchData() {

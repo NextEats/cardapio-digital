@@ -63,14 +63,18 @@ export default function CashBoxReport({
   });
 
   const formatCashBoxDate = (cashBoxDate: Date) => {
-    return `${
-      format(cashBoxDate, 'P', { locale: ptBR }) +
-      ' ' +
-      format(cashBoxDate, 'HH') +
-      ':' +
-      ' ' +
-      format(cashBoxDate, 'mm')
-    }`;
+    if (cashBoxDate) {
+      return `${
+        format(cashBoxDate, 'P', { locale: ptBR }) +
+        ' ' +
+        format(cashBoxDate, 'HH') +
+        ':' +
+        ' ' +
+        format(cashBoxDate, 'mm')
+      }`;
+    } else {
+      return null;
+    }
   };
 
   return (
@@ -88,14 +92,18 @@ export default function CashBoxReport({
             Data inicial:{' '}
             <strong>
               {' '}
-              R$ {formatCashBoxDate(new Date(activeCashBox?.opened_at!))}
+              {activeCashBox?.opened_at
+                ? formatCashBoxDate(new Date(activeCashBox?.opened_at!))
+                : null}
             </strong>
           </span>
           <span className={`${textStyles}`}>
             Data final:{' '}
             <strong>
               {' '}
-              R$ {formatCashBoxDate(new Date(activeCashBox?.opened_at!))}{' '}
+              {activeCashBox?.closed_at
+                ? formatCashBoxDate(new Date(activeCashBox?.opened_at!))
+                : ''}
             </strong>
           </span>
           <span className={`${textStyles}`}>

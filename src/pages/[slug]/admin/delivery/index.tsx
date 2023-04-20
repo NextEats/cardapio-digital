@@ -21,6 +21,16 @@ export const getServerSideProps: GetServerSideProps = async context => {
   const restaurant = await getRestaurantBySlugFetch(context.query.slug);
   const activeCashBox = await getActiveCashBoxByTheRestaurantID(restaurant.id);
 
+  if (!activeCashBox) {
+    return {
+      props: {
+        restaurant,
+        ordersProductsData: [],
+        ordersData: [],
+      },
+    };
+  }
+
   const { data: ordersFromTheActiveCashBox } = await supabase
     .from('orders')
     .select('*, order_status (*), order_types (*)')

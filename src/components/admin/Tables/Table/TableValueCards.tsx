@@ -1,6 +1,6 @@
 import { TableContext } from '@/src/contexts/TableContext';
 import { useContext } from 'react';
-import ValueCard from '../../../../globalComponents/ValueCard';
+import ValueCard from '../../../globalComponents/ValueCard';
 
 export default function TableValueCards() {
   const { orders_products, table_paymants_values } = useContext(TableContext);

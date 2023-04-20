@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { ChangeEvent, useContext, useState } from 'react';
 import { BsCart3 } from 'react-icons/bs';
 import { FiX } from 'react-icons/fi';
-import { CardapioDigitalButton } from '../../../cardapio-digital/CardapioDigitalButton';
+import { CardapioDigitalButton } from '../../cardapio-digital/CardapioDigitalButton';
 import ProductModal from './productModal';
 
 interface iProductTableModalProps {}

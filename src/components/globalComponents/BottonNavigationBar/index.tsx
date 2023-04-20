@@ -1,6 +1,5 @@
-import { TableContext } from '@/src/contexts/TableContext';
 import Link from 'next/link';
-import { ReactNode, useContext } from 'react';
+import { ReactNode } from 'react';
 
 export interface iBottonNavigationBarProps {
   options: {
@@ -16,10 +15,8 @@ export interface iBottonNavigationBarProps {
 export default function BottonNavigationBar({
   options,
 }: iBottonNavigationBarProps) {
-  const { table, restaurant } = useContext(TableContext);
-
   return (
-    <div className="fixed bottom-0 left-0 w-full flex items-center justify-around py-4 px-2 md:px-12 border border-t border-t-white-blue">
+    <div className="fixed bottom-0 left-0 w-full flex items-center justify-around py-4 px-2 md:px-12 border border-t bg-white border-t-white-blue">
       {options.map((option, index) => {
         if (option.openDialogTrigger) {
           return (

@@ -102,21 +102,23 @@ export function RadixOrderAccordion({
               <div key={order.id} className="">
                 <AccordionItem value={`${order.id}`}>
                   <div className="relative">
-                    <div className=" flex items-center gap-2 absolute top-2 right-3">
-                      <button
-                        onClick={() =>
-                          handleChangeOrderStatus(
-                            order as iOrdersWithStatusFKData
-                          )
-                        }
-                        className="h-7 w-7 flex items-center justify-center rounded-full bg-white-blue text-blue-400 hover:text-orange-500 focus:border focus:border-orange-500 hover:bg-orange-200 transition-all cursor-pointer"
-                      >
-                        <BiCheck size={20} />
-                      </button>
-                      <AccordionOrderActions
-                        orders_products={ordersProductsFilterdByOrderId}
-                      />
-                    </div>
+                    {isToDelivery ? (
+                      <div className=" flex items-center gap-2 absolute top-2 right-3">
+                        <button
+                          onClick={() =>
+                            handleChangeOrderStatus(
+                              order as iOrdersWithStatusFKData
+                            )
+                          }
+                          className="h-7 w-7 flex items-center justify-center rounded-full bg-white-blue text-blue-400 hover:text-orange-500 focus:border focus:border-orange-500 hover:bg-orange-200 transition-all cursor-pointer"
+                        >
+                          <BiCheck size={20} />
+                        </button>
+                        <AccordionOrderActions
+                          orders_products={ordersProductsFilterdByOrderId}
+                        />
+                      </div>
+                    ) : null}
                     <AccordionTrigger className="flex items-center ">
                       <span>
                         {' '}

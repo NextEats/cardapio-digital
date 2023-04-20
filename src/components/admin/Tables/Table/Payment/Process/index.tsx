@@ -1,3 +1,6 @@
+import BottonNavigationBar, {
+  iBottonNavigationBarProps,
+} from '@/src/components/globalComponents/BottonNavigationBar';
 import PageHeaders from '@/src/components/globalComponents/PageHeaders';
 import { serverURL, supabase } from '@/src/server/api';
 import { iPaymentMethodsRestaurantsWithFKData } from '@/src/types/types';
@@ -5,7 +8,9 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useForm } from 'react-hook-form';
+import { AiOutlinePlus } from 'react-icons/ai';
 import { MdOutlineAttachMoney } from 'react-icons/md';
+import { RiArrowLeftSLine } from 'react-icons/ri';
 import * as zod from 'zod';
 
 interface iProcessProps {
@@ -36,7 +41,7 @@ export default function Process({
     });
 
   const paymentMethodId = watch('paymentMethodsId');
-  const router = useRouter();
+  const { query } = useRouter();
 
   const handleSubmitPayment = async (data: NewPaymentFormData) => {
     const { data: table_payment_data } = await supabase
@@ -48,6 +53,24 @@ export default function Process({
       });
     reset();
   };
+
+  const BottonNavigationBarOption: iBottonNavigationBarProps['options'] = [
+    {
+      prefetch: false,
+      title: (
+        <button onClick={() => reset()} className="flex items-center gap-2">
+          <AiOutlinePlus size={28} />
+          Limpar
+        </button>
+      ),
+    },
+    {
+      prefetch: false,
+      title: 'voltar',
+      url: `${serverURL}${query.slug}/admin/table-control/${query.table_slug}/payments`,
+      icon: <RiArrowLeftSLine size={28} />,
+    },
+  ];
 
   return (
     <div className={`h-screen w-screen `}>
@@ -70,7 +93,7 @@ export default function Process({
           </label>
           <div className="flex items-center gap-2">
             <Link
-              href={`${serverURL}${router.query.slug}/admin/table-control/${router.query.table_slug}/payments`}
+              href={`${serverURL}${query.slug}/admin/table-control/${query.table_slug}/payments`}
               className="flex flex-1 items-center justify-center rounded text-white text-base cursor-pointer h-9 bg-white-blue"
             >
               Cancelar
@@ -108,6 +131,7 @@ export default function Process({
           })}
         </div>
       </form>
+      <BottonNavigationBar options={BottonNavigationBarOption} />
     </div>
   );
 }

@@ -27,33 +27,6 @@ export default function AccordionOrderActions({
       .eq('id', orders_products[0].order_id);
   };
 
-  const handleSwitchToProduction = async () => {
-    const { data } = await supabase
-      .from('orders')
-      .update({
-        order_status_id: 3,
-      })
-      .eq('id', orders_products[0].order_id);
-  };
-
-  const handleSwitchToDelivery = async () => {
-    const { data } = await supabase
-      .from('orders')
-      .update({
-        order_status_id: 4,
-      })
-      .eq('id', orders_products[0].order_id);
-  };
-
-  const handleSwitchToDelivered = async () => {
-    const { data } = await supabase
-      .from('orders')
-      .update({
-        order_status_id: 1,
-      })
-      .eq('id', orders_products[0].order_id);
-  };
-
   const printOrderComponent = useRef<HTMLDivElement>(null);
 
   const handlePrint = useReactToPrint({
@@ -67,8 +40,8 @@ export default function AccordionOrderActions({
         printOrderComponent={printOrderComponent}
       />
       <DropdownMenu.Root>
-        <DropdownMenu.Trigger className="p-2">
-          <BsThreeDotsVertical size={16} className="text-gray-400" />
+        <DropdownMenu.Trigger className="p-1">
+          <BsThreeDotsVertical size={20} className="text-gray-400" />
         </DropdownMenu.Trigger>
         <DropdownMenu.Portal>
           <DropdownMenu.Content
@@ -90,7 +63,7 @@ export default function AccordionOrderActions({
                 <span className="text-base">Cancelar pedido</span>
               </DropdownMenu.Item>
             ) : null}
-            {(orders_products[0] as iOrdersProductsWithFKDataToDelivery).orders
+            {/* {(orders_products[0] as iOrdersProductsWithFKDataToDelivery).orders
               .order_status.status_name === 'em análise' ? (
               <DropdownMenu.Item
                 onClick={() => handleSwitchToProduction()}
@@ -116,7 +89,7 @@ export default function AccordionOrderActions({
               >
                 <span className="text-base">Pedido entregue</span>
               </DropdownMenu.Item>
-            ) : null}
+            ) : null} */}
             <DropdownMenu.Arrow className="fill-white" />
           </DropdownMenu.Content>
         </DropdownMenu.Portal>

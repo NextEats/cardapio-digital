@@ -1,3 +1,4 @@
+import { supabase } from '@/src/server/api';
 import {
   iOrders,
   iOrdersProductsWithFKDataToDelivery,
@@ -5,6 +6,7 @@ import {
   iOrdersWithStatusFKData,
 } from '@/src/types/types';
 import * as Accordion from '@radix-ui/react-accordion';
+import { BiCheck } from 'react-icons/bi';
 import { AccordionContent } from './AccordionContent';
 import { AccordionItem } from './AccordionItem';
 import AccordionOrderActions from './AccordionOrderActions';
@@ -24,25 +26,56 @@ export function RadixOrderAccordion({
   orders_products,
   isToDelivery = false,
 }: iRadixAccordionProps) {
-  const items = [
-    {
-      id: 'item1',
-      label: 'Item 1',
-      onClick: () => console.log('Item 1 clicked'),
-    },
-    {
-      id: 'item2',
-      label: 'Item 2',
-      onClick: () => console.log('Item 2 clicked'),
-    },
-  ];
+  const handleSwitchToProduction = async (orderId: number) => {
+    const { data } = await supabase
+      .from('orders')
+      .update({
+        order_status_id: 3,
+      })
+      .eq('id', orderId);
+  };
+
+  const handleSwitchToDelivery = async (orderId: number) => {
+    const { data } = await supabase
+      .from('orders')
+      .update({
+        order_status_id: 4,
+      })
+      .eq('id', orderId);
+  };
+
+  const handleSwitchToDelivered = async (orderId: number) => {
+    const { data } = await supabase
+      .from('orders')
+      .update({
+        order_status_id: 1,
+      })
+      .eq('id', orderId);
+  };
+
+  const handleChangeOrderStatus = (order: iOrdersWithStatusFKData) => {
+    if (order.order_status.status_name === 'em análise')
+      handleSwitchToProduction(order.id);
+
+    if (order.order_status.status_name === 'em produção')
+      handleSwitchToDelivery(order.id);
+
+    if (order.order_status.status_name === 'a caminho')
+      handleSwitchToDelivered(order.id);
+  };
 
   return (
     <div className="w-full max-w-[900px]">
       <Accordion.Root
         className="bg-white w-full rounded-md shadow-md"
         type="single"
-        defaultValue={`${orders && orders.length !== 0 ? orders[0].id : '1'}`}
+        defaultValue={`${
+          !isToDelivery
+            ? orders && orders.length !== 0
+              ? orders[0].id
+              : '1'
+            : ''
+        }`}
         collapsible
       >
         {!orders || orders.length === 0 ? (
@@ -69,16 +102,26 @@ export function RadixOrderAccordion({
               <div key={order.id} className="">
                 <AccordionItem value={`${order.id}`}>
                   <div className="relative">
-                    <div className=" flex items-center gap-2 absolute top-[.45rem] right-3">
-                      <AccordionOrderActions
-                        orders_products={ordersProductsFilterdByOrderId}
-                      />
+                    <div className=" flex items-center gap-2 absolute top-2 right-3">
+                      <button
+                        onClick={() =>
+                          handleChangeOrderStatus(
+                            order as iOrdersWithStatusFKData
+                          )
+                        }
+                        className="h-7 w-7 flex items-center justify-center rounded-full bg-white-blue text-blue-400 hover:text-orange-500 focus:border focus:border-orange-500 hover:bg-orange-200 transition-all cursor-pointer"
+                      >
+                        <BiCheck size={20} />
+                      </button>
                       <AccordionOrderActions
                         orders_products={ordersProductsFilterdByOrderId}
                       />
                     </div>
                     <AccordionTrigger className="flex items-center ">
-                      <span> # {order.number.toString().padStart(5, '0')}</span>
+                      <span>
+                        {' '}
+                        # {order.number.toString().padStart(5, '0')}{' '}
+                      </span>
                     </AccordionTrigger>
                     <AccordionContent>
                       {ordersProductsFilterdByOrderId.map(order_product => {

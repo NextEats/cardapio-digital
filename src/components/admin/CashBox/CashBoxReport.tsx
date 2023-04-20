@@ -1,12 +1,17 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import { invoicingForEachOrderStatus } from '@/src/helpers/invoicingForEachOrderStatus';
 import { invoicingForEachPaymentMethod } from '@/src/helpers/invoicingForEachPaymentMethod';
+import { supabase } from '@/src/server/api';
 import {
   iCashBox,
   iOrdersProductsWithFKData,
   iTablePaymentWithPaymentFKData,
+  iUserDetails,
 } from '@/src/types/types';
-import { RefObject } from 'react';
+import { useUser } from '@supabase/auth-helpers-react';
+import { format } from 'date-fns';
+import { ptBR } from 'date-fns/locale';
+import { RefObject, useEffect, useState } from 'react';
 
 interface iCashBoxReport {
   ordersProducts: iOrdersProductsWithFKData[];
@@ -35,6 +40,20 @@ export default function CashBoxReport({
         })
       : 0;
   };
+  const user = useUser();
+
+  const [usersData, setUsersData] = useState<iUserDetails['data'] | null>(null);
+
+  useEffect(() => {
+    async function fetchData() {
+      const getUserData = await supabase
+        .from('user_details')
+        .select()
+        .eq('user_id', user?.id);
+      if (getUserData.data) setUsersData(getUserData.data[0]);
+    }
+    fetchData();
+  }, [user]);
 
   const invoiceOrderStatus = invoicingForEachOrderStatus({ ordersProducts });
 
@@ -43,17 +62,49 @@ export default function CashBoxReport({
     tables_payments,
   });
 
+  const formatCashBoxDate = (cashBoxDate: Date) => {
+    return `${
+      format(cashBoxDate, 'P', { locale: ptBR }) +
+      ' ' +
+      format(cashBoxDate, 'HH') +
+      ':' +
+      ' ' +
+      format(cashBoxDate, 'mm')
+    }`;
+  };
+
   return (
     <div className="hidden">
       <div
         ref={cashBoxReportRef}
-        className="z-40 fixed bg-white ml-auto w-[298px] text-[12px] p-4 centerCompontetToPrint pb-8"
+        className="z-40 fixed bg-white ml-auto w-[298px] text-[12px] p-4 centerCompontetToPrint pb-8 uppercase"
       >
         <h1 className="text-base w-full uppercase text-center font-semibold mb-6">
           Extrato de Caixa
         </h1>
 
         <div className="flex flex-col">
+          <span className={`${textStyles}`}>
+            Data inicial:{' '}
+            <strong>
+              {' '}
+              R$ {formatCashBoxDate(new Date(activeCashBox?.opened_at!))}
+            </strong>
+          </span>
+          <span className={`${textStyles}`}>
+            Data final:{' '}
+            <strong>
+              {' '}
+              R$ {formatCashBoxDate(new Date(activeCashBox?.opened_at!))}{' '}
+            </strong>
+          </span>
+          <span className={`${textStyles}`}>
+            Email: <strong> R$ {user?.email} </strong>
+          </span>
+          <span className={`${textStyles}`}>
+            Nome: <strong> R$ {usersData?.name} </strong>
+          </span>
+
           <hr className="bg-black my-2" />
 
           <span className={`${textStyles}`}>

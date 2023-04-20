@@ -23,7 +23,7 @@ export default function OrderStatusRevenue({
           </th>
         </tr>
       </thead>
-      <tbody>
+      <tbody className="uppercase">
         {invoiceOrderStatus.map((item, index) => {
           // if (item.orders.payment_methods.name === 'MESA') return null;
           return (

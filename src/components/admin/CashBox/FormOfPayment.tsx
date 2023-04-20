@@ -31,7 +31,7 @@ export default function FormOfPayment({
           <th className="text-gray-900 px-6 py-4 text-center">Valor Entrada</th>
         </tr>
       </thead>
-      <tbody>
+      <tbody className="uppercase">
         {invoicePaymentMethods.map((item, index) => {
           if (item.name === 'MESA') return null;
           return (

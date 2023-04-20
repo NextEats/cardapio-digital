@@ -115,6 +115,7 @@ export function RadixOrderAccordion({
                           <BiCheck size={20} />
                         </button>
                         <AccordionOrderActions
+                          order={order as iOrdersWithStatusFKData}
                           orders_products={ordersProductsFilterdByOrderId}
                         />
                       </div>

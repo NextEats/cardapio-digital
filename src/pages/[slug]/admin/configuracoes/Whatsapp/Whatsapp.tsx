@@ -1,8 +1,8 @@
 import { AdminContext } from '@/src/contexts/adminContext';
-import { whatsappRestApi } from '@/src/server/api';
+import { whatsappRestApi, whatsappRestApiServerUrl } from '@/src/server/api';
 import Image from 'next/image';
 import React, { useContext, useEffect, useState } from 'react';
-import { io, Socket } from 'socket.io-client';
+import { Socket, io } from 'socket.io-client';
 import CurrentStatus from './components/CurrentStatus';
 
 export type iWhatsappStatus = 'loading' | 'connected';
@@ -21,7 +21,9 @@ const Whatsapp: React.FC = () => {
     }
 
     if (!socket) {
-      const newSocket = io('http://localhost:3535');
+      console.log('whatsappRestApiServerUrl', whatsappRestApiServerUrl);
+
+      const newSocket = io(whatsappRestApiServerUrl!);
       setSocket(newSocket);
 
       newSocket.on(
@@ -46,12 +48,9 @@ const Whatsapp: React.FC = () => {
     }
 
     const socketCall = async () => {
-      const response = await whatsappRestApi.post(
-        'http://localhost:3535/create',
-        {
-          id: restaurant.slug,
-        }
-      );
+      const response = await whatsappRestApi.post('/create', {
+        id: restaurant.slug,
+      });
 
       if (response.status === 202) {
         setWhatsappStatus('connected');

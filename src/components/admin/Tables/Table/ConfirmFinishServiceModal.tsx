@@ -2,7 +2,7 @@ import { TableContext } from '@/src/contexts/TableContext';
 import { supabase } from '@/src/server/api';
 import * as Dialog from '@radix-ui/react-dialog';
 import { useContext } from 'react';
-import { MdOutlinePrint } from 'react-icons/md';
+import { AiOutlinePause } from 'react-icons/ai';
 interface iConfirmFinishServiceModalProps {}
 
 export function ConfirmFinishServiceModal({}: iConfirmFinishServiceModalProps) {
@@ -35,7 +35,7 @@ export function ConfirmFinishServiceModal({}: iConfirmFinishServiceModalProps) {
     <>
       <Dialog.Root>
         <Dialog.Trigger className="flex items-center gap-2">
-          <MdOutlinePrint size={26} />
+          <AiOutlinePause size={26} />
           <span className="hidden lg:flex"> Finalizar atendimento</span>
         </Dialog.Trigger>
         <Dialog.Portal>

@@ -1,6 +1,7 @@
 import { TableContext } from '@/src/contexts/TableContext';
 import { serverURL, supabase } from '@/src/server/api';
 import { useContext, useRef } from 'react';
+import { HiOutlinePlay } from 'react-icons/hi';
 import { MdOutlineAttachMoney, MdOutlinePrint } from 'react-icons/md';
 import { RiArrowLeftSLine } from 'react-icons/ri';
 import { useReactToPrint } from 'react-to-print';
@@ -120,9 +121,12 @@ export default function TableBottonNavBar({}: iTableBottonNavBarProps) {
               ></div>
             </>
           ) : (
-            <button onClick={() => handleStartSrvice()}>
-              {' '}
-              Iniciar atendimento
+            <button
+              onClick={() => handleStartSrvice()}
+              className="flex items-center gap-2"
+            >
+              <HiOutlinePlay size={24} />
+              <span className="hidden lg:flex">Iniciar atendimento</span>
             </button>
           )}
         </div>

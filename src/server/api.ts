@@ -10,16 +10,24 @@ import {
   iRestaurant,
   iRestaurantWithFKData,
 } from '../types/types';
+
+if (!process.env.NEXT_PUBLIC_WHATSAPP_REST_SERVER_LINK) {
+  console.error(
+    'Please, add a valid value for the key: NEXT_PUBLIC_WHATSAPP_REST_SERVER_LINK in the .env file.'
+  );
+}
+
 const dev = process.env.NODE_ENV !== 'production';
 
+export const whatsappRestApiServerUrl =
+  process.env.NEXT_PUBLIC_WHATSAPP_REST_SERVER_LINK;
+
 export const serverURL = dev
-  ? 'http://localhost:3000/'
+  ? `http://localhost:3000/`
   : 'https://www.nexteats.com.br/';
 
 export const whatsappRestApi = axios.create({
-  baseURL: dev
-    ? 'http://localhost:3535/'
-    : 'https://whatsapp-rest-api.herokuapp.com/',
+  baseURL: process.env.NEXT_PUBLIC_WHATSAPP_REST_SERVER_LINK,
   timeout: 100000,
   headers: {
     'Access-Control-Allow-Origin': '*',
@@ -44,69 +52,6 @@ export const supabase = createClient<Database>(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 );
-
-export async function createNewWhatsAppCode(
-  whatsappNumber: string,
-  restaurantName: string
-) {
-  try {
-    const verificationCode = Math.floor(Math.random() * 1000000)
-      .toString()
-      .padStart(6, '0');
-
-    const expirationDate = new Date();
-
-    expirationDate.setMinutes(expirationDate.getMinutes() + 5);
-
-    await supabase.from('whatsapp_code').insert([
-      {
-        code: verificationCode,
-        expiration_date: expirationDate.toLocaleString(),
-        whatsapp_number: whatsappNumber,
-      },
-    ]);
-
-    await axios
-      .post(
-        'https://api.z-api.io/instances/3B83B938A0A810B2F72A763E6F7F9F35/token/F0897214AC8EA63A77A36B5C/send-text',
-        {
-          phone: whatsappNumber,
-          message: `😋 Olá, você fez um pedido no *${restaurantName}*\n\n▶ Seu código é: _*${verificationCode}*_`,
-        }
-      )
-      .then(function (response: any) {
-        return response;
-      })
-      .catch(function (error: any) {
-        console.error(error);
-      });
-
-    return verificationCode;
-  } catch (error) {
-    console.error(error);
-  }
-}
-
-export async function isWhatsappCodeValid(
-  code: string,
-  whatsappNumber: string
-) {
-  try {
-    const supabaseConsult = await supabase
-      .from('whatsapp_code')
-      .select()
-      .eq('code', code)
-      .eq('whatsapp_number', whatsappNumber);
-
-    if (!supabaseConsult.data || supabaseConsult.data.length === 0) {
-      return false;
-    }
-
-    return true;
-  } catch {
-    return false;
-  }
-}
 
 export async function updateAdditional(
   additionalId: number,
@@ -145,25 +90,6 @@ export async function updateProduct(
     .select('*');
 }
 
-export async function createAdditionalsAndIsertIntoProductAdditionalsIfIsUpdatingProduct(
-  name: string,
-  price: number,
-  product_id: number,
-  restaurantData: iRestaurant['data']
-) {
-  // const aditionalData = await supabase
-  //   .from("additionals").insert({
-  //     name,
-  //     price,
-  //     picture: getImageData.data.publicUrl!,
-  //     restaurant_id: restaurantData.id
-  //   }).select("*");
-  // await supabase
-  //   .from("product_additionals").insert({
-  //     additional_id: aditionalData.data![0].id!,
-  //     product_id,
-  //   }).select("*");
-}
 export async function deleteProductAdditionalsIfIsUpdatingProduct(
   additional_id: number,
   product_id: number
@@ -267,7 +193,7 @@ export async function createProduct(
   if (data.data === null) {
     return;
   }
-  // let additionalsStatus
+
   postAdditionalToSupabase(data.data[0].id, state, additionals, restaurant);
 
   state.ingredients.forEach(async ingredient => {
@@ -342,8 +268,6 @@ async function postAdditionalToSupabase(
         .select('*');
       data = productAdditionalDada;
     } else {
-      // const imageData = await supabase.storage.from(restaurant.slug!).upload(additional.name, state.additional_picture_file!, )
-      // const getImageData = await supabase.storage.from(restaurant.slug!).getPublicUrl(imageData.data?.path!)
       const additionalData = await supabase
         .from('additionals')
         .insert({
@@ -408,7 +332,7 @@ export async function getPaymentMethodsForThisRestaurant(restaurantId: number) {
          restaurant_id,
          is_active,
          payment_methods (
-            id, 
+            id,
             name
         )`
       )

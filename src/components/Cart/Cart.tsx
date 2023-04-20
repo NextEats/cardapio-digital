@@ -118,20 +118,25 @@ export default function Cart() {
         cep + ' ' + number
       );
 
-      const delivery_fees_data = await api.post('/api/delivery_fee', {
-        id: restaurant.id,
-      });
+      const { data: delivery_fees_data } = await api.post(
+        '/api/delivery_fees',
+        {
+          id: restaurant!.id,
+        }
+      );
 
-      foundDeliveryFee = delivery_fees_data!.find(df => {
-        return distance_in_km! <= df.end_km! && distance_in_km! >= df.start_km!;
-      });
+      console.log(delivery_fees_data);
 
-      if (!foundDeliveryFee) {
-        setDeliveryFee(0);
-        return;
-      }
+      // foundDeliveryFee = delivery_fees_data!.find(df => {
+      //   return distance_in_km! <= df.end_km! && distance_in_km! >= df.start_km!;
+      // });
 
-      setDeliveryFee(foundDeliveryFee.fee);
+      // if (!foundDeliveryFee) {
+      //   setDeliveryFee(0);
+      //   return;
+      // }
+
+      // setDeliveryFee(foundDeliveryFee.fee);
     }
 
     async function fetchData() {
@@ -176,8 +181,6 @@ export default function Cart() {
 
   const handleFinishOrder = (e: FormEvent) => {
     e.preventDefault();
-
-    console.log('button click');
 
     const {
       cep,

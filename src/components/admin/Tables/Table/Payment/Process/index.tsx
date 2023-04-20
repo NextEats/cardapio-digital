@@ -60,7 +60,7 @@ export default function Process({
       title: (
         <button onClick={() => reset()} className="flex items-center gap-2">
           <AiOutlinePlus size={28} />
-          Limpar
+          <span className="hidden lg:flex">Limpar</span>
         </button>
       ),
     },

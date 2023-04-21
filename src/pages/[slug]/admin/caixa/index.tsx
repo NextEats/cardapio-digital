@@ -118,10 +118,12 @@ export default function CashboxPage(props: iCashboxManagement) {
           totalDelivery={totalDelivery}
           cashBoxInitialValue={activeCashBox ? activeCashBox?.initial_value : 0}
         />
-        <CashBox
-          tables_payments={tables_payments}
-          ordersProducts={ordersProductsData || []}
-        />
+        <div className="pb-20">
+          <CashBox
+            tables_payments={tables_payments}
+            ordersProducts={ordersProductsData || []}
+          />
+        </div>
       </div>
     </AdminWrapper>
   );

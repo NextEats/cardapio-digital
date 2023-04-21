@@ -80,14 +80,14 @@ export default function Process({
   ];
 
   return (
-    <div className={`h-screen w-screen `}>
+    <div className={`h-screen w-screen  pb-20`}>
       <PageHeaders
         title="Novo pagamento"
         icon={<MdOutlineAttachMoney size={32} />}
       />
       <form
         onSubmit={handleSubmit(handleSubmitPayment)}
-        className="grid grid-cols-1 2md:grid-cols-2 gap-10 2md:gap-20 justify-center px-16 py-4"
+        className="grid grid-cols-1 2md:grid-cols-2 gap-10 2md:gap-20 justify-center px-8 md:px-16 py-4"
       >
         <div className="flex flex-col gap-6">
           <label htmlFor="" className="flex flex-col gap-1 ">

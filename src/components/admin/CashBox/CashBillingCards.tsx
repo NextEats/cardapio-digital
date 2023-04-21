@@ -27,7 +27,10 @@ export default function CashBillingCards({
         value={totalMesa}
       />
 
-      <ValueCard title="Saldo Total" value={totalDelivery + totalMesa} />
+      <ValueCard
+        title="Saldo Total"
+        value={totalDelivery + totalMesa + cashBoxInitialValue}
+      />
     </div>
   );
 }

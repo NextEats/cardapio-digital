@@ -55,11 +55,14 @@ export default function AccordionPrintOrderForDelivery({
         <div className="flex flex-col">
           <span className="mb-1 flex items-center justify-between">
             <strong>
-              {(orders_products[0] as iOrdersProductsWithFKDataToDelivery)
-                .orders.clients.addresses.fullstring
+              {(order as iOrdersWithStatusFKData).order_types.name !==
+              'Retirada'
                 ? (orders_products[0] as iOrdersProductsWithFKDataToDelivery)
                     .orders.clients.addresses.fullstring
-                : null}{' '}
+                  ? (orders_products[0] as iOrdersProductsWithFKDataToDelivery)
+                      .orders.clients.addresses.fullstring
+                  : null
+                : null}
             </strong>
           </span>
           <span className="mb-1 flex items-center justify-between">

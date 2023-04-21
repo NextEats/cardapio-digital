@@ -29,7 +29,6 @@ export function ConfirmFinishServiceModal({}: iConfirmFinishServiceModalProps) {
     ]);
     window.location.reload();
   };
-  console.log(isUnableToFinishService);
 
   return (
     <>

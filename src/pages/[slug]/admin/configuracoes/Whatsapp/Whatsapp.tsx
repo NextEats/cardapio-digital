@@ -1,116 +1,72 @@
 import { AdminContext } from '@/src/contexts/adminContext';
-import { whatsappRestApi, whatsappRestApiServerUrl } from '@/src/server/api';
-import Image from 'next/image';
-import React, { useContext, useEffect, useState } from 'react';
-import { Socket, io } from 'socket.io-client';
-import CurrentStatus from './components/CurrentStatus';
+import { useContext, useEffect, useState } from 'react';
+import QRCode from 'react-qr-code';
 
-export type tVenomStatus =
-  | undefined
-  | 'isLogged'
-  | 'notLogged'
-  | 'browserClose'
-  | 'qrReadSuccess'
-  | 'qrReadFail'
-  | 'autocloseCalled'
-  | 'desconnectedMobile'
-  | 'deleteToken'
-  | 'chatsAvailable'
-  | 'deviceNotConnected'
-  | 'serverWssNotConnected'
-  | 'noOpenBrowser'
-  | 'initBrowser'
-  | 'openBrowser'
-  | 'connectBrowserWs'
-  | 'initWhatsapp'
-  | 'erroPageWhatsapp'
-  | 'successPageWhatsapp'
-  | 'waitForLogin'
-  | 'waitChat'
-  | 'successChat';
+import { whatsappRestApi } from '@/src/server/api';
 
-const Whatsapp: React.FC = () => {
+export default function Whatsapp() {
   const { restaurant } = useContext(AdminContext);
 
-  const [whatsappStatus, setWhatsappStatus] = useState<tVenomStatus>(undefined);
-
-  const [socket, setSocket] = useState<Socket | null>(null);
-  const [qrCode, setQrCode] = useState<string>('');
+  const [qrCode, setQrCode] = useState<string | undefined>(undefined);
 
   useEffect(() => {
-    async function checkStatus() {
-      const { data: currentStatus } = await whatsappRestApi.post(
-        '/check-status',
-        {
-          id: restaurant!.slug,
+    async function getResponse() {
+      try {
+        const res = await whatsappRestApi({
+          method: 'post',
+          url: '/create',
+          data: {
+            id: restaurant!.slug,
+          },
+        });
+
+        if (res.data.qrcode) {
+          setQrCode(res.data.qrcode);
         }
-      );
-
-      setWhatsappStatus(currentStatus.status as tVenomStatus);
+      } catch (err) {
+        console.error(err);
+      }
     }
-
-    checkStatus();
+    getResponse();
   }, [restaurant]);
 
-  useEffect(() => {
-    if (!restaurant) {
-      return;
+  const handleSendMessage = async () => {
+    console.log(restaurant!.whatsapp_number);
+
+    try {
+      console.log({
+        id: restaurant!.slug,
+        number: restaurant!.whatsapp_number,
+        message:
+          'O sistema de cardápio digital da NextEats foi configurado com sucesso para este número.',
+      });
+
+      const res = await whatsappRestApi({
+        method: 'post',
+        url: '/send-message',
+        data: {
+          id: restaurant!.slug,
+          number: restaurant!.whatsapp_number,
+          message:
+            '😎 O sistema de cardápio digital da NextEats foi configurado com sucesso para este número.',
+        },
+      });
+
+      console.log(res);
+    } catch (err) {
+      console.error(err);
     }
-
-    if (!socket) {
-      const newSocket = io(whatsappRestApiServerUrl!);
-      setSocket(newSocket);
-
-      newSocket.on(
-        'qrCode',
-        ({ id, qrCode }: { id: string; qrCode: string }) => {
-          if (id === restaurant.slug) {
-            setQrCode(qrCode);
-          }
-        }
-      );
-
-      newSocket.on(
-        'status',
-        ({ id, status }: { id: string; status: string }) => {
-          if (id === restaurant.slug) {
-            setWhatsappStatus(status as tVenomStatus);
-          }
-        }
-      );
-    }
-
-    const startSocketReq = async () => {
-      try {
-        await whatsappRestApi.post('/create', {
-          id: restaurant.slug,
-        });
-      } catch (err) {
-        console.log(err);
-      }
-    };
-
-    startSocketReq();
-  }, [socket, restaurant]);
+  };
 
   return (
-    <div className="p-4">
-      <h4 className="text-3xl p-4">Conexão WhatsApp</h4>
-      <div className="p-4 bg-white rounded-md">
-        {qrCode ? (
-          <Image
-            id="qrCode"
-            src={qrCode}
-            alt="QR Code"
-            width={300}
-            height={300}
-          />
-        ) : (
-          <CurrentStatus status={whatsappStatus} />
-        )}
-      </div>
-    </div>
+    <>
+      {qrCode && <QRCode value={qrCode} />}
+      <button
+        onClick={() => handleSendMessage()}
+        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+      >
+        Enviar Mensagem de Teste
+      </button>
+    </>
   );
-};
-
-export default Whatsapp;
+}

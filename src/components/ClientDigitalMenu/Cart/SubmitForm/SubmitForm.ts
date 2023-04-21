@@ -9,7 +9,7 @@ import createAddressIfNeeded from './util/createAddressIfNeeded';
 import createClient from './util/createClient';
 import createContact from './util/createContact';
 import findDeliveryFeeForTheDistance from './util/findDeliveryFeeForTheDistance';
-import getOrderPosition from './util/getOrderPosition';
+import { getOrderPosition } from './util/getOrderPosition';
 import insertOrder from './util/insertOrder';
 import insertOrderProducts from './util/insertOrderProducts';
 import { removeNonAlphaNumeric } from './util/removeNonAlphaNumeric';
@@ -83,7 +83,10 @@ export async function SubmitForm({
     return;
   }
 
-  const orderPosition = await getOrderPosition(restaurant);
+  const orderPosition = await getOrderPosition({
+    restaurantId: restaurant.id,
+    currentCashBoxId: currentCashBox.id,
+  });
 
   const { orderData, orderError } = await insertOrder({
     restaurant,

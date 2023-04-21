@@ -11,10 +11,7 @@ import SelectComponent from '../../../home/ProductModal/components/SelectCompone
 import { CardapioDigitalButton } from '../../cardapio-digital/CardapioDigitalButton';
 // import TableAdditionals from './TableAdditionals';
 import { TableContext } from '@/src/contexts/TableContext';
-import { filterOptionsSelected } from '@/src/helpers/filterOptionsSelected';
 import { addProductAction } from '@/src/reducers/tableReducer/action';
-import { api } from '@/src/server/api';
-import { toast } from 'react-toastify';
 import TableAdditionals from './TableAdditionals';
 
 const productInformationValidationSchema = zod.object({
@@ -26,13 +23,14 @@ type NewProductInformationFormData = zod.infer<
 >;
 
 export default function ProductModal() {
-  const { register, handleSubmit, reset, setValue, getValues } =
-    useForm<NewProductInformationFormData>({
+  const { register, reset, getValues } = useForm<NewProductInformationFormData>(
+    {
       resolver: zodResolver(productInformationValidationSchema),
       defaultValues: {
         observation: '',
       },
-    });
+    }
+  );
 
   const {
     table,
@@ -40,7 +38,6 @@ export default function ProductModal() {
     additionalByProductId,
     viewProductState,
     tableDispatch,
-    order,
   } = useContext(TableContext);
 
   const [viewProduct, setViewProduct] = viewProductState;
@@ -62,56 +59,8 @@ export default function ProductModal() {
         observation,
       })
     );
-    setTimeout(() => {
-      handleFinishOrder();
-      setViewProduct(null);
-      reset();
-    }, 50);
-  }
-
-  async function handleFinishOrder() {
-    if (table.is_occupied === false || order === null) {
-      toast.error(
-        'O pedido só pode ser realizado após o início do atendimento.',
-        { theme: 'light' }
-      );
-      return;
-    }
-
-    const productsOfTheTable = tableState.productsSelected.filter(
-      p => p.table_id === table.id
-    );
-
-    productsOfTheTable.forEach(async ps => {
-      const additionals_data = ps.quantityAdditionals.reduce(
-        (acc: { quantity: number; additional_id: number }[], item) => {
-          return (acc = [
-            ...acc,
-            {
-              quantity: item.quantity,
-              additional_id: item.additionalId,
-            },
-          ]);
-        },
-        []
-      );
-      const selects_data = filterOptionsSelected({
-        productsOptionsSelected: ps.productSelects ? ps.productSelects : [],
-      });
-
-      const ordersProductsData = await api.post(`api/orders_products/`, {
-        order_id: order!.id,
-        table_id: table.id,
-        product_id: ps.product?.id,
-        selects_data,
-        additionals_data,
-        observation: ps.observation,
-        total_price: ps.totalPrice / ps.quantity,
-        quantity: ps.quantity,
-      });
-    });
-
-    window.location.reload();
+    setViewProduct(null);
+    reset();
   }
 
   return (

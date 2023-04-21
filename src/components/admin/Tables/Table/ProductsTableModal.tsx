@@ -6,6 +6,7 @@ import { ChangeEvent, useContext, useState } from 'react';
 import { BsCart3 } from 'react-icons/bs';
 import { FiX } from 'react-icons/fi';
 import { CardapioDigitalButton } from '../../cardapio-digital/CardapioDigitalButton';
+import { TableProductListFormModal } from './TableProductListFormModal';
 import ProductModal from './productModal';
 
 interface iProductTableModalProps {}
@@ -113,6 +114,7 @@ export default function ProductsTableModal({}: iProductTableModalProps) {
 
               <div className="flex flex-col lg:grid lg:grid-cols-2 gap-2 max-h-[305px] overflow-auto scrollbar-custom p-1 mb-3">
                 {filteredProducts.map(product => {
+                  if (product.is_deleted) return null;
                   return (
                     <div
                       key={product.id}
@@ -131,24 +133,24 @@ export default function ProductsTableModal({}: iProductTableModalProps) {
                       />
                       <div className="flex flex-col h-full items-start justify-start gap-1 overflow-hidden px-3 pt-4">
                         <span className="text-base font-bold text-gray-600 ">
-                          {' '}
                           {product.name}{' '}
                         </span>
                         <p className="text-sm font-medium truncate w-full text-gray-500 leading-3 ">
-                          {' '}
                           {product.description}{' '}
                         </p>
                       </div>
                       <span className="text-xs font-semibold text-green-500 absolute top-2 right-3">
-                        {' '}
                         R$ {product.price}{' '}
                       </span>
                     </div>
                   );
                 })}
               </div>
-              <div className="w-full flex items-center justify-end gap-3">
-                <CardapioDigitalButton name="Cancelar" h="h-9" w="w-44" />
+              <div className="w-full flex items-center justify-between gap-3">
+                <TableProductListFormModal />
+                <Dialog.Close className="">
+                  <CardapioDigitalButton name="Cancelar" h="h-9" w="w-44" />
+                </Dialog.Close>
               </div>
             </div>
             <Dialog.Close className="fixed top-3 right-3 text-gray-600">

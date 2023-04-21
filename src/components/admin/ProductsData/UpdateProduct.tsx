@@ -263,15 +263,14 @@ export function UpdateProduct({}: iUpdateProductProps) {
         <button
           onClick={() => handleGoBack()}
           type="button"
-          className="text-blue-400"
+          className="text-blue-400 font-semibold px-5 py-1 rounded-full bg-white hover:scale-105 shadow"
         >
-          {' '}
-          voltar{' '}
+          voltar
         </button>
         <button
           type="submit"
           disabled={isSubmitting}
-          className="text-blue-400 text-lg font-semibold disabled:text-gray-400"
+          className="text-blue-400 font-semibold disabled:text-gray-400  px-5 py-1 rounded-full bg-white hover:scale-105 shadow"
         >
           Editar
         </button>

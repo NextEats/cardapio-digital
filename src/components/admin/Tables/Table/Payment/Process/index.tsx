@@ -11,6 +11,7 @@ import { useForm } from 'react-hook-form';
 import { AiOutlinePlus } from 'react-icons/ai';
 import { MdOutlineAttachMoney } from 'react-icons/md';
 import { RiArrowLeftSLine } from 'react-icons/ri';
+import { toast } from 'react-toastify';
 import * as zod from 'zod';
 
 interface iProcessProps {
@@ -51,6 +52,7 @@ export default function Process({
         order_table_id: order_table_id,
         payment_mathod_id: data.paymentMethodsId,
       });
+    toast.success('Pagamento realizado com sucesso.', { theme: 'light' });
     reset();
   };
 

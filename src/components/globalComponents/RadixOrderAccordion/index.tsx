@@ -82,10 +82,10 @@ export function RadixOrderAccordion({
           <AccordionItem className="" value="1">
             <AccordionTrigger>
               {isToDelivery
-                ? 'Sem pedido '
+                ? 'Sem pedidos '
                 : 'O Atendimento ainda não foi iniciado!'}
             </AccordionTrigger>
-            <AccordionContent> Sem predido </AccordionContent>
+            <AccordionContent> Sem predidos </AccordionContent>
           </AccordionItem>
         ) : (
           orders.map(order => {
@@ -104,16 +104,19 @@ export function RadixOrderAccordion({
                   <div className="relative">
                     {isToDelivery ? (
                       <div className=" flex items-center gap-2 absolute top-2 right-3">
-                        <button
-                          onClick={() =>
-                            handleChangeOrderStatus(
-                              order as iOrdersWithStatusFKData
-                            )
-                          }
-                          className="h-7 w-7 flex items-center justify-center rounded-full bg-white-blue text-blue-400 hover:text-orange-500 focus:border focus:border-orange-500 hover:bg-orange-200 transition-all cursor-pointer"
-                        >
-                          <BiCheck size={20} />
-                        </button>
+                        {(order as iOrdersWithStatusFKData).order_status
+                          .status_name !== 'entregue' ? (
+                          <button
+                            onClick={() =>
+                              handleChangeOrderStatus(
+                                order as iOrdersWithStatusFKData
+                              )
+                            }
+                            className="h-7 w-7 flex items-center justify-center rounded-full bg-white-blue text-blue-400 hover:text-orange-500 focus:border focus:border-orange-500 hover:bg-orange-200 transition-all cursor-pointer"
+                          >
+                            <BiCheck size={20} />
+                          </button>
+                        ) : null}
                         <AccordionOrderActions
                           order={order as iOrdersWithStatusFKData}
                           orders_products={ordersProductsFilterdByOrderId}

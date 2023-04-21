@@ -8,17 +8,8 @@ interface iOrderTablesDetailsProps {
 export default function OrderTableDetails({
   printOrderTableComponent,
 }: iOrderTablesDetailsProps) {
-  const { orders_tables, table, orders_products } = useContext(TableContext);
-
-  // const productsInProduction = tableData.productsInProductionData
-  //   ? tableData.productsInProductionData
-  //   : [];
-  // const productsDelivered = tableData.productsDeliveredData
-  //   ? tableData.productsDeliveredData
-  //   : [];
-  // const [ordersProductsOfTheTable, seyOrdersProductsOfTheTable] = useState<
-  //   iOrdersProductsData[]
-  // >([...productsInProduction, ...productsDelivered]);
+  const { orders_tables, table, orders_products, table_paymants_values } =
+    useContext(TableContext);
 
   const textStyles =
     'text-[12px] leading-[14px] font-semibold text-black text-left leading-6';
@@ -27,12 +18,6 @@ export default function OrderTableDetails({
     (acc, item) => acc + item.total_price * item.quantity,
     0
   );
-
-  // const enableFinishServiceButton = ordersTables.some(
-  //   o =>
-  //     o.orders.order_status.status_name === 'em produção' &&
-  //     o.tables.id === openedTableModal!.id
-  // );
 
   return (
     <div className="hidden">
@@ -95,13 +80,15 @@ export default function OrderTableDetails({
           })}
         </div>
 
-        <div>
-          <p className="grid grid-cols-2 items-center gap-10">
-            <span className={`${textStyles}`}>Total a pagar: </span>
-            <span className={`${textStyles} w-`}>
-              <strong>R$ {totalOrderPrice}</strong>
-            </span>
-          </p>
+        <div className="flex flex-col gap-1">
+          <span className={`${textStyles} flex items-center justify-between `}>
+            Total gasto:
+            <strong> R$ {totalOrderPrice}</strong>
+          </span>
+          <span className={`${textStyles} flex items-center justify-between `}>
+            Total pago:
+            <strong> R$ {table_paymants_values}</strong>
+          </span>
         </div>
       </div>
     </div>

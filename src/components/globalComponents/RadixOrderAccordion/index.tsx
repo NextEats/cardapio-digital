@@ -142,10 +142,10 @@ export function RadixOrderAccordion({
                                 <span>
                                   {(
                                     ordersProductsFilterdByOrderId[0] as iOrdersProductsWithFKDataToDelivery
-                                  ).orders.clients.addresses
+                                  ).orders.clients.addresses.fullstring
                                     ? (
                                         ordersProductsFilterdByOrderId[0] as iOrdersProductsWithFKDataToDelivery
-                                      ).orders.clients.addresses.cep
+                                      ).orders.clients.addresses.fullstring
                                     : null}
                                 </span>
                                 <div className="flex items-center justify-between">

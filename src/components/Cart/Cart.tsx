@@ -3,6 +3,7 @@ import { DigitalMenuContext } from '@/src/contexts/DigitalMenuContext';
 import { calculateTotalOrderPrice } from '@/src/helpers/calculateTotalOrderPrice';
 import useProductsInCheckout from '@/src/hooks/useProductsInCheckout';
 import { api } from '@/src/server/api';
+import { iDeliveryFees } from '@/src/types/types';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { FormEvent, useContext, useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
@@ -118,12 +119,10 @@ export default function Cart() {
         cep + ' ' + number
       );
 
-      const { data: delivery_fees_data } = await api.post(
-        '/api/delivery_fees',
-        {
-          id: restaurant!.id,
-        }
-      );
+      const { data } = await api.post('/api/delivery_fees', {
+        restaurantId: restaurant!.id,
+      });
+      const delivery_fees_data: iDeliveryFees['data'] = data;
 
       foundDeliveryFee = delivery_fees_data!.find(df => {
         return distance_in_km! <= df.end_km! && distance_in_km! >= df.start_km!;

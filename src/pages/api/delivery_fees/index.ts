@@ -6,7 +6,7 @@ export default async function clients(
   res: NextApiResponse
 ) {
   const { method, body } = req;
-  const restaurantId = body.id;
+  const { restaurantId } = body;
 
   switch (method) {
     case 'POST':
@@ -14,7 +14,7 @@ export default async function clients(
         const { data: delivery_fees_data, error } = await supabase
           .from('delivery_fees')
           .select('*')
-          .eq('restaurant_id', restaurantId);
+          .eq('restaurant_id', restaurantId as number);
 
         if (error) console.error(error);
 

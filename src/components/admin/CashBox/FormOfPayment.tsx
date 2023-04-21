@@ -18,9 +18,6 @@ export default function FormOfPayment({
     tables_payments,
   });
 
-  console.log('invoicePaymentMethods', invoicePaymentMethods);
-  console.log('ordersProducts', ordersProducts);
-
   return (
     <table className="min-w-full">
       <thead className="bg-white border-b">

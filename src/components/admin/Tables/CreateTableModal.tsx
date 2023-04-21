@@ -5,7 +5,7 @@ import * as Dialog from '@radix-ui/react-dialog';
 import { useContext, useState } from 'react';
 import { FiX } from 'react-icons/fi';
 import { toast } from 'react-toastify';
-import InputWithLabel from '../../InputWithLabel';
+import InputWithLabel from '../../globalComponents/InputWithLabel';
 import { CardapioDigitalButton } from '../cardapio-digital/CardapioDigitalButton';
 interface iCreateTableModalProps {}
 

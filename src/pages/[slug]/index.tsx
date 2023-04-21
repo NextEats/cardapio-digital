@@ -8,11 +8,13 @@ import { GetServerSideProps } from 'next';
 import Head from 'next/head';
 import { useReducer, useState } from 'react';
 
-import DigitalMenuContent from '@/src/components/DigitalMenuContent';
-import DigitalMenuModals from '@/src/components/DigitalMenuModals';
+import DigitalMenuContent from '@/src/components/ClientDigitalMenu/DigitalMenuContent';
+import DigitalMenuModals from '@/src/components/ClientDigitalMenu/DigitalMenuModals';
 import { tSelectWithOptions } from '@/src/fetch/productSelects/getProductSelectWithOptions';
 import { ProductsReducer } from '@/src/reducers/ProductsReducer/reducer';
 import { supabase } from '@/src/server/api';
+
+import nexteats_logo_orange from '@/src/assets/nexteats_logo_orange.png';
 
 import Image from 'next/image';
 
@@ -80,17 +82,17 @@ export default function CardapioDigital({ data }: { data: iDigitalMenuData }) {
         </Head>
         <DigitalMenuModals />
         <DigitalMenuContent />
-        <footer className="relative bottom-0 mt-32 w-full mb-0 flex flex-col items-center gap-3 bg-gray-800 justify-center py-5">
+        <footer className="z-[0] pt-12 pb-24 relative bottom-0 mt-32 w-full mb-0 flex flex-col items-center gap-3 bg-gray-200 justify-center">
           <div className="flex items-center gap-2">
             <Image
               className=""
-              src={'/LogoLaranja.png'}
+              src={nexteats_logo_orange.src}
               alt="asdasd"
-              width={160}
+              width={250}
               height={160}
             />
           </div>
-          <span className="text-sm text-white">versão 1.0.2</span>
+          <span className="text-sm text-black italic">Versão 1.0.2</span>
         </footer>
       </div>
     </DigitalMenuContext.Provider>

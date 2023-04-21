@@ -1,20 +1,22 @@
 import { DeliveryPageContext } from '@/src/contexts/DeliveryContext';
 
 import { getOrdersGroupedByStatus } from '@/src/helpers/getOrdersGroupedByStatus';
+import { useAudioAlert } from '@/src/hooks/useAudioAlert';
 import { useContext } from 'react';
 import { RadixOrderAccordion } from '../../globalComponents/RadixOrderAccordion';
 
 export default function Delivery() {
   const { orders, ordersProducts } = useContext(DeliveryPageContext);
+  const ordersGroupedByStatus = getOrdersGroupedByStatus({ orders });
 
-  const ordersGrouoedByStatus = getOrdersGroupedByStatus({ orders });
+  useAudioAlert(ordersGroupedByStatus);
 
   return (
     <div className="h-full max-h-full overflow-y-auto ">
       {/* <div className="grid grid-cols-1 lg:grid-cols-2 justify-start gap-4"> */}
 
       <div className="flex max-w-full overflow-x-auto h-full">
-        {ordersGrouoedByStatus.map((ordersGByStatus, index) => {
+        {ordersGroupedByStatus.map((ordersGByStatus, index) => {
           if (ordersGByStatus.status_name === 'cancelado') return null;
 
           const ordersFilterd = ordersGByStatus.orders.filter(
@@ -25,13 +27,13 @@ export default function Delivery() {
               <div className="flex w-full items-center justify-between mb-1">
                 <span>
                   {ordersGByStatus.status_name === 'em análise'
-                    ? 'Novos pedidos'
+                    ? 'Novos Pedidos'
                     : null}
                   {ordersGByStatus.status_name === 'em produção'
                     ? 'Em Produção'
                     : null}
                   {ordersGByStatus.status_name === 'a caminho'
-                    ? 'A caminho'
+                    ? 'A Caminho'
                     : null}
                   {ordersGByStatus.status_name === 'entregue'
                     ? 'Entregues'

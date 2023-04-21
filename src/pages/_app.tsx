@@ -9,7 +9,7 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import LoadingSpinner from '../components/LoadingSpinner';
+import LoadingSpinner from '../components/globalComponents/LoadingSpinner';
 import '../styles/globals.css';
 
 export default function App({

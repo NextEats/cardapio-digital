@@ -28,7 +28,7 @@ export const serverURL = dev
 
 export const whatsappRestApi = axios.create({
   baseURL: process.env.NEXT_PUBLIC_WHATSAPP_REST_SERVER_LINK,
-  timeout: 100000,
+  timeout: 0,
   headers: {
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,PATCH,OPTIONS',

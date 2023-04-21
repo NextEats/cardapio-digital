@@ -85,7 +85,7 @@ export function RadixOrderAccordion({
                 ? 'Sem pedidos '
                 : 'O Atendimento ainda não foi iniciado!'}
             </AccordionTrigger>
-            <AccordionContent> Sem predidos </AccordionContent>
+            <AccordionContent> Sem pedidos </AccordionContent>
           </AccordionItem>
         ) : (
           orders.map(order => {

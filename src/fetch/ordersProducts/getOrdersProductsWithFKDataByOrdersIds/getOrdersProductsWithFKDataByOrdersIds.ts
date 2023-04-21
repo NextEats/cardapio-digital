@@ -110,8 +110,6 @@ export async function getOrdersProductsWithFKDataByOrdersIdsFetch({
     []
   );
 
-  console.log(allOrdersProducts);
-
   return orderProductFormated as iOrdersProductsWithFKDataToDelivery[];
 }
 

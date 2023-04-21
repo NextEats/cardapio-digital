@@ -103,7 +103,7 @@ export default function CashClosingReportModal({
 
   function getPaymentTotals(orders: any): Payment[] {
     const paymentTotals: Payment[] = [];
-    console.log('orders', orders);
+
     if (!orders) return [];
 
     orders.forEach((order: any) => {

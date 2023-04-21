@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import TextFiled from '@/src/components/Inputs';
-import Modal from '@/src/components/Modal';
+import TextFiled from '@/src/components/globalComponents/Inputs';
+import Modal from '@/src/components/globalComponents/Modal';
 import Button from '@/src/components/nButton';
 import { AdminContext } from '@/src/contexts/adminContext';
 import { supabase } from '@/src/server/api';
@@ -146,18 +146,6 @@ export default function TaxaPorDistancia() {
                   >
                     Excluir
                   </button>
-                  {/* <button
-                                        className=" bg-blue-700 text-white py-2 px-4 ml-3 mr-3 rounded-md"
-                                        onClick={() =>
-                                            deliveryFee.id
-                                                ? handleDeleteDeliveryFee(
-                                                    deliveryFee.id
-                                                )
-                                                : console.error('id não encontrado')
-                                        }
-                                    >
-                                        Editar
-                                    </button> */}
                 </td>
               </tr>
             ))}

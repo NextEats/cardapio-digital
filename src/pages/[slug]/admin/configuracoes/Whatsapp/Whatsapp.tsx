@@ -21,8 +21,6 @@ const Whatsapp: React.FC = () => {
     }
 
     if (!socket) {
-      console.log('whatsappRestApiServerUrl', whatsappRestApiServerUrl);
-
       const newSocket = io(whatsappRestApiServerUrl!);
       setSocket(newSocket);
 

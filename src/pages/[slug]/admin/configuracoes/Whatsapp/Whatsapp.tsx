@@ -5,15 +5,52 @@ import React, { useContext, useEffect, useState } from 'react';
 import { Socket, io } from 'socket.io-client';
 import CurrentStatus from './components/CurrentStatus';
 
-export type iWhatsappStatus = 'loading' | 'connected';
+export type tVenomStatus =
+  | undefined
+  | 'isLogged'
+  | 'notLogged'
+  | 'browserClose'
+  | 'qrReadSuccess'
+  | 'qrReadFail'
+  | 'autocloseCalled'
+  | 'desconnectedMobile'
+  | 'deleteToken'
+  | 'chatsAvailable'
+  | 'deviceNotConnected'
+  | 'serverWssNotConnected'
+  | 'noOpenBrowser'
+  | 'initBrowser'
+  | 'openBrowser'
+  | 'connectBrowserWs'
+  | 'initWhatsapp'
+  | 'erroPageWhatsapp'
+  | 'successPageWhatsapp'
+  | 'waitForLogin'
+  | 'waitChat'
+  | 'successChat';
 
 const Whatsapp: React.FC = () => {
   const { restaurant } = useContext(AdminContext);
 
-  const [whatsappStatus, setWhatsappStatus] =
-    useState<iWhatsappStatus>('loading');
+  const [whatsappStatus, setWhatsappStatus] = useState<tVenomStatus>(undefined);
+
   const [socket, setSocket] = useState<Socket | null>(null);
   const [qrCode, setQrCode] = useState<string>('');
+
+  useEffect(() => {
+    async function checkStatus() {
+      const { data: currentStatus } = await whatsappRestApi.post(
+        '/check-status',
+        {
+          id: restaurant!.slug,
+        }
+      );
+
+      setWhatsappStatus(currentStatus.status as tVenomStatus);
+    }
+
+    checkStatus();
+  }, [restaurant]);
 
   useEffect(() => {
     if (!restaurant) {
@@ -36,26 +73,20 @@ const Whatsapp: React.FC = () => {
       newSocket.on(
         'status',
         ({ id, status }: { id: string; status: string }) => {
-          if (status === 'successChat') {
-            if (id === restaurant.slug) {
-              setWhatsappStatus('connected');
-            }
+          if (id === restaurant.slug) {
+            setWhatsappStatus(status as tVenomStatus);
           }
         }
       );
     }
 
-    const socketCall = async () => {
-      const response = await whatsappRestApi.post('/create', {
+    const startSocketReq = async () => {
+      await whatsappRestApi.post('/create', {
         id: restaurant.slug,
       });
-
-      if (response.status === 202) {
-        setWhatsappStatus('connected');
-      }
     };
 
-    socketCall();
+    startSocketReq();
   }, [socket, restaurant]);
 
   return (

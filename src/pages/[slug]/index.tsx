@@ -14,9 +14,8 @@ import { tSelectWithOptions } from '@/src/fetch/productSelects/getProductSelectW
 import { ProductsReducer } from '@/src/reducers/ProductsReducer/reducer';
 import { supabase } from '@/src/server/api';
 
-import nexteats_logo_orange from '@/src/assets/nexteats_logo_orange.png';
-
 import Image from 'next/image';
+import Link from 'next/link';
 
 export const getServerSideProps: GetServerSideProps = async context => {
   const restaurant = await getRestaurantBySlugFetch(context.query.slug);
@@ -84,13 +83,15 @@ export default function CardapioDigital({ data }: { data: iDigitalMenuData }) {
         <DigitalMenuContent />
         <footer className="z-[0] pt-12 pb-24 relative bottom-0 mt-32 w-full mb-0 flex flex-col items-center gap-3 bg-gray-200 justify-center">
           <div className="flex items-center gap-2">
-            <Image
-              className=""
-              src={nexteats_logo_orange.src}
-              alt="asdasd"
-              width={250}
-              height={160}
-            />
+            <Link href={'https://www.nexteats.com.br/'} target="_blank">
+              <Image
+                className="w-[360px]"
+                src={'/FooterLogoNext.png'}
+                alt="asdasd"
+                width={560}
+                height={160}
+              />
+            </Link>
           </div>
           <span className="text-sm text-black italic">Versão 1.0.2</span>
         </footer>

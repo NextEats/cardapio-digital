@@ -1,7 +1,7 @@
-import { iWhatsappStatus } from '../Whatsapp';
+import { tVenomStatus } from '../Whatsapp';
 
 interface iCurrentStatus {
-  status: iWhatsappStatus;
+  status: tVenomStatus;
 }
 
 const CurrentStatus: React.FC<iCurrentStatus> = props => {
@@ -9,18 +9,18 @@ const CurrentStatus: React.FC<iCurrentStatus> = props => {
 
   const StatusText = () => {
     switch (status) {
-      case 'connected':
+      case 'successChat':
         return <>Conectado</>;
-      case 'loading':
+      default:
         return <>Carregando...</>;
     }
   };
 
   const returnBackgroundColor = () => {
     switch (status) {
-      case 'connected':
+      case 'successChat':
         return 'bg-green-600';
-      case 'loading':
+      default:
         return 'bg-orange-600';
     }
   };

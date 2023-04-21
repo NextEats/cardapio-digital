@@ -443,6 +443,12 @@ export type iOrdersProductsWithFKDataToDelivery = iOrderProduct['data'] & {
     options: iProductOptions['data'];
   }[];
 };
+export type iOrdersTablesWithOrderFkData = iOrdersTable['data'] & {
+  orders: iOrder['data'];
+};
+export type iTablePaymentMethodsWithPaymentFKData = iTablePayment['data'] & {
+  payment_methods: iPaymentMethod['data'];
+};
 
 export type iOrdersProductsWithFKData = iOrderProduct['data'] & {
   orders: iOrder['data'] & {

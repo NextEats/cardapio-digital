@@ -163,7 +163,7 @@ export default function TableBottonNavBar({}: iTableBottonNavBarProps) {
     },
     {
       prefetch: false,
-      title: 'voltar',
+      title: 'Voltar',
       url: `${serverURL}${restaurant.slug}/admin/table-control`,
       icon: <RiArrowLeftSLine size={28} />,
     },

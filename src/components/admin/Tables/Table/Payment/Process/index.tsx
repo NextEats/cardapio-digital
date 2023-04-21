@@ -8,7 +8,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useForm } from 'react-hook-form';
-import { AiOutlinePlus } from 'react-icons/ai';
+import { AiOutlineClear } from 'react-icons/ai';
 import { MdOutlineAttachMoney } from 'react-icons/md';
 import { RiArrowLeftSLine } from 'react-icons/ri';
 import { toast } from 'react-toastify';
@@ -61,7 +61,7 @@ export default function Process({
       prefetch: false,
       title: (
         <button onClick={() => reset()} className="flex items-center gap-2">
-          <AiOutlinePlus size={28} />
+          <AiOutlineClear size={28} />
           <span className="hidden lg:flex">Limpar</span>
         </button>
       ),
@@ -110,6 +110,7 @@ export default function Process({
         </div>
         <div className="flex flex-col gap-3 w-full">
           {payment_method_restaurant.map(payment_method => {
+            if (payment_method.payment_methods.name === 'MESA') return null;
             return (
               <div key={payment_method.id} className="w-full">
                 <button

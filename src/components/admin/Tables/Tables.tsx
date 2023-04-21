@@ -25,7 +25,7 @@ export default function Tables() {
             <Link
               key={index}
               href={`${serverURL}${restaurant.slug}/admin/table-control/${t.table_slug}`}
-              // prefetch={false}
+              prefetch={false}
             >
               <TableCard table={t} />
             </Link>

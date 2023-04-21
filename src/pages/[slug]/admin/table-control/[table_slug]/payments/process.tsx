@@ -11,7 +11,7 @@ import { GetServerSideProps } from 'next';
 interface iPaymentsProps {
   restaurant: iRestaurantWithFKData;
   payment_method_restaurant: iPaymentMethodsRestaurantsWithFKData[];
-  order_table_id: number;
+  order_table_id: number | null;
 }
 
 export default function PaymentsPage({
@@ -45,12 +45,21 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
       .eq('table_id', table_id![0].id)
       .eq('has_been_paid', false),
   ]);
+  if (!order_table_id.data![0]) {
+    return {
+      props: {
+        restaurant,
+        payment_method_restaurant: [],
+        order_table_id: null,
+      },
+    };
+  }
 
   return {
     props: {
       restaurant,
       payment_method_restaurant: payment_method_restaurant,
-      order_table_id: order_table_id.data![0].id,
+      order_table_id: order_table_id ? order_table_id.data![0].id : null,
     },
   };
 };

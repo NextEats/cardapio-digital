@@ -10,7 +10,7 @@ export default function Delivery() {
   const ordersGrouoedByStatus = getOrdersGroupedByStatus({ orders });
 
   return (
-    <div className="h-full">
+    <div className="h-full max-h-full overflow-y-auto ">
       {/* <div className="grid grid-cols-1 lg:grid-cols-2 justify-start gap-4"> */}
 
       <div className="flex max-w-full overflow-x-auto h-full">

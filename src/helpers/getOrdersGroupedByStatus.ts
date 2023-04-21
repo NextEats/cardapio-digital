@@ -14,7 +14,10 @@ const requiredStatusNames = [
 
 export function getOrdersGroupedByStatus({
   orders,
-}: iGetOrdersGroupedByStatusProps) {
+}: iGetOrdersGroupedByStatusProps): {
+  status_name: string;
+  orders: iOrdersWithStatusFKData[];
+}[] {
   const ordersGrouped = orders.reduce(
     (
       acc: { status_name: string; orders: iOrdersWithStatusFKData[] }[],

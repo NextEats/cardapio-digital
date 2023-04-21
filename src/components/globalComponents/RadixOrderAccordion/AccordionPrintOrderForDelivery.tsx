@@ -55,9 +55,8 @@ export default function AccordionPrintOrderForDelivery({
         <div className="flex flex-col">
           <span className="mb-1 flex items-center justify-between">
             <strong>
-              {' '}
               {(orders_products[0] as iOrdersProductsWithFKDataToDelivery)
-                .orders.clients.addresses
+                .orders.clients.addresses.fullstring
                 ? (orders_products[0] as iOrdersProductsWithFKDataToDelivery)
                     .orders.clients.addresses.fullstring
                 : null}{' '}

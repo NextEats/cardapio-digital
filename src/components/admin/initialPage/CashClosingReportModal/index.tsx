@@ -24,7 +24,7 @@ interface CashClosingReportModalProps {
   openCashBoxClosingReportModal: boolean;
   ordersGroupedByOrderStatus: { [key: string]: iOrdersWithFKData[] };
   restaurantId: number;
-  cashBoxState: iCashBox['data'] | undefined;
+  cashBoxState: iCashBox['data'] | undefined | null;
   billing: number;
 }
 
@@ -70,7 +70,13 @@ export default function CashClosingReportModal({
   }, [restaurantId, user]);
 
   async function handleCloseCashBox() {
-    if (
+    if (!ordersGroupedByOrderStatus) {
+      await api.post('api/cash_boxes/close', {
+        restaurant_id: restaurantId,
+      });
+      location.reload();
+      setOpenCashBoxClosingReportModal(false);
+    } else if (
       ordersGroupedByOrderStatus['em análise'] ||
       ordersGroupedByOrderStatus['a caminho']
     ) {
@@ -82,11 +88,13 @@ export default function CashClosingReportModal({
       );
       return;
     }
-    await api.post('api/cash_boxes/close', {
-      restaurant_id: restaurantId,
-    });
-    location.reload();
-    setOpenCashBoxClosingReportModal(false);
+    {
+      await api.post('api/cash_boxes/close', {
+        restaurant_id: restaurantId,
+      });
+      location.reload();
+      setOpenCashBoxClosingReportModal(false);
+    }
   }
   interface Payment {
     payment_method: string;
@@ -95,7 +103,7 @@ export default function CashClosingReportModal({
 
   function getPaymentTotals(orders: any): Payment[] {
     const paymentTotals: Payment[] = [];
-    console.log('orders', orders);
+
     if (!orders) return [];
 
     orders.forEach((order: any) => {
@@ -137,7 +145,7 @@ export default function CashClosingReportModal({
 
   const textStyles = 'text-[10px]';
 
-  let totalValueOfDoneOrders: any;
+  let totalValueOfDoneOrders: any = [];
 
   if (!ordersGroupedByOrderStatus) {
     totalValueOfDoneOrders = 0;
@@ -145,17 +153,20 @@ export default function CashClosingReportModal({
     totalValueOfDoneOrders = getPaymentTotals(ordersGroupedByOrderStatus);
   }
 
-  console.log('totalValueOfDoneOrders', totalValueOfDoneOrders);
-
-  const canceledOrders = ordersGroupedByOrderStatus['cancelado'];
-
   const totalValueOfCanceledOrdersGroupedByPaymentMethod =
-    getPaymentTotals(canceledOrders);
+    ordersGroupedByOrderStatus
+      ? getPaymentTotals(ordersGroupedByOrderStatus['cancelado'])
+      : 0;
 
   const totalValueOfCanceledOrders =
-    totalValueOfCanceledOrdersGroupedByPaymentMethod.reduce((acc, current) => {
-      return acc + current.value;
-    }, 0);
+    totalValueOfCanceledOrdersGroupedByPaymentMethod
+      ? totalValueOfCanceledOrdersGroupedByPaymentMethod.reduce(
+          (acc, current) => {
+            return acc + current.value;
+          },
+          0
+        )
+      : 0;
 
   return (
     <>
@@ -225,7 +236,7 @@ export default function CashClosingReportModal({
                 </h3>
 
                 <p className="text-base font-semibold mb-2">Entradas</p>
-                {cashBoxState
+                {cashBoxState && totalValueOfDoneOrders
                   ? totalValueOfDoneOrders.map(
                       (paymentMethods: any, index: any) => {
                         return (
@@ -247,7 +258,7 @@ export default function CashClosingReportModal({
                 <hr className="my-2" />
                 <p className="text-base font-semibold mb-2">Cancelados</p>
                 <p>
-                  {canceledOrders ? (
+                  {ordersGroupedByOrderStatus ? (
                     <span>R$&nbsp;{totalValueOfCanceledOrders}</span>
                   ) : null}
                 </p>

@@ -4,6 +4,7 @@ import { FaSearch } from 'react-icons/fa';
 
 import { DigitalMenuContext } from '@/src/contexts/DigitalMenuContext';
 import toNormalForm from '@/src/helpers/stringToNormalForm';
+import { iProduct } from '@/src/types/types';
 import { useContext, useEffect, useState } from 'react';
 import AnchorLink from 'react-anchor-link-smooth-scroll';
 
@@ -55,7 +56,7 @@ function CategoriesNavbar({ groupedProductsData }: any) {
 
   return (
     <div
-      className={`w-full flex flex-row lg:justify-center scrollbar-custom fixed pl-3 py-2 left-0 top-0 whitespace-nowrap overflow-auto bg-gray-100 z-10 touch-auto transition-all ease-in-out duration-300 ${
+      className={`lg:w-8/12 px-4 lg:px-0 m-auto flex flex-row lg:justify-center scrollbar-custom fixed py-2 left-0 right-0 top-0 whitespace-nowrap overflow-auto bg-gray-100 z-10 touch-auto transition-all ease-in-out duration-300 ${
         isVisible ? 'opacity-100' : 'opacity-0'
       }`}
     >
@@ -109,14 +110,16 @@ function ProductsHorizontalList({ category }: { category: any }) {
       <h2 className="text-2xl mt-16 mb-4 text-gray-800">{category.name}</h2>
       <div className="grid md:grid-cols-2 xl:grid-cols-3  gap-3 ">
         {category.products
-          ? category.products.map((product: any, index: any) => {
+          ? category.products.map((product: iProduct['data'], index: any) => {
+              if (product.is_deleted) return null;
+
               return (
                 <div
                   key={index}
                   onClick={() => {
                     if (product.id && product.active) {
                       selectedProduct?.set(undefined);
-                      selectedProduct?.set(product.id);
+                      selectedProduct?.set(product.id.toString());
                     }
                   }}
                   className={

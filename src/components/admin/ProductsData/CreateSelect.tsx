@@ -185,7 +185,7 @@ export const CreateSelect = () => {
               Nome{' '}
             </label>
             <input
-              className={`w-full border border-gray-300 py-1 px-2 text-base font-normal leading-none rounded outline-none focus:border-blue-400 
+              className={`w-full border border-gray-300 py-1 px-2 text-base font-normal leading-none rounded outline-none focus:border-blue-400
                             ${errors.name ? '' : 'mb-2'}`}
               type="text"
               {...register('name')}
@@ -222,8 +222,7 @@ export const CreateSelect = () => {
                 className="text-base font-normal leading-[20px]"
                 htmlFor=""
               >
-                {' '}
-                Cobar valor padrão{' '}
+                Cobar valor padrão
               </label>
             </div>
             {has_default_value ? (

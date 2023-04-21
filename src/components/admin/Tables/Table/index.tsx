@@ -12,13 +12,13 @@ export default function Table({}: iTableProps) {
   const { table } = useContext(TableContext);
 
   return (
-    <div className="h-screen w-screen">
+    <div className="h-screen w-screen ">
       <PageHeaders
         icon={
           <div>
             <Image
               className="h-10 w-10"
-              src="/table_icon.jpg"
+              src="/table_icon.svg"
               alt=""
               height={200}
               width={200}

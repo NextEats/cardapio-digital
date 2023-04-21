@@ -15,7 +15,7 @@ export async function postTableFetch({
       is_active: false,
       is_occupied: false,
       is_reserved: false,
-      table_slug: name?.replace('', '-'),
+      table_slug: name?.trim().toLowerCase().replace(/\s+/g, '-'),
     })
     .select('*');
 

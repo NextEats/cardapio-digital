@@ -13,10 +13,9 @@ import { MdOutlineAttachMoney } from 'react-icons/md';
 import { RiArrowLeftSLine } from 'react-icons/ri';
 import { toast } from 'react-toastify';
 import * as zod from 'zod';
-
 interface iProcessProps {
   payment_method_restaurant: iPaymentMethodsRestaurantsWithFKData[];
-  order_table_id: number;
+  order_table_id: number | null;
 }
 
 const newPaymentFormValidationSchema = zod.object({
@@ -45,6 +44,12 @@ export default function Process({
   const { query } = useRouter();
 
   const handleSubmitPayment = async (data: NewPaymentFormData) => {
+    if (order_table_id === null) {
+      toast.error('O pagamendo só é possivel após iniciar o atendimento.', {
+        theme: 'light',
+      });
+      return;
+    }
     const { data: table_payment_data } = await supabase
       .from('table_payments')
       .insert({
@@ -68,21 +73,21 @@ export default function Process({
     },
     {
       prefetch: false,
-      title: 'voltar',
+      title: 'Voltar',
       url: `${serverURL}${query.slug}/admin/table-control/${query.table_slug}/payments`,
       icon: <RiArrowLeftSLine size={28} />,
     },
   ];
 
   return (
-    <div className={`h-screen w-screen `}>
+    <div className={`h-screen w-screen  pb-20`}>
       <PageHeaders
         title="Novo pagamento"
         icon={<MdOutlineAttachMoney size={32} />}
       />
       <form
         onSubmit={handleSubmit(handleSubmitPayment)}
-        className="grid grid-cols-1 2md:grid-cols-2 gap-10 2md:gap-20 justify-center px-16 py-4"
+        className="grid grid-cols-1 2md:grid-cols-2 gap-10 2md:gap-20 justify-center px-8 md:px-16 py-4"
       >
         <div className="flex flex-col gap-6">
           <label htmlFor="" className="flex flex-col gap-1 ">
@@ -102,36 +107,39 @@ export default function Process({
             </Link>
             <button
               type="submit"
-              className="flex flex-1 items-center justify-center rounded text-white text-base cursor-pointer h-9 bg-orange-500 hover:bg-red-orange transition"
+              disabled={!order_table_id}
+              className="flex flex-1 items-center justify-center rounded text-white text-base cursor-pointer h-9 disabled:bg-gray-400 disabled:cursor-not-allowed bg-orange-500 hover:bg-red-orange transition-all"
             >
               Adicionar
             </button>
           </div>
         </div>
         <div className="flex flex-col gap-3 w-full">
-          {payment_method_restaurant.map(payment_method => {
-            if (payment_method.payment_methods.name === 'MESA') return null;
-            return (
-              <div key={payment_method.id} className="w-full">
-                <button
-                  type="button"
-                  onClick={() =>
-                    setValue(
-                      'paymentMethodsId',
-                      payment_method.payment_methods.id
-                    )
-                  }
-                  className={`flex w-full items-center rounded py-[6px] px-3 shadow-sm ${
-                    paymentMethodId == payment_method.payment_methods.id
-                      ? '  bg-orange-500'
-                      : ' bg-white'
-                  } `}
-                >
-                  {payment_method.payment_methods.name}
-                </button>
-              </div>
-            );
-          })}
+          {!order_table_id
+            ? 'O atendimento ainda não foi iniciado'
+            : payment_method_restaurant.map(payment_method => {
+                if (payment_method.payment_methods.name === 'MESA') return null;
+                return (
+                  <div key={payment_method.id} className="w-full">
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setValue(
+                          'paymentMethodsId',
+                          payment_method.payment_methods.id
+                        )
+                      }
+                      className={`flex w-full items-center rounded py-[6px] px-3 shadow-sm ${
+                        paymentMethodId == payment_method.payment_methods.id
+                          ? '  bg-orange-500'
+                          : ' bg-white'
+                      } `}
+                    >
+                      {payment_method.payment_methods.name}
+                    </button>
+                  </div>
+                );
+              })}
         </div>
       </form>
       <BottonNavigationBar options={BottonNavigationBarOption} />

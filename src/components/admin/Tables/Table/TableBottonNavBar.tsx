@@ -71,7 +71,8 @@ export default function TableBottonNavBar({}: iTableBottonNavBarProps) {
     const orderNumbers = orders ? orders.map(order => order.number) : [0];
 
     // Encontre o maior número de pedido
-    const maxOrderNumber = Math.max(...orderNumbers);
+    const maxOrderNumber =
+      orderNumbers.length > 0 ? Math.max(...orderNumbers) : 0;
     const nextOrderNumber = maxOrderNumber + 1;
 
     const { data: orderData } = await supabase

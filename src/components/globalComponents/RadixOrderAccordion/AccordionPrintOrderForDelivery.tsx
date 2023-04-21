@@ -31,6 +31,24 @@ export default function AccordionPrintOrderForDelivery({
     }`;
   };
 
+  const totalOrderPrice = (
+    orders_products as (
+      | iOrdersProductsWithFKProducdData
+      | iOrdersProductsWithFKDataToDelivery
+    )[]
+  ).reduce((acc, item) => {
+    return (acc = acc + item.total_price * item.quantity);
+  }, 0);
+
+  const formatNumber = (number: number | null) => {
+    return number
+      ? number.toLocaleString('pt-BR', {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        })
+      : 0;
+  };
+
   return (
     <div className="hidden">
       <div
@@ -65,30 +83,27 @@ export default function AccordionPrintOrderForDelivery({
                 : null}
             </strong>
           </span>
-          <span className="mb-1 flex items-center justify-between">
+          <span className="mb-1 flex items-center gap-2">
             Nome:
             <strong>
-              {' '}
               {
                 (orders_products[0] as iOrdersProductsWithFKDataToDelivery)
                   .orders.clients.name
-              }{' '}
+              }
             </strong>
           </span>
-          <span className="mb-1 flex items-center justify-between">
+          <span className="mb-1 flex items-center gap-2">
             Telefone:
             <strong>
-              {' '}
               {
                 (orders_products[0] as iOrdersProductsWithFKDataToDelivery)
                   .orders.clients.contacts.phone
               }{' '}
             </strong>
           </span>
-          <span className="mb-1 flex items-center justify-between">
+          <span className="mb-1 flex items-center gap-2">
             N°:
             <strong>
-              {' '}
               {(
                 orders_products[0] as iOrdersProductsWithFKDataToDelivery
               ).orders.number
@@ -96,11 +111,31 @@ export default function AccordionPrintOrderForDelivery({
                 .padStart(5, '0')}{' '}
             </strong>
           </span>
-          <span className="mb-1 flex items-center justify-between">
+          <span className="mb-1 flex items-center gap-2">
             Data:
             <strong> {formatCashBoxDate(new Date(order.created_at!))} </strong>
           </span>
         </div>
+
+        <span className="mb-1 flex items-center gap-2">
+          Subtotal: <strong>R$ {formatNumber(totalOrderPrice)} </strong>
+        </span>
+        <span className="mb-1 flex items-center gap-2">
+          Taxa de entrega:{' '}
+          <strong>
+            R$ {formatNumber(order.delivery_fees ? order.delivery_fees.fee : 0)}{' '}
+          </strong>
+        </span>
+        <span className="mb-1 flex items-center gap-2">
+          Total:{' '}
+          <strong>
+            R${' '}
+            {formatNumber(
+              totalOrderPrice +
+                (order.delivery_fees ? order.delivery_fees.fee : 0)
+            )}{' '}
+          </strong>
+        </span>
 
         <hr className="my-2 h-[2px] bg-gray-400" />
 
@@ -110,10 +145,11 @@ export default function AccordionPrintOrderForDelivery({
               <div key={pIndex} className="flex flex-col">
                 <strong className="mb-1 flex items-center justify-between">
                   <span>
-                    {' '}
                     {order_product.quantity}X - {order_product.products.name}
                   </span>
-                  <span>R$ {order_product.total_price}</span>
+                  <span>
+                    R$ {order_product.total_price * order_product.quantity}
+                  </span>
                 </strong>
                 {order_product.selectsWithOptions.length > 0 ? (
                   <div className="flex">

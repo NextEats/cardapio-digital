@@ -131,13 +131,6 @@ export function RadixOrderAccordion({
                     </AccordionTrigger>
                     <AccordionContent>
                       {ordersProductsFilterdByOrderId.map(order_product => {
-                        if (isToDelivery) console.log(order_product);
-
-                        console.log(
-                          (
-                            ordersProductsFilterdByOrderId[0] as iOrdersProductsWithFKDataToDelivery
-                          ).orders
-                        );
                         return (
                           <div
                             key={order_product.id}

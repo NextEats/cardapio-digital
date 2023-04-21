@@ -81,9 +81,13 @@ const Whatsapp: React.FC = () => {
     }
 
     const startSocketReq = async () => {
-      await whatsappRestApi.post('/create', {
-        id: restaurant.slug,
-      });
+      try {
+        await whatsappRestApi.post('/create', {
+          id: restaurant.slug,
+        });
+      } catch (err) {
+        console.log(err);
+      }
     };
 
     startSocketReq();

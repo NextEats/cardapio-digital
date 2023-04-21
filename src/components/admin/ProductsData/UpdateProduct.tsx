@@ -58,7 +58,7 @@ export function UpdateProduct({}: iUpdateProductProps) {
     register,
     setValue,
     handleSubmit,
-    formState: { isSubmitting },
+    formState: { errors, isSubmitting },
   } = useForm<updateProduct>({
     resolver: zodResolver(updateProductValidationSchema),
     defaultValues: updateProductDefaultValue,
@@ -263,15 +263,14 @@ export function UpdateProduct({}: iUpdateProductProps) {
         <button
           onClick={() => handleGoBack()}
           type="button"
-          className="text-blue-400"
+          className="text-blue-400 font-semibold px-5 py-1 rounded-full bg-white hover:scale-105 shadow"
         >
-          {' '}
-          voltar{' '}
+          voltar
         </button>
         <button
           type="submit"
           disabled={isSubmitting}
-          className="text-blue-400 text-lg font-semibold disabled:text-gray-400"
+          className="text-blue-400 font-semibold disabled:text-gray-400  px-5 py-1 rounded-full bg-white hover:scale-105 shadow"
         >
           Editar
         </button>
@@ -329,7 +328,11 @@ export function UpdateProduct({}: iUpdateProductProps) {
               {...register('name')}
               placeholder="ex.: Banana"
             />
-
+            {errors.name ? (
+              <p className={`text-red-500 text-sm font-light mb-2`}>
+                {errors.name.message}
+              </p>
+            ) : null}
             <div className="flex lg:items-center lg:flex-row flex-col gap-2 w-full">
               <label
                 htmlFor=""
@@ -344,8 +347,14 @@ export function UpdateProduct({}: iUpdateProductProps) {
                   <input
                     className="w-full border border-gray-300 py-1 px-2 text-base font-semibold leading-none rounded-r outline-none focus:border-blue-400"
                     type="number"
+                    min={0}
                     {...register('price', { valueAsNumber: true })}
                   />
+                  {errors.price ? (
+                    <p className={`text-red-500 text-sm font-light mb-2`}>
+                      {errors.price.message}
+                    </p>
+                  ) : null}
                 </div>
               </label>
               <label

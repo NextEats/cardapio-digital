@@ -1,104 +1,128 @@
-import AdminWrapper from "@/src/components/admin/AdminWrapper";
-import CashBoxButtons from "@/src/components/admin/initialPage/CashBoxButtons";
-import { getRestaurantBySlugFetch } from "@/src/fetch/restaurant/getRestaurantBySlug";
-import { getRestaurantResources } from "@/src/fetch/restaurantResources";
-import { calculateBilling } from "@/src/helpers/calculateBilling";
-import { groupOrdersByStatus } from "@/src/helpers/groupOrdersByStatus";
-import { iCashboxManagement } from "@/src/types/types";
-import { createServerSupabaseClient } from "@supabase/auth-helpers-nextjs";
-import { GetServerSideProps } from "next";
-import { useState } from "react";
+import AdminWrapper from '@/src/components/admin/AdminWrapper';
+import { CashBox } from '@/src/components/admin/CashBox';
+import CashBillingCards from '@/src/components/admin/CashBox/CashBillingCards';
+import CashHeader from '@/src/components/admin/CashBox/CashHeader';
+import { getActiveCashBoxByTheRestaurantID } from '@/src/fetch/cashBoxes/getActiveCashboxByRestaurantId';
+import { getRestaurantBySlugFetch } from '@/src/fetch/restaurant/getRestaurantBySlug';
+import { supabase } from '@/src/server/api';
+import {
+  iCashBox,
+  iOrdersProductsWithFKData,
+  iRestaurantWithFKData,
+  iTablePaymentWithPaymentFKData,
+} from '@/src/types/types';
+import { GetServerSideProps } from 'next';
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  const supabaseServer = createServerSupabaseClient(context);
-  const session = await supabaseServer.auth.getSession();
+export interface iCashboxManagement {
+  activeCashBox: iCashBox['data'] | null;
+  ordersProductsData: iOrdersProductsWithFKData[];
+  restaurant: iRestaurantWithFKData;
+  thereArePendingOrders: boolean;
+  tables_payments: iTablePaymentWithPaymentFKData[];
+}
 
-  if (!session) {
+export const getServerSideProps: GetServerSideProps = async context => {
+  const restaurant = await getRestaurantBySlugFetch(context.query.slug);
+  const activeCashBox = await getActiveCashBoxByTheRestaurantID(restaurant.id);
+  if (!activeCashBox) {
     return {
-      redirect: {
-        destination: "/login",
-        permanent: false,
+      props: {
+        ordersProductsData: [],
+        activeCashBox: null,
+        restaurant,
       },
     };
   }
+  const { data: ordersFromTheActiveCashBox } = await supabase
+    .from('orders')
+    .select('*')
+    .eq('cash_box_id', activeCashBox!.id);
 
-  const restaurant = await getRestaurantBySlugFetch(context.query.slug);
-  const resources = await getRestaurantResources(restaurant.id);
+  const thereArePendingOrders: boolean =
+    ordersFromTheActiveCashBox !== null
+      ? ordersFromTheActiveCashBox?.some(order => {
+          return (
+            order.order_status_id === 2 ||
+            order.order_status_id === 3 ||
+            order.order_status_id === 4
+          );
+        })
+      : false;
+
+  const orders_ids = ordersFromTheActiveCashBox
+    ? ordersFromTheActiveCashBox!.map(o => o.id)
+    : [];
+
+  const [ordersProductsByOrdersIds, ordersTablesData] = await Promise.all([
+    supabase
+      .from('orders_products')
+      .select(
+        '*, products (*), orders (*, payment_methods (*), order_status (*) )'
+      )
+      .in('order_id', orders_ids),
+    supabase.from('orders_tables').select('id').in('order_id', [orders_ids]),
+  ]);
+
+  const ordersTablesIds = ordersTablesData.data!.map(ot => ot.id);
+
+  const { data: tables_payments } = await supabase
+    .from('table_payments')
+    .select('*, payment_methods (*)')
+    .in('order_table_id', [ordersTablesIds]);
 
   return {
     props: {
-      ...resources,
+      ordersProductsData: ordersProductsByOrdersIds.data,
+      activeCashBox,
       restaurant,
+      thereArePendingOrders,
+      tables_payments,
     },
   };
 };
 
-const CashboxManagement = (props: iCashboxManagement) => {
+export default function CashboxPage(props: iCashboxManagement) {
   const {
-    ordersData,
+    activeCashBox,
     ordersProductsData,
-    products,
-    cashBoxes,
-    additionals,
-    selects,
     restaurant,
+    thereArePendingOrders,
+    tables_payments,
   } = props;
 
-  const cashBoxOpened = cashBoxes.find((cb: any) => cb.is_open === true);
-  const [cashBoxState, setCashBoxState] = useState(cashBoxOpened);
-
-  const ordersGroupedByOrderStatus = groupOrdersByStatus(ordersData);
-
-  let res: any = {};
-
-  if (
-    ordersGroupedByOrderStatus["entregue"] &&
-    ordersGroupedByOrderStatus["cancelado"] &&
-    ordersGroupedByOrderStatus["em produção"]
-  ) {
-    res["entregue"] = ordersGroupedByOrderStatus["entregue"]
-      ? ordersGroupedByOrderStatus["entregue"].filter(
-          (elem) => elem.cash_box_id === cashBoxState?.id
-        )
-      : [];
-
-    res["cancelado"] = ordersGroupedByOrderStatus["cancelado"]
-      ? ordersGroupedByOrderStatus["cancelado"].filter(
-          (elem) => elem.cash_box_id === cashBoxState?.id
-        )
-      : [];
-
-    res["em produção"] = ordersGroupedByOrderStatus["em produção"]
-      ? ordersGroupedByOrderStatus["em produção"].filter(
-          (elem) => elem.cash_box_id === cashBoxState?.id
-        )
-      : [];
-  } else {
-    res = ordersGroupedByOrderStatus;
-  }
-
-  const billingAmount = calculateBilling({
-    ordersGroupedByOrderStatus: res,
-    ordersProductsData,
-    additionals,
-    products,
-    selects,
-  });
-
-  if (!restaurant) {
-    return null;
-  }
+  let totalDelivery = 0;
+  let totalMesa = 0;
+  if (ordersProductsData)
+    ordersProductsData.map(item => {
+      if (item.orders.payment_methods.name === 'MESA') {
+        totalMesa = totalMesa + item.total_price * item.quantity;
+      } else {
+        totalDelivery = totalDelivery + item.total_price * item.quantity;
+      }
+    });
 
   return (
     <AdminWrapper>
-      <CashBoxButtons
-        cashBoxState={cashBoxState}
-        restaurantId={restaurant.id}
-        ordersGroupedByOrderStatus={res}
-        billing={billingAmount}
-      />
+      <div>
+        <CashHeader
+          totalMesa={totalMesa}
+          totalDelivery={totalDelivery}
+          restaurantId={restaurant.id}
+          activeCashBox={activeCashBox}
+          thereArePendingOrders={thereArePendingOrders}
+          ordersProducts={ordersProductsData}
+          tables_payments={tables_payments}
+        />
+        <CashBillingCards
+          totalMesa={totalMesa}
+          totalDelivery={totalDelivery}
+          cashBoxInitialValue={activeCashBox ? activeCashBox?.initial_value : 0}
+        />
+        <CashBox
+          tables_payments={tables_payments}
+          ordersProducts={ordersProductsData || []}
+        />
+      </div>
     </AdminWrapper>
   );
-};
-
-export default CashboxManagement;
+}

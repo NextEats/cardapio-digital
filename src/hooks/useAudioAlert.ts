@@ -1,30 +1,51 @@
 import { useEffect } from 'react';
-import { iOrdersWithFKData } from '../types/types';
+import { iOrdersWithStatusFKData } from '../types/types';
 
 export const useAudioAlert = (
-    ordersGroupedByOrderStatus: { [key: string]: iOrdersWithFKData[] },
-    audioPath: string
+  ordersGroupedByStatus: Array<{
+    status_name: string;
+    orders: iOrdersWithStatusFKData[];
+  }>
 ) => {
-    useEffect(() => {
-        const audio = new Audio(audioPath);
-        let intervalId: number | undefined | any;
+  useEffect(() => {
+    const audioRef = new Audio('/alertAudio.mp3');
 
-        if (ordersGroupedByOrderStatus['em análise']) {
-            intervalId = setInterval(() => {
-                if (ordersGroupedByOrderStatus['em análise'] === undefined) {
-                    clearInterval(intervalId);
-                    return;
-                }
-                if (audio.paused === true) audio.pause();
-                audio.play();
-            }, 1000 * 14);
-        }
+    function checkPendingOrders() {
+      const pendingOrders = ordersGroupedByStatus.find(
+        orderGroup => orderGroup.status_name === 'em análise'
+      );
 
-        if (ordersGroupedByOrderStatus['em análise'] === undefined) {
-            clearInterval(intervalId);
-            audio.pause();
-        }
+      if (!pendingOrders) {
+        stopAudio();
+        return;
+      }
 
-        return () => clearInterval(intervalId);
-    }, [ordersGroupedByOrderStatus, audioPath]);
+      if (pendingOrders.orders.length === 0) {
+        stopAudio();
+        return;
+      }
+
+      playAudio();
+    }
+
+    function playAudio() {
+      if (audioRef.paused) {
+        audioRef.loop = true;
+        audioRef.play();
+      }
+    }
+
+    function stopAudio() {
+      if (!audioRef.paused) {
+        audioRef.pause();
+        audioRef.currentTime = 0;
+      }
+    }
+
+    checkPendingOrders();
+
+    return () => {
+      stopAudio();
+    };
+  }, [ordersGroupedByStatus]);
 };

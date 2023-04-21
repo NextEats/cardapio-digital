@@ -1,19 +1,13 @@
-import AdminWrapper from '@/src/components/admin/AdminWrapper';
-import AdminHomePage, {
-    iAdminHomePageProps,
-} from '@/src/components/admin/DeliveryControl/index';
-import { fetchAdminHomePageData } from '@/src/utils/fetchAdminHomePageData';
-import { GetServerSideProps } from 'next';
+import { useRouter } from 'next/router';
+import { useEffect } from 'react';
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
-    const adminHomePageData = await fetchAdminHomePageData(context);
-    return adminHomePageData;
-};
+export default function RedirectToCashboxPage() {
+  const router = useRouter();
+  const { slug } = router.query;
 
-export default function AdminHome(props: iAdminHomePageProps) {
-    return (
-        <AdminWrapper>
-            <AdminHomePage {...props} />
-        </AdminWrapper>
-    );
+  useEffect(() => {
+    if (slug) {
+      router.replace(`/${slug}/admin/caixa`);
+    }
+  }, [router, slug]);
 }

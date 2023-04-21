@@ -102,7 +102,7 @@ export function UpdateCategory({ categoryType }: iUpdateCategoryProps) {
           className="bg-blackA9 data-[state=open]:animate-overlayShow fixed inset-0"
         />
         <Dialog.Content
-          className="data-[state=open]:animate-contentShow fixed top-0 right-0 3xs:top-[40%] 3xs:left-[50%] h-screen 3xs:h-[500px] w-screen 3xs:w-[500px] 
+          className="data-[state=open]:animate-contentShow fixed top-0 right-0 3xs:top-[40%] 3xs:left-[50%] h-screen 3xs:h-[500px] w-screen 3xs:w-[500px]
                     2md:w-[900px] 3xs:translate-x-[-50%] 3xs:translate-y-[-50%] 3xs:rounded-[6px] bg-white p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none"
         >
           <form onSubmit={handleSubmit(handleUpdateCategory)}>
@@ -113,14 +113,13 @@ export function UpdateCategory({ categoryType }: iUpdateCategoryProps) {
                 disabled={isSubmitting}
                 className="px-6 py-1 rounded-full text-white bg-blue-400 disabled:bg-gray-400 "
               >
-                save
+                Salvar
               </button>
             </Dialog.Title>
 
             <div className="flex flex-col flex-1 ">
               <label htmlFor="" className="text-base font-medium">
-                {' '}
-                Nome{' '}
+                Nome
               </label>
               <input
                 className="w-full border border-gray-300 py-1 px-2 text-base font-normal leading-none rounded outline-none focus:border-blue-400 mb-1"

@@ -64,9 +64,12 @@ export default function ProductModal() {
       currentCashBoxData![0] as unknown as iCashBox['data'];
 
     if (!currentCashBox) {
-      toast.error('O Pedido só pode ser feito se o caixa estiver aberto.', {
-        theme: 'light',
-      });
+      toast.error(
+        `Desculpe, o restaurante ${restaurant?.name} não está aberto no momento! Confira nossos horários de abertura e fechamento.`,
+        {
+          theme: 'light',
+        }
+      );
       return;
     }
 
@@ -169,20 +172,22 @@ export default function ProductModal() {
             ></textarea>
           </form>
           <div className="mb-12">
-            {productSelects && allOptionsSelected ? (
-              <SubmitButtons handleSubmit={handleSubmit} />
-            ) : (
-              <SubmitButtons
-                handleSubmit={() =>
-                  toast.error(
-                    'Para finalizar o produto, selecione ao menos uma opção de cada ingrediente.',
-                    {
-                      theme: 'light',
-                    }
-                  )
-                }
-              />
-            )}
+            {/* {productSelects && allOptionsSelected ? ( */}
+            <SubmitButtons handleSubmit={handleSubmit} />
+            {/*
+            // ) : (
+            //   <SubmitButtons
+            //     handleSubmit={() =>
+            //       toast.error(
+            //         'Para finalizar o produto, selecione ao menos uma opção de cada ingrediente.',
+            //         {
+            //           theme: 'light',
+            //         }
+            //       )
+            //     }
+            //   />
+            // )}
+            */}
           </div>
         </div>
       </div>

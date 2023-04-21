@@ -1,13 +1,24 @@
-import { supabase } from "../../server/api";
-import { iCashBoxes } from "../../types/types";
+import { supabase } from '../../server/api';
+import { iCashBoxes } from '../../types/types';
 
-export async function postOpenCashBoxFetch(restaurant_id: number): Promise<iCashBoxes["data"]> {
+interface iPostOpenCashBoxFetchProps {
+  restaurant_id: number;
+  initial_value: number;
+}
 
-    const { data } = await supabase.from("cash_boxes").insert({
-        is_open: true,
-        opened_at: new Date().toISOString(),
-        restaurant_id
-    }).select("*")
+export async function postOpenCashBoxFetch({
+  initial_value,
+  restaurant_id,
+}: iPostOpenCashBoxFetchProps): Promise<iCashBoxes['data']> {
+  const { data } = await supabase
+    .from('cash_boxes')
+    .insert({
+      is_open: true,
+      opened_at: new Date().toISOString(),
+      restaurant_id,
+      initial_value,
+    })
+    .select('*');
 
-    return data!
+  return data!;
 }

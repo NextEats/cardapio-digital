@@ -47,7 +47,7 @@ export function ConfirmFinishServiceModal({}: iConfirmFinishServiceModalProps) {
 
             <div className="h-32 flex flex-col justify-between pt-4">
               {isUnableToFinishService ? (
-                <p>Deseja finalizar o tentendimento?</p>
+                <p>Deseja finalizar o atendimento?</p>
               ) : (
                 <p>
                   O atendimento só poderá ser concluído após o pagamento total

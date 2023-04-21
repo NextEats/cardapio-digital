@@ -37,6 +37,7 @@ export default function TableBottonNavBar({}: iTableBottonNavBarProps) {
   const isUnableToFinishService = table_paymants_values >= totalSpent;
 
   const handleStartSrvice = async () => {
+    console.log('3');
     if (table.is_active) {
       toast.error(
         'O atendimento só pode ser iniciado se a mesa estiver ativa.',
@@ -60,6 +61,7 @@ export default function TableBottonNavBar({}: iTableBottonNavBarProps) {
       return;
     }
 
+    console.log('1');
     const { data: orders } = await supabase
       .from('orders')
       .select('number')
@@ -71,7 +73,8 @@ export default function TableBottonNavBar({}: iTableBottonNavBarProps) {
     const orderNumbers = orders ? orders.map(order => order.number) : [0];
 
     // Encontre o maior número de pedido
-    const maxOrderNumber = Math.max(...orderNumbers);
+    const maxOrderNumber =
+      orderNumbers.length > 0 ? Math.max(...orderNumbers) : 0;
     const nextOrderNumber = maxOrderNumber + 1;
 
     const { data: orderData } = await supabase

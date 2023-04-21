@@ -99,7 +99,7 @@ export function CreateCategory({ categoryType }: iCreateCategoryProps) {
                 disabled={isSubmitting}
                 className="px-6 py-1 rounded-full text-white bg-blue-400 disabled:bg-gray-400 "
               >
-                save
+                Salvar
               </button>
             </Dialog.Title>
             <div className="flex flex-col flex-1 ">

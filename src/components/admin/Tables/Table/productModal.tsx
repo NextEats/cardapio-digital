@@ -14,6 +14,7 @@ import { TableContext } from '@/src/contexts/TableContext';
 import { filterOptionsSelected } from '@/src/helpers/filterOptionsSelected';
 import { addProductAction } from '@/src/reducers/tableReducer/action';
 import { api } from '@/src/server/api';
+import { toast } from 'react-toastify';
 import TableAdditionals from './TableAdditionals';
 
 const productInformationValidationSchema = zod.object({
@@ -69,6 +70,14 @@ export default function ProductModal() {
   }
 
   async function handleFinishOrder() {
+    if (table.is_occupied === false || order === null) {
+      toast.error(
+        'O pedido só pode ser realizado após o início do atendimento.',
+        { theme: 'light' }
+      );
+      return;
+    }
+
     const productsOfTheTable = tableState.productsSelected.filter(
       p => p.table_id === table.id
     );
@@ -90,7 +99,6 @@ export default function ProductModal() {
         productsOptionsSelected: ps.productSelects ? ps.productSelects : [],
       });
 
-      console.log(ps.totalPrice / ps.quantity, ps.quantity);
       const ordersProductsData = await api.post(`api/orders_products/`, {
         order_id: order!.id,
         table_id: table.id,
@@ -102,10 +110,6 @@ export default function ProductModal() {
         quantity: ps.quantity,
       });
     });
-
-    if (table.is_occupied === false) {
-      // await updateTable(false, true, table.id!);
-    }
 
     window.location.reload();
   }

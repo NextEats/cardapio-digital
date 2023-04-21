@@ -12,7 +12,7 @@ export default function Table({}: iTableProps) {
   const { table } = useContext(TableContext);
 
   return (
-    <div className="h-screen w-screen">
+    <div className="h-screen w-screen ">
       <PageHeaders
         icon={
           <div>

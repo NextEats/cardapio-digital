@@ -37,7 +37,6 @@ export default function TableBottonNavBar({}: iTableBottonNavBarProps) {
   const isUnableToFinishService = table_paymants_values >= totalSpent;
 
   const handleStartSrvice = async () => {
-    console.log('3');
     if (table.is_active) {
       toast.error(
         'O atendimento só pode ser iniciado se a mesa estiver ativa.',
@@ -61,7 +60,6 @@ export default function TableBottonNavBar({}: iTableBottonNavBarProps) {
       return;
     }
 
-    console.log('1');
     const { data: orders } = await supabase
       .from('orders')
       .select('number')

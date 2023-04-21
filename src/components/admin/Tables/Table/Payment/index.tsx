@@ -37,7 +37,7 @@ export function Payments({
   ];
 
   return (
-    <div className="h-screen w-screen">
+    <div className="h-screen w-screen  pb-20">
       <PageHeaders
         title="Pagar conta"
         icon={<MdOutlineAttachMoney size={32} />}

@@ -139,27 +139,6 @@ export default function AccordionPrintOrderForDelivery({
           </strong>
         </span>
 
-        <PrintOrderSeparator />
-        <span className="my-1 flex items-center leading-none justify-between">
-          Subtotal: <strong>R$ {formatNumber(totalOrderPrice)} </strong>
-        </span>
-        <span className="mb-1 flex items-center leading-none justify-between">
-          Taxa de entrega:{' '}
-          <strong>
-            R$ {formatNumber(order.delivery_fees ? order.delivery_fees.fee : 0)}{' '}
-          </strong>
-        </span>
-        <span className="mb-1 flex items-center leading-none justify-between">
-          Total:{' '}
-          <strong>
-            R${' '}
-            {formatNumber(
-              totalOrderPrice +
-                (order.delivery_fees ? order.delivery_fees.fee : 0)
-            )}{' '}
-          </strong>
-        </span>
-
         <PrintOrderSeparator text="Itens do pedido" />
 
         <div className="flex flex-col gap-2 uppercase">
@@ -211,6 +190,27 @@ export default function AccordionPrintOrderForDelivery({
             );
           })}
         </div>
+
+        <PrintOrderSeparator />
+        <span className="my-1 flex items-center leading-none justify-between">
+          Subtotal: <strong>R$ {formatNumber(totalOrderPrice)} </strong>
+        </span>
+        <span className="mb-1 flex items-center leading-none justify-between">
+          Taxa de entrega:{' '}
+          <strong>
+            R$ {formatNumber(order.delivery_fees ? order.delivery_fees.fee : 0)}{' '}
+          </strong>
+        </span>
+        <span className="mb-1 flex items-center leading-none justify-between">
+          Total:{' '}
+          <strong>
+            R${' '}
+            {formatNumber(
+              totalOrderPrice +
+                (order.delivery_fees ? order.delivery_fees.fee : 0)
+            )}{' '}
+          </strong>
+        </span>
       </div>
     </div>
   );

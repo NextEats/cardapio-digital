@@ -15,7 +15,9 @@ export default function Delivery() {
   const ordersGroupedByStatus = getOrdersGroupedByStatus({ orders });
 
   useAudioAlert(ordersGroupedByStatus);
-  const whatsappStatus = useWhatsAppStatus(restaurant?.slug);
+  const [whatsappStatus, setWhatsappStatus] = useWhatsAppStatus(
+    restaurant?.slug
+  );
 
   return (
     <div className="h-full max-h-full overflow-y-auto ">

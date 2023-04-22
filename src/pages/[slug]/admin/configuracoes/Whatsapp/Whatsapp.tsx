@@ -1,5 +1,4 @@
 import { AdminContext } from '@/src/contexts/adminContext';
-import { api } from '@/src/server/api';
 import Image from 'next/image';
 import React, { useContext, useEffect, useState } from 'react';
 import { Socket } from 'socket.io-client';
@@ -40,14 +39,19 @@ const Whatsapp: React.FC = () => {
   useEffect(() => {
     async function checkStatus() {
       try {
-        const response = await api.post<{ status: tVenomStatus }>(
-          '/check-status',
-          {
+        const options = {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
             slug: restaurant?.slug,
-          }
-        );
+          }),
+        };
 
-        setWhatsappStatus(response.data.status);
+        const response = await fetch('/api/whatsapp/check-status', options);
+
+        console.log(response);
+
+        // setWhatsappStatus(response.data.status);
       } catch (err) {
         console.error(err);
       }

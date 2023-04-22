@@ -1,12 +1,12 @@
 import { whatsappRestApi } from '@/src/server/api';
 import { NextApiRequest, NextApiResponse } from 'next';
 
-export default async function tables(
+export default async function checkStatus(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
   const { method, query, body } = req;
-  const slug = query.slug;
+  const slug = body.slug;
 
   switch (method) {
     case 'POST':
@@ -18,10 +18,9 @@ export default async function tables(
         res.status(200).json(data);
       } catch (error) {
         console.error(error);
+        res.status(500).json({ error: 'An error occurred while checking status' });
       }
       break;
-    default:
-      res.status(404).end();
   }
   res.status(404).end();
 }

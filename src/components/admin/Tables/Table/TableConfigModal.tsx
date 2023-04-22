@@ -46,7 +46,7 @@ export default function TableConfigModal({}: iTableConfigModalProps) {
     return (acc = acc + item.total_price * item.quantity);
   }, 0);
   async function handleUpdateTable() {
-    if (table_paymants_values < totalSpent) {
+    if (orders_tables || table_paymants_values < totalSpent) {
       toast.error(
         'A mesa só pode ser fechada ou inativada quando o atendimento for finalizado.',
         {
@@ -56,11 +56,12 @@ export default function TableConfigModal({}: iTableConfigModalProps) {
       return;
     }
 
-    if ('is_active')
-      await updateTable({ is_active: !table.is_active, is_occupied: false });
-    else if ('is_occupied')
-      await updateTable({ is_active: true, is_occupied: true });
-    else if ('free') await updateTable({ is_active: true, is_occupied: false });
+    if (tableStatus === 'is_active')
+      await updateTable({ is_active: true, is_occupied: false });
+    else if (tableStatus === 'is_occupied')
+      await updateTable({ is_active: false, is_occupied: true });
+    else if (tableStatus === 'free')
+      await updateTable({ is_active: false, is_occupied: false });
 
     window.location.reload();
   }

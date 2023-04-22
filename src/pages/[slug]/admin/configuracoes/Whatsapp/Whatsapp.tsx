@@ -25,6 +25,7 @@ export default function Whatsapp() {
 
         if (response.ok) {
           const data = await response.json();
+          setQrCode(data.qrcode)
           console.log(data);
         } else {
           console.error(`Error: ${response.status} ${response.statusText}`);

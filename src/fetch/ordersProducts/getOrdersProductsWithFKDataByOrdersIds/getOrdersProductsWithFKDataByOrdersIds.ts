@@ -73,41 +73,64 @@ export async function getOrdersProductsWithFKDataByOrdersIdsFetch({
       break;
     }
 
-    // allOrdersProducts = orders;
     allOrdersProducts = allOrdersProducts.concat(orders!);
     currentPage++;
   }
-
-  // const { data } = await supabase
 
   if (allOrdersProducts === null) {
     return [];
   }
 
-  const orderProductFormated = allOrdersProducts.reduce(
-    (acc: iOrdersProductsWithFKDataToDelivery[], item: iOrdersProductsData) => {
-      const products = item.products as iProduct['data'];
-      let additionals: iNewAdditionalsData[] = [];
+  // const orderProductFormated = allOrdersProducts.reduce(
+  //   (acc: iOrdersProductsWithFKDataToDelivery[], item: iOrdersProductsData) => {
+  //     const products = item.products as iProduct['data'];
+  //     let additionals: iNewAdditionalsData[] = [];
 
-      const getAdditionalsFormatter = async () => {
-        const [additionalsData] = await Promise.all([
-          formatAdditionalsData(item.additionals_data),
-        ]);
-        additionals = additionalsData;
-      };
-      getAdditionalsFormatter();
-      const selects = formatSelectData(item.selects_data);
+  //     const getAdditionalsFormatter = async (): Promise<iNewAdditionalsData[]> => {
+  //       const [additionalsData] = await Promise.all([
+  //         formatAdditionalsData(item.additionals_data),
+  //       ]);
+  //       additionals = additionalsData;
+  //       return additionalsData;
+  //     };
+  //     getAdditionalsFormatter()
 
-      const newItem = {
-        ...item,
-        products,
-        selectsWithOptions: selects,
-        additionals: additionals,
-      };
+  //     const selects = formatSelectData(item.selects_data);
 
-      return [...acc, newItem];
-    },
-    []
+  //     const newItem = {
+  //       ...item,
+  //       products,
+  //       selectsWithOptions: selects,
+  //       additionals: additionals,
+  //     };
+
+  //     return [...acc, newItem];
+  //   },
+  //   []
+  // );
+  async function formatOrderProductItem(
+    item: iOrdersProductsData
+  ): Promise<iOrdersProductsWithFKDataToDelivery> {
+    const products = item.products as iProduct['data'];
+
+    const [additionalsData] = await Promise.all([
+      formatAdditionalsData(item.additionals_data),
+    ]);
+
+    const selects = formatSelectData(item.selects_data);
+
+    const newItem = {
+      ...item,
+      products,
+      selectsWithOptions: selects,
+      additionals: additionalsData,
+    };
+
+    return newItem;
+  }
+
+  const orderProductFormated = await Promise.all(
+    allOrdersProducts.map(item => formatOrderProductItem(item))
   );
 
   return orderProductFormated as iOrdersProductsWithFKDataToDelivery[];

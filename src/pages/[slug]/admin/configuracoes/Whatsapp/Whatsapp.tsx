@@ -1,9 +1,8 @@
 import { AdminContext } from '@/src/contexts/adminContext';
 import { useWhatsAppStatus } from '@/src/hooks/useWhatsAppStatus';
-import { whatsappRestApiServerUrl } from '@/src/server/api';
 import Image from 'next/image';
 import React, { useContext, useEffect, useState } from 'react';
-import { Socket, io } from 'socket.io-client';
+import { Socket } from 'socket.io-client';
 import CurrentStatus from './components/CurrentStatus';
 
 export type tVenomStatus =
@@ -45,28 +44,28 @@ const Whatsapp: React.FC = () => {
       return;
     }
 
-    if (!socket) {
-      const newSocket = io(whatsappRestApiServerUrl!);
-      setSocket(newSocket);
+    // if (!socket) {
+    //   const newSocket = io(whatsappRestApiServerUrl!);
+    //   setSocket(newSocket);
 
-      newSocket.on(
-        'qrCode',
-        ({ id, qrCode }: { id: string; qrCode: string }) => {
-          if (id === restaurant.slug) {
-            setQrCode(qrCode);
-          }
-        }
-      );
+    //   newSocket.on(
+    //     'qrCode',
+    //     ({ id, qrCode }: { id: string; qrCode: string }) => {
+    //       if (id === restaurant.slug) {
+    //         setQrCode(qrCode);
+    //       }
+    //     }
+    //   );
 
-      newSocket.on(
-        'status',
-        ({ id, status }: { id: string; status: string }) => {
-          if (id === restaurant.slug) {
-            setWhatsappStatus(status as tVenomStatus);
-          }
-        }
-      );
-    }
+    //   newSocket.on(
+    //     'status',
+    //     ({ id, status }: { id: string; status: string }) => {
+    //       if (id === restaurant.slug) {
+    //         setWhatsappStatus(status as tVenomStatus);
+    //       }
+    //     }
+    //   );
+    // }
 
     const startSocketReq = async () => {
       try {

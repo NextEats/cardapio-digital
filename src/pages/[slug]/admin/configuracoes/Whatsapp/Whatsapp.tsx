@@ -1,79 +1,20 @@
 import { AdminContext } from '@/src/contexts/adminContext';
-import { useWhatsAppStatus } from '@/src/hooks/useWhatsAppStatus';
-import Image from 'next/image';
-import React, { useContext, useEffect, useState } from 'react';
-import { Socket } from 'socket.io-client';
-import CurrentStatus from './components/CurrentStatus';
+import { useContext, useEffect, useState } from 'react';
+import QRCode from 'react-qr-code';
 
-export type tVenomStatus =
-  | undefined
-  | 'isLogged'
-  | 'notLogged'
-  | 'browserClose'
-  | 'qrReadSuccess'
-  | 'qrReadFail'
-  | 'autocloseCalled'
-  | 'desconnectedMobile'
-  | 'deleteToken'
-  | 'chatsAvailable'
-  | 'deviceNotConnected'
-  | 'serverWssNotConnected'
-  | 'noOpenBrowser'
-  | 'initBrowser'
-  | 'openBrowser'
-  | 'connectBrowserWs'
-  | 'initWhatsapp'
-  | 'erroPageWhatsapp'
-  | 'successPageWhatsapp'
-  | 'waitForLogin'
-  | 'waitChat'
-  | 'successChat';
-
-const Whatsapp: React.FC = () => {
+export default function Whatsapp() {
   const { restaurant } = useContext(AdminContext);
 
-  const [whatsappStatus, setWhatsappStatus] = useWhatsAppStatus(
-    restaurant?.slug
-  );
-
-  const [socket, setSocket] = useState<Socket | null>(null);
-  const [qrCode, setQrCode] = useState<string>('');
+  const [qrCode, setQrCode] = useState<string | undefined>(undefined);
 
   useEffect(() => {
-    if (!restaurant) {
-      return;
-    }
-
-    // if (!socket) {
-    //   const newSocket = io(whatsappRestApiServerUrl!);
-    //   setSocket(newSocket);
-
-    //   newSocket.on(
-    //     'qrCode',
-    //     ({ id, qrCode }: { id: string; qrCode: string }) => {
-    //       if (id === restaurant.slug) {
-    //         setQrCode(qrCode);
-    //       }
-    //     }
-    //   );
-
-    //   newSocket.on(
-    //     'status',
-    //     ({ id, status }: { id: string; status: string }) => {
-    //       if (id === restaurant.slug) {
-    //         setWhatsappStatus(status as tVenomStatus);
-    //       }
-    //     }
-    //   );
-    // }
-
-    const startSocketReq = async () => {
+    async function createClient() {
       try {
         const options = {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            slug: restaurant.slug,
+            slug: restaurant?.slug,
           }),
         };
 
@@ -82,36 +23,19 @@ const Whatsapp: React.FC = () => {
           options
         );
 
-        console.log(
-          'https://www.nexteats.com.br/api/whatsapp/create',
-          response
-        );
+        if (response.ok) {
+          const data = await response.json();
+          console.log(data);
+        } else {
+          console.error(`Error: ${response.status} ${response.statusText}`);
+        }
       } catch (err) {
         console.error(err);
       }
-    };
+    }
 
-    startSocketReq();
-  }, [socket, restaurant, setWhatsappStatus]);
+    createClient();
+  }, [restaurant]);
 
-  return (
-    <div className="p-4">
-      <h4 className="text-3xl p-4">Conexão WhatsApp</h4>
-      <div className="p-4 bg-white rounded-md">
-        {qrCode ? (
-          <Image
-            id="qrCode"
-            src={qrCode}
-            alt="QR Code"
-            width={300}
-            height={300}
-          />
-        ) : (
-          <CurrentStatus status={whatsappStatus} />
-        )}
-      </div>
-    </div>
-  );
-};
-
-export default Whatsapp;
+  return <>{qrCode && <QRCode value={qrCode} />}</>;
+}

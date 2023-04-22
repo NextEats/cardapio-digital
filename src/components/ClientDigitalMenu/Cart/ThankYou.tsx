@@ -60,14 +60,14 @@ function ThankYouPage({ deliveryFee = 0, orderNumber }: Props): JSX.Element {
             </div>
           )}
 
-          {deliveryFee > 0 && (
+          {/* {deliveryFee > 0 && (
             <div className="h-4 my-4 text-gray-700">
               Taxa de Entrega:&nbsp;
               <span className="font-bold">
                 R$&nbsp;{deliveryFee.toFixed(2)}
               </span>
             </div>
-          )}
+          )} */}
 
           <div className="h-4 my-4 text-gray-700">
             Valor Total:&nbsp;
@@ -80,7 +80,7 @@ function ThankYouPage({ deliveryFee = 0, orderNumber }: Props): JSX.Element {
           <div className="mt-6 w-full">
             <Link
               href={`/${restaurant!.slug}`}
-              className="py-2 px-4 rounded-md shadow-md shadow-orange-600 text-md font-medium text-white bg-orange-600 
+              className="py-2 px-4 rounded-md shadow-md shadow-orange-600 text-md font-medium text-white bg-orange-600
                             hover:bg-orange-700"
             >
               Voltar para a página inicial

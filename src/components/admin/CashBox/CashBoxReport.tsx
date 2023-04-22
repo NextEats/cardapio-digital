@@ -132,7 +132,13 @@ export default function CashBoxReport({
           <span className={`${textStyles}`}>
             {' '}
             Saldo final:{' '}
-            <strong> R$ {formatNumber(totalMesa + totalDelivery)}</strong>
+            <strong>
+              {' '}
+              R${' '}
+              {formatNumber(
+                totalMesa + totalDelivery + activeCashBox?.initial_value!
+              )}
+            </strong>
           </span>
 
           <hr className="bg-black my-2" />

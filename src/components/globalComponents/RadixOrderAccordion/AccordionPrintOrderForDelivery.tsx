@@ -6,6 +6,7 @@ import {
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { RefObject } from 'react';
+import { PrintOrderSeparator } from './PrintOrderSeparator';
 
 type iAccordionPrintOrderForDeliveryProps = {
   orders_products:
@@ -70,19 +71,24 @@ export default function AccordionPrintOrderForDelivery({
             : null}
         </h2>
 
-        <div className="flex flex-col">
-          <span className="mb-1 flex items-center justify-between">
+        <div className="flex flex-col leading-3">
+          <span className="mb-1 flex items-center gap-2">
+            Data:
+            <strong> {formatCashBoxDate(new Date(order.created_at!))} </strong>
+          </span>
+          <span className="mb-1 flex items-center gap-2">
+            N°:
             <strong>
-              {(order as iOrdersWithStatusFKData).order_types.name !==
-              'Retirada'
-                ? (orders_products[0] as iOrdersProductsWithFKDataToDelivery)
-                    .orders.clients.addresses.fullstring
-                  ? (orders_products[0] as iOrdersProductsWithFKDataToDelivery)
-                      .orders.clients.addresses.fullstring
-                  : null
-                : null}
+              #
+              {(
+                orders_products[0] as iOrdersProductsWithFKDataToDelivery
+              ).orders.number
+                .toString()
+                .padStart(5, '0')}{' '}
             </strong>
           </span>
+
+          <PrintOrderSeparator text="Dados do cliente" />
           <span className="mb-1 flex items-center gap-2">
             Nome:
             <strong>
@@ -101,33 +107,29 @@ export default function AccordionPrintOrderForDelivery({
               }{' '}
             </strong>
           </span>
-          <span className="mb-1 flex items-center gap-2">
-            N°:
-            <strong>
-              {(
-                orders_products[0] as iOrdersProductsWithFKDataToDelivery
-              ).orders.number
-                .toString()
-                .padStart(5, '0')}{' '}
-            </strong>
-          </span>
-          <span className="mb-1 flex items-center gap-2">
-            Data:
-            <strong> {formatCashBoxDate(new Date(order.created_at!))} </strong>
-          </span>
         </div>
 
-        <span className="mb-1 flex items-center gap-2">
-          Subtotal: <strong>R$ {formatNumber(totalOrderPrice)} </strong>
-        </span>
-        <span className="mb-1 flex items-center gap-2">
-          Taxa de entrega:{' '}
+        <PrintOrderSeparator text="Endereço" />
+
+        <span className="mb-1 flex items-center justify-between">
           <strong>
-            R$ {formatNumber(order.delivery_fees ? order.delivery_fees.fee : 0)}{' '}
+            {(order as iOrdersWithStatusFKData).order_types.name !== 'Retirada'
+              ? (orders_products[0] as iOrdersProductsWithFKDataToDelivery)
+                  .orders.clients.addresses.fullstring
+                ? (orders_products[0] as iOrdersProductsWithFKDataToDelivery)
+                    .orders.clients.addresses.fullstring
+                : null
+              : null}
           </strong>
         </span>
-        <span className="mb-1 flex items-center gap-2">
-          Total:{' '}
+
+        <PrintOrderSeparator text="Forma de pagamento" />
+        <span className="mb-1 flex items-center justify-between">
+          {(orders_products[0] as iOrdersProductsWithFKDataToDelivery).orders
+            .payment_methods.name
+            ? (orders_products[0] as iOrdersProductsWithFKDataToDelivery).orders
+                .payment_methods.name
+            : null}
           <strong>
             R${' '}
             {formatNumber(
@@ -137,7 +139,7 @@ export default function AccordionPrintOrderForDelivery({
           </strong>
         </span>
 
-        <hr className="my-2 h-[2px] bg-gray-400" />
+        <PrintOrderSeparator text="Itens do pedido" />
 
         <div className="flex flex-col gap-2 uppercase">
           {orders_products.map((order_product, pIndex) => {
@@ -189,14 +191,26 @@ export default function AccordionPrintOrderForDelivery({
           })}
         </div>
 
-        {/* <div>
-          <p className="grid grid-cols-2 items-center gap-10">
-            <span className={`${textStyles}`}>Total a pagar: </span>
-            <span className={`${textStyles} w-`}>
-              <strong>R$ {totalOrderPrice}</strong>
-            </span>
-          </p>
-        </div> */}
+        <PrintOrderSeparator />
+        <span className="my-1 flex items-center leading-none justify-between">
+          Subtotal: <strong>R$ {formatNumber(totalOrderPrice)} </strong>
+        </span>
+        <span className="mb-1 flex items-center leading-none justify-between">
+          Taxa de entrega:{' '}
+          <strong>
+            R$ {formatNumber(order.delivery_fees ? order.delivery_fees.fee : 0)}{' '}
+          </strong>
+        </span>
+        <span className="mb-1 flex items-center leading-none justify-between">
+          Total:{' '}
+          <strong>
+            R${' '}
+            {formatNumber(
+              totalOrderPrice +
+                (order.delivery_fees ? order.delivery_fees.fee : 0)
+            )}{' '}
+          </strong>
+        </span>
       </div>
     </div>
   );

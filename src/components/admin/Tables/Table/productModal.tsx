@@ -23,14 +23,13 @@ type NewProductInformationFormData = zod.infer<
 >;
 
 export default function ProductModal() {
-  const { register, reset, getValues } = useForm<NewProductInformationFormData>(
-    {
+  const { setFocus, register, reset, getValues } =
+    useForm<NewProductInformationFormData>({
       resolver: zodResolver(productInformationValidationSchema),
       defaultValues: {
         observation: '',
       },
-    }
-  );
+    });
 
   const {
     table,
@@ -90,12 +89,17 @@ export default function ProductModal() {
                         R$ {viewProduct?.price}{' '}
                       </span>
                     </h2>
-                    <p className="mb-2"> {viewProduct?.description} </p>
+                    <p className="mb-2" id="remove_focus">
+                      {' '}
+                      {viewProduct?.description}{' '}
+                    </p>
 
                     <form className="w-full mt-12 h-24 mb-8 relative">
                       <textarea
                         {...register('observation')}
-                        className=" scrollbar-custom w-full h-full resize-none rounded-sm bg-[#f6f6f6] shadow-sm text-base outline-none p-4"
+                        autoFocus={false}
+                        autoComplete="off"
+                        className=" scrollbar-custom w-full h-full resize-none rounded-sm  bg-[#f6f6f6] shadow-sm text-base outline-none p-4"
                         placeholder="Observações"
                       ></textarea>
                     </form>

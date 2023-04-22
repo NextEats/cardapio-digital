@@ -1,7 +1,9 @@
 import { AdminContext } from '@/src/contexts/adminContext';
+import { useWhatsAppStatus } from '@/src/hooks/useWhatsAppStatus';
+import { whatsappRestApiServerUrl } from '@/src/server/api';
 import Image from 'next/image';
 import React, { useContext, useEffect, useState } from 'react';
-import { Socket } from 'socket.io-client';
+import { Socket, io } from 'socket.io-client';
 import CurrentStatus from './components/CurrentStatus';
 
 export type tVenomStatus =
@@ -31,82 +33,67 @@ export type tVenomStatus =
 const Whatsapp: React.FC = () => {
   const { restaurant } = useContext(AdminContext);
 
-  const [whatsappStatus, setWhatsappStatus] = useState<tVenomStatus>(undefined);
+  const [whatsappStatus, setWhatsappStatus] = useWhatsAppStatus(
+    restaurant?.slug
+  );
 
   const [socket, setSocket] = useState<Socket | null>(null);
   const [qrCode, setQrCode] = useState<string>('');
 
   useEffect(() => {
-    async function checkStatus() {
+    if (!restaurant) {
+      return;
+    }
+
+    if (!socket) {
+      const newSocket = io(whatsappRestApiServerUrl!);
+      setSocket(newSocket);
+
+      newSocket.on(
+        'qrCode',
+        ({ id, qrCode }: { id: string; qrCode: string }) => {
+          if (id === restaurant.slug) {
+            setQrCode(qrCode);
+          }
+        }
+      );
+
+      newSocket.on(
+        'status',
+        ({ id, status }: { id: string; status: string }) => {
+          if (id === restaurant.slug) {
+            setWhatsappStatus(status as tVenomStatus);
+          }
+        }
+      );
+    }
+
+    const startSocketReq = async () => {
       try {
         const options = {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            slug: restaurant?.slug,
+            slug: restaurant.slug,
           }),
         };
 
         const response = await fetch(
-          'https://www.nexteats.com.br/api/whatsapp/check-status',
+          'https://www.nexteats.com.br/api/whatsapp/create',
           options
         );
 
-        if (response.ok) {
-          const data = await response.json();
-          console.log(data); 
-          setWhatsappStatus(data.status);
-        } else {
-          console.error(`Error: ${response.status} ${response.statusText}`);
-        }
+        console.log(
+          'https://www.nexteats.com.br/api/whatsapp/create',
+          response
+        );
       } catch (err) {
         console.error(err);
       }
-    }
+    };
 
-    checkStatus();
-  }, [restaurant]);
-
-  //   useEffect(() => {
-  //     if (!restaurant) {
-  //       return;
-  //     }
-
-  //     if (!socket) {
-  //       const newSocket = io(whatsappRestApiServerUrl!);
-  //       setSocket(newSocket);
-
-  //       newSocket.on(
-  //         'qrCode',
-  //         ({ id, qrCode }: { id: string; qrCode: string }) => {
-  //           if (id === restaurant.slug) {
-  //             setQrCode(qrCode);
-  //           }
-  //         }
-  //       );
-
-  //       newSocket.on(
-  //         'status',
-  //         ({ id, status }: { id: string; status: string }) => {
-  //           if (id === restaurant.slug) {
-  //             setWhatsappStatus(status as tVenomStatus);
-  //           }
-  //         }
-  //       );
-  //     }
-
-  //     const startSocketReq = async () => {
-  //       try {
-  //         await whatsappRestApi.post('/create', {
-  //           id: restaurant.slug,
-  //         });
-  //       } catch (err) {
-  //         console.log(err);
-  //       }
-  //     };
-
-  //     startSocketReq();
-  //   }, [socket, restaurant]);
+    startSocketReq();
+  }, [socket, restaurant, setWhatsappStatus]);
 
   return (
     <div className="p-4">

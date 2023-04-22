@@ -96,7 +96,7 @@ export default function OrderPriceInformation({
                 </span>
               </div>
             ) : null}
-            {`${watch('deliveryForm')}` == '1' &&
+            {/* {`${watch('deliveryForm')}` == '1' &&
             watch('cep') &&
             watch('number') &&
             deliveryFee ? (
@@ -110,20 +110,24 @@ export default function OrderPriceInformation({
                   })}
                 </span>
               </div>
-            ) : null}
+            ) : null} */}
 
             <div className="my-2 flex flex-row justify-between w-full">
               <span className="font-semibold">Total</span>
               <span>
                 R${' '}
-                {deliveryFee &&
+                {subtotalPrice.toLocaleString('pt-BR', {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                })}
+                {/* {deliveryFee &&
                   (watch('deliveryForm') == 1
                     ? subtotalPrice + deliveryFee
                     : subtotalPrice
                   ).toLocaleString('pt-BR', {
                     minimumFractionDigits: 2,
                     maximumFractionDigits: 2,
-                  })}
+                  })} */}
               </span>
             </div>
           </div>

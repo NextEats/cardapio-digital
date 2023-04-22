@@ -29,36 +29,44 @@ export function TableProductListFormModal() {
       p => p.table_id === table.id
     );
 
-    for (const ps of productsOfTheTable) {
-      const additionals_data = ps.quantityAdditionals.reduce(
-        (acc: { quantity: number; additional_id: number }[], item) => {
-          return (acc = [
-            ...acc,
-            {
-              quantity: item.quantity,
-              additional_id: item.additionalId,
-            },
-          ]);
-        },
-        []
+    try {
+      for (const ps of productsOfTheTable) {
+        const additionals_data = ps.quantityAdditionals.reduce(
+          (acc: { quantity: number; additional_id: number }[], item) => {
+            return (acc = [
+              ...acc,
+              {
+                quantity: item.quantity,
+                additional_id: item.additionalId,
+              },
+            ]);
+          },
+          []
+        );
+        const selects_data = filterOptionsSelected({
+          productsOptionsSelected: ps.productSelects ? ps.productSelects : [],
+        });
+
+        await api.post(`api/orders_products/`, {
+          order_id: order!.id,
+          table_id: table.id,
+          product_id: ps.product?.id,
+          selects_data,
+          additionals_data,
+          observation: ps.observation,
+          total_price: ps.totalPrice / ps.quantity,
+          quantity: ps.quantity,
+        });
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error(
+        'Ocorreu um erro ao tentar finalizar o pedido. Por favor, tente novamente. Se o problema persistir entre em contato com a equipe NextEats.',
+        { theme: 'light' }
       );
-      const selects_data = filterOptionsSelected({
-        productsOptionsSelected: ps.productSelects ? ps.productSelects : [],
-      });
-
-      await api.post(`api/orders_products/`, {
-        order_id: order!.id,
-        table_id: table.id,
-        product_id: ps.product?.id,
-        selects_data,
-        additionals_data,
-        observation: ps.observation,
-        total_price: ps.totalPrice / ps.quantity,
-        quantity: ps.quantity,
-      });
+    } finally {
+      window.location.reload();
     }
-
-    window.location.reload();
   }
 
   return (

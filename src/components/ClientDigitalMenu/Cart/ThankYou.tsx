@@ -73,7 +73,7 @@ function ThankYouPage({ deliveryFee = 0, orderNumber }: Props): JSX.Element {
             Valor Total:&nbsp;
             <span className="font-bold">
               R$&nbsp;
-              {(deliveryFee + orderPrice).toFixed(2)}
+              {orderPrice.toFixed(2)}
             </span>
           </div>
 

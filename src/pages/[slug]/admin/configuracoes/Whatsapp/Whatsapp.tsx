@@ -47,11 +47,18 @@ const Whatsapp: React.FC = () => {
           }),
         };
 
-        const response = await fetch('/api/whatsapp/check-status', options);
+        const response = await fetch(
+          'https://www.nexteats.com.br/api/whatsapp/check-status',
+          options
+        );
 
-        console.log(response);
-
-        // setWhatsappStatus(response.data.status);
+        if (response.ok) {
+          const data = await response.json();
+          console.log(data); 
+          setWhatsappStatus(data.status);
+        } else {
+          console.error(`Error: ${response.status} ${response.statusText}`);
+        }
       } catch (err) {
         console.error(err);
       }

@@ -11,6 +11,7 @@ import { RadixOrderAccordion } from '../../globalComponents/RadixOrderAccordion'
 export default function Delivery() {
   const { restaurant } = useContext(AdminContext);
   const { orders, ordersProducts } = useContext(DeliveryPageContext);
+
   const ordersGroupedByStatus = getOrdersGroupedByStatus({ orders });
 
   useAudioAlert(ordersGroupedByStatus);

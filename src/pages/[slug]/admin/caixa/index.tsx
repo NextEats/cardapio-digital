@@ -90,16 +90,23 @@ export default function CashboxPage(props: iCashboxManagement) {
     tables_payments,
   } = props;
 
-  let totalDelivery = 0;
-  let totalMesa = 0;
-  if (ordersProductsData)
-    ordersProductsData.map(item => {
+  const { totalDelivery, totalMesa } = ordersProductsData.reduce(
+    (acc: { totalMesa: number; totalDelivery: number }, item) => {
+      if (item.orders.order_status.status_name === 'cancelado') return acc;
       if (item.orders.payment_methods.name === 'MESA') {
-        totalMesa = totalMesa + item.total_price * item.quantity;
+        return (acc = {
+          ...acc,
+          totalMesa: acc.totalMesa + item.total_price * item.quantity,
+        });
       } else {
-        totalDelivery = totalDelivery + item.total_price * item.quantity;
+        return (acc = {
+          ...acc,
+          totalDelivery: acc.totalDelivery + item.total_price * item.quantity,
+        });
       }
-    });
+    },
+    { totalMesa: 0, totalDelivery: 0 }
+  );
 
   return (
     <AdminWrapper>

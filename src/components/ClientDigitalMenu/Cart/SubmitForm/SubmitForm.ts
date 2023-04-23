@@ -163,10 +163,6 @@ export async function SubmitForm({
   }!\n\n📝 *Pedido #${orderPosition}:*\n\n${listOfProducts}\n 💳 _Método de Pagamento:_ ${await returnPaymentMethodFromId(
     payment_method
   )}\n${
-    foundDeliveryFee?.fee
-      ? '🏍 _Taxa de Entrega: R$ ' + foundDeliveryFee.fee + '_'
-      : ''
-  }\n${
     isDelivery
       ? `🏠 _Endereço: ${await returnStreetFromCep(cep.toString())}, ${number}_`
       : ''

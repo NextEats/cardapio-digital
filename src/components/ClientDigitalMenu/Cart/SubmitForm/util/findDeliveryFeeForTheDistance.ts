@@ -54,11 +54,7 @@ export default async function findDeliveryFeeForTheDistance({
       }),
     });
 
-    console.log('response', response);
-
     const { distance: distanceInKm } = await response.json();
-
-    console.log('distanceInKm', distanceInKm);
 
     const { data: deliveryFeesData } = await supabase
       .from('delivery_fees')

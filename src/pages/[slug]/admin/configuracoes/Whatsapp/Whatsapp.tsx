@@ -18,14 +18,11 @@ export default function Whatsapp() {
           }),
         };
 
-        const response = await fetch(
-          'https://www.nexteats.com.br/api/whatsapp/create',
-          options
-        );
+        const response = await fetch('/api/whatsapp/create', options);
 
         if (response.ok) {
           const data = await response.json();
-          setQrCode(data.qrcode)
+          setQrCode(data.qrcode);
           console.log(data);
         } else {
           console.error(`Error: ${response.status} ${response.statusText}`);

@@ -18,7 +18,9 @@ export default async function checkStatus(
         res.status(200).json(data);
       } catch (error) {
         console.error(error);
-        res.status(500).json({ error: 'An error occurred while checking status' });
+        res
+          .status(500)
+          .json({ error: 'An error occurred while checking status' });
       }
       break;
   }

@@ -33,7 +33,7 @@ export const getServerSideProps: GetServerSideProps = async context => {
 
   const { data: ordersFromTheActiveCashBox } = await supabase
     .from('orders')
-    .select('*, order_status (*), order_types (*)')
+    .select('*, order_status (*), order_types (*), delivery_fees (*)')
     .eq('cash_box_id', activeCashBox!.id);
 
   const orders_ids = ordersFromTheActiveCashBox?.map(o => o.id);

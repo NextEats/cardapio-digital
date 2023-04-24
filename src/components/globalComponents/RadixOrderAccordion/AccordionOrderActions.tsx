@@ -43,6 +43,26 @@ export default function AccordionOrderActions({
     content: () => printOrderComponent.current,
   });
 
+  const handlePrintAndAcceptOrder = useReactToPrint({
+    content: () => printOrderForProductionComponent.current,
+    onAfterPrint: () => handlePrint(),
+  });
+
+  const handleSwitchToProduction = async () => {
+    const { data } = await supabase
+      .from('orders')
+      .update({
+        order_status_id: 3,
+      })
+      .eq('id', order.id);
+  };
+
+  // const handlePrintAndAcceptOrder = async () => {
+  //   handleSwitchToProduction();
+  //   handlePrintForProduction();
+  //   handlePrint();
+  // };
+
   return (
     <div>
       <AccordionPrintOrderForDelivery
@@ -75,6 +95,17 @@ export default function AccordionOrderActions({
             >
               <span className="text-base">Comanda p/ entrega</span>
             </DropdownMenu.Item>
+            {order.order_status.status_name === 'em análise' ? (
+              <DropdownMenu.Item
+                onClick={() => {
+                  handlePrintAndAcceptOrder();
+                  handleSwitchToProduction();
+                }}
+                className="group text-[13px] leading-none text-violet11 rounded-[3px] flex items-center gap-3 hover:bg-white-blue cursor-pointer h-9 px-[5px] relative pl-[25px]"
+              >
+                <span className="text-base">Imprimir e aceitar</span>
+              </DropdownMenu.Item>
+            ) : null}
             {(orders_products[0] as iOrdersProductsWithFKDataToDelivery).orders
               .order_status.status_name !== 'entregue' ? (
               <DropdownMenu.Item

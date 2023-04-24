@@ -3,17 +3,19 @@ import { DeliveryPageContext } from '@/src/contexts/DeliveryContext';
 import { AdminContext } from '@/src/contexts/adminContext';
 import { getOrdersGroupedByStatus } from '@/src/helpers/getOrdersGroupedByStatus';
 import { useAudioAlert } from '@/src/hooks/useAudioAlert';
-// import { useWhatsAppStatus } from '@/src/hooks/useWhatsAppStatus';
 import { useContext } from 'react';
 import { RadixOrderAccordion } from '../../globalComponents/RadixOrderAccordion';
 
 export default function Delivery() {
   const { restaurant } = useContext(AdminContext);
   const { orders, ordersProducts } = useContext(DeliveryPageContext);
+
   const ordersGroupedByStatus = getOrdersGroupedByStatus({ orders });
 
   useAudioAlert(ordersGroupedByStatus);
-  //   const whatsappStatus = useWhatsAppStatus(restaurant?.slug);
+  //   const [whatsappStatus, setWhatsappStatus] = useWhatsAppStatus(
+  //     restaurant?.slug
+  //   );
 
   return (
     <div className="h-full max-h-full overflow-y-auto ">

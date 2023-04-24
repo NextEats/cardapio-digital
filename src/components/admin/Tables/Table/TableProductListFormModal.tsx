@@ -4,7 +4,7 @@ import { removeProductAction } from '@/src/reducers/tableReducer/action';
 import { api } from '@/src/server/api';
 import * as Dialog from '@radix-ui/react-dialog';
 import Image from 'next/image';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { FaRegTrashAlt } from 'react-icons/fa';
 import { FiX } from 'react-icons/fi';
 import { toast } from 'react-toastify';
@@ -12,6 +12,8 @@ import { CardapioDigitalButton } from '../../cardapio-digital/CardapioDigitalBut
 
 export function TableProductListFormModal() {
   const { tableDispatch, tableState, table, order } = useContext(TableContext);
+
+  const [isConfirming, setIsConfirming] = useState(false);
 
   async function handleFinishOrder() {
     if (table.is_occupied === false || order === null) {
@@ -21,41 +23,50 @@ export function TableProductListFormModal() {
       );
       return;
     }
+    setIsConfirming(true);
 
     const productsOfTheTable = tableState.productsSelected.filter(
       p => p.table_id === table.id
     );
 
-    productsOfTheTable.forEach(async ps => {
-      const additionals_data = ps.quantityAdditionals.reduce(
-        (acc: { quantity: number; additional_id: number }[], item) => {
-          return (acc = [
-            ...acc,
-            {
-              quantity: item.quantity,
-              additional_id: item.additionalId,
-            },
-          ]);
-        },
-        []
+    try {
+      for (const ps of productsOfTheTable) {
+        const additionals_data = ps.quantityAdditionals.reduce(
+          (acc: { quantity: number; additional_id: number }[], item) => {
+            return (acc = [
+              ...acc,
+              {
+                quantity: item.quantity,
+                additional_id: item.additionalId,
+              },
+            ]);
+          },
+          []
+        );
+        const selects_data = filterOptionsSelected({
+          productsOptionsSelected: ps.productSelects ? ps.productSelects : [],
+        });
+
+        await api.post(`api/orders_products/`, {
+          order_id: order!.id,
+          table_id: table.id,
+          product_id: ps.product?.id,
+          selects_data,
+          additionals_data,
+          observation: ps.observation,
+          total_price: ps.totalPrice / ps.quantity,
+          quantity: ps.quantity,
+        });
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error(
+        'Ocorreu um erro ao tentar finalizar o pedido. Por favor, tente novamente. Se o problema persistir entre em contato com a equipe NextEats.',
+        { theme: 'light' }
       );
-      const selects_data = filterOptionsSelected({
-        productsOptionsSelected: ps.productSelects ? ps.productSelects : [],
-      });
-
-      const ordersProductsData = await api.post(`api/orders_products/`, {
-        order_id: order!.id,
-        table_id: table.id,
-        product_id: ps.product?.id,
-        selects_data,
-        additionals_data,
-        observation: ps.observation,
-        total_price: ps.totalPrice / ps.quantity,
-        quantity: ps.quantity,
-      });
-    });
-
-    window.location.reload();
+    } finally {
+      window.location.reload();
+    }
   }
 
   return (
@@ -90,11 +101,9 @@ export function TableProductListFormModal() {
                       />
                       <div className="flex flex-col h-full items-start justify-start gap-1 overflow-hidden px-3 pt-4">
                         <span className="text-base font-bold text-gray-600 ">
-                          {' '}
                           {ps.product.name}{' '}
                         </span>
                         <p className="text-sm font-medium truncate w-full text-gray-500 leading-3 ">
-                          {' '}
                           {ps.product.description}{' '}
                         </p>
                       </div>
@@ -117,6 +126,7 @@ export function TableProductListFormModal() {
                 <div>
                   {tableState.productsSelected.length > 0 ? (
                     <CardapioDigitalButton
+                      disabled={isConfirming}
                       onClick={() => handleFinishOrder()}
                       name="Confirmar"
                       h="h-9"

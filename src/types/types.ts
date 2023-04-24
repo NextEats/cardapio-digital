@@ -488,6 +488,7 @@ export type iOrdersWithFKData = iOrder['data'] & {
 export type iOrdersWithStatusFKData = iOrder['data'] & {
   order_types: iOrderTypes['data'];
   order_status: iOrderStatus['data'];
+  delivery_fees: iDeliveryFee['data'];
 };
 
 export type iOrdersTablesWithFkData = iOrdersTable['data'] & {

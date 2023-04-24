@@ -35,8 +35,8 @@ export const whatsappRestApi = axios.create({
   },
 });
 
-export const distanceFeeApi = axios.create({
-  baseURL: 'https://distancia-entre-ceps.herokuapp.com/',
+export const calculateDistanceApi = axios.create({
+  baseURL: process.env.NEXT_PUBLIC_CALCULATE_DISTANCE_SERVER_LINK,
   timeout: 100000,
   headers: {
     'Access-Control-Allow-Origin': '*',

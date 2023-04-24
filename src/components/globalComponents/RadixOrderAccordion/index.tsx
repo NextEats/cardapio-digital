@@ -124,72 +124,63 @@ export function RadixOrderAccordion({
                       </div>
                     ) : null}
                     <AccordionTrigger className="flex items-center ">
-                      <span>
-                        {' '}
-                        # {order.number.toString().padStart(5, '0')}{' '}
-                      </span>
+                      <span># {order.number.toString().padStart(5, '0')} </span>
                     </AccordionTrigger>
                     <AccordionContent>
+                      {isToDelivery ? (
+                        <>
+                          <div className="mb-2">
+                            <span>
+                              {(order as iOrdersWithStatusFKData).order_types
+                                .name !== 'Retirada'
+                                ? (
+                                    ordersProductsFilterdByOrderId[0] as iOrdersProductsWithFKDataToDelivery
+                                  ).orders.clients.addresses !== null ||
+                                  (
+                                    ordersProductsFilterdByOrderId[0] as iOrdersProductsWithFKDataToDelivery
+                                  ).orders.clients.addresses.fullstring !== null
+                                  ? (
+                                      ordersProductsFilterdByOrderId[0] as iOrdersProductsWithFKDataToDelivery
+                                    ).orders.clients.addresses.fullstring
+                                  : null
+                                : null}
+                            </span>
+                          </div>
+                          <div className="text-xs flex flex-col">
+                            <span>
+                              {
+                                (order as iOrdersWithStatusFKData).order_types
+                                  .name
+                              }{' '}
+                              -{' '}
+                              {
+                                (
+                                  ordersProductsFilterdByOrderId[0] as iOrdersProductsWithFKDataToDelivery
+                                ).orders.payment_methods.name
+                              }
+                            </span>
+                            <span>
+                              {
+                                (
+                                  ordersProductsFilterdByOrderId[0] as iOrdersProductsWithFKDataToDelivery
+                                ).orders.clients.name
+                              }{' '}
+                              -{' '}
+                              {
+                                (
+                                  ordersProductsFilterdByOrderId[0] as iOrdersProductsWithFKDataToDelivery
+                                ).orders.clients.contacts.phone
+                              }
+                            </span>
+                          </div>
+                        </>
+                      ) : null}
                       {ordersProductsFilterdByOrderId.map(order_product => {
-                        if (isToDelivery) console.log(order_product);
-
-                        console.log(
-                          (
-                            ordersProductsFilterdByOrderId[0] as iOrdersProductsWithFKDataToDelivery
-                          ).orders
-                        );
                         return (
                           <div
                             key={order_product.id}
                             className="flex flex-1 flex-col gap-[2px]"
                           >
-                            {isToDelivery ? (
-                              <div className="text-xs flex flex-col">
-                                <span>
-                                  {(order as iOrdersWithStatusFKData)
-                                    .order_types.name !== 'Retirada'
-                                    ? (
-                                        ordersProductsFilterdByOrderId[0] as iOrdersProductsWithFKDataToDelivery
-                                      ).orders.clients.addresses !== null ||
-                                      (
-                                        ordersProductsFilterdByOrderId[0] as iOrdersProductsWithFKDataToDelivery
-                                      ).orders.clients.addresses.fullstring !==
-                                        null
-                                      ? (
-                                          ordersProductsFilterdByOrderId[0] as iOrdersProductsWithFKDataToDelivery
-                                        ).orders.clients.addresses.fullstring
-                                      : null
-                                    : null}
-                                </span>
-                                <div className="flex items-center justify-between">
-                                  <span>
-                                    {
-                                      (order as iOrdersWithStatusFKData)
-                                        .order_types.name
-                                    }{' '}
-                                    -{' '}
-                                    {
-                                      (
-                                        ordersProductsFilterdByOrderId[0] as iOrdersProductsWithFKDataToDelivery
-                                      ).orders.payment_methods.name
-                                    }
-                                  </span>
-                                </div>
-                                <span>
-                                  {
-                                    (
-                                      ordersProductsFilterdByOrderId[0] as iOrdersProductsWithFKDataToDelivery
-                                    ).orders.clients.name
-                                  }{' '}
-                                  -{' '}
-                                  {
-                                    (
-                                      ordersProductsFilterdByOrderId[0] as iOrdersProductsWithFKDataToDelivery
-                                    ).orders.clients.contacts.phone
-                                  }
-                                </span>
-                              </div>
-                            ) : null}
                             <div className="flex items-center gap-2">
                               <div className="text-md flex flex-1 gap-2  items-center justify-between">
                                 <div className="flex flex-1 items-center">

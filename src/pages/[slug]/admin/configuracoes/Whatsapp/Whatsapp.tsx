@@ -2,71 +2,41 @@ import { AdminContext } from '@/src/contexts/adminContext';
 import { useContext, useEffect, useState } from 'react';
 import QRCode from 'react-qr-code';
 
-import { whatsappRestApi } from '@/src/server/api';
-
 export default function Whatsapp() {
   const { restaurant } = useContext(AdminContext);
 
   const [qrCode, setQrCode] = useState<string | undefined>(undefined);
 
   useEffect(() => {
-    async function getResponse() {
+    async function createClient() {
       try {
-        const res = await whatsappRestApi({
-          method: 'post',
-          url: '/create',
-          data: {
-            id: restaurant!.slug,
-          },
-        });
+        const options = {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            slug: restaurant?.slug,
+          }),
+        };
 
-        if (res.data.qrcode) {
-          setQrCode(res.data.qrcode);
+        const response = await fetch(
+          'https://www.nexteats.com.br/api/whatsapp/create',
+          options
+        );
+
+        if (response.ok) {
+          const data = await response.json();
+          setQrCode(data.qrcode);
+          console.log(data);
+        } else {
+          console.error(`Error: ${response.status} ${response.statusText}`);
         }
       } catch (err) {
         console.error(err);
       }
     }
-    getResponse();
+
+    createClient();
   }, [restaurant]);
 
-  const handleSendMessage = async () => {
-    console.log(restaurant!.whatsapp_number);
-
-    try {
-      console.log({
-        id: restaurant!.slug,
-        number: restaurant!.whatsapp_number,
-        message:
-          'O sistema de cardápio digital da NextEats foi configurado com sucesso para este número.',
-      });
-
-      const res = await whatsappRestApi({
-        method: 'post',
-        url: '/send-message',
-        data: {
-          id: restaurant!.slug,
-          number: restaurant!.whatsapp_number,
-          message:
-            '😎 O sistema de cardápio digital da NextEats foi configurado com sucesso para este número.',
-        },
-      });
-
-      console.log(res);
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  return (
-    <>
-      {qrCode && <QRCode value={qrCode} />}
-      <button
-        onClick={() => handleSendMessage()}
-        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-      >
-        Enviar Mensagem de Teste
-      </button>
-    </>
-  );
+  return <>{qrCode && <QRCode value={qrCode} />}</>;
 }

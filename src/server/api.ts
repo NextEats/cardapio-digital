@@ -45,7 +45,7 @@ export const calculateDistanceApi = axios.create({
 });
 
 export const api = axios.create({
-  baseURL: serverURL,
+  baseURL: '/',
 });
 
 export const supabase = createClient<Database>(

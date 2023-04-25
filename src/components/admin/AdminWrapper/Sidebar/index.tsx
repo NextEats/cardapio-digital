@@ -35,7 +35,7 @@ export default function Sidebar({ isSidebarOpen }: iSidebar) {
               <SidebarListItem
                 name="Delivery"
                 icon={<FaMotorcycle className="mr-4 h-7 w-7" />}
-                path={`/${restaurantName}/admin/delivery`}
+                path={`/${restaurantName}/admin`}
               />
               <SidebarListItem
                 name="Produtos"

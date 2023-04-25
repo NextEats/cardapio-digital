@@ -8,7 +8,7 @@ import { IconType } from 'react-icons';
 import { AiFillCheckCircle } from 'react-icons/ai';
 import ReactInputMask from 'react-input-mask';
 import Button from '../Button';
-import CloseModalButton from '../ClientDigitalMenu/CloseModalButton';
+import CloseModalButton from '../CloseModalButton';
 
 interface iModalTriggerButtons {
   Icon: IconType;
@@ -143,7 +143,7 @@ export default function ModalTriggerButtons({
       </div>
       {isModalOpen ? (
         <div className="top-0 left-0 fixed w-screen h-screen flex justify-center items-center z-[5000]">
-          <div className="bg-white z-[6000] w-[450px] max-h-[80vh] overflow-y-auto py-8 px-6 rounded-xl">
+          <div className="bg-white z-[6000] w-[450px] py-8 px-6 rounded-xl">
             <div className="flex flex-row justify-between items-center">
               <span className="font-semibold text-lg text-[#000000aa]">
                 Preencha suas Informações
@@ -220,11 +220,11 @@ export default function ModalTriggerButtons({
                             />
                             <label
                               htmlFor={paymentMethod.id.toString()}
-                              className={`cursor-pointer py-4 w-full text-center font-semibold rounded border ${
+                              className={`cursor-pointer w-full text-center ${
                                 getValues('paymentMethod') ===
                                 paymentMethod.payment_methods.id
                                   ? 'bg-orange-500 text-white'
-                                  : 'text-gray-700'
+                                  : ''
                               }`}
                             >
                               {paymentMethod.payment_methods.name}

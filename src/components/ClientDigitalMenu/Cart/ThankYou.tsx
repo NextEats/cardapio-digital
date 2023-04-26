@@ -60,14 +60,14 @@ function ThankYouPage({ deliveryFee = 0, orderNumber }: Props): JSX.Element {
             </div>
           )}
 
-          {/* {deliveryFee > 0 && (
+          {deliveryFee > 0 && (
             <div className="h-4 my-4 text-gray-700">
               Taxa de Entrega:&nbsp;
               <span className="font-bold">
                 R$&nbsp;{deliveryFee.toFixed(2)}
               </span>
             </div>
-          )} */}
+          )}
 
           <div className="h-4 my-4 text-gray-700">
             Valor Total:&nbsp;

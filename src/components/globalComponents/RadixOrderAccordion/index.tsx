@@ -180,7 +180,7 @@ export function RadixOrderAccordion({
                                 .name !== 'Retirada'
                                 ? (
                                     ordersProductsFilterdByOrderId[0] as iOrdersProductsWithFKDataToDelivery
-                                  ).orders.clients.addresses !== null ||
+                                  ).orders.clients.addresses !== null &&
                                   (
                                     ordersProductsFilterdByOrderId[0] as iOrdersProductsWithFKDataToDelivery
                                   ).orders.clients.addresses.fullstring !== null

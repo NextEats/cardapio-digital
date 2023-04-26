@@ -46,6 +46,20 @@ export async function SubmitForm({
     number,
   });
 
+  if (isDelivery) {
+    if (!foundDeliveryFee) {
+      toast.error(
+        'Sinto muito, o endereço digitado está fora do alcance de nossos entregadores!'
+      );
+
+      // setTimeout(() => {
+      //   window.location.href = serverURL + restaurant.slug;
+      // }, 5000);
+
+      return;
+    }
+  }
+
   const currentCashBox = await checkCashBox(restaurant);
 
   if (!currentCashBox) {
@@ -74,7 +88,7 @@ export async function SubmitForm({
 
   const client = await createClient({
     name,
-    address_id: address?.id,
+    address_id: isDelivery ? address?.id : null,
     contact_id: contact.id,
   });
 
@@ -93,7 +107,7 @@ export async function SubmitForm({
     client,
     deliveryForm,
     currentCashBox,
-    foundDeliveryFee,
+    foundDeliveryFee: isDelivery ? foundDeliveryFee : null,
     payment_method,
     change_value,
     orderPosition,

@@ -1,12 +1,16 @@
-import { supabase } from '@/src/server/api';
+import { AdminContext } from '@/src/contexts/adminContext';
+import { supabase, whatsappRestApi } from '@/src/server/api';
 import {
   iOrders,
   iOrdersProductsWithFKDataToDelivery,
   iOrdersProductsWithFKProducdData,
+  iOrdersWithFKData,
   iOrdersWithStatusFKData,
 } from '@/src/types/types';
 import * as Accordion from '@radix-ui/react-accordion';
+import { useContext } from 'react';
 import { BiCheck } from 'react-icons/bi';
+import { removeNonAlphaNumeric } from '../../ClientDigitalMenu/Cart/SubmitForm/util/removeNonAlphaNumeric';
 import { AccordionContent } from './AccordionContent';
 import { AccordionItem } from './AccordionItem';
 import AccordionOrderActions from './AccordionOrderActions';
@@ -26,13 +30,28 @@ export function RadixOrderAccordion({
   orders_products,
   isToDelivery = false,
 }: iRadixAccordionProps) {
+  const { restaurant } = useContext(AdminContext);
+
   const handleSwitchToProduction = async (orderId: number) => {
     const { data } = await supabase
       .from('orders')
       .update({
         order_status_id: 3,
       })
-      .eq('id', orderId);
+      .eq('id', orderId)
+      .select('*, clients (*, contacts (*))')
+      .single();
+
+    const formatedData = data as unknown as iOrdersWithFKData;
+
+    if (data && formatedData.clients.contacts.phone) {
+      await whatsappRestApi.post('/send-message', {
+        id: restaurant?.slug,
+        number:
+          '55' + removeNonAlphaNumeric(formatedData.clients.contacts.phone),
+        message: 'Seu pedido está em produção!',
+      });
+    }
   };
 
   const handleSwitchToDelivery = async (orderId: number) => {
@@ -41,7 +60,20 @@ export function RadixOrderAccordion({
       .update({
         order_status_id: 4,
       })
-      .eq('id', orderId);
+      .eq('id', orderId)
+      .select('*, clients (*, contacts (*))')
+      .single();
+
+    const formatedData = data as unknown as iOrdersWithFKData;
+
+    if (data && formatedData.clients.contacts.phone) {
+      await whatsappRestApi.post('/send-message', {
+        id: restaurant?.slug,
+        number:
+          '55' + removeNonAlphaNumeric(formatedData.clients.contacts.phone),
+        message: 'Seu pedido saiu para entrega!',
+      });
+    }
   };
 
   const handleSwitchToDelivered = async (orderId: number) => {
@@ -50,7 +82,20 @@ export function RadixOrderAccordion({
       .update({
         order_status_id: 1,
       })
-      .eq('id', orderId);
+      .eq('id', orderId)
+      .select('*, clients (*, contacts (*))')
+      .single();
+
+    const formatedData = data as unknown as iOrdersWithFKData;
+
+    if (data && formatedData.clients.contacts.phone) {
+      await whatsappRestApi.post('/send-message', {
+        id: restaurant?.slug,
+        number:
+          '55' + removeNonAlphaNumeric(formatedData.clients.contacts.phone),
+        message: 'Seu pedido foi entregue com sucesso!',
+      });
+    }
   };
 
   const handleChangeOrderStatus = (order: iOrdersWithStatusFKData) => {
@@ -135,7 +180,7 @@ export function RadixOrderAccordion({
                                 .name !== 'Retirada'
                                 ? (
                                     ordersProductsFilterdByOrderId[0] as iOrdersProductsWithFKDataToDelivery
-                                  ).orders.clients.addresses !== null ||
+                                  ).orders.clients.addresses !== null &&
                                   (
                                     ordersProductsFilterdByOrderId[0] as iOrdersProductsWithFKDataToDelivery
                                   ).orders.clients.addresses.fullstring !== null

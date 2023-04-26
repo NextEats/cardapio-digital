@@ -115,6 +115,8 @@ export default function AccordionPrintOrderForDelivery({
           <strong>
             {(order as iOrdersWithStatusFKData).order_types.name !== 'Retirada'
               ? (orders_products[0] as iOrdersProductsWithFKDataToDelivery)
+                  .orders.clients.addresses &&
+                (orders_products[0] as iOrdersProductsWithFKDataToDelivery)
                   .orders.clients.addresses.fullstring
                 ? (orders_products[0] as iOrdersProductsWithFKDataToDelivery)
                     .orders.clients.addresses.fullstring

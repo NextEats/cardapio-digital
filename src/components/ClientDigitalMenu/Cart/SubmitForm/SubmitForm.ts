@@ -46,16 +46,18 @@ export async function SubmitForm({
     number,
   });
 
-  if (!foundDeliveryFee) {
-    toast.error(
-      'Sinto muito, o endereço digitado está fora do alcance de nossos entregadores!'
-    );
+  if (isDelivery) {
+    if (!foundDeliveryFee) {
+      toast.error(
+        'Sinto muito, o endereço digitado está fora do alcance de nossos entregadores!'
+      );
 
-    // setTimeout(() => {
-    //   window.location.href = serverURL + restaurant.slug;
-    // }, 5000);
+      // setTimeout(() => {
+      //   window.location.href = serverURL + restaurant.slug;
+      // }, 5000);
 
-    return;
+      return;
+    }
   }
 
   const currentCashBox = await checkCashBox(restaurant);
@@ -86,7 +88,7 @@ export async function SubmitForm({
 
   const client = await createClient({
     name,
-    address_id: address?.id,
+    address_id: isDelivery ? address?.id : null,
     contact_id: contact.id,
   });
 
@@ -105,7 +107,7 @@ export async function SubmitForm({
     client,
     deliveryForm,
     currentCashBox,
-    foundDeliveryFee,
+    foundDeliveryFee: isDelivery ? foundDeliveryFee : null,
     payment_method,
     change_value,
     orderPosition,
@@ -175,6 +177,10 @@ export async function SubmitForm({
   }!\n\n📝 *Pedido #${orderPosition}:*\n\n${listOfProducts}\n 💳 _Método de Pagamento:_ ${await returnPaymentMethodFromId(
     payment_method
   )}\n${
+    foundDeliveryFee?.fee
+      ? '🏍 _Taxa de Entrega: R$ ' + foundDeliveryFee.fee + '_'
+      : ''
+  }\n${
     isDelivery
       ? `🏠 _Endereço: ${await returnStreetFromCep(cep.toString())}, ${number}_`
       : ''

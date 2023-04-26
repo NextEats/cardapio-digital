@@ -38,7 +38,7 @@ export default function DeliveryPageContextProvider({
     const getOrdersProductsRealTime = async () => {
       const { data: ordersFromTheActiveCashBox } = await supabase
         .from('orders')
-        .select('*, order_status (*), order_types (*)')
+        .select('*, order_status (*), order_types (*), delivery_fees (*)')
         .eq('cash_box_id', orders[0].cash_box_id)
         .returns<iOrdersWithStatusFKData[]>();
 

@@ -11,7 +11,9 @@ export async function returnDistanceInMeters(
       destinationAddress,
     });
 
-    return data.distanceInKm;
+    console.log('response', data);
+
+    return data.distance;
   } catch (err) {
     console.error(err);
   }

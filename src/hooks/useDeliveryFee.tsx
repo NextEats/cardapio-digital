@@ -1,6 +1,7 @@
 import { api } from '@/src/server/api';
 import { iDeliveryFee } from '@/src/types/types';
 import { useEffect, useState } from 'react';
+import { getAddressFromCep } from '../components/ClientDigitalMenu/Cart/SubmitForm/util/findDeliveryFeeForTheDistance';
 import { returnDistanceInMeters } from '../components/ClientDigitalMenu/Cart/SubmitForm/util/returnDistanceInMeters';
 
 function useDeliveryFee(cep: string, number: string, restaurant: any) {
@@ -18,10 +19,17 @@ function useDeliveryFee(cep: string, number: string, restaurant: any) {
         return null;
       }
 
+      const destinationAddress = await getAddressFromCep(cep);
+
+      console.log('startAddress', restaurant!.address_string);
+      console.log('destinationAddress', destinationAddress + ' ' + number);
+
       const distance_in_km = await returnDistanceInMeters(
         restaurant!.address_string,
-        cep + ' ' + number
+        destinationAddress + ' ' + number
       );
+
+      console.log('distance_in_km', distance_in_km);
 
       const { data: delivery_fees_data } = await api.post<
         Array<iDeliveryFee['data']>

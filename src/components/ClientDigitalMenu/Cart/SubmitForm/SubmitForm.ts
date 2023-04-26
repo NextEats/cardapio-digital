@@ -51,10 +51,6 @@ export async function SubmitForm({
       'Sinto muito, o endereço digitado está fora do alcance de nossos entregadores!'
     );
 
-    // setTimeout(() => {
-    //   window.location.href = serverURL + restaurant.slug;
-    // }, 5000);
-
     return;
   }
 

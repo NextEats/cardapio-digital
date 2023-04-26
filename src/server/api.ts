@@ -36,7 +36,7 @@ export const serverURL = dev
   : 'https://www.nexteats.com.br/';
 
 export const api = axios.create({
-  baseURL: 'https://www.nexteats.com.br/',
+  baseURL: '/',
 });
 
 export const supabase = createClient<Database>(

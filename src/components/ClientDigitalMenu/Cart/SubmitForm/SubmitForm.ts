@@ -46,6 +46,18 @@ export async function SubmitForm({
     number,
   });
 
+  if (!foundDeliveryFee) {
+    toast.error(
+      'Sinto muito, o endereço digitado está fora do alcance de nossos entregadores!'
+    );
+
+    // setTimeout(() => {
+    //   window.location.href = serverURL + restaurant.slug;
+    // }, 5000);
+
+    return;
+  }
+
   const currentCashBox = await checkCashBox(restaurant);
 
   if (!currentCashBox) {

@@ -1,4 +1,3 @@
-import cepPromise from 'cep-promise';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useContext, useEffect, useState } from 'react';
@@ -9,6 +8,22 @@ import { DigitalMenuContext } from '@/src/contexts/DigitalMenuContext';
 import { supabase } from '@/src/server/api';
 import { iCashBox } from '@/src/types/types';
 
+async function fetchAddressFromCep(cep: string) {
+  try {
+    const response = await fetch(`/api/get-address-from-cep?cep=${cep}`);
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch address from CEP');
+    }
+
+    const { address } = await response.json();
+    return address;
+  } catch (error) {
+    console.error('Error fetching address from CEP API:', error);
+    return null;
+  }
+}
+
 function RestaurantHeader() {
   const { modals, restaurant } = useContext(DigitalMenuContext);
   const [street, setStreet] = useState<string>('');
@@ -17,10 +32,15 @@ function RestaurantHeader() {
   useEffect(() => {
     async function fetchAddress() {
       if (restaurant?.addresses.cep) {
-        const address = await cepPromise(restaurant?.addresses.cep);
-        setStreet(address.street);
+        const address = await fetchAddressFromCep(restaurant?.addresses.cep);
+
+        if (address) {
+          const [streetName] = address.split(',');
+          setStreet(streetName.trim());
+        }
       }
     }
+
     fetchAddress();
   }, [restaurant?.addresses.cep]);
 

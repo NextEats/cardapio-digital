@@ -1,21 +1,12 @@
-import { serverURL, supabase } from '@/src/server/api';
+import { supabase } from '@/src/server/api';
 import { iDeliveryFee } from '@/src/types/types';
 import { toast } from 'react-toastify';
 
 async function getAddressFromCep(cep: string) {
-  try {
-    const response = await fetch(`/api/get-address-from-cep?cep=${cep}`);
+  const response = await fetch(`/api/get-address-from-cep?cep=${cep}`);
 
-    if (!response.ok) {
-      throw new Error('Failed to fetch address from CEP');
-    }
-
-    const { address } = await response.json();
-    return address;
-  } catch (error) {
-    console.error('Error fetching address from CEP API:', error);
-    return null;
-  }
+  const { address } = await response.json();
+  return address;
 }
 
 export default async function findDeliveryFeeForTheDistance({
@@ -40,12 +31,7 @@ export default async function findDeliveryFeeForTheDistance({
 
   const destinationAddress = await getAddressFromCep(cep.toString());
 
-  if (!destinationAddress) {
-    toast.error(
-      'Ocorreu um erro ao buscar o endereço. Por favor, verifique o CEP digitado.'
-    );
-    return;
-  }
+  console.log('destinationAddress', destinationAddress);
 
   try {
     const response = await fetch('/api/calculate_distance', {
@@ -59,7 +45,11 @@ export default async function findDeliveryFeeForTheDistance({
       }),
     });
 
+    console.log('222 destinationAddress', destinationAddress);
+
     const { distance: distanceInKm } = await response.json();
+
+    console.log('distanceInKm', distanceInKm);
 
     const { data: deliveryFeesData } = await supabase
       .from('delivery_fees')
@@ -67,18 +57,16 @@ export default async function findDeliveryFeeForTheDistance({
       .eq('restaurant_id', restaurant_id);
 
     if (!deliveryFeesData) {
-      toast.error(
-        'Sinto muito, o endereço digitado está fora do alcance de nossos entregadores!'
-      );
-
-      setTimeout(() => {
-        window.location.href = serverURL + restaurant_slug;
-      }, 5000);
-
       return;
     }
 
-    const foundDeliveryFee = deliveryFeesData.find(
+    console.log('deliveryFeesData', deliveryFeesData);
+
+    const sortedDeliveryFeesData = deliveryFeesData.sort((a: any, b: any) => {
+      return b.end_km - a.end_km || b.start_km - a.start_km;
+    });
+
+    const foundDeliveryFee = sortedDeliveryFeesData.find(
       (df: iDeliveryFee['data']) => {
         if (df.end_km && df.start_km) {
           return distanceInKm <= df.end_km && distanceInKm >= df.start_km;
@@ -86,15 +74,9 @@ export default async function findDeliveryFeeForTheDistance({
       }
     );
 
+    console.log('foundDeliveryFee', foundDeliveryFee);
+
     if (!foundDeliveryFee) {
-      toast.error(
-        'Sinto muito, o endereço digitado está fora do alcance de nossos entregadores!'
-      );
-
-      setTimeout(() => {
-        window.location.href = serverURL + restaurant_slug;
-      }, 6000);
-
       return null;
     }
 

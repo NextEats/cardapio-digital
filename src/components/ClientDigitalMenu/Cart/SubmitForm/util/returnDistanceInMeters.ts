@@ -1,15 +1,15 @@
 // Refactored returnDistanceInMeters function
 import axios from 'axios';
 
-export async function returnDistanceInMeters(start: string, end: string) {
+export async function returnDistanceInMeters(
+  startAddress: string,
+  destinationAddress: string
+) {
   try {
-    const { data } = await axios.post(
-      'https://www.nexteats.com.br/api/distance',
-      {
-        start,
-        end,
-      }
-    );
+    const { data } = await axios.post('/api/calculate_distance', {
+      startAddress,
+      destinationAddress,
+    });
 
     return data.distanceInKm;
   } catch (err) {

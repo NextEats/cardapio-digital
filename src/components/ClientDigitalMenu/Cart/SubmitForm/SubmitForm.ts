@@ -46,6 +46,18 @@ export async function SubmitForm({
     number,
   });
 
+  if (!foundDeliveryFee) {
+    toast.error(
+      'Sinto muito, o endereço digitado está fora do alcance de nossos entregadores!'
+    );
+
+    // setTimeout(() => {
+    //   window.location.href = serverURL + restaurant.slug;
+    // }, 5000);
+
+    return;
+  }
+
   const currentCashBox = await checkCashBox(restaurant);
 
   if (!currentCashBox) {
@@ -163,10 +175,6 @@ export async function SubmitForm({
   }!\n\n📝 *Pedido #${orderPosition}:*\n\n${listOfProducts}\n 💳 _Método de Pagamento:_ ${await returnPaymentMethodFromId(
     payment_method
   )}\n${
-    foundDeliveryFee?.fee
-      ? '🏍 _Taxa de Entrega: R$ ' + foundDeliveryFee.fee + '_'
-      : ''
-  }\n${
     isDelivery
       ? `🏠 _Endereço: ${await returnStreetFromCep(cep.toString())}, ${number}_`
       : ''

@@ -109,6 +109,15 @@ export function RadixOrderAccordion({
       handleSwitchToDelivered(order.id);
   };
 
+  const formatNumber = (number: number | null) => {
+    return number
+      ? number.toLocaleString('pt-BR', {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        })
+      : 0;
+  };
+
   return (
     <div className="w-full max-w-[900px]">
       <Accordion.Root
@@ -142,6 +151,22 @@ export function RadixOrderAccordion({
             const ordersProductsFilterdByOrderId = orders_products.filter(
               op => op.order_id === order.id
             );
+            const delivery_fee = (
+              ordersProductsFilterdByOrderId[0] as iOrdersProductsWithFKDataToDelivery
+            ).orders.delivery_fee_id
+              ? (
+                  ordersProductsFilterdByOrderId[0] as iOrdersProductsWithFKDataToDelivery
+                ).orders.delivery_fees.fee
+              : null;
+
+            const totalOrderPrice = (
+              ordersProductsFilterdByOrderId as (
+                | iOrdersProductsWithFKProducdData
+                | iOrdersProductsWithFKDataToDelivery
+              )[]
+            ).reduce((acc, item) => {
+              return (acc = acc + item.total_price * item.quantity);
+            }, 0);
 
             return (
               <div key={order.id} className="">
@@ -180,7 +205,7 @@ export function RadixOrderAccordion({
                                 .name !== 'Retirada'
                                 ? (
                                     ordersProductsFilterdByOrderId[0] as iOrdersProductsWithFKDataToDelivery
-                                  ).orders.clients.addresses !== null ||
+                                  ).orders.clients.addresses !== null &&
                                   (
                                     ordersProductsFilterdByOrderId[0] as iOrdersProductsWithFKDataToDelivery
                                   ).orders.clients.addresses.fullstring !== null
@@ -220,6 +245,36 @@ export function RadixOrderAccordion({
                           </div>
                         </>
                       ) : null}
+                      <div className="flex flex-col text-sm my-1">
+                        {(order as iOrdersWithStatusFKData).order_types.name ===
+                        'Delivery' ? (
+                          <>
+                            <span className="my-1 flex items-center leading-none justify-between">
+                              Subtotal:{' '}
+                              <strong>
+                                R$ {formatNumber(totalOrderPrice)}{' '}
+                              </strong>
+                            </span>
+                            <span className="mb-1 flex items-center leading-none justify-between">
+                              Taxa de entrega:{' '}
+                              <strong>
+                                R${' '}
+                                {formatNumber(delivery_fee ? delivery_fee : 0)}{' '}
+                              </strong>
+                            </span>
+                          </>
+                        ) : null}
+                        <span className="mb-1 flex items-center leading-none justify-between">
+                          Total:{' '}
+                          <strong>
+                            R${' '}
+                            {formatNumber(
+                              totalOrderPrice +
+                                (delivery_fee ? delivery_fee : 0)
+                            )}{' '}
+                          </strong>
+                        </span>
+                      </div>
                       {ordersProductsFilterdByOrderId.map(order_product => {
                         return (
                           <div

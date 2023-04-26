@@ -109,12 +109,16 @@ export default function AccordionPrintOrderForDelivery({
           </span>
         </div>
 
-        <PrintOrderSeparator text="Endereço" />
+        {(order as iOrdersWithStatusFKData).order_types.name === 'Delivery' ? (
+          <PrintOrderSeparator text="Endereço" />
+        ) : null}
 
         <span className="mb-1 flex items-center justify-between">
           <strong>
             {(order as iOrdersWithStatusFKData).order_types.name !== 'Retirada'
               ? (orders_products[0] as iOrdersProductsWithFKDataToDelivery)
+                  .orders.clients.addresses &&
+                (orders_products[0] as iOrdersProductsWithFKDataToDelivery)
                   .orders.clients.addresses.fullstring
                 ? (orders_products[0] as iOrdersProductsWithFKDataToDelivery)
                     .orders.clients.addresses.fullstring
@@ -192,15 +196,22 @@ export default function AccordionPrintOrderForDelivery({
         </div>
 
         <PrintOrderSeparator />
-        <span className="my-1 flex items-center leading-none justify-between">
-          Subtotal: <strong>R$ {formatNumber(totalOrderPrice)} </strong>
-        </span>
-        <span className="mb-1 flex items-center leading-none justify-between">
-          Taxa de entrega:{' '}
-          <strong>
-            R$ {formatNumber(order.delivery_fees ? order.delivery_fees.fee : 0)}{' '}
-          </strong>
-        </span>
+        {(order as iOrdersWithStatusFKData).order_types.name === 'Delivery' ? (
+          <>
+            <span className="my-1 flex items-center leading-none justify-between">
+              Subtotal: <strong>R$ {formatNumber(totalOrderPrice)} </strong>
+            </span>
+            <span className="mb-1 flex items-center leading-none justify-between">
+              Taxa de entrega:{' '}
+              <strong>
+                R${' '}
+                {formatNumber(
+                  order.delivery_fees ? order.delivery_fees.fee : 0
+                )}{' '}
+              </strong>
+            </span>
+          </>
+        ) : null}
         <span className="mb-1 flex items-center leading-none justify-between">
           Total:{' '}
           <strong>

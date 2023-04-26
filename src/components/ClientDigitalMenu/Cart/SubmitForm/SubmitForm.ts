@@ -15,9 +15,53 @@ import insertOrderProducts from './util/insertOrderProducts';
 import { removeNonAlphaNumeric } from './util/removeNonAlphaNumeric';
 import storeAddressInfo from './util/storeAddressInfo';
 
+import { iProductReducerInterface } from '@/src/contexts/DigitalMenuContext';
 import returnPaymentMethodFromId from './util/returnPaymentMethodFromId';
 import returnProductNameFromId from './util/returnProductNameFromId';
 import returnStreetFromCep from './util/returnStreetFromCep';
+
+async function sendWhatsAppMessage({
+  message,
+  restaurant_slug,
+  whatsapp,
+}: {
+  message: string;
+  restaurant_slug: string;
+  whatsapp: string;
+}) {
+  try {
+    await whatsappRestApi.post('/send-message', {
+      id: restaurant_slug,
+      number: '55' + removeNonAlphaNumeric(whatsapp.toString()),
+      message: message,
+    });
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+async function returnListOfProducts(products: iProductReducerInterface) {
+  if (!products.state) {
+    toast.error('Nenhum produto selecionado.');
+    return;
+  }
+
+  const listOfProducts = await Promise.all(
+    products.state.map(async (product, index) => {
+      const productName = await returnProductNameFromId(product.id);
+
+      return `${product.quantity}x - ${productName}\n`;
+    })
+  );
+
+  var listOfProductsString = '';
+
+  for (let i = 0; i < listOfProducts.length; i++) {
+    listOfProductsString += listOfProducts[i];
+  }
+
+  return listOfProductsString;
+}
 
 export async function SubmitForm({
   setOrderNumber,
@@ -46,12 +90,16 @@ export async function SubmitForm({
     number,
   });
 
-  if (!foundDeliveryFee) {
-    toast.error(
-      'Sinto muito, o endereço digitado está fora do alcance de nossos entregadores!'
-    );
+  console.log('foundDeliveryFee', foundDeliveryFee);
 
-    return;
+  if (isDelivery) {
+    if (!foundDeliveryFee) {
+      toast.error(
+        'Sinto muito, o endereço digitado está fora do alcance de nossos entregadores!'
+      );
+
+      return;
+    }
   }
 
   const currentCashBox = await checkCashBox(restaurant);
@@ -82,7 +130,7 @@ export async function SubmitForm({
 
   const client = await createClient({
     name,
-    address_id: address?.id,
+    address_id: isDelivery ? address?.id : null,
     contact_id: contact.id,
   });
 
@@ -101,7 +149,7 @@ export async function SubmitForm({
     client,
     deliveryForm,
     currentCashBox,
-    foundDeliveryFee,
+    foundDeliveryFee: isDelivery ? foundDeliveryFee : null,
     payment_method,
     change_value,
     orderPosition,
@@ -129,48 +177,17 @@ export async function SubmitForm({
     setDeliveryFee(foundDeliveryFee.fee);
   }
 
-  async function returnListOfProducts() {
-    if (!products.state) {
-      toast.error('Nenhum produto selecionado.');
-      return;
-    }
-
-    const listOfProducts = await Promise.all(
-      products.state.map(async (product, index) => {
-        const productName = await returnProductNameFromId(product.id);
-
-        return `${product.quantity}x - ${productName}\n`;
-      })
-    );
-
-    var listOfProductsString = '';
-
-    for (let i = 0; i < listOfProducts.length; i++) {
-      listOfProductsString += listOfProducts[i];
-    }
-
-    return listOfProductsString;
-  }
-
-  async function sendWhatsAppMessage({ message }: { message: string }) {
-    try {
-      await whatsappRestApi.post('/send-message', {
-        id: restaurant.slug,
-        number: '55' + removeNonAlphaNumeric(whatsapp.toString()),
-        message: message,
-      });
-    } catch (err) {
-      console.error(err);
-    }
-  }
-
-  const listOfProducts = await returnListOfProducts();
+  const listOfProducts = await returnListOfProducts(products);
 
   const messageOrderInfo = `😀 Olá ${name}, obrigado por fazer seu pedido no restaurante ${
     restaurant.name
   }!\n\n📝 *Pedido #${orderPosition}:*\n\n${listOfProducts}\n 💳 _Método de Pagamento:_ ${await returnPaymentMethodFromId(
     payment_method
   )}\n${
+    foundDeliveryFee?.fee
+      ? '🏍 _Taxa de Entrega: R$ ' + foundDeliveryFee.fee + '_'
+      : ''
+  }\n${
     isDelivery
       ? `🏠 _Endereço: ${await returnStreetFromCep(cep.toString())}, ${number}_`
       : ''
@@ -178,15 +195,21 @@ export async function SubmitForm({
 
   sendWhatsAppMessage({
     message: messageOrderInfo,
+    restaurant_slug: restaurant.slug,
+    whatsapp: whatsapp.toString(),
   });
 
   if (isPayingUsingPix) {
     sendWhatsAppMessage({
       message: `_Valor total: *R$ ${totalOrderPrice}*, pague com o PIX utilizando a chave abaixo._`,
+      restaurant_slug: restaurant.slug,
+      whatsapp: whatsapp.toString(),
     });
 
     sendWhatsAppMessage({
       message: `${restaurant.pix}`,
+      restaurant_slug: restaurant.slug,
+      whatsapp: whatsapp.toString(),
     });
   }
 }

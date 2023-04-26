@@ -19,7 +19,7 @@ export default async function createAddressIfNeeded(
         cep: cep.toString(),
         number,
         complement,
-        fullstring: `$${cepInfo.street}, ${number} - ${
+        fullstring: `${cepInfo.street}, ${number} - ${
           cepInfo.neighborhood
         } - ${cep.toString()}`,
       })

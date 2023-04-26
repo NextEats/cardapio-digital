@@ -7,9 +7,14 @@ import { FaCheck } from 'react-icons/fa';
 interface Props {
   deliveryFee?: number;
   orderNumber: number;
+  isDelivery: boolean;
 }
 
-function ThankYouPage({ deliveryFee = 0, orderNumber }: Props): JSX.Element {
+function ThankYouPage({
+  deliveryFee = 0,
+  orderNumber,
+  isDelivery,
+}: Props): JSX.Element {
   const { restaurant } = useContext(DigitalMenuContext);
   const { productReducer } = useContext(DigitalMenuContext);
 
@@ -53,27 +58,29 @@ function ThankYouPage({ deliveryFee = 0, orderNumber }: Props): JSX.Element {
             <span className="font-bold">#{orderNumber}</span>
           </div>
 
-          {deliveryFee > 0 && (
+          {isDelivery && (
             <div className="h-4 my-4 text-gray-700">
               Subtotal:&nbsp;
               <span className="font-bold">R$&nbsp;{orderPrice.toFixed(2)}</span>
             </div>
           )}
 
-          {/* {deliveryFee > 0 && (
+          {isDelivery && (
             <div className="h-4 my-4 text-gray-700">
               Taxa de Entrega:&nbsp;
               <span className="font-bold">
                 R$&nbsp;{deliveryFee.toFixed(2)}
               </span>
             </div>
-          )} */}
+          )}
 
           <div className="h-4 my-4 text-gray-700">
             Valor Total:&nbsp;
             <span className="font-bold">
               R$&nbsp;
-              {orderPrice.toFixed(2)}
+              {isDelivery
+                ? (deliveryFee + orderPrice).toFixed(2)
+                : orderPrice.toFixed(2)}
             </span>
           </div>
 

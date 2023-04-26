@@ -5,6 +5,7 @@ import {
   iRestaurant,
 } from '@/src/types/types';
 import { ReactNode, createContext, useEffect, useState } from 'react';
+import { getActiveCashBoxByTheRestaurantID } from '../fetch/cashBoxes/getActiveCashboxByRestaurantId';
 import { getOrdersProductsWithFKDataByOrdersIdsFetch } from '../fetch/ordersProducts/getOrdersProductsWithFKDataByOrdersIds';
 import { supabase } from '../server/api';
 
@@ -36,10 +37,18 @@ export default function DeliveryPageContextProvider({
 
   useEffect(() => {
     const getOrdersProductsRealTime = async () => {
+      const activeCashBox = await getActiveCashBoxByTheRestaurantID(
+        restaurant.id
+      );
+
+      if (!activeCashBox) {
+        return;
+      }
+
       const { data: ordersFromTheActiveCashBox } = await supabase
         .from('orders')
         .select('*, order_status (*), order_types (*), delivery_fees (*)')
-        .eq('cash_box_id', orders[0].cash_box_id)
+        .eq('cash_box_id', activeCashBox.id)
         .returns<iOrdersWithStatusFKData[]>();
 
       const orders_ids = ordersFromTheActiveCashBox?.map(o => o.id);

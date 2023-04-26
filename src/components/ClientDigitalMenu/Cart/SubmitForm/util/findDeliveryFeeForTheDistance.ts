@@ -1,14 +1,19 @@
 import { serverURL, supabase } from '@/src/server/api';
 import { iDeliveryFee } from '@/src/types/types';
-import cepPromise from 'cep-promise';
 import { toast } from 'react-toastify';
 
 async function getAddressFromCep(cep: string) {
   try {
-    const { street, neighborhood, city, state } = await cepPromise(cep);
-    return `${street}, ${neighborhood}, ${city} - ${state}, ${cep}`;
+    const response = await fetch(`/api/get-address-from-cep?cep=${cep}`);
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch address from CEP');
+    }
+
+    const { address } = await response.json();
+    return address;
   } catch (error) {
-    console.error('Error fetching address from CEP:', error);
+    console.error('Error fetching address from CEP API:', error);
     return null;
   }
 }

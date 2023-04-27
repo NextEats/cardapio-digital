@@ -36,9 +36,8 @@ export async function calculateTotalOrderPrice({
         Promise.resolve(0)
       );
 
-      const totalOrderProductPrice = productFound?.price * item.quantity;
       const totalOrderProductPriceWithAdditionals =
-        totalOrderProductPrice + (await totalAdditionalPrice);
+        (productFound?.price + totalAdditionalPrice) * item.quantity;
 
       const accValue = await acc;
       return accValue + totalOrderProductPriceWithAdditionals;

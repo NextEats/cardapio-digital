@@ -2,11 +2,15 @@ import { supabase } from '@/src/server/api';
 import { iDeliveryFee } from '@/src/types/types';
 import { toast } from 'react-toastify';
 
-async function getAddressFromCep(cep: string) {
-  const response = await fetch(`/api/get-address-from-cep?cep=${cep}`);
+export async function getAddressFromCep(cep: string) {
+  try {
+    const response = await fetch(`/api/get-address-from-cep?cep=${cep}`);
 
-  const { address } = await response.json();
-  return address;
+    const { address } = await response.json();
+    return address;
+  } catch (error) {
+    console.error(error);
+  }
 }
 
 export default async function findDeliveryFeeForTheDistance({

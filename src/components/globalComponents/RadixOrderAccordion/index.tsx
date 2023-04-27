@@ -151,13 +151,15 @@ export function RadixOrderAccordion({
             const ordersProductsFilterdByOrderId = orders_products.filter(
               op => op.order_id === order.id
             );
-            const delivery_fee = (
-              ordersProductsFilterdByOrderId[0] as iOrdersProductsWithFKDataToDelivery
-            ).orders.delivery_fee_id
-              ? (
-                  ordersProductsFilterdByOrderId[0] as iOrdersProductsWithFKDataToDelivery
-                ).orders.delivery_fees.fee
-              : null;
+            const delivery_fee =
+              isToDelivery &&
+              (
+                ordersProductsFilterdByOrderId[0] as iOrdersProductsWithFKDataToDelivery
+              ).orders.delivery_fee_id
+                ? (
+                    ordersProductsFilterdByOrderId[0] as iOrdersProductsWithFKDataToDelivery
+                  ).orders.delivery_fees.fee
+                : null;
 
             const totalOrderPrice = (
               ordersProductsFilterdByOrderId as (
@@ -245,36 +247,39 @@ export function RadixOrderAccordion({
                           </div>
                         </>
                       ) : null}
-                      <div className="flex flex-col text-sm my-1">
-                        {(order as iOrdersWithStatusFKData).order_types.name ===
-                        'Delivery' ? (
-                          <>
-                            <span className="my-1 flex items-center leading-none justify-between">
-                              Subtotal:{' '}
-                              <strong>
-                                R$ {formatNumber(totalOrderPrice)}{' '}
-                              </strong>
-                            </span>
-                            <span className="mb-1 flex items-center leading-none justify-between">
-                              Taxa de entrega:{' '}
-                              <strong>
-                                R${' '}
-                                {formatNumber(delivery_fee ? delivery_fee : 0)}{' '}
-                              </strong>
-                            </span>
-                          </>
-                        ) : null}
-                        <span className="mb-1 flex items-center leading-none justify-between">
-                          Total:{' '}
-                          <strong>
-                            R${' '}
-                            {formatNumber(
-                              totalOrderPrice +
-                                (delivery_fee ? delivery_fee : 0)
-                            )}{' '}
-                          </strong>
-                        </span>
-                      </div>
+                      {order.order_type_id !== 3 ? (
+                        <div className="flex flex-col text-sm my-1">
+                          {order.order_type_id === 1 ? (
+                            <>
+                              <span className="my-1 flex items-center leading-none justify-between">
+                                Subtotal:{' '}
+                                <strong>
+                                  R$ {formatNumber(totalOrderPrice)}{' '}
+                                </strong>
+                              </span>
+                              <span className="mb-1 flex items-center leading-none justify-between">
+                                Taxa de entrega:{' '}
+                                <strong>
+                                  R${' '}
+                                  {formatNumber(
+                                    delivery_fee ? delivery_fee : 0
+                                  )}{' '}
+                                </strong>
+                              </span>
+                            </>
+                          ) : null}
+                          <span className="mb-1 flex items-center leading-none justify-between">
+                            Total:{' '}
+                            <strong>
+                              R${' '}
+                              {formatNumber(
+                                totalOrderPrice +
+                                  (delivery_fee ? delivery_fee : 0)
+                              )}{' '}
+                            </strong>
+                          </span>
+                        </div>
+                      ) : null}
                       {ordersProductsFilterdByOrderId.map(order_product => {
                         return (
                           <div

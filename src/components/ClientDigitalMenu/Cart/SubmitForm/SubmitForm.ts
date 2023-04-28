@@ -191,7 +191,9 @@ export async function SubmitForm({
     isDelivery
       ? `🏠 _Endereço: ${await returnStreetFromCep(cep.toString())}, ${number}_`
       : ''
-  }\n\n*_Total: R$ ${totalOrderPrice}_*`;
+  }\n\n*_Total: R$ ${
+    totalOrderPrice + (foundDeliveryFee ? foundDeliveryFee.fee : 0)
+  }_*`;
 
   sendWhatsAppMessage({
     message: messageOrderInfo,
@@ -201,7 +203,9 @@ export async function SubmitForm({
 
   if (isPayingUsingPix) {
     sendWhatsAppMessage({
-      message: `_Valor total: *R$ ${totalOrderPrice}*, pague com o PIX utilizando a chave abaixo._`,
+      message: `_Valor total: *R$ ${
+        totalOrderPrice + (foundDeliveryFee ? foundDeliveryFee.fee : 0)
+      }*, pague com o PIX utilizando a chave abaixo._`,
       restaurant_slug: restaurant.slug,
       whatsapp: whatsapp.toString(),
     });

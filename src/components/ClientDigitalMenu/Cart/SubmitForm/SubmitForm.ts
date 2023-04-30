@@ -1,5 +1,5 @@
 import { calculateTotalOrderPrice } from '@/src/helpers/calculateTotalOrderPrice';
-import { iOrder } from '@/src/types/types';
+import { iAddress, iOrder } from '@/src/types/types';
 
 import { whatsappRestApi } from '@/src/server/api';
 import { toast } from 'react-toastify';
@@ -82,17 +82,16 @@ export async function SubmitForm({
   const isDelivery = deliveryForm == 1;
   const isPayingUsingPix = payment_method == 1;
 
-  const foundDeliveryFee = await findDeliveryFeeForTheDistance({
-    restaurant_address_string: restaurant.address_string,
-    restaurant_slug: restaurant.slug,
-    restaurant_id: restaurant.id,
-    cep,
-    number,
-  });
-
-  console.log('foundDeliveryFee', foundDeliveryFee);
-
+  let foundDeliveryFee;
   if (isDelivery) {
+    foundDeliveryFee = await findDeliveryFeeForTheDistance({
+      restaurant_address_string: restaurant.address_string,
+      restaurant_slug: restaurant.slug,
+      restaurant_id: restaurant.id,
+      cep,
+      number,
+    });
+    console.log('foundDeliveryFee', foundDeliveryFee);
     if (!foundDeliveryFee) {
       toast.error(
         'Sinto muito, o endereço digitado está fora do alcance de nossos entregadores!'
@@ -109,12 +108,16 @@ export async function SubmitForm({
     return;
   }
 
-  const address = await createAddressIfNeeded(
-    deliveryForm,
-    cep,
-    number,
-    complement
-  );
+  let address: iAddress['data'] | null | undefined = null;
+
+  if (isDelivery) {
+    address = await createAddressIfNeeded(
+      deliveryForm,
+      cep,
+      number,
+      complement
+    );
+  }
 
   if (!address && isDelivery) {
     toast.error('Erro ao cadastrar endereço.');

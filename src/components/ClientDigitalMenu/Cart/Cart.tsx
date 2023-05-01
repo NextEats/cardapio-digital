@@ -29,6 +29,12 @@ export default function Cart({ handleCloseModal }: iCart) {
 
   const cep = watch('cep');
   const number = watch('number');
+  const deliveryForm = watch('deliveryForm');
+
+  const isDelivery = deliveryForm == 1;
+
+  console.log('deliveryForm', deliveryForm);
+  console.log('isDelivery', isDelivery);
 
   const { deliveryFee, setDeliveryFee } = useDeliveryFee(
     cep ? cep.toString() : '',
@@ -37,7 +43,13 @@ export default function Cart({ handleCloseModal }: iCart) {
   );
 
   if (isDone && orderNumber) {
-    return <ThankYouPage deliveryFee={deliveryFee} orderNumber={orderNumber} />;
+    return (
+      <ThankYouPage
+        deliveryFee={deliveryFee}
+        orderNumber={orderNumber}
+        isDelivery={isDelivery}
+      />
+    );
   }
 
   return (
@@ -57,6 +69,7 @@ export default function Cart({ handleCloseModal }: iCart) {
           setIsDone={setIsDone}
           watch={watch}
           deliveryFee={deliveryFee}
+          isDelivery={isDelivery}
           isReadyToSubmit={isReadyToSubmit}
         />
       </div>

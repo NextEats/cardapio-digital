@@ -13,6 +13,7 @@ interface iOrderPriceInformation {
   isReadyToSubmit: any;
   deliveryFee: any;
   setDeliveryFee: any;
+  isDelivery: boolean;
 }
 
 export default function OrderPriceInformation({
@@ -23,6 +24,7 @@ export default function OrderPriceInformation({
   isReadyToSubmit,
   deliveryFee,
   setDeliveryFee,
+  isDelivery,
 }: iOrderPriceInformation) {
   const products = useProductsInCheckout();
   const { restaurant } = useContext(DigitalMenuContext);
@@ -116,18 +118,9 @@ export default function OrderPriceInformation({
               <span className="font-semibold">Total</span>
               <span>
                 R${' '}
-                {subtotalPrice.toLocaleString('pt-BR', {
-                  minimumFractionDigits: 2,
-                  maximumFractionDigits: 2,
-                })}
-                {/* {deliveryFee &&
-                  (watch('deliveryForm') == 1
-                    ? subtotalPrice + deliveryFee
-                    : subtotalPrice
-                  ).toLocaleString('pt-BR', {
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2,
-                  })} */}
+                {isDelivery
+                  ? (deliveryFee + subtotalPrice).toFixed(2)
+                  : subtotalPrice.toFixed(2)}
               </span>
             </div>
           </div>

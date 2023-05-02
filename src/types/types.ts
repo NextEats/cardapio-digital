@@ -411,6 +411,10 @@ export interface iDeliveryFees {
   data: Array<Database['public']['Tables']['delivery_fees']['Row']>;
 }
 
+export type iWeekdayOperatingTimeWithFKData = iWeekdayOperatingTime['data'] & {
+  weekdays: iWeekday['data'];
+};
+
 export type iOrdersProductsWithFKProducdData = iOrderProduct['data'] & {
   products: iProduct['data'];
   additionals: {

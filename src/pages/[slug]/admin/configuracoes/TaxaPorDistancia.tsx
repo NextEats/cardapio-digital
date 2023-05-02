@@ -60,7 +60,7 @@ export default function TaxaPorDistancia() {
   const deleteDeliveryFee = async (id: number) => {
     const { error } = await supabase
       .from('delivery_fees')
-      .delete()
+      .update({ deleted_at: new Date() })
       .match({ id });
     if (error) console.error(error);
     else setDeliveryFees(deliveryFees.filter((fee: any) => fee.id !== id));
@@ -70,17 +70,6 @@ export default function TaxaPorDistancia() {
   const [fee, setFee] = useState<string>();
 
   const handleAddDeliveryFee = () => {
-    // const startKm = parseInt(
-    //     prompt('Digite a distância inicial da taxa de entrega (em km):') ||
-    //         '0'
-    // );
-    // const endKm = parseInt(
-    //     prompt('Digite a distância final da taxa de entrega (em km):') ||
-    //         '0'
-    // );
-    // const fee = parseFloat(
-    //     prompt('Digite o valor da taxa de entrega (em R$):') || '0'
-    // );
     if (startKm && endKm && fee) {
       addDeliveryFee(parseFloat(startKm), parseFloat(endKm), parseFloat(fee));
     }
@@ -129,26 +118,30 @@ export default function TaxaPorDistancia() {
             </tr>
           </thead>
           <tbody>
-            {deliveryFees.map((deliveryFee: any) => (
-              <tr key={deliveryFee.id}>
-                <td className="border px-4 py-2">{`${deliveryFee.start_km} km - ${deliveryFee.end_km} km`}</td>
-                <td className="border px-4 py-2">{`R$ ${deliveryFee.fee.toFixed(
-                  2
-                )}`}</td>
-                <td className="border px-4 py-2 text-center">
-                  <button
-                    className="bg-red-500 text-white py-2 px-4 ml-3 mr-3 rounded-md"
-                    onClick={() =>
-                      deliveryFee.id
-                        ? handleDeleteDeliveryFee(deliveryFee.id)
-                        : console.error('id não encontrado')
-                    }
-                  >
-                    Excluir
-                  </button>
-                </td>
-              </tr>
-            ))}
+            {deliveryFees.map((deliveryFee: any) =>
+              deliveryFee.deleted_at === null ? (
+                <tr key={deliveryFee.id}>
+                  <td className="border px-4 py-2">{`${deliveryFee.start_km} km - ${deliveryFee.end_km} km`}</td>
+                  <td className="border px-4 py-2">{`R$ ${deliveryFee.fee.toFixed(
+                    2
+                  )}`}</td>
+                  <td className="border px-4 py-2 text-center">
+                    <button
+                      className="bg-red-500 text-white py-2 px-4 ml-3 mr-3 rounded-md"
+                      onClick={() =>
+                        deliveryFee.id
+                          ? handleDeleteDeliveryFee(deliveryFee.id)
+                          : console.error('id não encontrado')
+                      }
+                    >
+                      Excluir
+                    </button>
+                  </td>
+                </tr>
+              ) : (
+                ''
+              )
+            )}
           </tbody>
         </table>
       </div>

@@ -55,7 +55,25 @@ export default function HorariosAbertura() {
     weekId: number
   ) => {
     try {
-      const { data: newWorkOperationTime, error } = await supabase
+      // Verificar se já existe um horário salvo com o mesmo weekday_id e intervalo de horário
+      const { data: existingWorkHours, error: fetchError } = await supabase
+        .from('weekday_operating_time')
+        .select('*')
+        .eq('weekday_id', weekId)
+        .lte('opening_time', endHr)
+        .gte('closing_time', startHr);
+
+      if (fetchError) {
+        throw fetchError;
+      }
+
+      if (existingWorkHours?.length) {
+        window.alert('Conflito entre Horarios de abertura');
+        return;
+      }
+
+      // Se o horário ainda não existir, adicionar um novo
+      const { data: newWorkOperationTime, error: insertError } = await supabase
         .from('weekday_operating_time')
         .insert({
           opening_time: startHr,
@@ -65,6 +83,10 @@ export default function HorariosAbertura() {
           restaurant_id: restaurant.id,
         })
         .select('*,weekdays(*)');
+
+      if (insertError) {
+        throw insertError;
+      }
 
       newWorkOperationTime
         ? sethorariosAbertura([...horariosAbertura, newWorkOperationTime[0]])

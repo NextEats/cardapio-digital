@@ -7,6 +7,7 @@ import { AdminContext } from '@/src/contexts/adminContext';
 import { supabase } from '@/src/server/api';
 import * as Switch from '@radix-ui/react-switch';
 import { useContext, useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
 
 export default function HorariosAbertura() {
   const { restaurant } = useContext(AdminContext);
@@ -68,7 +69,7 @@ export default function HorariosAbertura() {
       }
 
       if (existingWorkHours?.length) {
-        window.alert('Conflito entre Horarios de abertura');
+        toast.error('Conflito entre Horarios de abertura');
         return;
       }
 
@@ -218,6 +219,16 @@ export default function HorariosAbertura() {
                   </Switch.Root>
                 </td>
                 <td className="border px-4 py-2 text-center">
+                  <button
+                    className="bg-blue-500 text-white py-2 px-4 ml-3 mr-3 rounded-md"
+                    onClick={() =>
+                      item.id
+                        ? handleDeleteWorkHour(item.id)
+                        : console.error('id não encontrado')
+                    }
+                  >
+                    Editar
+                  </button>
                   <button
                     className="bg-red-500 text-white py-2 px-4 ml-3 mr-3 rounded-md"
                     onClick={() =>

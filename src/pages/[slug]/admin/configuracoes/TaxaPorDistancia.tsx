@@ -5,6 +5,7 @@ import Button from '@/src/components/nButton';
 import { AdminContext } from '@/src/contexts/adminContext';
 import { supabase } from '@/src/server/api';
 import { useContext, useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
 
 export default function TaxaPorDistancia() {
   const { restaurant } = useContext(AdminContext);
@@ -17,6 +18,7 @@ export default function TaxaPorDistancia() {
         .from('delivery_fees')
         .select('*')
         .eq('restaurant_id', restaurant!.id)
+        .is('deleted_at', null)
         .order('start_km', { ascending: true });
 
       if (error) {
@@ -38,6 +40,7 @@ export default function TaxaPorDistancia() {
     endKm: number,
     fee: number
   ) => {
+    console.log('criado novo');
     try {
       const { data: newDeliveryFee, error } = await supabase
         .from('delivery_fees')
@@ -58,6 +61,7 @@ export default function TaxaPorDistancia() {
   };
 
   const deleteDeliveryFee = async (id: number) => {
+    console.log('deletado');
     const { error } = await supabase
       .from('delivery_fees')
       .update({ deleted_at: new Date() })
@@ -70,8 +74,24 @@ export default function TaxaPorDistancia() {
   const [fee, setFee] = useState<string>();
 
   const handleAddDeliveryFee = () => {
+    window.alert('wntrou');
+    console.log(startKm, endKm, fee);
     if (startKm && endKm && fee) {
-      addDeliveryFee(parseFloat(startKm), parseFloat(endKm), parseFloat(fee));
+      window.alert('wntrou');
+      if (isEdit) {
+        if (editId) {
+          deleteDeliveryFee(editId);
+          addDeliveryFee(
+            parseFloat(startKm),
+            parseFloat(endKm),
+            parseFloat(fee)
+          );
+        } else {
+          toast.error('Erro ao Editar a taxa');
+        }
+      } else {
+        addDeliveryFee(parseFloat(startKm), parseFloat(endKm), parseFloat(fee));
+      }
     }
     toggleModal();
     clearInputs();
@@ -88,10 +108,21 @@ export default function TaxaPorDistancia() {
       deleteDeliveryFee(id);
     }
   };
+  const [isEdit, setIsEdit] = useState<boolean>(false);
+  const [editId, setEditId] = useState<number>();
+  const handleEditDeliveryFee = (row: any) => {
+    setStartKm(row.start_km.toString());
+    setEndKm(row.end_km.toString());
+    setFee(row.fee.toString());
+    setShowModal(true);
+    setIsEdit(true);
+    setEditId(row.id);
+  };
 
   const [showModal, setShowModal] = useState(false);
   const toggleModal = () => {
     setShowModal(!showModal);
+    setIsEdit(false);
     clearInputs();
   };
 
@@ -126,6 +157,16 @@ export default function TaxaPorDistancia() {
                     2
                   )}`}</td>
                   <td className="border px-4 py-2 text-center">
+                    <button
+                      className="bg-blue-500 text-white py-2 px-4 ml-3 mr-3 rounded-md"
+                      onClick={() =>
+                        deliveryFee.id
+                          ? handleEditDeliveryFee(deliveryFee)
+                          : console.error('id não encontrado')
+                      }
+                    >
+                      Editar
+                    </button>
                     <button
                       className="bg-red-500 text-white py-2 px-4 ml-3 mr-3 rounded-md"
                       onClick={() =>

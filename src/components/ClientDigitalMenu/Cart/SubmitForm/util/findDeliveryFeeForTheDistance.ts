@@ -60,13 +60,13 @@ export default async function findDeliveryFeeForTheDistance({
     const { data: deliveryFeesData } = await supabase
       .from('delivery_fees')
       .select('*')
-      .eq('restaurant_id', restaurant_id);
+      .match({ restaurant_id: restaurant_id, deleted_at: null });
 
     if (!deliveryFeesData) {
       return;
     }
 
-    // console.log('deliveryFeesData', deliveryFeesData);
+    console.log('deliveryFeesData', deliveryFeesData);
 
     const sortedDeliveryFeesData = deliveryFeesData.sort((a: any, b: any) => {
       return b.end_km - a.end_km || b.start_km - a.start_km;

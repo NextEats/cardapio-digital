@@ -14,7 +14,7 @@ export default async function clients(
         const { data: delivery_fees_data, error } = await supabase
           .from('delivery_fees')
           .select('*')
-          .eq('restaurant_id', restaurantId);
+          .match({ restaurant_id: restaurantId, deleted_at: null });
 
         if (error) console.error(error);
 

@@ -4,13 +4,14 @@ import Modal from '@/src/components/globalComponents/Modal';
 import Button from '@/src/components/nButton';
 import { AdminContext } from '@/src/contexts/adminContext';
 import { supabase } from '@/src/server/api';
+import { iDeliveryFees } from '@/src/types/types';
 import { useContext, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 
 export default function TaxaPorDistancia() {
   const { restaurant } = useContext(AdminContext);
 
-  const [deliveryFees, setDeliveryFees] = useState<any>([]);
+  const [deliveryFees, setDeliveryFees] = useState<iDeliveryFees['data']>([]);
 
   useEffect(() => {
     const fetchDeliveryFees = async () => {
@@ -19,8 +20,8 @@ export default function TaxaPorDistancia() {
         .select('*')
         .eq('restaurant_id', restaurant!.id)
         .is('deleted_at', null)
-        .order('start_km', { ascending: true });
-
+        .order('start_km', { ascending: true })
+        .returns<iDeliveryFees['data']>();
       if (error) {
         console.error(error);
       } else {
@@ -64,20 +65,18 @@ export default function TaxaPorDistancia() {
     console.log('deletado');
     const { error } = await supabase
       .from('delivery_fees')
-      .update({ deleted_at: new Date() })
-      .match({ id });
+      .update({ deleted_at: new Date().toISOString() })
+      .eq('id', id);
     if (error) console.error(error);
-    else setDeliveryFees(deliveryFees.filter((fee: any) => fee.id !== id));
+    else setDeliveryFees(deliveryFees.filter(fee => fee.id !== id));
   };
   const [startKm, setStartKm] = useState<string>();
   const [endKm, setEndKm] = useState<string>();
   const [fee, setFee] = useState<string>();
 
   const handleAddDeliveryFee = () => {
-    window.alert('wntrou');
     console.log(startKm, endKm, fee);
     if (startKm && endKm && fee) {
-      window.alert('wntrou');
       if (isEdit) {
         if (editId) {
           deleteDeliveryFee(editId);

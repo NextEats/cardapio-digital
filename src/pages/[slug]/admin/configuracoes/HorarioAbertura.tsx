@@ -137,6 +137,41 @@ export default function HorariosAbertura() {
       console.error(err);
     }
   };
+  const updateHour = async (
+    startHr: string,
+    endHr: string,
+    weekId: number,
+    editId: number
+  ) => {
+    try {
+      const { data: updatedWorkOperationTime, error: updateError } =
+        await supabase
+          .from('weekday_operating_time')
+          .update({
+            opening_time: startHr,
+            closing_time: endHr,
+            weekday_id: weekId,
+            restaurant_id: restaurant.id,
+          })
+          .eq('id', editId)
+          .select('*,weekdays(*)');
+
+      if (updateError) {
+        throw updateError;
+      }
+
+      // Atualiza o registro no array horariosAbertura com o novo dado
+      const updatedIndex = horariosAbertura.findIndex(
+        (item: { id: number }) => item.id === editId
+      );
+      const updatedData = updatedWorkOperationTime[0];
+      const updatedArray = [...horariosAbertura];
+      updatedArray.splice(updatedIndex, 1, updatedData);
+      sethorariosAbertura(updatedArray);
+    } catch (err) {
+      console.error(err);
+    }
+  };
   const deleteWorkHour = async (id: number) => {
     const { error } = await supabase
       .from('weekday_operating_time')
@@ -151,9 +186,15 @@ export default function HorariosAbertura() {
   const [weekId, setWeekId] = useState<number>();
 
   const handleAddWorkHour = () => {
-    console.log(startHr, endHr, weekId);
-    if (startHr && endHr && weekId) {
-      addWorkHour(startHr, endHr, weekId);
+    if (isEdit) {
+      if (startHr && endHr && weekId && editId) {
+        updateHour(startHr, endHr, weekId, editId);
+      }
+    } else {
+      console.log(startHr, endHr, weekId);
+      if (startHr && endHr && weekId) {
+        addWorkHour(startHr, endHr, weekId);
+      }
     }
     toggleModal();
     clearInputs();
@@ -170,10 +211,22 @@ export default function HorariosAbertura() {
       deleteWorkHour(id);
     }
   };
+  const [isEdit, setIsEdit] = useState<boolean>(false);
+  const [editId, setEditId] = useState<number>();
+  const handleEditWorkHour = (row: any) => {
+    console.log(row.opening_time, row.closing_time, row.weekday_id);
+    setStartHr(row.opening_time);
+    setEndHr(row.closing_time);
+    setWeekId(row.weekday_id);
+    setShowModal(true);
+    setIsEdit(true);
+    setEditId(row.id);
+  };
 
   const [showModal, setShowModal] = useState(false);
   const toggleModal = () => {
     setShowModal(!showModal);
+    setIsEdit(false);
     clearInputs();
   };
 
@@ -223,7 +276,7 @@ export default function HorariosAbertura() {
                     className="bg-blue-500 text-white py-2 px-4 ml-3 mr-3 rounded-md"
                     onClick={() =>
                       item.id
-                        ? handleDeleteWorkHour(item.id)
+                        ? handleEditWorkHour(item)
                         : console.error('id não encontrado')
                     }
                   >
@@ -279,7 +332,7 @@ export default function HorariosAbertura() {
           />
         </Modal.Body>
         <Modal.Footer>
-          <Button Type="submit" text="Cadastrar" />
+          <Button Type="submit" text={isEdit ? 'Atualizar' : 'Cadastrar'} />
           <Button
             Type="button"
             bgColor="red"

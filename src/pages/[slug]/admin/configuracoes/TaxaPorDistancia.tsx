@@ -12,23 +12,21 @@ export default function TaxaPorDistancia() {
   const { restaurant } = useContext(AdminContext);
 
   const [deliveryFees, setDeliveryFees] = useState<iDeliveryFees['data']>([]);
-
+  const fetchDeliveryFees = async () => {
+    const { data: deliveryFees, error } = await supabase
+      .from('delivery_fees')
+      .select('*')
+      .eq('restaurant_id', restaurant!.id)
+      .is('deleted_at', null)
+      .order('start_km', { ascending: true })
+      .returns<iDeliveryFees['data']>();
+    if (error) {
+      console.error(error);
+    } else {
+      setDeliveryFees(deliveryFees);
+    }
+  };
   useEffect(() => {
-    const fetchDeliveryFees = async () => {
-      const { data: deliveryFees, error } = await supabase
-        .from('delivery_fees')
-        .select('*')
-        .eq('restaurant_id', restaurant!.id)
-        .is('deleted_at', null)
-        .order('start_km', { ascending: true })
-        .returns<iDeliveryFees['data']>();
-      if (error) {
-        console.error(error);
-      } else {
-        setDeliveryFees(deliveryFees);
-      }
-    };
-
     fetchDeliveryFees();
   }, [restaurant]);
 
@@ -52,10 +50,7 @@ export default function TaxaPorDistancia() {
           restaurant_id: restaurant.id,
         })
         .select('*');
-
-      newDeliveryFee
-        ? setDeliveryFees([...deliveryFees, newDeliveryFee[0]])
-        : null;
+      fetchDeliveryFees();
     } catch (err) {
       console.error(err);
     }
@@ -67,8 +62,11 @@ export default function TaxaPorDistancia() {
       .from('delivery_fees')
       .update({ deleted_at: new Date().toISOString() })
       .eq('id', id);
-    if (error) console.error(error);
-    else setDeliveryFees(deliveryFees.filter(fee => fee.id !== id));
+    if (error) {
+      console.error(error);
+    } else {
+      setDeliveryFees(deliveryFees.filter(fee => fee.id !== id));
+    }
   };
   const [startKm, setStartKm] = useState<string>();
   const [endKm, setEndKm] = useState<string>();

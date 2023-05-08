@@ -78,12 +78,12 @@ const Advantages = () => {
     //     <img className="object-cover lg:mx-6 rounded-xl h-72 lg:h-96" src="https://imgs.casasbahia.com.br/55051807/1g.jpg"alt=""/>
     //   </div>
     // </div>
-    <div className="container lg:px-24 py-10 mx-auto h-full">
+    <div className="container lg:px-24 pt-40 lg:py-10 mx-auto h-full">
       <div className="section flex justify-center items-center mt-5">
-        <div className="w-1/2 lg:w-1/4 ">
+        <div className="w-1/2 lg:w-1/4 hidden md:block ">
           <img src={cardapioDigital.src} alt="Imagem 1" className="w-full" />
         </div>
-        <div className="w-1/2 lg:w-2/3 px-8">
+        <div className="w-auto lg:w-2/3 px-8">
           <h2 className="text-3xl font-bold mb-4 uppercase">
             CARDÁPIO DIGITAL
           </h2>
@@ -95,25 +95,25 @@ const Advantages = () => {
         </div>
       </div>
       <div className="section flex justify-center items-center mt-5">
-        <div className="w-1/2 lg:w-2/3 px-8">
+        <div className="w-auto lg:w-2/3 px-8">
           <h2 className="text-3xl font-bold mb-4 uppercase">
             CONTROLE DE MESAS
           </h2>
           <p className="text-lg text-gray-700 leading-relaxed">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus ac
-            enim vestibulum, vehicula est sit amet, bibendum nulla. Etiam
-            malesuada ipsum id nisl volutpat eleifend.
+            Maximize o sucesso do seu negócio com o revolucionário sistema de
+            gerenciamento de mesas: torne sua vida mais fácil e impulsione a
+            satisfação do cliente como nunca antes!
           </p>
         </div>
-        <div className="w-1/2 lg:w-1/4">
+        <div className="w-1/2 lg:w-1/4 hidden md:block">
           <img src={cardapioDigital.src} alt="Imagem 2" className="w-full" />
         </div>
       </div>
       <div className="section flex justify-center items-center mt-5">
-        <div className="w-1/2 lg:w-1/4 ">
+        <div className="w-1/2 lg:w-1/4 hidden md:block ">
           <img src={cardapioDigital.src} alt="Imagem 1" className="w-full" />
         </div>
-        <div className="w-1/2 lg:w-2/3 px-8">
+        <div className="w-auto lg:w-2/3 px-8">
           <h2 className="text-3xl font-bold mb-4 uppercase">WhatsApp</h2>
           <p className="text-lg text-gray-500 leading-relaxed">
             Eleve a comunicação com seus clientes a um novo patamar com nossa
@@ -125,7 +125,7 @@ const Advantages = () => {
         </div>
       </div>
       <div className="section flex justify-center items-center mt-5">
-        <div className="w-1/2 lg:w-2/3 px-8">
+        <div className="w-auto lg:w-2/3 px-8">
           <h2 className="text-3xl font-bold mb-4 uppercase">Delivery</h2>
           <p className="text-lg text-gray-700 leading-relaxed">
             Receba pedidos em tempo real e garanta a felicidade dos seus
@@ -133,7 +133,7 @@ const Advantages = () => {
             mais sucesso com nosso sistema inovador e veja sua empresa decolar!
           </p>
         </div>
-        <div className="w-1/2 lg:w-1/4">
+        <div className="w-1/2 lg:w-1/4 hidden md:block">
           <img src={cardapioDigital.src} alt="Imagem 2" className="w-full" />
         </div>
       </div>

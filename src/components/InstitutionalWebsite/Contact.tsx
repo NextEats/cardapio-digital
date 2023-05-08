@@ -1,4 +1,16 @@
-const Contact = () => {
+import { sendEmailApi } from '@/src/server/api';
+
+export default function Contact() {
+  const handleSendEmail = async () => {
+    const email = await sendEmailApi.post('api/send-landing-page-email', {
+      email: 'email@gmail.com',
+      name: 'contact',
+      message: 'sadasdasd',
+      whatsAppNumber: '(99) 99999-9999',
+    });
+    console.log(email);
+  };
+
   return (
     <div className="border-t-brand-dark-orange bg-orange-500 flex w-screen">
       <div className="max-w-[1500px] max-w-screen mx-auto p-8 grid grid-cols-1 sm:grid-cols-1">
@@ -105,7 +117,8 @@ const Contact = () => {
             </div>
 
             <button
-              type="submit"
+              type="button"
+              onClick={() => handleSendEmail()}
               className="md:w-32 bg-indigo-600 hover:bg-blue-dark text-white font-bold py-3 px-6 rounded-lg mt-3 hover:bg-indigo-500 transition ease-in-out duration-300"
             >
               Submit
@@ -115,6 +128,4 @@ const Contact = () => {
       </div>
     </div>
   );
-};
-
-export default Contact;
+}

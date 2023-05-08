@@ -1,13 +1,12 @@
 import Image from 'next/image';
 import AnchorLink from 'react-anchor-link-smooth-scroll';
 
-import backgroundAboveTheFold from '@/src/assets/background-atf-image.jpg';
 import heroImage from '@/src/assets/hero-image.png';
 import nextEatsOrangeLogo from '@/src/assets/nexteats_logo_orange.png';
 
 const Hero = () => {
   const backgroundImageStyles = {
-    background: `rgb(246, 246, 246) url(${backgroundAboveTheFold.src})`,
+    // background: `rgb(246, 246, 246) url(${backgroundAboveTheFold.src})`,
     backgroundRepeat: 'no-repeat',
     backgroundOrigin: 'content-box',
     backgroundPosition: 'center',
@@ -59,7 +58,7 @@ const Hero = () => {
         <div className="flex flex-col lg:flex-row h-[80vh] items-center lg:justify-between">
           <div className="w-full max-w-[80vw] lg:max-w-[50%] flex items-center flex-col ">
             <div className="w-full">
-              <span className="text-brand-dark-orange leading-tight text-[40px] sm:text-[2.5rem] lg:text-[3.5rem] block">
+              <span className="text-brand-dark-orange leading-tight text-5xl sm:text-[2.5rem] lg:text-[3.5rem] block">
                 Automatize as&nbsp;
                 <span className="font-semibold italic underline">entregas</span>
                 &nbsp; e o&nbsp;
@@ -70,9 +69,14 @@ const Hero = () => {
                 do seu restaurante.
               </span>
 
-              <span className="w-full text-left text-lg sm:text-normal text-gray-800 mt-8 block">
+              <span className="w-full text-left text-2xl sm:text-normal text-[#838383] mt-8 block">
                 Livre das taxas dos marketplaces e 100% digital.
               </span>
+              <div>zap zap e instagrebs</div>
+
+              <button className="bg-white shadow border text-[#FC6E25] min-h-[50px] min-w-[251px] text-[17px] font-bold my-6">
+                Começar gratuitamente
+              </button>
             </div>
           </div>
           <div className="w-full mt-16 md:mt-12 lg:mt-0 max-w-[100%] md:max-w-[70%] lg:max-w-[50%] flex items-center justify-center">
@@ -85,7 +89,7 @@ const Hero = () => {
           </div>
         </div>
       </div>
-      <div className="bg-white h-32 absolute bottom-0 w-screen right-triangle"></div>
+      <div className="bg-white h-14 absolute bottom-0 w-screen right-triangle"></div>
     </div>
   );
 };

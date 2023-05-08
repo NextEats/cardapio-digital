@@ -58,7 +58,7 @@ const Hero = () => {
         <div className="flex flex-col lg:flex-row h-[80vh] items-center lg:justify-between">
           <div className="w-full max-w-[80vw] lg:max-w-[50%] flex items-center flex-col ">
             <div className="w-full">
-              <span className="text-brand-dark-orange leading-tight text-5xl sm:text-[2.5rem] lg:text-[3.5rem] block">
+              <span className="text-brand-dark-orange leading-tight text-3xl sm:text-[2rem] lg:text-[3.5rem] block">
                 Automatize as&nbsp;
                 <span className="font-semibold italic underline">entregas</span>
                 &nbsp; e o&nbsp;

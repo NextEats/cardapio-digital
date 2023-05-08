@@ -79,14 +79,14 @@ export default function Contact() {
           <form className="p-6 flex flex-col justify-center">
             <div className="flex flex-col">
               <label htmlFor="name" className="hidden">
-                Full Name
+                Nome
               </label>
               <input
                 type="name"
                 name="name"
                 id="name"
-                placeholder="Full Name"
-                className="w-100 mt-2 py-3 px-3 rounded-lg bg-white dark:bg-gray-800 border border-gray-400 dark:border-gray-700 text-gray-800 font-semibold focus:border-indigo-500 focus:outline-none"
+                placeholder="Nome"
+                className="w-100 mt-2 py-3 px-3 rounded-lg bg-white shadow-md border-gray-400  text-gray-800 font-semibold focus:border-indigo-500 focus:outline-none"
               />
             </div>
 
@@ -99,29 +99,37 @@ export default function Contact() {
                 name="email"
                 id="email"
                 placeholder="Email"
-                className="w-100 mt-2 py-3 px-3 rounded-lg bg-white dark:bg-gray-800 border border-gray-400 dark:border-gray-700 text-gray-800 font-semibold focus:border-indigo-500 focus:outline-none"
+                className="w-100 mt-2 py-3 px-3 rounded-lg bg-white shadow-md border-gray-400  text-gray-800 font-semibold focus:border-indigo-500 focus:outline-none"
               />
             </div>
 
             <div className="flex flex-col mt-2">
               <label htmlFor="tel" className="hidden">
-                Number
+                Mensagem
               </label>
-              <input
-                type="tel"
+              {/* <input
+                type="text"
                 name="tel"
                 id="tel"
                 placeholder="Telephone Number"
-                className="w-100 mt-2 py-3 px-3 rounded-lg bg-white dark:bg-gray-800 border border-gray-400 dark:border-gray-700 text-gray-800 font-semibold focus:border-indigo-500 focus:outline-none"
-              />
+                className="w-100 mt-2 py-3 px-3 rounded-lg bg-white  border-gray-400  text-gray-800 font-semibold focus:border-indigo-500 focus:outline-none"
+              /> */}
+              <textarea
+                placeholder="Mensagem"
+                className="w-100 mt-2 py-3 px-3 shadow-md rounded-lg bg-white  border-gray-400  text-gray-800 font-semibold focus:border-indigo-500 focus:outline-none"
+                name="text"
+                id="text"
+                cols={4}
+                rows={5}
+              ></textarea>
             </div>
 
             <button
               type="button"
               onClick={() => handleSendEmail()}
-              className="md:w-32 bg-indigo-600 hover:bg-blue-dark text-white font-bold py-3 px-6 rounded-lg mt-3 hover:bg-indigo-500 transition ease-in-out duration-300"
+              className="w-full bg-indigo-600 hover:bg-blue-dark text-white font-bold py-3 px-6 rounded-md mt-3 hover:bg-indigo-500 transition ease-in-out duration-300"
             >
-              Submit
+              ENVIAR
             </button>
           </form>
         </div>

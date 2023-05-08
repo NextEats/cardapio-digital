@@ -24,9 +24,9 @@ export default async function sendLandinPageEmail(
   switch (method) {
     case 'POST':
       try {
-        const {} = await transporter.sendMail({
-          from: '" Ei vagabundo 👻" <autoshine103@gmail.com>', // sender address
-          to: 'barrosoeduardo64@gmail.com', // list of receivers
+        const { response } = await transporter.sendMail({
+          from: '" Novo Cliente👻" <nexteats.business@gmail.com>', // sender address
+          to: 'contato@nexteats.com.br', // list of receivers
           subject: 'Novo cliente!', // Subject line
           text: 'Hello world?', // plain text body
           html: `
@@ -36,7 +36,7 @@ export default async function sendLandinPageEmail(
                 <strong> Message: </strong> <span> ${message} </span><br/>
                 `, // html body
         });
-        res.status(200).json({ message: 'sended' });
+        res.status(200).json(response);
       } catch (error) {
         console.error(error);
         res

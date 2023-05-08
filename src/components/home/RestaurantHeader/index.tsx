@@ -5,8 +5,9 @@ import { FaClock } from 'react-icons/fa';
 import { MdLocationOn } from 'react-icons/md';
 
 import { DigitalMenuContext } from '@/src/contexts/DigitalMenuContext';
+import { isRestaurantOpenNow } from '@/src/helpers/isRestaurantOpenNow';
 import { supabase } from '@/src/server/api';
-import { iCashBox } from '@/src/types/types';
+import { iCashBox, iWeekdayOperatingTimeWithFKData } from '@/src/types/types';
 
 async function fetchAddressFromCep(cep: string) {
   try {
@@ -28,6 +29,9 @@ function RestaurantHeader() {
   const { modals, restaurant } = useContext(DigitalMenuContext);
   const [street, setStreet] = useState<string>('');
   const [currentCashbox, setCurrentCashbox] = useState<any>();
+  const [operatingTimes, setOperatingTimes] = useState<
+    iWeekdayOperatingTimeWithFKData[]
+  >([]);
 
   useEffect(() => {
     async function fetchAddress() {
@@ -68,6 +72,52 @@ function RestaurantHeader() {
     getCurrentCashbox();
   }, [restaurant]);
 
+  useEffect(() => {
+    async function fetchOperatingTimes() {
+      const { data: operatingTimes } = await supabase
+        .from('weekday_operating_time')
+        .select('*, weekdays (*)')
+        .match({ restaurant_id: restaurant?.id, is_active: true })
+        .returns<iWeekdayOperatingTimeWithFKData[]>();
+      setOperatingTimes(operatingTimes || []);
+    }
+    fetchOperatingTimes();
+  }, [restaurant]);
+
+  // function getDayName(weekDayIndex: number) {
+  //   const days = [
+  //     null,
+  //     'domingo',
+  //     'segunda',
+  //     'terça',
+  //     'quarta',
+  //     'quinta',
+  //     'sexta',
+  //     'sábado',
+  //   ];
+  //   return days[weekDayIndex];
+  // }
+
+  // function isRestaurantOpenNow() {
+  //   const now = new Date();
+  //   const currentWeekDayIndex = now.getDay() + 1;
+  //   const adjustedWeekDayIndex =
+  //     currentWeekDayIndex === 0 ? 7 : currentWeekDayIndex;
+  //   const currentWeekDayName = getDayName(adjustedWeekDayIndex);
+  //   const currentTime = now.toTimeString().slice(0, 8);
+
+  //   return operatingTimes.some(({ opening_time, closing_time, weekdays }) => {
+  //     return (
+  //       opening_time !== null &&
+  //       closing_time !== null &&
+  //       weekdays.name.split('-')[0].toLocaleLowerCase() ===
+  //         currentWeekDayName &&
+  //       currentTime >= opening_time &&
+  //       currentTime <= closing_time
+  //     );
+  //   });
+  // }
+
   if (!restaurant) return null;
 
   return (
@@ -98,7 +148,7 @@ function RestaurantHeader() {
             <h1 className="text-2xl font-semibold text-[#3e3e3e]">
               {restaurant.name}
             </h1>
-            {currentCashbox ? (
+            {currentCashbox && isRestaurantOpenNow({ operatingTimes }) ? (
               <span className="mt-1 text-green-600 font-semibold">
                 Aberto Agora
               </span>

@@ -1,37 +1,94 @@
+import { useKeenSlider } from 'keen-slider/react';
+import Image from 'next/image';
 import React from 'react';
 
-interface Slide {
-  src: string;
-}
+import 'keen-slider/keen-slider.min.css';
+// interface Slide {
+//   src: string;
+// }
 
-interface SliderProps {
-  slides: Slide[];
-  slidesToShow: number;
-}
+// interface SliderProps {
+//   slides: Slide[];
+//   slidesToShow: number;
+// }
 
 const Slider: React.FC = () => {
   const slides = [
-    { src: 'http://placehold.it/200x150' },
-    { src: 'http://placehold.it/200x150' },
-    { src: 'http://placehold.it/200x150' },
-    { src: 'http://placehold.it/200x150' },
-    { src: 'http://placehold.it/200x150' },
-    { src: 'http://placehold.it/200x150' },
-    { src: 'http://placehold.it/200x150' },
-    { src: 'http://placehold.it/200x150' },
-    { src: 'http://placehold.it/200x150' },
-    { src: 'http://placehold.it/200x150' },
-    { src: 'http://placehold.it/200x150' },
-    { src: 'http://placehold.it/200x150' },
-    { src: 'http://placehold.it/200x150' },
+    {
+      src: 'https://cceilpiizkukiqfodhec.supabase.co/storage/v1/object/public/restaurant-pictures/gago.png',
+    },
+    {
+      src: 'https://cceilpiizkukiqfodhec.supabase.co/storage/v1/object/public/restaurant-pictures/Design%20sem%20nome.jpg',
+    },
+    {
+      src: 'https://cceilpiizkukiqfodhec.supabase.co/storage/v1/object/public/restaurant-pictures/LOGO%20RICARDO%20ESPETARIA%20(2).png',
+    },
+    {
+      src: 'https://cceilpiizkukiqfodhec.supabase.co/storage/v1/object/public/restaurant-pictures/gago.png',
+    },
+    {
+      src: 'https://cceilpiizkukiqfodhec.supabase.co/storage/v1/object/public/restaurant-pictures/Design%20sem%20nome.jpg',
+    },
+    {
+      src: 'https://cceilpiizkukiqfodhec.supabase.co/storage/v1/object/public/restaurant-pictures/LOGO%20RICARDO%20ESPETARIA%20(2).png',
+    },
+    {
+      src: 'https://cceilpiizkukiqfodhec.supabase.co/storage/v1/object/public/restaurant-pictures/gago.png',
+    },
   ];
+
+  const [sliderRef, instanceRef] = useKeenSlider({
+    // slideChanged() {
+    //   console.log('slide changed');
+    // },
+
+    slides: {
+      perView: 2.4,
+      spacing: 16,
+    },
+    breakpoints: {
+      '(min-width: 400px)': {
+        slides: {
+          perView: 4,
+          spacing: 16,
+        },
+      },
+      '(min-width: 500px)': {
+        slides: {
+          perView: 5,
+          spacing: 16,
+        },
+      },
+      '(min-width: 1000px)': {
+        slides: {
+          perView: 8,
+          spacing: 16,
+        },
+      },
+      '(min-width: 1400px)': {
+        slides: {
+          perView: 11,
+          spacing: 16,
+        },
+      },
+    },
+  });
 
   return (
     <div className="pt-32">
-      <div className="flex flex-row max-w-[1500px] max-w-screen mx-auto p-8 overflow-x-auto">
+      <div
+        ref={sliderRef}
+        className="flex flex-row max-w-full mx-auto keen-slider overflow-x-auto"
+      >
         {slides.map((slide, index) => (
-          <div key={index} className=" mx-1">
-            <img src={slide.src} className="min-w-[180px]" alt="" />
+          <div key={index} className="keen-slider__slide">
+            <Image
+              src={slide.src}
+              alt=""
+              className="rounded-md  min-w-40 object-cover"
+              width={800}
+              height={800}
+            />
           </div>
         ))}
       </div>

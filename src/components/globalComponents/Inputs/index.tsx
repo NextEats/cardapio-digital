@@ -1,14 +1,14 @@
-interface Button {
+interface Iprops {
   placeHolder?: string;
   Disabled?: true | false | boolean;
-  Type?: 'text' | 'number' | undefined;
+  Type?: 'text' | 'number' | 'time' | undefined;
   label?: string;
   value: string | number | undefined;
   setValue: Function;
   required?: boolean;
 }
 
-export default function TextFiled(props: Button) {
+export default function TextFiled(props: Iprops) {
   return (
     <div>
       {props.label ? (

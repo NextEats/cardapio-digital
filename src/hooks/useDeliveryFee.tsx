@@ -1,5 +1,4 @@
-import { api } from '@/src/server/api';
-import { iDeliveryFee } from '@/src/types/types';
+import { supabase } from '@/src/server/api';
 import { useEffect, useState } from 'react';
 import { getAddressFromCep } from '../components/ClientDigitalMenu/Cart/SubmitForm/util/findDeliveryFeeForTheDistance';
 import { returnDistanceInMeters } from '../components/ClientDigitalMenu/Cart/SubmitForm/util/returnDistanceInMeters';
@@ -31,11 +30,21 @@ function useDeliveryFee(cep: string, number: string, restaurant: any) {
 
       console.log('distance_in_km', distance_in_km);
 
-      const { data: delivery_fees_data } = await api.post<
-        Array<iDeliveryFee['data']>
-      >('/api/delivery_fees', {
-        id: restaurant!.id,
-      });
+      // const { data: delivery_fees_data } = await api.post<
+      //   Array<iDeliveryFee['data']>
+      // >('/api/delivery_fees', {
+      //   id: restaurant!.id,
+      // });
+      const { data: delivery_fees_data, error } = await supabase
+        .from('delivery_fees')
+        .select('*')
+        .eq('restaurant_id', restaurant!.id)
+        .is('deleted_at', null);
+
+      if (delivery_fees_data === null) {
+        setDeliveryFee(0);
+        return;
+      }
 
       foundDeliveryFee = delivery_fees_data!.find(df => {
         return distance_in_km! <= df.end_km! && distance_in_km! >= df.start_km!;

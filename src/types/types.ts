@@ -407,6 +407,7 @@ export interface iOrderTypes {
   data: Database['public']['Tables']['order_types']['Row'];
 }
 
+
 export interface iDeliveryFees {
   data: Array<Database['public']['Tables']['delivery_fees']['Row']>;
 }

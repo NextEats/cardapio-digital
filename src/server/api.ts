@@ -39,6 +39,14 @@ export const api = axios.create({
   baseURL: '/',
 });
 
+export const sendEmailApi = axios.create({
+  baseURL: '/',
+  timeout: 100000,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
+
 export const supabase = createClient<Database>(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!

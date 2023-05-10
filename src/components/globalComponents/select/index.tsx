@@ -19,7 +19,7 @@ export default function Select(props: Iprops) {
       {props.label ? (
         <label
           htmlFor="countries"
-          className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-400"
+          className="block mb-2 text-sm text-navy-700 font-bold"
         >
           {props.label}
         </label>

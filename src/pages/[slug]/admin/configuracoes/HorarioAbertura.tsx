@@ -233,13 +233,13 @@ export default function HorariosAbertura() {
   return (
     <>
       <div className="p-4">
-        <h1 className="text-2xl font-bold mb-4">Horario De Abertura</h1>
+        <h1 className="text-2xl font-bold mb-4">Horário De Abertura</h1>
         <div className="w-full text-right">
           <button
             className="bg-blue-500 text-white py-2 px-4 rounded-md mb-4 mt-8"
             onClick={toggleModal}
           >
-            Adicionar nova taxa de entrega
+            Adicionar novo Horário de abertura
           </button>
         </div>
         <table className="w-full table-auto">
@@ -326,8 +326,8 @@ export default function HorariosAbertura() {
             Type="time"
             value={weekId}
             setValue={setWeekId}
-            placeHolder="Digite o Horario de Fechamento"
-            label="Horario de Fechamento"
+            placeHolder="Digite o Dia da Semana"
+            label="Dia da Semana"
             options={weekDays}
           />
         </Modal.Body>

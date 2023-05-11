@@ -351,6 +351,7 @@ export interface Database {
       delivery_fees: {
         Row: {
           created_at: string | null;
+          deleted_at: string | null;
           end_km: number | null;
           fee: number;
           id: number;
@@ -359,6 +360,7 @@ export interface Database {
         };
         Insert: {
           created_at?: string | null;
+          deleted_at?: string | null;
           end_km?: number | null;
           fee: number;
           id?: number;
@@ -367,6 +369,7 @@ export interface Database {
         };
         Update: {
           created_at?: string | null;
+          deleted_at?: string | null;
           end_km?: number | null;
           fee?: number;
           id?: number;

@@ -4,13 +4,14 @@ import Image from 'next/image';
 import { MouseEvent, useContext, useEffect, useState } from 'react';
 import { BsArrowLeftCircle } from 'react-icons/bs';
 
-import { getProductWithFKData } from '@/src/fetch/products/getProductWithFKData';
 import { tSelectWithOptions } from '@/src/fetch/productSelects/getProductSelectWithOptions';
+import { getProductWithFKData } from '@/src/fetch/products/getProductWithFKData';
+import { isRestaurantOpenNow } from '@/src/helpers/isRestaurantOpenNow';
 import useAdditionals from '@/src/hooks/useAdditionals';
 import useProductSelectsWithOptions from '@/src/hooks/useProductSelectsWithOptions';
 import { clearAdditionals } from '@/src/reducers/AdditionalsReducer/actions/clearAdditionals';
 import { supabase } from '@/src/server/api';
-import { iCashBox } from '@/src/types/types';
+import { iCashBox, iWeekdayOperatingTimeWithFKData } from '@/src/types/types';
 import { toast } from 'react-toastify';
 import Additionals from './components/Additionals';
 import ProductOptions from './components/ProductOptions';
@@ -26,6 +27,9 @@ export default function ProductModal() {
 
   const [observation, setObservation] = useState('');
   const [productData, setProductData] = useState<any>(undefined);
+  const [operatingTimes, setOperatingTimes] = useState<
+    iWeekdayOperatingTimeWithFKData[]
+  >([]);
 
   useEffect(() => {
     if (selectedProduct?.state) {
@@ -37,6 +41,20 @@ export default function ProductModal() {
 
   const { dispatch: additionalsDispatch, state: additionalsState } =
     useAdditionals(selectedProduct?.state ? selectedProduct?.state : '0');
+
+  useEffect(() => {
+    async function fetchOperatingTimes() {
+      const { data: operatingTimes } = await supabase
+        .from('weekday_operating_time')
+        .select('*, weekdays (*)')
+        .match({ restaurant_id: restaurant?.id, is_active: true })
+        .returns<iWeekdayOperatingTimeWithFKData[]>();
+      console.log(restaurant?.id);
+      console.log(operatingTimes);
+      setOperatingTimes(operatingTimes || []);
+    }
+    fetchOperatingTimes();
+  }, [restaurant]);
 
   if (!productData || !selectedProduct?.state) {
     return <></>;
@@ -63,7 +81,7 @@ export default function ProductModal() {
     const currentCashBox =
       currentCashBoxData![0] as unknown as iCashBox['data'];
 
-    if (!currentCashBox) {
+    if (!currentCashBox || !isRestaurantOpenNow({ operatingTimes })) {
       toast.error(
         `Desculpe, o restaurante ${restaurant?.name} não está aberto no momento! Confira nossos horários de abertura e fechamento.`,
         {

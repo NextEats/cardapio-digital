@@ -5,12 +5,11 @@ import CashHeader from '@/src/components/admin/CashBox/CashHeader';
 import { getActiveCashBoxByTheRestaurantID } from '@/src/fetch/cashBoxes/getActiveCashboxByRestaurantId';
 import { getRestaurantBySlugFetch } from '@/src/fetch/restaurant/getRestaurantBySlug';
 import { supabase } from '@/src/server/api';
-import {
-  iCashBox,
-  iOrdersProductsWithFKData,
-  iRestaurantWithFKData,
-  iTablePaymentWithPaymentFKData,
-} from '@/src/types/types';
+import { iCashBox } from '@/src/types/iCashBox';
+import { iOrdersProductsWithFKData } from '@/src/types/iOrders';
+import { iRestaurantWithFKData } from '@/src/types/iRestaurant';
+import { iTablePaymentWithPaymentFKData } from '@/src/types/iTable';
+
 import { GetServerSideProps } from 'next';
 
 export interface iCashboxManagement {

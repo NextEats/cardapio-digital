@@ -2,10 +2,9 @@ import Process from '@/src/components/admin/Tables/Table/Payment/Process';
 import { getPaymentMethodsRestaurantsByRestaurantIdFetch } from '@/src/fetch/paymentMethodsRestaurants/getPaymentMethodsRestaurantsByRestaurantId';
 import { getRestaurantBySlugFetch } from '@/src/fetch/restaurant/getRestaurantBySlug';
 import { supabase } from '@/src/server/api';
-import {
-  iPaymentMethodsRestaurantsWithFKData,
-  iRestaurantWithFKData,
-} from '@/src/types/types';
+import { iPaymentMethodsRestaurantsWithFKData } from '@/src/types/iPaymentMethod';
+import { iRestaurantWithFKData } from '@/src/types/iRestaurant';
+
 import { GetServerSideProps } from 'next';
 
 interface iPaymentsProps {

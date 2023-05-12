@@ -1,8 +1,8 @@
-import { supabase } from "../../server/api";
-import { iRestaurants } from "../../types/types";
+import { iRestaurants } from '@/src/types/iRestaurant';
+import { supabase } from '../../server/api';
 
-export async function getRestaurantsFetch(): Promise<iRestaurants["data"]> {
-    const { data } = await supabase.from("restaurants").select()
+export async function getRestaurantsFetch(): Promise<iRestaurants['data']> {
+  const { data } = await supabase.from('restaurants').select();
 
-    return data!
+  return data!;
 }

@@ -19,7 +19,7 @@ export default function Tables() {
         {<InactiveTablesModal />}
       </span>
       <div className="flex flex-col  sm:grid sm:grid-cols-2 xl:grid-cols-3 1280px gap-5 pb-24">
-        {tables.map((t, index) => {
+        {tables.map((t: any, index: any) => {
           if (t.is_active === true) return;
           return (
             <Link

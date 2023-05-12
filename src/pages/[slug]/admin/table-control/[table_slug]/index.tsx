@@ -8,17 +8,20 @@ import { getProductsByRestaurantIdFetch } from '@/src/fetch/products/getProducts
 import { getProductsCategoriesByRestaurantIdFetch } from '@/src/fetch/productsCategories/getProductsCategoriesByRestaurantId';
 import { getRestaurantBySlugFetch } from '@/src/fetch/restaurant/getRestaurantBySlug';
 import { supabase } from '@/src/server/api';
+import { iAdditionals } from '@/src/types/iAdditional';
 import {
-  iAdditionals,
   iOrder,
   iOrdersProductsWithFKProducdData,
   iOrdersTablesWithOrderFkData,
+} from '@/src/types/iOrders';
+import {
   iProductAdditionals,
   iProductCategories,
   iProducts,
-  iRestaurantWithFKData,
-  iTable,
-} from '@/src/types/types';
+} from '@/src/types/iProducts';
+import { iRestaurantWithFKData } from '@/src/types/iRestaurant';
+import { iTable } from '@/src/types/iTable';
+
 import { GetServerSideProps } from 'next';
 
 interface iTableProps {

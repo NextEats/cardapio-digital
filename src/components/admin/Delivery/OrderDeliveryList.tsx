@@ -1,5 +1,5 @@
 import { DeliveryPageContext } from '@/src/contexts/DeliveryContext';
-import { iOrdersWithStatusFKData } from '@/src/types/types';
+import { iOrdersWithStatusFKData } from '@/src/types/iOrders';
 import { useContext } from 'react';
 import { RadixOrderAccordion } from '../../globalComponents/RadixOrderAccordion';
 

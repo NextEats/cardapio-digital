@@ -2,7 +2,7 @@ import { ProductContext } from '@/src/contexts/ProductContext';
 import { getFilePath } from '@/src/helpers/getFilePath';
 import { getPathByPictureUrl } from '@/src/helpers/getPathByPictureUrl';
 import { supabase } from '@/src/server/api';
-import { iProductOption } from '@/src/types/types';
+import { iProductOption } from '@/src/types/iProducts';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as Dialog from '@radix-ui/react-dialog';
 import * as Switch from '@radix-ui/react-switch';
@@ -129,9 +129,9 @@ export function UpdateProductOption({
       return;
     }
 
-    setProduct_options(state => {
+    setProduct_options((state: any) => {
       state!.splice(
-        state!.findIndex(op => op.id === updateOption?.id),
+        state!.findIndex((op: any) => op.id === updateOption?.id),
         1
       );
       return [...state!, { ...optionData[0] }];

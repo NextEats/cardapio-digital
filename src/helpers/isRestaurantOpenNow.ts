@@ -1,4 +1,4 @@
-import { iWeekdayOperatingTimeWithFKData } from '../types/types';
+import { iWeekdayOperatingTimeWithFKData } from '../types/iWeekday';
 
 function getDayName(weekDayIndex: number) {
   const days = [

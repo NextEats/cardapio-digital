@@ -1,13 +1,13 @@
 import { supabase } from '@/src/server/api';
-import { iOrdersTablesWithFkData } from '@/src/types/types';
+import { iOrdersTablesWithFkData } from '@/src/types/iOrders';
 
 export async function getOrdersTablesFetch(): Promise<
-    iOrdersTablesWithFkData[]
+  iOrdersTablesWithFkData[]
 > {
-    const { data } = await supabase
-        .from('orders_tables')
-        .select(
-            `
+  const { data } = await supabase
+    .from('orders_tables')
+    .select(
+      `
             id,
             has_been_paid,
             orders (
@@ -27,8 +27,8 @@ export async function getOrdersTablesFetch(): Promise<
                 name
             )
     `
-        )
-        .order('created_at', { ascending: false });
+    )
+    .order('created_at', { ascending: false });
 
-    return data! as unknown as iOrdersTablesWithFkData[];
+  return data! as unknown as iOrdersTablesWithFkData[];
 }

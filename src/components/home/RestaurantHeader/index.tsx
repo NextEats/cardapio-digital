@@ -7,7 +7,8 @@ import { MdLocationOn } from 'react-icons/md';
 import { DigitalMenuContext } from '@/src/contexts/DigitalMenuContext';
 import { isRestaurantOpenNow } from '@/src/helpers/isRestaurantOpenNow';
 import { supabase } from '@/src/server/api';
-import { iCashBox, iWeekdayOperatingTimeWithFKData } from '@/src/types/types';
+import { iCashBox } from '@/src/types/iCashBox';
+import { iWeekdayOperatingTimeWithFKData } from '@/src/types/iWeekday';
 
 async function fetchAddressFromCep(cep: string) {
   try {

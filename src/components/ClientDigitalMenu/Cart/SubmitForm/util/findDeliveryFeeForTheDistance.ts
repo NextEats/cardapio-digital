@@ -1,5 +1,5 @@
 import { supabase } from '@/src/server/api';
-import { iDeliveryFee } from '@/src/types/types';
+import { iDeliveryFee } from '@/src/types/iDeliveryFee';
 import { toast } from 'react-toastify';
 
 export async function getAddressFromCep(cep: string) {

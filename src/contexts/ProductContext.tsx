@@ -13,13 +13,15 @@ import {
   iAdditionalCategories,
   iAdditionalCategory,
   iAdditionals,
+} from '../types/iAdditional';
+import {
   iProductCategories,
   iProductCategory,
   iProductOptions,
   iProductsWithFKData,
-  iRestaurant,
-  iSelects,
-} from '../types/types';
+} from '../types/iProducts';
+import { iRestaurant } from '../types/iRestaurant';
+import { iSelects } from '../types/iSelect';
 
 interface iProductEditDataState {
   type: 'deleted' | 'added';

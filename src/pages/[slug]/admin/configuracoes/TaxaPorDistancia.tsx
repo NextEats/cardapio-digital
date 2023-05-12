@@ -4,7 +4,7 @@ import Modal from '@/src/components/globalComponents/Modal';
 import Button from '@/src/components/nButton';
 import { AdminContext } from '@/src/contexts/adminContext';
 import { supabase } from '@/src/server/api';
-import { iDeliveryFees } from '@/src/types/types';
+import { iDeliveryFees } from '@/src/types/iDeliveryFee';
 import { useContext, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 

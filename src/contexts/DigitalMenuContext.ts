@@ -1,6 +1,7 @@
 import { createContext, Dispatch } from 'react';
 import { tSelectWithOptions } from '../fetch/productSelects/getProductSelectWithOptions';
-import { iRestaurantWithFKData } from '../types/types';
+import { iRestaurantWithFKData } from '../types/iRestaurant';
+
 export interface iShowModalsState {
   checkout: boolean;
   operatingTime: boolean;

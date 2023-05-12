@@ -1,4 +1,4 @@
-import { iTablePaymentWithPaymentFKData } from '@/src/types/types';
+import { iTablePaymentWithPaymentFKData } from '@/src/types/iTable';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import ValueCard from '../../../../globalComponents/ValueCard';

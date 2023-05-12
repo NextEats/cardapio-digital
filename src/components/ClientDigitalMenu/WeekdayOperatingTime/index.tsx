@@ -47,8 +47,8 @@ export function WeekdayOperatingTime() {
               </thead>
               <tbody className="child:child:font-light child:child:text-2xl child:child:h-12">
                 {restaurant.weekday_operating_time
-                  .sort((a, b) => a.weekday_id - b.weekday_id)
-                  .map((weekday, index) => {
+                  .sort((a: any, b: any) => a.weekday_id - b.weekday_id)
+                  .map((weekday: any, index: any) => {
                     if (weekday.is_active === false) {
                       return (
                         <tr key={index} className="child:">

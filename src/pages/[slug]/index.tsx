@@ -3,7 +3,7 @@ import {
   iShowModalsState,
 } from '@/src/contexts/DigitalMenuContext';
 import { getRestaurantBySlugFetch } from '@/src/fetch/restaurant/getRestaurantBySlug';
-import { iDigitalMenuData } from '@/src/types/types';
+
 import { GetServerSideProps } from 'next';
 import Head from 'next/head';
 import { useReducer, useState } from 'react';
@@ -14,6 +14,7 @@ import { tSelectWithOptions } from '@/src/fetch/productSelects/getProductSelectW
 import { ProductsReducer } from '@/src/reducers/ProductsReducer/reducer';
 import { supabase } from '@/src/server/api';
 
+import { iDigitalMenuData } from '@/src/types/iWeekday';
 import Image from 'next/image';
 import Link from 'next/link';
 

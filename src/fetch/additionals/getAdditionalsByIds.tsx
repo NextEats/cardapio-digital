@@ -1,5 +1,5 @@
+import { iAdditionals } from '@/src/types/iAdditional';
 import { supabase } from '../../server/api';
-import { iAdditionals } from '../../types/types';
 
 interface iGetAdditionalsByIdsProps {
   ids: number[];

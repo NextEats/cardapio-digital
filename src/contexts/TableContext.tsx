@@ -12,18 +12,20 @@ import {
   tableReducer,
   tableReducerDefaultValues,
 } from '../reducers/tableReducer/reducer';
+import { iAdditionals } from '../types/iAdditional';
 import {
-  iAdditionals,
   iOrder,
   iOrdersProductsWithFKProducdData,
   iOrdersTablesWithOrderFkData,
+} from '../types/iOrders';
+import {
   iProduct,
   iProductAdditionals,
   iProductCategories,
   iProducts,
-  iRestaurant,
-  iTable,
-} from '../types/types';
+} from '../types/iProducts';
+import { iRestaurant } from '../types/iRestaurant';
+import { iTable } from '../types/iTable';
 
 interface iTableContextProps {
   table: iTable['data'];

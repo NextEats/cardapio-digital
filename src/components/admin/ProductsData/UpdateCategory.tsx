@@ -78,10 +78,10 @@ export function UpdateCategory({ categoryType }: iUpdateCategoryProps) {
 
   useMemo(() => {
     const numbersOfCategoryOrder = categories
-      .map(category => category.category_order)
+      .map((category: any) => category.category_order)
       .sort();
     if (
-      numbersOfCategoryOrder.some(order => order === newOrder) &&
+      numbersOfCategoryOrder.some((order: any) => order === newOrder) &&
       newOrder !== updateCategoryState?.category_order
     ) {
       setError('order', {
@@ -151,7 +151,7 @@ export function UpdateCategory({ categoryType }: iUpdateCategoryProps) {
             <div className="flex flex-wrap items-center gap-3 mb-4 mt-6">
               {sequence.map(seq => {
                 const busyoOrder = categories.some(
-                  c => c.category_order === seq
+                  (c: any) => c.category_order === seq
                 );
                 return (
                   <button

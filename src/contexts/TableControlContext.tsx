@@ -1,5 +1,6 @@
 import { createContext, ReactNode } from 'react';
-import { iRestaurant, iTables } from '../types/types';
+import { iRestaurant } from '../types/iRestaurant';
+import { iTables } from '../types/iTable';
 
 interface iTableControlContextProps {
   tables: iTables['data'];

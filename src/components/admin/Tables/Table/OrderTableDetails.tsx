@@ -46,9 +46,9 @@ export default function OrderTableDetails({
                       |&nbsp;
                       <span>
                         {order_product.selectsWithOptions.map(
-                          (productSelects, psIndex) => {
+                          (productSelects: any, psIndex: any) => {
                             return productSelects.options.map(
-                              (option, index) => option.name + ' | '
+                              (option: any, index: any) => option.name + ' | '
                             );
                           }
                         )}
@@ -57,16 +57,18 @@ export default function OrderTableDetails({
                   </div>
                 ) : null}
 
-                {order_product.additionals.map((additional, aIndex) => {
-                  return (
-                    <span key={aIndex}>
-                      {additional.quantity} - {additional.additional.name} -
-                      <span className="font-semibold ml-auto">
-                        R$ {additional.additional.price * additional.quantity}
+                {order_product.additionals.map(
+                  (additional: any, aIndex: any) => {
+                    return (
+                      <span key={aIndex}>
+                        {additional.quantity} - {additional.additional.name} -
+                        <span className="font-semibold ml-auto">
+                          R$ {additional.additional.price * additional.quantity}
+                        </span>
                       </span>
-                    </span>
-                  );
-                })}
+                    );
+                  }
+                )}
 
                 {order_product.observation ? (
                   <p>

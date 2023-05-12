@@ -3,7 +3,8 @@ import {
   changeAdditionalQuantityAction,
   selectAdditionalAction,
 } from '@/src/reducers/tableReducer/action';
-import { iAdditional } from '@/src/types/types';
+import { iAdditional } from '@/src/types/iAdditional';
+
 import Image from 'next/image';
 import { useContext } from 'react';
 import { BsPlusCircleFill } from 'react-icons/bs';
@@ -30,7 +31,7 @@ export default function TableAdditionals() {
 
   return (
     <>
-      {additionalByProductId.map(additional => {
+      {additionalByProductId.map((additional: any) => {
         const additionalHasAlreadyBeenSelected =
           tableState.quantityAdditionals.some(
             aq => aq.additionalId === additional.id

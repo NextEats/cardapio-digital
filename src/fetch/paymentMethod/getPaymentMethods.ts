@@ -1,8 +1,10 @@
-import { supabase } from "../../server/api";
-import { iPaymentMethods } from "../../types/types";
+import { iPaymentMethods } from '@/src/types/iPaymentMethod';
+import { supabase } from '../../server/api';
 
-export async function getPaymentMethodsFetch(): Promise<iPaymentMethods["data"]> {
-    const { data } = await supabase.from("payment_methods").select()
+export async function getPaymentMethodsFetch(): Promise<
+  iPaymentMethods['data']
+> {
+  const { data } = await supabase.from('payment_methods').select();
 
-    return data!
+  return data!;
 }

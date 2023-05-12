@@ -13,7 +13,7 @@ import { useForm } from 'react-hook-form';
 import { FiX } from 'react-icons/fi';
 import * as zod from 'zod';
 
-import { iSelect } from '@/src/types/types';
+import { iSelect } from '@/src/types/iSelect';
 import * as Switch from '@radix-ui/react-switch';
 
 interface iUpdateSelectProps {
@@ -99,9 +99,9 @@ export function UpdateSelect({
       return;
     }
 
-    setSelects(state => {
+    setSelects((state: any) => {
       state?.splice(
-        state?.findIndex(s => s.id! === isUpadatingSelect?.id!),
+        state?.findIndex((s: any) => s.id! === isUpadatingSelect?.id!),
         1
       );
       return [...state!, { ...selectData[0] }];

@@ -1,13 +1,13 @@
-import {
-  iOrder,
-  iOrdersProductsWithFKDataToDelivery,
-  iOrdersWithStatusFKData,
-  iRestaurant,
-} from '@/src/types/types';
 import { ReactNode, createContext, useEffect, useState } from 'react';
 import { getActiveCashBoxByTheRestaurantID } from '../fetch/cashBoxes/getActiveCashboxByRestaurantId';
 import { getOrdersProductsWithFKDataByOrdersIdsFetch } from '../fetch/ordersProducts/getOrdersProductsWithFKDataByOrdersIds';
 import { supabase } from '../server/api';
+import {
+  iOrder,
+  iOrdersProductsWithFKDataToDelivery,
+  iOrdersWithStatusFKData,
+} from '../types/iOrders';
+import { iRestaurant } from '../types/iRestaurant';
 
 interface iDeliveryPageContext {
   ordersProducts: Array<iOrdersProductsWithFKDataToDelivery> | null;

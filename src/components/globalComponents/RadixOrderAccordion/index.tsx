@@ -1,12 +1,13 @@
 import { AdminContext } from '@/src/contexts/adminContext';
 import { supabase, whatsappRestApi } from '@/src/server/api';
+
 import {
   iOrders,
   iOrdersProductsWithFKDataToDelivery,
   iOrdersProductsWithFKProducdData,
   iOrdersWithFKData,
   iOrdersWithStatusFKData,
-} from '@/src/types/types';
+} from '@/src/types/iOrders';
 import * as Accordion from '@radix-ui/react-accordion';
 import { useContext } from 'react';
 import { BiCheck } from 'react-icons/bi';

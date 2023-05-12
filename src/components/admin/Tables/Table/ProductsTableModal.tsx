@@ -27,7 +27,7 @@ export default function ProductsTableModal({}: iProductTableModalProps) {
 
   const [categoryId, setCategoryId] = useState(0);
 
-  const filteredProducts = products.filter(product => {
+  const filteredProducts = products.filter((product: any) => {
     if (filter.name !== null) {
       return product.name
         .toLocaleLowerCase()
@@ -91,7 +91,7 @@ export default function ProductsTableModal({}: iProductTableModalProps) {
                 >
                   <span> Todos </span>
                 </div>
-                {categories.map(category => {
+                {categories.map((category: any) => {
                   return (
                     <div
                       key={category.id}
@@ -113,7 +113,7 @@ export default function ProductsTableModal({}: iProductTableModalProps) {
               </div>
 
               <div className="flex flex-col lg:grid lg:grid-cols-2 gap-2 max-h-[305px] overflow-auto scrollbar-custom p-1 mb-3">
-                {filteredProducts.map(product => {
+                {filteredProducts.map((product: any) => {
                   if (product.is_deleted) return null;
                   return (
                     <div

@@ -1,13 +1,7 @@
-import {
-  iAdditional,
-  iAdditionals,
-  iOrdersProducts,
-  iProduct,
-  iProductOptions,
-  iProducts,
-  iSelect,
-  iSelects,
-} from '../types/types';
+import { iAdditional, iAdditionals } from '../types/iAdditional';
+import { iOrdersProducts } from '../types/iOrders';
+import { iProduct, iProductOptions, iProducts } from '../types/iProducts';
+import { iSelect, iSelects } from '../types/iSelect';
 
 interface iGetOrdersProductsDataProps {
   ordersProducts: iOrdersProducts['data'];

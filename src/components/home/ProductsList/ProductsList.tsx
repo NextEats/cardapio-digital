@@ -4,7 +4,7 @@ import { FaSearch } from 'react-icons/fa';
 
 import { DigitalMenuContext } from '@/src/contexts/DigitalMenuContext';
 import toNormalForm from '@/src/helpers/stringToNormalForm';
-import { iProduct } from '@/src/types/types';
+import { iProduct } from '@/src/types/iProducts';
 import { useContext, useEffect, useState } from 'react';
 import AnchorLink from 'react-anchor-link-smooth-scroll';
 

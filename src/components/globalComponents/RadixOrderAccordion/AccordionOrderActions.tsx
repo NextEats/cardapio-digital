@@ -1,9 +1,10 @@
 import { supabase } from '@/src/server/api';
+
 import {
   iOrdersProductsWithFKDataToDelivery,
   iOrdersProductsWithFKProducdData,
   iOrdersWithStatusFKData,
-} from '@/src/types/types';
+} from '@/src/types/iOrders';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import { useRef } from 'react';
 import { BsThreeDotsVertical } from 'react-icons/bs';

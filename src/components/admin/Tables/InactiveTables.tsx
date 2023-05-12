@@ -27,7 +27,7 @@ export default function InactiveTablesModal() {
 
             <div className="h-96 overflow-auto scrollbar-custom p-2">
               <div className="flex flex-col md:grid md:grid-cols-2 gap-5">
-                {tables.map((t, index) => {
+                {tables.map((t: any, index: any) => {
                   if (t.is_active === false) return;
                   return (
                     <Link

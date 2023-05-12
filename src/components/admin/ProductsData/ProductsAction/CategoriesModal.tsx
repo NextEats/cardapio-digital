@@ -45,7 +45,7 @@ export function CategoriesModal({ categoryType }: iCategoriesModalProps) {
             {(categoryType === 'product_category'
               ? categories
               : additional_categories
-            ).map(category => {
+            ).map((category: any) => {
               const count = products.reduce((total, product) => {
                 if (product.category_id.id === category.id) total = total + 1;
                 return total;

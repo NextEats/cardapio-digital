@@ -2,7 +2,7 @@ import {
   iOrdersProductsWithFKDataToDelivery,
   iOrdersProductsWithFKProducdData,
   iOrdersWithStatusFKData,
-} from '@/src/types/types';
+} from '@/src/types/iOrders';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { RefObject } from 'react';

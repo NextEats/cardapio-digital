@@ -1,7 +1,7 @@
 import { AdminContext } from '@/src/contexts/adminContext';
 import { useUserAndDetails } from '@/src/hooks/User';
 import { api } from '@/src/server/api';
-import { iRestaurantWithFKData } from '@/src/types/types';
+import { iRestaurantWithFKData } from '@/src/types/iRestaurant';
 import { useRouter } from 'next/router';
 import { SetStateAction, useEffect, useMemo } from 'react';
 

@@ -1,10 +1,9 @@
 import { ProductContext } from '@/src/contexts/ProductContext';
 import { supabase } from '@/src/server/api';
+import { iProductsWithFKData } from '@/src/types/iProducts';
 import * as Switch from '@radix-ui/react-switch';
 import Image from 'next/image';
 import { useContext } from 'react';
-
-import { iProductsWithFKData } from '../../../types/types';
 
 const ProductTableRow = ({
   product,

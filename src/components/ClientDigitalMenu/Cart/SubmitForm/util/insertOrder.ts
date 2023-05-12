@@ -1,10 +1,8 @@
 import { supabase } from '@/src/server/api';
-import {
-  iCashBox,
-  iClient,
-  iDeliveryFee,
-  iRestaurantWithFKData,
-} from '@/src/types/types';
+import { iCashBox } from '@/src/types/iCashBox';
+import { iClient } from '@/src/types/iClient';
+import { iDeliveryFee } from '@/src/types/iDeliveryFee';
+import { iRestaurantWithFKData } from '@/src/types/iRestaurant';
 
 interface iInsertOrder {
   restaurant: iRestaurantWithFKData;

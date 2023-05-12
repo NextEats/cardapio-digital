@@ -1,5 +1,5 @@
+import { iProductOption } from '@/src/types/iProducts';
 import { supabase } from '../../server/api';
-import { iProductOption } from './../../types/types';
 
 export interface tSelectWithOptions {
   id: string;

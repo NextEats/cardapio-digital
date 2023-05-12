@@ -2,11 +2,10 @@ import { Payments } from '@/src/components/admin/Tables/Table/Payment';
 import { getOrdersProductsWithFKProducdDataByOrdersIdsFetch } from '@/src/fetch/ordersProducts/getOrdersProductsWithFKProducdDataByOrdersIds';
 import { getRestaurantBySlugFetch } from '@/src/fetch/restaurant/getRestaurantBySlug';
 import { supabase } from '@/src/server/api';
-import {
-  iOrdersProductsWithFKProducdData,
-  iRestaurantWithFKData,
-  iTablePaymentMethodsWithPaymentFKData,
-} from '@/src/types/types';
+import { iOrdersProductsWithFKProducdData } from '@/src/types/iOrders';
+import { iRestaurantWithFKData } from '@/src/types/iRestaurant';
+import { iTablePaymentMethodsWithPaymentFKData } from '@/src/types/iTable';
+
 import { GetServerSideProps } from 'next';
 
 interface iPaymentsProps {

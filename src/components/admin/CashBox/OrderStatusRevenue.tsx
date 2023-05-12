@@ -1,5 +1,5 @@
 import { invoicingForEachOrderStatus } from '@/src/helpers/invoicingForEachOrderStatus';
-import { iOrdersProductsWithFKData } from '@/src/types/types';
+import { iOrdersProductsWithFKData } from '@/src/types/iOrders';
 
 interface iOrderStatusRevenueProps {
   ordersProducts: iOrdersProductsWithFKData[];
@@ -24,7 +24,7 @@ export default function OrderStatusRevenue({
         </tr>
       </thead>
       <tbody className="uppercase">
-        {invoiceOrderStatus.map((item, index) => {
+        {invoiceOrderStatus.map((item: any, index: any) => {
           // if (item.orders.payment_methods.name === 'MESA') return null;
           return (
             <tr key={index} className="border-b">

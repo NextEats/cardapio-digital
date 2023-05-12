@@ -1,4 +1,4 @@
-import { iProductCategories } from '../types/types';
+import { iProductCategories } from '../types/iProducts';
 
 export function getAscendingCategoriesOrderSequence(
   categories: iProductCategories['data']

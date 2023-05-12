@@ -140,10 +140,10 @@ export const CreateSelect = () => {
       );
       return;
     }
-    setSelects(state => {
+    setSelects((state: any) => {
       return state ? [...state, { ...selectData[0] }] : [{ ...selectData[0] }];
     });
-    setProduct_options(state => {
+    setProduct_options((state: any) => {
       return state ? [...state, { ...optionData[0] }] : [{ ...optionData[0] }];
     });
     reset();

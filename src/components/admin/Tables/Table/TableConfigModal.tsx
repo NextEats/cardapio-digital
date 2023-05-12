@@ -73,13 +73,14 @@ export default function TableConfigModal({}: iTableConfigModalProps) {
   }
 
   async function handleDeleteTable() {
-    if (!orders_tables.has_been_paid) {
+    if (orders_tables !== null) {
       toast.error(
         'A exclusão da mesa só é possível ao finalizar o atendimento.',
         { theme: 'light' }
       );
       return;
     }
+
     await deleteTable();
   }
 

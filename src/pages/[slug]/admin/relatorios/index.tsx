@@ -1,6 +1,16 @@
 import AdminWrapper from '../../../../components/admin/AdminWrapper';
 import { GlobalValuesCard } from '../../../../components/admin/relatorios/GlobalValuesCard';
 
+import { getAdditionalsByRestaurantIdFetch } from '@/src/fetch/additionals/getAdditionals';
+import { getSelectsByRestaurantIdFetch } from '@/src/fetch/selects/getSelectsByRestaurantId';
+import { iAdditionals } from '@/src/types/iAdditional';
+import {
+  iOrdersProducts,
+  iOrdersStatus,
+  iOrdersWithFKData,
+} from '@/src/types/iOrders';
+import { iProductCategories, iProducts } from '@/src/types/iProducts';
+import { iSelects } from '@/src/types/iSelect';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { GetServerSideProps } from 'next';
@@ -15,17 +25,6 @@ import { CardapioDigitalButton } from '../../../../components/admin/cardapio-dig
 import { BarChart } from '../../../../components/admin/relatorios/Charts/BarChart';
 import { DoughnutChart } from '../../../../components/admin/relatorios/Charts/DoughnutChart';
 import { HorizontalGraphics } from '../../../../components/admin/relatorios/Charts/HorizontalGraphics';
-
-import { getAdditionalsByRestaurantIdFetch } from '@/src/fetch/additionals/getAdditionals';
-import { getSelectsByRestaurantIdFetch } from '@/src/fetch/selects/getSelectsByRestaurantId';
-import { iAdditionals } from '@/src/types/iAdditional';
-import {
-  iOrdersProducts,
-  iOrdersStatus,
-  iOrdersWithFKData,
-} from '@/src/types/iOrders';
-import { iProductCategories, iProducts } from '@/src/types/iProducts';
-import { iSelects } from '@/src/types/iSelect';
 
 interface DailyRevenue {
   date: Date;

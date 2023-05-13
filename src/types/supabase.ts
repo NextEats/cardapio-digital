@@ -1061,6 +1061,7 @@ export interface Database {
         Row: {
           chair_ammount: number | null;
           created_at: string | null;
+          deleted_at: string | null;
           id: number;
           is_active: boolean | null;
           is_occupied: boolean | null;
@@ -1072,6 +1073,7 @@ export interface Database {
         Insert: {
           chair_ammount?: number | null;
           created_at?: string | null;
+          deleted_at?: string | null;
           id?: number;
           is_active?: boolean | null;
           is_occupied?: boolean | null;
@@ -1083,6 +1085,7 @@ export interface Database {
         Update: {
           chair_ammount?: number | null;
           created_at?: string | null;
+          deleted_at?: string | null;
           id?: number;
           is_active?: boolean | null;
           is_occupied?: boolean | null;

@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 
 import Image from 'next/image';
 
-import nexteats_logo_orange from '@/src/assets/nexteats_logo_orange.png';
+import next_logo from '@/public/next_logo.png';
 import { supabase } from '@/src/server/api';
 import { useRouter } from 'next/router';
 import { tUserDetailsWithFKData } from '../types/iUser';
@@ -59,7 +59,7 @@ const LoginPage = () => {
     return (
       <div className="w-screen h-screen flex justify-center items-center">
         <div className="max-w-[500px] w-full m-5 border border-[#0000001c] rounded-lg p-10 shadow-xl">
-          <Image src={nexteats_logo_orange} alt="nexteats_logo_orange" />
+          <Image src={next_logo} alt="nexteats_logo_orange" />
           <Auth
             appearance={{
               theme: ThemeSupa,

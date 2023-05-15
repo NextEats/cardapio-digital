@@ -29,7 +29,7 @@ export default function TableControlContextProvider({
   //   };
   //   getTables();
   // }, [restaurant, tablesData]);
-  console.log('tablesdata', tablesData);
+
   return (
     <TableControlContext.Provider
       value={{

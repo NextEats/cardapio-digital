@@ -20,12 +20,16 @@ export const getServerSideProps: GetServerSideProps = async context => {
     .from('tables')
     .select('*')
     .eq('restaurant_id', restaurant.id)
-    .not('deleted_at', 'is', null)
     .order('id', { ascending: true });
+
+  const tablesFiltered = tablesData
+    ? tablesData.filter(t => !t.deleted_at)
+    : [];
+
   return {
     props: {
       restaurant,
-      tablesData,
+      tablesData: tablesFiltered || [],
     },
   };
 };

@@ -1,12 +1,12 @@
 import { TableControlContext } from '@/src/contexts/TableControlContext';
 import { api } from '@/src/server/api';
-import { iTables } from '@/src/types/iTable';
 import * as Dialog from '@radix-ui/react-dialog';
 import { useContext, useState } from 'react';
 import { FiX } from 'react-icons/fi';
 import { toast } from 'react-toastify';
 import InputWithLabel from '../../globalComponents/InputWithLabel';
 import { CardapioDigitalButton } from '../cardapio-digital/CardapioDigitalButton';
+
 interface iCreateTableModalProps {}
 
 export default function CreateTableModal({}: iCreateTableModalProps) {
@@ -22,11 +22,11 @@ export default function CreateTableModal({}: iCreateTableModalProps) {
       return;
     }
 
-    const tableAlreadyExists = tables.find(
-      (table: any) =>
+    const tableAlreadyExists = tables.some(
+      table =>
         table.name!.toLowerCase().replace(/\s/g, '') ===
           tableName.toLowerCase().replace(/\s/g, '') &&
-        table.deleated_at === null
+        table.deleted_at === null
     );
 
     if (tableAlreadyExists) {
@@ -36,13 +36,10 @@ export default function CreateTableModal({}: iCreateTableModalProps) {
       return;
     }
 
-    const novaMesa: iTables['data'] = await api.post(
-      'api/table_control/' + restaurant.id,
-      {
-        chair_ammount: cheirAmount,
-        name: tableName,
-      }
-    );
+    const novaMesa = await api.post('api/table_control/' + restaurant.id, {
+      chair_ammount: cheirAmount,
+      name: tableName,
+    });
 
     window.location.reload();
   }
@@ -55,9 +52,7 @@ export default function CreateTableModal({}: iCreateTableModalProps) {
     <>
       <Dialog.Root>
         <Dialog.Trigger className="flex items-center gap-1 justify-center text-white leading-5 font-semibold rounded disabled:bg-gray-600 transition-all ease-in-out w-36 h-9 bg-green-500">
-          {/* <button> */}
           Nova Mesa
-          {/* </button> */}
         </Dialog.Trigger>
 
         <Dialog.Portal>

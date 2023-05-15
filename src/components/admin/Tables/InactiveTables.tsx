@@ -9,6 +9,7 @@ import TableCard from './TableCard';
 
 export default function InactiveTablesModal() {
   const { tables, restaurant } = useContext(TableControlContext);
+  console.log();
 
   return (
     <div>
@@ -27,8 +28,8 @@ export default function InactiveTablesModal() {
 
             <div className="h-96 overflow-auto scrollbar-custom p-2">
               <div className="flex flex-col md:grid md:grid-cols-2 gap-5">
-                {tables.map((t: any, index: any) => {
-                  if (t.deleted_at === null) return;
+                {tables.map((t, index) => {
+                  if (!t.is_active) return;
                   return (
                     <Link
                       key={index}

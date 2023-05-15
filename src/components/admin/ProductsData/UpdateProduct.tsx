@@ -2,7 +2,9 @@ import { ProductContext } from '@/src/contexts/ProductContext';
 import { getFilePath } from '@/src/helpers/getFilePath';
 import { getPathByPictureUrl } from '@/src/helpers/getPathByPictureUrl';
 import { supabase } from '@/src/server/api';
-import { iAdditional, iProductsWithFKData, iSelect } from '@/src/types/types';
+import { iAdditional } from '@/src/types/iAdditional';
+import { iProductsWithFKData } from '@/src/types/iProducts';
+import { iSelect } from '@/src/types/iSelect';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Image from 'next/image';
 import { useContext, useEffect, useState } from 'react';
@@ -80,9 +82,9 @@ export function UpdateProduct({}: iUpdateProductProps) {
       .from('product_additionals')
       .delete()
       .match({ product_id: updateProduct!.id, additional_id: additional.id });
-    setSelectAdditional(state => {
+    setSelectAdditional((state: any) => {
       state.splice(
-        state.findIndex(a => a.id === additional.id),
+        state.findIndex((a: any) => a.id === additional.id),
         1
       );
       return [...state];
@@ -94,9 +96,9 @@ export function UpdateProduct({}: iUpdateProductProps) {
       .from('product_selects')
       .delete()
       .match({ product_id: updateProduct!.id, select_id: select.id });
-    setSelectSelect(state => {
+    setSelectSelect((state: any) => {
       state.splice(
-        state.findIndex(a => a.id === select.id),
+        state.findIndex((a: any) => a.id === select.id),
         1
       );
       return [...state];
@@ -367,7 +369,7 @@ export function UpdateProduct({}: iUpdateProductProps) {
                   className="w-full border border-gray-300 py-1 px-2 text-base font-semibold leading-none rounded outline-none focus:border-blue-400"
                 >
                   <option value="select">Selecione</option>
-                  {categories.map(category => {
+                  {categories.map((category: any) => {
                     return (
                       <option key={category.id} value={category.id}>
                         {category.name}
@@ -399,7 +401,7 @@ export function UpdateProduct({}: iUpdateProductProps) {
             </div>
 
             <div className="flex flex-col gap-2 mt-3">
-              {selectAdditional.map(additional => {
+              {selectAdditional.map((additional: any) => {
                 return (
                   <div
                     key={additional.id}
@@ -432,7 +434,7 @@ export function UpdateProduct({}: iUpdateProductProps) {
               <span className="font-bold">Personalisações </span>
               <SelectsModal type="select_selects" />
             </div>
-            {setectSelect.map(select => {
+            {setectSelect.map((select: any) => {
               return (
                 <div
                   key={select.id}
@@ -446,7 +448,7 @@ export function UpdateProduct({}: iUpdateProductProps) {
                     />
                   </div>
                   <div className="flex flex-wrap gap-2">
-                    {product_options?.map(product_option => {
+                    {product_options?.map((product_option: any) => {
                       if (product_option.select_id !== select.id) return;
                       return (
                         <div key={product_option.id}>

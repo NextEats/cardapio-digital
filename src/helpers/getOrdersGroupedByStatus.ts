@@ -1,4 +1,4 @@
-import { iOrdersWithStatusFKData } from '../types/types';
+import { iOrdersWithStatusFKData } from '../types/iOrders';
 
 interface iGetOrdersGroupedByStatusProps {
   orders: iOrdersWithStatusFKData[];

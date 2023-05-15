@@ -1,7 +1,9 @@
 import { ProductContext } from '@/src/contexts/ProductContext';
 import { getFilePath } from '@/src/helpers/getFilePath';
 import { supabase } from '@/src/server/api';
-import { iAdditional, iProductsWithFKData, iSelect } from '@/src/types/types';
+import { iAdditional } from '@/src/types/iAdditional';
+import { iProductsWithFKData } from '@/src/types/iProducts';
+import { iSelect } from '@/src/types/iSelect';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Image from 'next/image';
 import { useContext, useState } from 'react';
@@ -63,9 +65,9 @@ export function CreateProduct({}: iCreateProductProps) {
   });
 
   const handleRemoveAdditional = async (additional: iAdditional['data']) => {
-    setSelectAdditional(state => {
+    setSelectAdditional((state: any) => {
       state.splice(
-        state.findIndex(a => a.id === additional.id),
+        state.findIndex((a: any) => a.id === additional.id),
         1
       );
       return [...state];
@@ -73,9 +75,9 @@ export function CreateProduct({}: iCreateProductProps) {
   };
 
   const handleRemoveSelect = async (select: iSelect['data']) => {
-    setSelectSelect(state => {
+    setSelectSelect((state: any) => {
       state.splice(
-        state.findIndex(a => a.id === select.id),
+        state.findIndex((a: any) => a.id === select.id),
         1
       );
       return [...state];
@@ -132,13 +134,13 @@ export function CreateProduct({}: iCreateProductProps) {
       return;
     }
 
-    selectAdditional.forEach(async add => {
+    selectAdditional.forEach(async (add: any) => {
       await supabase.from('product_additionals').insert({
         additional_id: add.id,
         product_id: productData[0].id,
       });
     });
-    setectSelect.forEach(async s => {
+    setectSelect.forEach(async (s: any) => {
       await supabase.from('product_selects').insert({
         select_id: s.id,
         product_id: productData[0].id,
@@ -267,7 +269,7 @@ export function CreateProduct({}: iCreateProductProps) {
                   className="w-full border border-gray-300 py-1 px-2 text-base font-semibold leading-none rounded outline-none focus:border-blue-400"
                 >
                   <option value="select">Selecione</option>
-                  {categories.map(category => {
+                  {categories.map((category: any) => {
                     return (
                       <option key={category.id} value={category.id}>
                         {category.name}
@@ -298,7 +300,7 @@ export function CreateProduct({}: iCreateProductProps) {
             </div>
 
             <div className="flex flex-col gap-2 mt-3">
-              {selectAdditional.map(additional => {
+              {selectAdditional.map((additional: any) => {
                 return (
                   <div
                     key={additional.id}
@@ -331,7 +333,7 @@ export function CreateProduct({}: iCreateProductProps) {
               <span className="font-bold">Personalizações</span>
               <SelectsModal type="select_selects" />
             </div>
-            {setectSelect.map(select => {
+            {setectSelect.map((select: any) => {
               return (
                 <div
                   key={select.id}
@@ -346,7 +348,7 @@ export function CreateProduct({}: iCreateProductProps) {
                     />
                   </div>
                   <div className="flex flex-wrap gap-2">
-                    {product_options?.map(product_option => {
+                    {product_options?.map((product_option: any) => {
                       if (product_option.select_id !== select.id) return;
                       return (
                         <div key={product_option.id}>

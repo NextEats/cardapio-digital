@@ -1,5 +1,5 @@
+import { iRestaurantWithFKData } from '@/src/types/iRestaurant';
 import { supabase } from '../../server/api';
-import { iRestaurantWithFKData } from '../../types/types';
 
 export async function getRestaurantBySlugFetch(
   slug: string | string[] | undefined

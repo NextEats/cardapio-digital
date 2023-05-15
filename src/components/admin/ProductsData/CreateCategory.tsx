@@ -68,9 +68,9 @@ export function CreateCategory({ categoryType }: iCreateCategoryProps) {
 
   useMemo(() => {
     const numbersOfCategoryOrder = categories
-      .map(category => category.category_order)
+      .map((category: any) => category.category_order)
       .sort();
-    if (numbersOfCategoryOrder.some(order => order === newOrder)) {
+    if (numbersOfCategoryOrder.some((order: any) => order === newOrder)) {
       setError('order', {
         message: 'Essa order já está ocupada, escolha uma ordem disponivel.',
       });
@@ -137,7 +137,7 @@ export function CreateCategory({ categoryType }: iCreateCategoryProps) {
             <div className="flex flex-wrap items-center gap-3 mb-4 mt-6">
               {sequence.map(sequence => {
                 const busyoOrder = categories.some(
-                  c => c.category_order === sequence
+                  (c: any) => c.category_order === sequence
                 );
                 return (
                   <button

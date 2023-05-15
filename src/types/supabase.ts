@@ -351,6 +351,7 @@ export interface Database {
       delivery_fees: {
         Row: {
           created_at: string | null;
+          deleted_at: string | null;
           end_km: number | null;
           fee: number;
           id: number;
@@ -359,6 +360,7 @@ export interface Database {
         };
         Insert: {
           created_at?: string | null;
+          deleted_at?: string | null;
           end_km?: number | null;
           fee: number;
           id?: number;
@@ -367,6 +369,7 @@ export interface Database {
         };
         Update: {
           created_at?: string | null;
+          deleted_at?: string | null;
           end_km?: number | null;
           fee?: number;
           id?: number;
@@ -1058,6 +1061,7 @@ export interface Database {
         Row: {
           chair_ammount: number | null;
           created_at: string | null;
+          deleted_at: string | null;
           id: number;
           is_active: boolean | null;
           is_occupied: boolean | null;
@@ -1069,6 +1073,7 @@ export interface Database {
         Insert: {
           chair_ammount?: number | null;
           created_at?: string | null;
+          deleted_at?: string | null;
           id?: number;
           is_active?: boolean | null;
           is_occupied?: boolean | null;
@@ -1080,6 +1085,7 @@ export interface Database {
         Update: {
           chair_ammount?: number | null;
           created_at?: string | null;
+          deleted_at?: string | null;
           id?: number;
           is_active?: boolean | null;
           is_occupied?: boolean | null;

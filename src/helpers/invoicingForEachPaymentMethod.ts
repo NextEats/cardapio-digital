@@ -1,7 +1,5 @@
-import {
-  iOrdersProductsWithFKData,
-  iTablePaymentWithPaymentFKData,
-} from '../types/types';
+import { iOrdersProductsWithFKData } from '../types/iOrders';
+import { iTablePaymentWithPaymentFKData } from '../types/iTable';
 
 interface iInvoicingForEachPaymentMethodProps {
   ordersProducts: iOrdersProductsWithFKData[];

@@ -1,6 +1,4 @@
 import { calculateTotalOrderPrice } from '@/src/helpers/calculateTotalOrderPrice';
-import { iAddress, iOrder } from '@/src/types/types';
-
 import { whatsappRestApi } from '@/src/server/api';
 import { toast } from 'react-toastify';
 import { iSubmitForm } from './types';
@@ -16,6 +14,8 @@ import { removeNonAlphaNumeric } from './util/removeNonAlphaNumeric';
 import storeAddressInfo from './util/storeAddressInfo';
 
 import { iProductReducerInterface } from '@/src/contexts/DigitalMenuContext';
+import { iAddress } from '@/src/types/iAddress';
+import { iOrder } from '@/src/types/iOrders';
 import returnPaymentMethodFromId from './util/returnPaymentMethodFromId';
 import returnProductNameFromId from './util/returnProductNameFromId';
 import returnStreetFromCep from './util/returnStreetFromCep';

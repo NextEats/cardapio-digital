@@ -1,7 +1,7 @@
 import {
   iOrdersProductsWithFKDataToDelivery,
   iOrdersProductsWithFKProducdData,
-} from '@/src/types/types';
+} from '@/src/types/iOrders';
 import { RefObject } from 'react';
 
 type iAccordionPrintOrderForProductionProps = {

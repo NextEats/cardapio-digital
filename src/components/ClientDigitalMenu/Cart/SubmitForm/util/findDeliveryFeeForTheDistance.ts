@@ -1,5 +1,5 @@
 import { supabase } from '@/src/server/api';
-import { iDeliveryFee } from '@/src/types/types';
+import { iDeliveryFee } from '@/src/types/iDeliveryFee';
 import { toast } from 'react-toastify';
 
 export async function getAddressFromCep(cep: string) {
@@ -26,7 +26,6 @@ export default async function findDeliveryFeeForTheDistance({
   cep: number;
   number: string;
 }) {
-  // console.log('33333333333333333333333333');
   if (!restaurant_address_string) {
     toast.error(
       "Um endereço válido não foi cadastrado para este restaurante. Favor verificar a propriedade 'restaurant_address_string' no banco de dados."
@@ -35,9 +34,6 @@ export default async function findDeliveryFeeForTheDistance({
   }
 
   const destinationAddress = await getAddressFromCep(cep.toString());
-
-  // console.log('destinationAddress', destinationAddress);
-  // console.log('2222222222222222222222');
 
   try {
     const response = await fetch('/api/calculate_distance', {
@@ -51,27 +47,21 @@ export default async function findDeliveryFeeForTheDistance({
       }),
     });
 
-    // console.log('222 destinationAddress', destinationAddress);
-
     const { distance: distanceInKm } = await response.json();
-
-    // console.log('distanceInKm', distanceInKm);
 
     const { data: deliveryFeesData } = await supabase
       .from('delivery_fees')
       .select('*')
-      .eq('restaurant_id', restaurant_id);
+      .eq('restaurant_id', restaurant_id)
+      .is('deleted_at', null);
 
     if (!deliveryFeesData) {
       return;
     }
 
-    // console.log('deliveryFeesData', deliveryFeesData);
-
     const sortedDeliveryFeesData = deliveryFeesData.sort((a: any, b: any) => {
       return b.end_km - a.end_km || b.start_km - a.start_km;
     });
-    // console.log('sortedDeliveryFeesData', sortedDeliveryFeesData);
 
     const foundDeliveryFee = sortedDeliveryFeesData.find(
       (df: iDeliveryFee['data']) => {
@@ -81,9 +71,6 @@ export default async function findDeliveryFeeForTheDistance({
       }
     );
 
-    // console.log('foundDeliveryFee', foundDeliveryFee);
-
-    console.log('teste distance', foundDeliveryFee);
     if (!foundDeliveryFee) {
       return null;
     }

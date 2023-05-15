@@ -1,23 +1,23 @@
+import { iAddresses } from '@/src/types/iAddress';
 import { supabase } from '../../server/api';
-import { iAddresses } from '../../types/types';
 
 export async function postAddressFetch(
-    cep: string,
-    number: string,
-    complement: string,
-    google_maps_link: string,
-    reference_point: string
+  cep: string,
+  number: string,
+  complement: string,
+  google_maps_link: string,
+  reference_point: string
 ): Promise<iAddresses['data']> {
-    const { data } = await supabase
-        .from('addresses')
-        .insert({
-            cep,
-            number,
-            complement,
-            google_maps_link,
-            reference_point,
-        })
-        .select('*');
+  const { data } = await supabase
+    .from('addresses')
+    .insert({
+      cep,
+      number,
+      complement,
+      google_maps_link,
+      reference_point,
+    })
+    .select('*');
 
-    return data!;
+  return data!;
 }

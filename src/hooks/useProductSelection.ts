@@ -1,6 +1,6 @@
 import { ProductContext } from '@/src/contexts/ProductContext';
-import { iProductsWithFKData } from '@/src/types/types';
 import { useCallback, useContext } from 'react';
+import { iProductsWithFKData } from '../types/iProducts';
 
 export const useProductSelection = () => {
   const { products, productSelected, setProductSelected } =

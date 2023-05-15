@@ -1,15 +1,15 @@
 import { supabase } from '@/src/server/api';
-import { iUserDetails } from '@/src/types/types';
+import { iUserDetails } from '@/src/types/iUser';
 
 export async function getUserInfoFromId(id: string | undefined) {
-    const { data, error } = await supabase
-        .from('user_details')
-        .select('*')
-        .eq('id', id);
+  const { data, error } = await supabase
+    .from('user_details')
+    .select('*')
+    .eq('id', id);
 
-    if (error || !data) {
-        throw new Error(error.message);
-    }
+  if (error || !data) {
+    throw new Error(error.message);
+  }
 
-    return data[0] as iUserDetails['data'];
+  return data[0] as iUserDetails['data'];
 }

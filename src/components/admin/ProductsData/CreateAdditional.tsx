@@ -86,7 +86,7 @@ export function CreateAdditional({}: iCreateAdditionalProps) {
       return;
     }
     console.log(additonal);
-    setAdditionals(state => [...state, { ...additonal[0] }]);
+    setAdditionals((state: any) => [...state, { ...additonal[0] }]);
     reset();
     setImageProview(null);
   };
@@ -195,7 +195,7 @@ export function CreateAdditional({}: iCreateAdditionalProps) {
                     className="w-full border border-gray-300 py-1 px-2 text-base font-semibold leading-none rounded outline-none focus:border-blue-400"
                   >
                     <option value="select">Selecione</option>
-                    {additional_categories.map(category => {
+                    {additional_categories.map((category: any) => {
                       return (
                         <option key={category.id} value={category.id}>
                           {category.name}

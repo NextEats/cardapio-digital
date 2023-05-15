@@ -1,6 +1,7 @@
 import Button from '@/src/components/nButton';
 import { api } from '@/src/server/api';
-import { iCashBox, iOrdersWithFKData } from '@/src/types/types';
+import { iCashBox } from '@/src/types/iCashBox';
+import { iOrdersWithFKData } from '@/src/types/iOrders';
 import { useState } from 'react';
 import CashClosingReportModal from '../CashClosingReportModal';
 

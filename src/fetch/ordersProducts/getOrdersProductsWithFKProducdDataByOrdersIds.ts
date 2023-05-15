@@ -1,11 +1,9 @@
 import { Json } from '@/src/types/supabase';
 import { supabase } from '../../server/api';
-import {
-  iAdditional,
-  iOrdersProductsWithFKProducdData,
-  iProduct,
-  iProductOptions,
-} from '../../types/types';
+
+import { iAdditional } from '@/src/types/iAdditional';
+import { iOrdersProductsWithFKProducdData } from '@/src/types/iOrders';
+import { iProduct, iProductOptions } from '@/src/types/iProducts';
 import { getAdditionalsByIdsFetch } from '../additionals/getAdditionalsByIds';
 
 interface iGetOrdersProductsWithFKProductDataByOrdersIdsFetchProps {

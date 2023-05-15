@@ -1,6 +1,6 @@
 import { TableControlContext } from '@/src/contexts/TableControlContext';
 import { api } from '@/src/server/api';
-import { iTables } from '@/src/types/types';
+import { iTables } from '@/src/types/iTable';
 import * as Dialog from '@radix-ui/react-dialog';
 import { useContext, useState } from 'react';
 import { FiX } from 'react-icons/fi';
@@ -23,9 +23,10 @@ export default function CreateTableModal({}: iCreateTableModalProps) {
     }
 
     const tableAlreadyExists = tables.find(
-      table =>
+      (table: any) =>
         table.name!.toLowerCase().replace(/\s/g, '') ===
-        tableName.toLowerCase().replace(/\s/g, '')
+          tableName.toLowerCase().replace(/\s/g, '') &&
+        table.deleated_at === null
     );
 
     if (tableAlreadyExists) {

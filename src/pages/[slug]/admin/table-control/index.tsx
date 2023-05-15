@@ -3,7 +3,9 @@ import Tables from '@/src/components/admin/Tables/';
 import TableControlContextProvider from '@/src/contexts/TableControlContext';
 import { getRestaurantBySlugFetch } from '@/src/fetch/restaurant/getRestaurantBySlug';
 import { supabase } from '@/src/server/api';
-import { iRestaurantWithFKData, iTables } from '@/src/types/types';
+import { iRestaurantWithFKData } from '@/src/types/iRestaurant';
+import { iTables } from '@/src/types/iTable';
+
 import { GetServerSideProps } from 'next';
 
 interface iAdminHomePageProps {
@@ -18,8 +20,8 @@ export const getServerSideProps: GetServerSideProps = async context => {
     .from('tables')
     .select('*')
     .eq('restaurant_id', restaurant.id)
+    .not('deleted_at', 'is', null)
     .order('id', { ascending: true });
-
   return {
     props: {
       restaurant,

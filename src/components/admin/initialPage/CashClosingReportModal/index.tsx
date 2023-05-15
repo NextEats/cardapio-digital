@@ -1,14 +1,11 @@
 import { getOrdersProductsData } from '@/src/helpers/getOrdersProductsData';
 import { api, supabase } from '@/src/server/api';
-import {
-  iAdditionals,
-  iCashBox,
-  iOrdersProducts,
-  iOrdersWithFKData,
-  iProducts,
-  iSelects,
-  iUserDetails,
-} from '@/src/types/types';
+import { iAdditionals } from '@/src/types/iAdditional';
+import { iCashBox } from '@/src/types/iCashBox';
+import { iOrdersProducts, iOrdersWithFKData } from '@/src/types/iOrders';
+import { iProducts } from '@/src/types/iProducts';
+import { iSelects } from '@/src/types/iSelect';
+import { iUserDetails } from '@/src/types/iUser';
 import * as Dialog from '@radix-ui/react-dialog';
 import { useUser } from '@supabase/auth-helpers-react';
 import { format } from 'date-fns';

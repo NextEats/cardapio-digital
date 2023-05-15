@@ -1,7 +1,8 @@
 import { TableContext } from '@/src/contexts/TableContext';
-import { api } from '@/src/server/api';
+import { api, serverURL, supabase } from '@/src/server/api';
 import * as Dialog from '@radix-ui/react-dialog';
 import * as RadioGroup from '@radix-ui/react-radio-group';
+import { useRouter } from 'next/router';
 import { useContext, useState } from 'react';
 import { BsGear } from 'react-icons/bs';
 import { FaHome } from 'react-icons/fa';
@@ -9,7 +10,6 @@ import { FiX } from 'react-icons/fi';
 import { toast } from 'react-toastify';
 import { CardapioDigitalButton } from '../../cardapio-digital/CardapioDigitalButton';
 import RadioGroupItem from './RadioGroupItem';
-
 interface iTableConfigModalProps {}
 
 export default function TableConfigModal({}: iTableConfigModalProps) {
@@ -20,6 +20,7 @@ export default function TableConfigModal({}: iTableConfigModalProps) {
     restaurant,
     table_paymants_values,
   } = useContext(TableContext);
+  const router = useRouter();
   const [tableStatus, setTableStatus] = useState('');
   const statusDefaultValue = table.is_active
     ? 'is_active'
@@ -66,20 +67,37 @@ export default function TableConfigModal({}: iTableConfigModalProps) {
     window.location.reload();
   }
 
+  // async function deleteTable() {
+  //   await api.delete(`api/table_control/${restaurant.id!}`, {
+  //     data: { table_id: table.id },
+  //   });
+  // }
   async function deleteTable() {
-    await api.delete(`api/table_control/${restaurant.id!}`, {
-      data: { table_id: table.id },
-    });
+    const deleted_at = new Date().toISOString();
+    try {
+      const { data } = await supabase
+        .from('tables')
+        .update({
+          deleted_at,
+        })
+        .eq('id', table.id)
+        .select('*');
+      toast.success('Mesa excluída com sucesso !', { theme: 'light' });
+      router.push(`${serverURL}${restaurant.slug}/admin/table-control`);
+    } catch (ex) {
+      toast.error('não foi possivel excluir a mesa.', { theme: 'light' });
+    }
   }
 
   async function handleDeleteTable() {
-    if (!orders_tables.has_been_paid) {
+    if (orders_tables !== null) {
       toast.error(
         'A exclusão da mesa só é possível ao finalizar o atendimento.',
         { theme: 'light' }
       );
       return;
     }
+
     await deleteTable();
   }
 

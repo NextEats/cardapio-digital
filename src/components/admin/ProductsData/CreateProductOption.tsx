@@ -1,7 +1,7 @@
 import { ProductContext } from '@/src/contexts/ProductContext';
 import { getFilePath } from '@/src/helpers/getFilePath';
 import { supabase } from '@/src/server/api';
-import { iSelect } from '@/src/types/types';
+import { iSelect } from '@/src/types/iSelect';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as Dialog from '@radix-ui/react-dialog';
 import * as Switch from '@radix-ui/react-switch';
@@ -103,7 +103,7 @@ export function CreateProductOption({
       return;
     }
 
-    setProduct_options(state => {
+    setProduct_options((state: any) => {
       return state ? [...state, { ...optionData[0] }] : [{ ...optionData[0] }];
     });
     reset();

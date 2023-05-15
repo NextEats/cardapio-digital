@@ -2,12 +2,10 @@
 import { invoicingForEachOrderStatus } from '@/src/helpers/invoicingForEachOrderStatus';
 import { invoicingForEachPaymentMethod } from '@/src/helpers/invoicingForEachPaymentMethod';
 import { supabase } from '@/src/server/api';
-import {
-  iCashBox,
-  iOrdersProductsWithFKData,
-  iTablePaymentWithPaymentFKData,
-  iUserDetails,
-} from '@/src/types/types';
+import { iCashBox } from '@/src/types/iCashBox';
+import { iOrdersProductsWithFKData } from '@/src/types/iOrders';
+import { iTablePaymentWithPaymentFKData } from '@/src/types/iTable';
+import { iUserDetails } from '@/src/types/iUser';
 import { useUser } from '@supabase/auth-helpers-react';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
@@ -143,7 +141,7 @@ export default function CashBoxReport({
 
           <hr className="bg-black my-2" />
 
-          {invoiceOrderStatus.map((item, index) => {
+          {invoiceOrderStatus.map((item: any, index: any) => {
             return (
               <span key={index} className={`${textStyles}`}>
                 {' '}
@@ -154,7 +152,7 @@ export default function CashBoxReport({
 
           <hr className="bg-black my-2" />
 
-          {invoicePaymentMethods.map((item, index) => {
+          {invoicePaymentMethods.map((item: any, index: any) => {
             if (item.name === 'MESA') return null;
             return (
               <span key={index} className={`${textStyles}`}>

@@ -112,9 +112,9 @@ export function UpdateAdditional({}: iUpdateAdditionalProps) {
       alert('Não foi possivel fazer a criação do adicional.');
       return;
     }
-    setAdditionals(state => {
+    setAdditionals((state: any) => {
       state.splice(
-        state.findIndex(a => updateAdditional?.id === a.id),
+        state.findIndex((a: any) => updateAdditional?.id === a.id),
         1
       );
       return [...state, { ...additonal[0] }];
@@ -236,7 +236,7 @@ export function UpdateAdditional({}: iUpdateAdditionalProps) {
                 >
                   <option value="select">Selecione</option>
                   {additional_categories
-                    ? additional_categories.map(category => {
+                    ? additional_categories.map((category: any) => {
                         return (
                           <option key={category.id} value={category.id}>
                             {category.name}

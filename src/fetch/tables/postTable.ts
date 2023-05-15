@@ -1,5 +1,5 @@
+import { iInsertTable, iTables } from '@/src/types/iTable';
 import { supabase } from '../../server/api';
-import { iInsertTable, iTables } from '../../types/types';
 
 export async function postTableFetch({
   restaurant_id,

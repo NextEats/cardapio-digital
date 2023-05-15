@@ -1,5 +1,6 @@
 import { api } from '../server/api';
-import { iAdditionals, iProducts } from '../types/types';
+import { iAdditionals } from '../types/iAdditional';
+import { iProducts } from '../types/iProducts';
 
 export async function calculateTotalOrderPrice({
   products,

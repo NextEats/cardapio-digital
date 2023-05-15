@@ -1,5 +1,5 @@
+import { iCashBoxes } from '@/src/types/iCashBox';
 import { supabase } from '../../server/api';
-import { iCashBoxes } from '../../types/types';
 
 interface iPostOpenCashBoxFetchProps {
   restaurant_id: number;

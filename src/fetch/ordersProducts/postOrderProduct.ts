@@ -1,6 +1,6 @@
+import { iOrdersProducts } from '@/src/types/iOrders';
 import { supabase } from '../../server/api';
 import { Json } from '../../types/supabase';
-import { iOrdersProducts } from '../../types/types';
 
 interface iPostOrderProductFetch {
   product_id: number;

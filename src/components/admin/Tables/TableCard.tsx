@@ -1,4 +1,4 @@
-import { iTable } from '@/src/types/types';
+import { iTable } from '@/src/types/iTable';
 import { BsPeople } from 'react-icons/bs';
 import { GiTable } from 'react-icons/gi';
 

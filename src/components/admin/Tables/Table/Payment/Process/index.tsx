@@ -3,7 +3,7 @@ import BottonNavigationBar, {
 } from '@/src/components/globalComponents/BottonNavigationBar';
 import PageHeaders from '@/src/components/globalComponents/PageHeaders';
 import { serverURL, supabase } from '@/src/server/api';
-import { iPaymentMethodsRestaurantsWithFKData } from '@/src/types/types';
+import { iPaymentMethodsRestaurantsWithFKData } from '@/src/types/iPaymentMethod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Link from 'next/link';
 import { useRouter } from 'next/router';

@@ -3,7 +3,7 @@ import { useState } from 'react';
 import Navbar from './Navbar';
 import Sidebar from './Sidebar';
 
-import { iRestaurantWithFKData } from '@/src/types/types';
+import { iRestaurantWithFKData } from '@/src/types/iRestaurant';
 import Head from 'next/head';
 import AdminContextProvider from './AdminContextProvider';
 

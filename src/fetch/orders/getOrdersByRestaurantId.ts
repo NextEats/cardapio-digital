@@ -1,5 +1,5 @@
+import { iOrdersWithFKData } from '@/src/types/iOrders';
 import { supabase } from '../../server/api';
-import { iOrdersWithFKData } from '../../types/types';
 
 export async function getOrdersByRestaurantIdFetch(
   restaurant_id: number | undefined

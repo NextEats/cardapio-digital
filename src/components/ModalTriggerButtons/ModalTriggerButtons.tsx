@@ -1,6 +1,6 @@
 import { DigitalMenuContext } from '@/src/contexts/DigitalMenuContext';
 import { getPaymentMethodsRestaurantsByRestaurantIdFetch } from '@/src/fetch/paymentMethodsRestaurants/getPaymentMethodsRestaurantsByRestaurantId';
-import { iPaymentMethodsRestaurantsWithFKData } from '@/src/types/types';
+import { iPaymentMethodsRestaurantsWithFKData } from '@/src/types/iPaymentMethod';
 import cep from 'cep-promise';
 import { useContext, useEffect, useState } from 'react';
 import { useFormContext } from 'react-hook-form';

@@ -28,6 +28,8 @@ export function WeekdayOperatingTime() {
     'Domingo',
   ];
 
+  // comso
+
   // Preencha os arrays associados a cada dia da semana com os registros correspondentes
 
   return (

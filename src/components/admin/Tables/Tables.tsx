@@ -21,7 +21,7 @@ export default function Tables() {
       <div className="flex flex-col  sm:grid sm:grid-cols-2 xl:grid-cols-3 1280px gap-5 pb-24">
         {tables
           .filter(item => item.deleted_at === null)
-          .map((t: any, index: any) => {
+          .map((t, index) => {
             if (t.is_active === true) return;
             return (
               <Link

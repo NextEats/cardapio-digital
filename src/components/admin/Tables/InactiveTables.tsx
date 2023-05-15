@@ -9,6 +9,7 @@ import TableCard from './TableCard';
 
 export default function InactiveTablesModal() {
   const { tables, restaurant } = useContext(TableControlContext);
+  console.log();
 
   return (
     <div>

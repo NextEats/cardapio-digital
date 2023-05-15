@@ -1,8 +1,6 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import {
-  iOrdersProductsWithFKData,
-  iTablePaymentWithPaymentFKData,
-} from '@/src/types/types';
+import { iOrdersProductsWithFKData } from '@/src/types/iOrders';
+import { iTablePaymentWithPaymentFKData } from '@/src/types/iTable';
 import FormOfPayment from './FormOfPayment';
 import OrderStatusRevenue from './OrderStatusRevenue';
 

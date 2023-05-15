@@ -4,28 +4,29 @@ import Modal from '@/src/components/globalComponents/Modal';
 import Button from '@/src/components/nButton';
 import { AdminContext } from '@/src/contexts/adminContext';
 import { supabase } from '@/src/server/api';
+import { iDeliveryFees } from '@/src/types/iDeliveryFee';
 import { useContext, useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
 
 export default function TaxaPorDistancia() {
   const { restaurant } = useContext(AdminContext);
 
-  const [deliveryFees, setDeliveryFees] = useState<any>([]);
-
+  const [deliveryFees, setDeliveryFees] = useState<iDeliveryFees['data']>([]);
+  const fetchDeliveryFees = async () => {
+    const { data: deliveryFees, error } = await supabase
+      .from('delivery_fees')
+      .select('*')
+      .eq('restaurant_id', restaurant!.id)
+      .is('deleted_at', null)
+      .order('start_km', { ascending: true })
+      .returns<iDeliveryFees['data']>();
+    if (error) {
+      console.error(error);
+    } else {
+      setDeliveryFees(deliveryFees);
+    }
+  };
   useEffect(() => {
-    const fetchDeliveryFees = async () => {
-      const { data: deliveryFees, error } = await supabase
-        .from('delivery_fees')
-        .select('*')
-        .eq('restaurant_id', restaurant!.id)
-        .order('start_km', { ascending: true });
-
-      if (error) {
-        console.error(error);
-      } else {
-        setDeliveryFees(deliveryFees);
-      }
-    };
-
     fetchDeliveryFees();
   }, [restaurant]);
 
@@ -38,6 +39,7 @@ export default function TaxaPorDistancia() {
     endKm: number,
     fee: number
   ) => {
+    console.log('criado novo');
     try {
       const { data: newDeliveryFee, error } = await supabase
         .from('delivery_fees')
@@ -48,41 +50,45 @@ export default function TaxaPorDistancia() {
           restaurant_id: restaurant.id,
         })
         .select('*');
-
-      newDeliveryFee
-        ? setDeliveryFees([...deliveryFees, newDeliveryFee[0]])
-        : null;
+      fetchDeliveryFees();
     } catch (err) {
       console.error(err);
     }
   };
 
   const deleteDeliveryFee = async (id: number) => {
+    console.log('deletado');
     const { error } = await supabase
       .from('delivery_fees')
-      .delete()
-      .match({ id });
-    if (error) console.error(error);
-    else setDeliveryFees(deliveryFees.filter((fee: any) => fee.id !== id));
+      .update({ deleted_at: new Date().toISOString() })
+      .eq('id', id);
+    if (error) {
+      console.error(error);
+    } else {
+      setDeliveryFees(deliveryFees.filter(fee => fee.id !== id));
+    }
   };
   const [startKm, setStartKm] = useState<string>();
   const [endKm, setEndKm] = useState<string>();
   const [fee, setFee] = useState<string>();
 
   const handleAddDeliveryFee = () => {
-    // const startKm = parseInt(
-    //     prompt('Digite a distância inicial da taxa de entrega (em km):') ||
-    //         '0'
-    // );
-    // const endKm = parseInt(
-    //     prompt('Digite a distância final da taxa de entrega (em km):') ||
-    //         '0'
-    // );
-    // const fee = parseFloat(
-    //     prompt('Digite o valor da taxa de entrega (em R$):') || '0'
-    // );
+    console.log(startKm, endKm, fee);
     if (startKm && endKm && fee) {
-      addDeliveryFee(parseFloat(startKm), parseFloat(endKm), parseFloat(fee));
+      if (isEdit) {
+        if (editId) {
+          deleteDeliveryFee(editId);
+          addDeliveryFee(
+            parseFloat(startKm),
+            parseFloat(endKm),
+            parseFloat(fee)
+          );
+        } else {
+          toast.error('Erro ao Editar a taxa');
+        }
+      } else {
+        addDeliveryFee(parseFloat(startKm), parseFloat(endKm), parseFloat(fee));
+      }
     }
     toggleModal();
     clearInputs();
@@ -99,10 +105,21 @@ export default function TaxaPorDistancia() {
       deleteDeliveryFee(id);
     }
   };
+  const [isEdit, setIsEdit] = useState<boolean>(false);
+  const [editId, setEditId] = useState<number>();
+  const handleEditDeliveryFee = (row: any) => {
+    setStartKm(row.start_km.toString());
+    setEndKm(row.end_km.toString());
+    setFee(row.fee.toString());
+    setShowModal(true);
+    setIsEdit(true);
+    setEditId(row.id);
+  };
 
   const [showModal, setShowModal] = useState(false);
   const toggleModal = () => {
     setShowModal(!showModal);
+    setIsEdit(false);
     clearInputs();
   };
 
@@ -129,26 +146,40 @@ export default function TaxaPorDistancia() {
             </tr>
           </thead>
           <tbody>
-            {deliveryFees.map((deliveryFee: any) => (
-              <tr key={deliveryFee.id}>
-                <td className="border px-4 py-2">{`${deliveryFee.start_km} km - ${deliveryFee.end_km} km`}</td>
-                <td className="border px-4 py-2">{`R$ ${deliveryFee.fee.toFixed(
-                  2
-                )}`}</td>
-                <td className="border px-4 py-2 text-center">
-                  <button
-                    className="bg-red-500 text-white py-2 px-4 ml-3 mr-3 rounded-md"
-                    onClick={() =>
-                      deliveryFee.id
-                        ? handleDeleteDeliveryFee(deliveryFee.id)
-                        : console.error('id não encontrado')
-                    }
-                  >
-                    Excluir
-                  </button>
-                </td>
-              </tr>
-            ))}
+            {deliveryFees.map((deliveryFee: any) =>
+              deliveryFee.deleted_at === null ? (
+                <tr key={deliveryFee.id}>
+                  <td className="border px-4 py-2">{`${deliveryFee.start_km} km - ${deliveryFee.end_km} km`}</td>
+                  <td className="border px-4 py-2">{`R$ ${deliveryFee.fee.toFixed(
+                    2
+                  )}`}</td>
+                  <td className="border px-4 py-2 text-center">
+                    <button
+                      className="bg-blue-500 text-white py-2 px-4 ml-3 mr-3 rounded-md"
+                      onClick={() =>
+                        deliveryFee.id
+                          ? handleEditDeliveryFee(deliveryFee)
+                          : console.error('id não encontrado')
+                      }
+                    >
+                      Editar
+                    </button>
+                    <button
+                      className="bg-red-500 text-white py-2 px-4 ml-3 mr-3 rounded-md"
+                      onClick={() =>
+                        deliveryFee.id
+                          ? handleDeleteDeliveryFee(deliveryFee.id)
+                          : console.error('id não encontrado')
+                      }
+                    >
+                      Excluir
+                    </button>
+                  </td>
+                </tr>
+              ) : (
+                ''
+              )
+            )}
           </tbody>
         </table>
       </div>

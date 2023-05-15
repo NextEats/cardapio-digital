@@ -4,7 +4,7 @@ import {
 } from '@/src/contexts/DigitalMenuContext';
 import { getOrdersProductsTotalPrice } from '@/src/helpers/getOrdersProductsTotalPrice';
 import { supabase } from '@/src/server/api';
-import { iOrder } from '@/src/types/types';
+import { iOrder } from '@/src/types/iOrders';
 
 export default async function insertOrderProducts(
   order: iOrder['data'],

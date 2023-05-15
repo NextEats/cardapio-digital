@@ -1,24 +1,23 @@
-import { iProductsWithFKData, iProducts } from '@/src/types/types';
+import { iProductsWithFKData } from '@/src/types/iProducts';
 import { supabase } from '../../server/api';
 
 interface iGetProductWithFKDataByRestaurantIdFetch {
-    restaurantId: number;
+  restaurantId: number;
 }
 
-export async function getProductWithFKDataByRestaurantIdFetch({ restaurantId }: iGetProductWithFKDataByRestaurantIdFetch): Promise<iProductsWithFKData[]> {
-    const { data: productData, error } = await supabase
-        .from('products')
-        .select('*, category_id ( * )')
-        .eq('restaurant_id', restaurantId);
+export async function getProductWithFKDataByRestaurantIdFetch({
+  restaurantId,
+}: iGetProductWithFKDataByRestaurantIdFetch): Promise<iProductsWithFKData[]> {
+  const { data: productData, error } = await supabase
+    .from('products')
+    .select('*, category_id ( * )')
+    .eq('restaurant_id', restaurantId);
 
+  if (productData === null) {
+    return [];
+  }
 
-    if (productData === null) {
-        return []
-    }
+  console.log(productData, error);
 
-    console.log(productData, error)
-
-
-
-    return productData as iProductsWithFKData[]
+  return productData as iProductsWithFKData[];
 }

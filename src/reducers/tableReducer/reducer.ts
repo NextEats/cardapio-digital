@@ -1,5 +1,8 @@
 import { tSelectWithOptions } from '@/src/fetch/productSelects/getProductSelectWithOptions';
-import { iAdditionals, iProduct, iSelects } from '../../types/types';
+
+import { iAdditionals } from '@/src/types/iAdditional';
+import { iProduct } from '@/src/types/iProducts';
+import { iSelects } from '@/src/types/iSelect';
 import { tableReducerAction } from './action';
 
 export interface iTableSelectingProductData {

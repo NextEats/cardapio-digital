@@ -52,7 +52,7 @@ export default function TableBottonNavBar({}: iTableBottonNavBarProps) {
         is_open: true,
       });
 
-    if (!cashBoxData) {
+    if (!cashBoxData || cashBoxData?.length === 0) {
       toast.error(
         'O atendimento só pode ser iniciado se o caixa estiver aberto',
         { theme: 'light' }

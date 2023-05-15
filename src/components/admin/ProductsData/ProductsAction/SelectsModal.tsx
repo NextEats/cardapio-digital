@@ -1,7 +1,8 @@
 import { ProductContext } from '@/src/contexts/ProductContext';
 import { getPathByPictureUrl } from '@/src/helpers/getPathByPictureUrl';
 import { supabase } from '@/src/server/api';
-import { iProductOption, iProductSelects, iSelect } from '@/src/types/types';
+import { iProductOption, iProductSelects } from '@/src/types/iProducts';
+import { iSelect } from '@/src/types/iSelect';
 import * as Dialog from '@radix-ui/react-dialog';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import Image from 'next/image';
@@ -62,10 +63,10 @@ export function SelectsModal({ type }: iSelectsProps) {
   }, [updateProductState]);
 
   const handleSelectSelect = (select: iSelect['data']) => {
-    if (setectSelect.some(s => s.id === select.id)) {
-      setSelectSelect(state => {
+    if (setectSelect.some((s: any) => s.id === select.id)) {
+      setSelectSelect((state: any) => {
         state.splice(
-          state.findIndex(s => s.id === select.id),
+          state.findIndex((s: any) => s.id === select.id),
           1
         );
         return [...state];
@@ -99,7 +100,7 @@ export function SelectsModal({ type }: iSelectsProps) {
           : [{ additional_id: null, select_id: select.id, type: 'added' }]
       );
     }
-    setSelectSelect(state => [...state, select]);
+    setSelectSelect((state: any) => [...state, select]);
   };
 
   const handleDeleteSelect = async (select: iSelect['data']) => {
@@ -127,7 +128,7 @@ export function SelectsModal({ type }: iSelectsProps) {
 
   const deleteSelect = async (select: iSelect['data']) => {
     await Promise.all([
-      product_options?.forEach(async op => {
+      product_options?.forEach(async (op: any) => {
         if (op.select_id === select.id) {
           await handleDeleteOption(op);
         }
@@ -135,9 +136,9 @@ export function SelectsModal({ type }: iSelectsProps) {
     ]);
 
     await supabase.from('selects').delete().eq('id', select.id);
-    setSelects(state => {
+    setSelects((state: any) => {
       state?.splice(
-        state.findIndex(s => s.id === select.id),
+        state.findIndex((s: any) => s.id === select.id),
         1
       );
       return [...state!];
@@ -151,8 +152,8 @@ export function SelectsModal({ type }: iSelectsProps) {
         active: !select.active,
       })
       .eq('id', select.id);
-    setSelects(state => {
-      const newState = state?.map(s => {
+    setSelects((state: any) => {
+      const newState = state?.map((s: any) => {
         if (select.id === s.id) {
           return { ...s, active: !select.active };
         }
@@ -172,9 +173,9 @@ export function SelectsModal({ type }: iSelectsProps) {
       return;
     }
     await supabase.from('product_options').delete().eq('id', option.id);
-    setProduct_options(state => {
+    setProduct_options((state: any) => {
       state?.splice(
-        state.findIndex(op => op.id === option.id),
+        state.findIndex((op: any) => op.id === option.id),
         1
       );
       return [...state!];
@@ -187,8 +188,8 @@ export function SelectsModal({ type }: iSelectsProps) {
         active: !option.active,
       })
       .eq('id', option.id);
-    setProduct_options(state => {
-      const newState = state?.map(op => {
+    setProduct_options((state: any) => {
+      const newState = state?.map((op: any) => {
         if (option.id === op.id) {
           return { ...op, active: !option.active };
         }
@@ -239,7 +240,7 @@ export function SelectsModal({ type }: iSelectsProps) {
             ) : null}
             <div className="w-full h-[85%]">
               <div className="flex flex-col gap-3 h-full w-full 3xs:h-[400px] overflow-auto scrollbar-custom">
-                {selects.map(select => {
+                {selects.map((select: any) => {
                   return (
                     <div key={select.id} className="w-full flex flex-col gap-2">
                       <div className="flex items-center justify-between pr-3">
@@ -249,7 +250,7 @@ export function SelectsModal({ type }: iSelectsProps) {
                               type="checkbox"
                               className="h-5 w-5"
                               checked={setectSelect.some(
-                                s => s.id === select.id
+                                (s: any) => s.id === select.id
                               )}
                               onClick={() => handleSelectSelect(select)}
                             />
@@ -325,7 +326,7 @@ export function SelectsModal({ type }: iSelectsProps) {
                       </div>
 
                       <div className="flex flex-wrap gap-2">
-                        {product_options?.map(product_option => {
+                        {product_options?.map((product_option: any) => {
                           if (product_option.select_id !== select.id) return;
                           return (
                             <div key={product_option.id}>

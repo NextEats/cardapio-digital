@@ -8,8 +8,9 @@ import { supabase } from '@/src/server/api';
 import {
   iOrdersProductsWithFKDataToDelivery,
   iOrdersWithStatusFKData,
-  iRestaurant,
-} from '@/src/types/types';
+} from '@/src/types/iOrders';
+import { iRestaurant } from '@/src/types/iRestaurant';
+
 import { GetServerSideProps } from 'next';
 interface iDeliveryPageProps {
   restaurant: iRestaurant['data'];

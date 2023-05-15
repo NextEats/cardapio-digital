@@ -1,5 +1,6 @@
 import { supabase } from '@/src/server/api';
-import { iCashBox, iRestaurantWithFKData } from '@/src/types/types';
+import { iCashBox } from '@/src/types/iCashBox';
+import { iRestaurantWithFKData } from '@/src/types/iRestaurant';
 
 import { toast } from 'react-toastify';
 

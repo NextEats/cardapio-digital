@@ -1,5 +1,5 @@
 import { supabase } from '@/src/server/api';
-import { iAddress } from '@/src/types/types';
+import { iAddress } from '@/src/types/iAddress';
 import { default as cepPromise } from 'cep-promise';
 
 export default async function createAddressIfNeeded(

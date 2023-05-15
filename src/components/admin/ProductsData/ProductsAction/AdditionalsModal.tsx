@@ -11,7 +11,8 @@ import { CategoriesModal } from './CategoriesModal';
 
 import { getPathByPictureUrl } from '@/src/helpers/getPathByPictureUrl';
 import { supabase } from '@/src/server/api';
-import { iAdditional, iProductAdditionals } from '@/src/types/types';
+import { iAdditional } from '@/src/types/iAdditional';
+import { iProductAdditionals } from '@/src/types/iProducts';
 import { toast } from 'react-toastify';
 
 interface iAdditionalsModalProps {
@@ -53,9 +54,9 @@ export function AdditionalsModal({ type }: iAdditionalsModalProps) {
       supabase.storage.from('additionals-pictures').remove([path!]),
       supabase.from('additionals').delete().eq('id', additional.id),
     ]);
-    setAdditionals(state => {
+    setAdditionals((state: any) => {
       state.splice(
-        state.findIndex(a => a.id === additional.id),
+        state.findIndex((a: any) => a.id === additional.id),
         1
       );
       return [...state];
@@ -66,10 +67,10 @@ export function AdditionalsModal({ type }: iAdditionalsModalProps) {
   };
 
   const handleSelectAdditional = async (additional: iAdditional['data']) => {
-    if (selectAdditional.some(a => a.id === additional.id)) {
-      setSelectAdditional(state => {
+    if (selectAdditional.some((a: any) => a.id === additional.id)) {
+      setSelectAdditional((state: any) => {
         state.splice(
-          state.findIndex(a => a.id === additional.id),
+          state.findIndex((a: any) => a.id === additional.id),
           1
         );
         return [...state];
@@ -111,7 +112,7 @@ export function AdditionalsModal({ type }: iAdditionalsModalProps) {
           : [{ select_id: null, additional_id: additional.id, type: 'added' }]
       );
     }
-    setSelectAdditional(state => [...state, additional]);
+    setSelectAdditional((state: any) => [...state, additional]);
   };
 
   const handleChangeAdditionalStatus = async (
@@ -123,8 +124,8 @@ export function AdditionalsModal({ type }: iAdditionalsModalProps) {
       .eq('id', additional.id)
       .select('*');
     if (!data) return null;
-    setAdditionals(state => {
-      state.map(a => {
+    setAdditionals((state: any) => {
+      state.map((a: any) => {
         if (a.id === data[0].id) {
           a.active = !a.active;
         }
@@ -163,10 +164,10 @@ export function AdditionalsModal({ type }: iAdditionalsModalProps) {
             </Dialog.Title>
 
             <div className="flex flex-wrap gap-3 mt-3">
-              {additionals.map(additional => {
+              {additionals.map((additional: any) => {
                 const isAdditionalSelected =
                   type === 'select_additionals' &&
-                  selectAdditional.some(a => a.id === additional.id);
+                  selectAdditional.some((a: any) => a.id === additional.id);
                 return (
                   <div
                     onClick={() =>

@@ -1,5 +1,5 @@
 import { supabase } from '@/src/server/api';
-import { iClient } from '@/src/types/types';
+import { iClient } from '@/src/types/iClient';
 
 export default async function createClient({
   name,

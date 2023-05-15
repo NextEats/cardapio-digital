@@ -1,6 +1,6 @@
 import PageHeaders from '@/src/components/globalComponents/PageHeaders';
 import { serverURL } from '@/src/server/api';
-import { iTablePaymentWithPaymentFKData } from '@/src/types/types';
+import { iTablePaymentWithPaymentFKData } from '@/src/types/iTable';
 import { useRouter } from 'next/router';
 import { AiOutlinePlus } from 'react-icons/ai';
 import { MdOutlineAttachMoney } from 'react-icons/md';

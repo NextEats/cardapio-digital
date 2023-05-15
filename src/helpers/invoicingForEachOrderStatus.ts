@@ -1,4 +1,4 @@
-import { iOrdersProductsWithFKData } from '../types/types';
+import { iOrdersProductsWithFKData } from '../types/iOrders';
 
 interface iInvoicingForEachOrderStatusProps {
   ordersProducts: iOrdersProductsWithFKData[];

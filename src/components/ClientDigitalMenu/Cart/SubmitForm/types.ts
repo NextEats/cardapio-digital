@@ -1,6 +1,5 @@
-import { iRestaurantWithFKData } from '@/src/types/types';
-
 import { iProductReducerInterface } from '@/src/contexts/DigitalMenuContext';
+import { iRestaurantWithFKData } from '@/src/types/iRestaurant';
 import { SetStateAction } from 'react';
 
 export interface iSubmitForm {

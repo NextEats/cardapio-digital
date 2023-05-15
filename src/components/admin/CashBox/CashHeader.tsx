@@ -1,9 +1,8 @@
 import { supabase } from '@/src/server/api';
-import {
-  iCashBox,
-  iOrdersProductsWithFKData,
-  iTablePaymentWithPaymentFKData,
-} from '@/src/types/types';
+
+import { iCashBox } from '@/src/types/iCashBox';
+import { iOrdersProductsWithFKData } from '@/src/types/iOrders';
+import { iTablePaymentWithPaymentFKData } from '@/src/types/iTable';
 import { useRef } from 'react';
 import { MdOutlinePrint } from 'react-icons/md';
 import { useReactToPrint } from 'react-to-print';

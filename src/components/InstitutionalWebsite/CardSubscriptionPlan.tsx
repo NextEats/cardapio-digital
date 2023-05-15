@@ -14,12 +14,12 @@ const CardSubscriptionPlan = (props: iCardSubscriptionPlan) => {
     <div
       className={`h-[500px] p-12 rounded-lg flex flex-col items-center justify-center bg-white`}
     >
-      <div className="w-full">
+      {/* <div className="w-full">
         <span className="text-4xl inline font-bold text-brand-dark-orange">
           R$&nbsp;{monthlyPrice}
         </span>
         <span className="ml-3 italic text-gray-500">por mês</span>
-      </div>
+      </div> */}
       <h4 className="w-full text-6xl font-semibold mt-6">{name}</h4>
       <p className="w-full mt-4 mb-10 italic text-gray-800">{description}</p>
       <ul className="w-full">

@@ -1,5 +1,5 @@
 import { supabase } from '@/src/server/api';
-import { iTablePaymentWithPaymentFKData } from '@/src/types/types';
+import { iTablePaymentWithPaymentFKData } from '@/src/types/iTable';
 import { Dispatch, SetStateAction } from 'react';
 import { FaRegTrashAlt } from 'react-icons/fa';
 

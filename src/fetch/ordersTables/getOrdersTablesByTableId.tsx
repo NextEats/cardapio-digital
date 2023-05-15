@@ -1,5 +1,5 @@
 import { supabase } from '@/src/server/api';
-import { iOrdersTablesWithOrderFkData } from '@/src/types/types';
+import { iOrdersTablesWithOrderFkData } from '@/src/types/iOrders';
 
 interface iGetOrdersTablesByTableId {
   table_id: number;

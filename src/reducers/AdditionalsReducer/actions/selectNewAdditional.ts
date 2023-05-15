@@ -1,8 +1,8 @@
-import { iAdditional } from '@/src/types/types';
+import { iAdditional } from '@/src/types/iAdditional';
 
 export function selectNewAdditionalAction(additional: iAdditional['data']) {
-    return {
-        type: 'SELECTADDITIONALS',
-        payload: { additional },
-    } as const;
+  return {
+    type: 'SELECTADDITIONALS',
+    payload: { additional },
+  } as const;
 }

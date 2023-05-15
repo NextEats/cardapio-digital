@@ -1,5 +1,5 @@
 import { supabase } from '@/src/server/api';
-import { iCashBox } from '@/src/types/types';
+import { iCashBox } from '@/src/types/iCashBox';
 
 export async function getActiveCashBoxByTheRestaurantID(restaurant_id: number) {
   const { data } = await supabase

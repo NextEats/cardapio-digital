@@ -8,15 +8,15 @@ import { getProductsCategoriesByRestaurantIdFetch } from '@/src/fetch/productsCa
 import { getRestaurantBySlugFetch } from '@/src/fetch/restaurant/getRestaurantBySlug';
 import { getSelectsByRestaurantIdFetch } from '@/src/fetch/selects/getSelectsByRestaurantId';
 import { supabase } from '@/src/server/api';
+import { iAdditionalCategories, iAdditionals } from '@/src/types/iAdditional';
 import {
-  iAdditionalCategories,
-  iAdditionals,
   iProductCategories,
   iProductOptions,
   iProductsWithFKData,
-  iRestaurant,
-  iSelects,
-} from '@/src/types/types';
+} from '@/src/types/iProducts';
+import { iRestaurant } from '@/src/types/iRestaurant';
+import { iSelects } from '@/src/types/iSelect';
+
 import { GetStaticPaths, GetStaticProps } from 'next';
 
 interface iProdcutsProps {

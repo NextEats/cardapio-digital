@@ -1,8 +1,8 @@
-import { supabase } from "../../server/api";
-import { iClients } from "../../types/types";
+import { iClients } from '@/src/types/iClient';
+import { supabase } from '../../server/api';
 
-export async function getclientsFetch(): Promise<iClients["data"]> {
-    const { data } = await supabase.from("clients").select()
+export async function getclientsFetch(): Promise<iClients['data']> {
+  const { data } = await supabase.from('clients').select();
 
-    return data!
+  return data!;
 }

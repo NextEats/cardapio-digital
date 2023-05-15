@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { iOrdersWithStatusFKData } from '../types/types';
+import { iOrdersWithStatusFKData } from '../types/iOrders';
 
 export const useAudioAlert = (
   ordersGroupedByStatus: Array<{

@@ -20,8 +20,8 @@ export const getServerSideProps: GetServerSideProps = async context => {
     .from('tables')
     .select('*')
     .eq('restaurant_id', restaurant.id)
+    .not('deleted_at', 'is', null)
     .order('id', { ascending: true });
-
   return {
     props: {
       restaurant,

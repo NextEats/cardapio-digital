@@ -25,7 +25,8 @@ export default function CreateTableModal({}: iCreateTableModalProps) {
     const tableAlreadyExists = tables.find(
       (table: any) =>
         table.name!.toLowerCase().replace(/\s/g, '') ===
-        tableName.toLowerCase().replace(/\s/g, '')
+          tableName.toLowerCase().replace(/\s/g, '') &&
+        table.deleated_at === null
     );
 
     if (tableAlreadyExists) {

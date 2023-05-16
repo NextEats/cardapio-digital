@@ -86,8 +86,10 @@ export default function CardapioDigital({ data }: { data: iDigitalMenuData }) {
           <div className="flex items-center gap-2">
             <Link href={'https://www.nexteats.com.br/'} target="_blank">
               <Image
-                className="w-[360px]"
-                src={'/FooterLogoNext.png'}
+                className="w-[360px] h-[10rem object-cover"
+                src={
+                  'https://cceilpiizkukiqfodhec.supabase.co/storage/v1/object/public/next-images/completa_preta_laranja.png'
+                }
                 alt="asdasd"
                 width={560}
                 height={160}

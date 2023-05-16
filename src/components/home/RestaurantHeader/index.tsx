@@ -118,6 +118,8 @@ function RestaurantHeader() {
   //     );
   //   });
   // }
+  // console.log(operatingTimes);
+  // console.log(isRestaurantOpenNow({ operatingTimes }));
 
   if (!restaurant) return null;
 

@@ -4,7 +4,6 @@ import { useEffect } from 'react';
 
 import Image from 'next/image';
 
-import next_logo from '@/public/next_logo.png';
 import { supabase } from '@/src/server/api';
 import { useRouter } from 'next/router';
 import { tUserDetailsWithFKData } from '../types/iUser';
@@ -59,12 +58,21 @@ const LoginPage = () => {
     return (
       <div className="w-screen h-screen flex justify-center items-center">
         <div className="max-w-[500px] w-full m-5 border border-[#0000001c] rounded-lg p-10 shadow-xl">
-          <Image src={next_logo} alt="nexteats_logo_orange" />
+          <div className="flex items-center justify-center">
+            <Image
+              src={
+                'https://cceilpiizkukiqfodhec.supabase.co/storage/v1/object/public/next-images/completa_preta_laranja.png'
+              }
+              alt="nexteats_logo_orange"
+              width={700}
+              height={380}
+            />
+          </div>
           <Auth
             appearance={{
               theme: ThemeSupa,
               className: {
-                button: `rounded-sm font-semibold text-[white] 
+                button: `rounded-sm font-semibold text-[white]
                                         uppercase bg-[#de6114eb] hover:bg-[#9e3b14]
                                         border-none transition-colors duration-300`,
               },

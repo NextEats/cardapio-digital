@@ -27,11 +27,13 @@ export default function Select(props: Iprops) {
         ''
       )}
       <select
+        required={props.required}
         id="countries"
         value={props.value}
         className="w-full rounded-lg border border-gray-400 p-2 mt-2"
         onChange={e => props.setValue(e.target.value)}
       >
+        <option value="" key=""></option>
         {props.options.map(item => (
           <option value={item.id} key={item.id}>
             {item.label}

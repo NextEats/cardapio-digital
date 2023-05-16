@@ -60,10 +60,12 @@ export default function HorariosAbertura() {
       const { data: existingWorkHours, error: fetchError } = await supabase
         .from('weekday_operating_time')
         .select('*')
-        .eq('weekday_id', weekId)
-        .lte('opening_time', endHr)
-        .gte('closing_time', startHr);
+        .gte('closing_time', endHr)
+        .lte('opening_time', startHr)
+        .eq('restaurant_id', restaurant?.id)
+        .eq('weekday_id', weekId);
 
+      console.log('existingWorkHours', existingWorkHours);
       if (fetchError) {
         throw fetchError;
       }

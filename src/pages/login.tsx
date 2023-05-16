@@ -61,9 +61,11 @@ const LoginPage = () => {
           <div className="flex items-center justify-center">
             <Image
               src={
-                'https://cceilpiizkukiqfodhec.supabase.co/storage/v1/object/public/next-images/completa_branca.png'
+                'https://cceilpiizkukiqfodhec.supabase.co/storage/v1/object/public/next-images/completa_preta_laranja.png'
               }
               alt="nexteats_logo_orange"
+              width={700}
+              height={380}
             />
           </div>
           <Auth

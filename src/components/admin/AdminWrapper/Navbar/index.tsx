@@ -9,7 +9,7 @@ export default function Navbar({ toogleSidebar }: { toogleSidebar: Function }) {
       </div>
       <div className="py-4 mx-auto">
         <Image
-          src="https://i.ibb.co/nP2JBbC/Next-Eats-1000-500-px-1.png"
+          src="https://cceilpiizkukiqfodhec.supabase.co/storage/v1/object/public/next-images/completa_branca.png"
           alt=""
           height={30}
           width={120}

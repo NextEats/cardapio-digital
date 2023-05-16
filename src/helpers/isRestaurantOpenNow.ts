@@ -1,3 +1,4 @@
+import { addDays, isBefore, isWithinInterval, parse } from 'date-fns';
 import { iWeekdayOperatingTimeWithFKData } from '../types/iWeekday';
 
 function getDayName(weekDayIndex: number) {
@@ -24,15 +25,31 @@ export function isRestaurantOpenNow({
   const adjustedWeekDayIndex =
     currentWeekDayIndex === 0 ? 7 : currentWeekDayIndex;
   const currentWeekDayName = getDayName(adjustedWeekDayIndex);
-  const currentTime = now.toTimeString().slice(0, 8);
 
   return operatingTimes.some(({ opening_time, closing_time, weekdays }) => {
+    if (opening_time === null || closing_time === null) {
+      return false;
+    }
+
+    // Parse opening and closing times to Date objects
+    const openingTime = parse(opening_time, 'HH:mm:ss', new Date());
+    let closingTime = parse(closing_time, 'HH:mm:ss', new Date());
+
+    // If closing time is before opening time, it means the restaurant closes after midnight.
+    // Therefore, add 1 day to closing time to handle this case.
+    if (isBefore(closingTime, openingTime)) {
+      closingTime = addDays(closingTime, 1);
+    }
+
+    // Check if the current time is within the interval
+    const isOpen = isWithinInterval(now, {
+      start: openingTime,
+      end: closingTime,
+    });
+
     return (
-      opening_time !== null &&
-      closing_time !== null &&
       weekdays.name.split('-')[0].toLocaleLowerCase() === currentWeekDayName &&
-      currentTime >= opening_time &&
-      currentTime <= closing_time
+      isOpen
     );
   });
 }

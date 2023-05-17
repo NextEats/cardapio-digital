@@ -39,30 +39,30 @@ export const claims: claimType[] = [
     claims: [
       {
         icon: 'fa-solid fa-square-plus',
-        title: 'Criar repositório',
+        title: 'Criar produto',
         value: 'product.create',
         color: '#5AA454',
       },
       {
-        title: 'Excluir repositório',
+        title: 'Excluir produto',
         value: 'product.delete',
         icon: 'fa-solid fa-square-minus',
         color: '#f93e3e',
       },
       {
         icon: 'fa-solid fa-square-pen',
-        title: 'Editar repositório',
+        title: 'Editar produto',
         value: 'product.update',
         color: '#f5bd00',
       },
       {
-        title: 'Listar todos os repositórios',
+        title: 'Listar todos os produtos',
         value: 'product.listAll',
         icon: 'fa-solid fa-square-poll-horizontal',
         color: '#23A6F0',
       },
       {
-        title: 'Listar todos os repositórios',
+        title: 'Mudar o status produtos',
         value: 'product.changeStatus',
         icon: 'fa-solid fa-square-poll-horizontal',
         color: '#23A6F0',
@@ -77,24 +77,24 @@ export const claims: claimType[] = [
     claims: [
       {
         icon: 'fa-solid fa-square-plus',
-        title: 'Criar arquivo',
+        title: 'Criar adicional',
         value: 'additional.create',
         color: '#5AA454',
       },
       {
-        title: 'Excluir arquivo',
+        title: 'Excluir adicional',
         value: 'additional.delete',
         icon: 'fa-solid fa-square-minus',
         color: '#f93e3e',
       },
       {
         icon: 'fa-solid fa-square-pen',
-        title: 'Editar arquivo',
+        title: 'Editar adicional',
         value: 'additional.update',
         color: '#f5bd00',
       },
       {
-        title: 'Listar arquivos dos usuários',
+        title: 'Listar todos os adicionals',
         value: 'additional.listAll',
         icon: 'fa-brands fa-odnoklassniki-square',
         color: '#23A6F0',
@@ -109,24 +109,24 @@ export const claims: claimType[] = [
     claims: [
       {
         icon: 'fa-solid fa-square-plus',
-        title: 'Criar usuário',
+        title: 'Criar categoria do adicional',
         value: 'additional_category.create',
         color: '#5AA454',
       },
       {
-        title: 'Excluir usuário',
+        title: 'Excluir categoria do adicional',
         value: 'additional_category.delete',
         icon: 'fa-solid fa-square-minus',
         color: '#f93e3e',
       },
       {
         icon: 'fa-solid fa-square-pen',
-        title: 'Editar usuário',
+        title: 'Editar categoria do adicional',
         value: 'additional_category.update',
         color: '#f5bd00',
       },
       {
-        title: 'Listar todos os usuários',
+        title: 'Listar todas as categorias do adicional',
         value: 'additional_category.listAll',
         icon: 'fa-solid fa-square-poll-horizontal',
         color: '#23A6F0',
@@ -141,24 +141,24 @@ export const claims: claimType[] = [
     claims: [
       {
         icon: 'fa-solid fa-square-plus',
-        title: 'Criar usuário',
+        title: 'Criar categoria do produto',
         value: 'product_category.create',
         color: '#5AA454',
       },
       {
-        title: 'Excluir usuário',
+        title: 'Excluir categoria do produto',
         value: 'product_category.delete',
         icon: 'fa-solid fa-square-minus',
         color: '#f93e3e',
       },
       {
         icon: 'fa-solid fa-square-pen',
-        title: 'Editar usuário',
+        title: 'Editar categoria do produto',
         value: 'product_category.update',
         color: '#f5bd00',
       },
       {
-        title: 'Listar todos os usuários',
+        title: 'Listar todas as categorias do produto',
         value: 'product_category.listAll',
         icon: 'fa-solid fa-square-poll-horizontal',
         color: '#23A6F0',
@@ -168,29 +168,29 @@ export const claims: claimType[] = [
   {
     icon: 'fa-solid fa-user',
     type: 'selects',
-    title: 'Personalizações',
+    title: 'Personalização',
     selected: false,
     claims: [
       {
         icon: 'fa-solid fa-square-plus',
-        title: 'Criar usuário',
+        title: 'Criar personalizações',
         value: 'selects.create',
         color: '#5AA454',
       },
       {
-        title: 'Excluir usuário',
+        title: 'Excluir personalização',
         value: 'selects.delete',
         icon: 'fa-solid fa-square-minus',
         color: '#f93e3e',
       },
       {
         icon: 'fa-solid fa-square-pen',
-        title: 'Editar usuário',
+        title: 'Editar personalização',
         value: 'selects.update',
         color: '#f5bd00',
       },
       {
-        title: 'Listar todos os usuários',
+        title: 'Listar todas as personalizações',
         value: 'selects.listAll',
         icon: 'fa-solid fa-square-poll-horizontal',
         color: '#23A6F0',
@@ -200,29 +200,29 @@ export const claims: claimType[] = [
   {
     icon: 'fa-solid fa-user',
     type: 'options',
-    title: 'Personalizações',
+    title: 'Opção',
     selected: false,
     claims: [
       {
         icon: 'fa-solid fa-square-plus',
-        title: 'Criar usuário',
+        title: 'Criar opção',
         value: 'options.create',
         color: '#5AA454',
       },
       {
-        title: 'Excluir usuário',
+        title: 'Excluir opção',
         value: 'options.delete',
         icon: 'fa-solid fa-square-minus',
         color: '#f93e3e',
       },
       {
         icon: 'fa-solid fa-square-pen',
-        title: 'Editar usuário',
+        title: 'Editar opção',
         value: 'options.update',
         color: '#f5bd00',
       },
       {
-        title: 'Listar todos os usuários',
+        title: 'Listar todas as opções',
         value: 'options.listAll',
         icon: 'fa-solid fa-square-poll-horizontal',
         color: '#23A6F0',
@@ -237,24 +237,56 @@ export const claims: claimType[] = [
     claims: [
       {
         icon: 'fa-solid fa-square-plus',
-        title: 'Criar cargo',
+        title: 'Criar pedido da mesa',
         value: 'order_table.create',
         color: '#5AA454',
       },
       {
-        title: 'Excluir cargo',
+        title: 'Excluir pedido da mesa',
         value: 'order_table.delete',
         icon: 'fa-solid fa-square-minus',
         color: '#f93e3e',
       },
       {
         icon: 'fa-solid fa-square-pen',
-        title: 'Editar cargo',
+        title: 'Editar pedido da mesa',
         value: 'order_table.update',
         color: '#f5bd00',
       },
       {
-        title: 'Listar todos os cargos',
+        title: 'Listar todos os pedidos da mesa',
+        value: 'order_table.listAll',
+        icon: 'fa-solid fa-square-poll-horizontal',
+        color: '#23A6F0',
+      },
+    ],
+  },
+  {
+    icon: 'fa-solid fa-flag',
+    type: 'order_table',
+    title: 'Mesa',
+    selected: false,
+    claims: [
+      {
+        icon: 'fa-solid fa-square-plus',
+        title: 'Criar mesa',
+        value: 'order_table.create',
+        color: '#5AA454',
+      },
+      {
+        title: 'Excluir mesa',
+        value: 'order_table.delete',
+        icon: 'fa-solid fa-square-minus',
+        color: '#f93e3e',
+      },
+      {
+        icon: 'fa-solid fa-square-pen',
+        title: 'Editar mesa',
+        value: 'order_table.update',
+        color: '#f5bd00',
+      },
+      {
+        title: 'Listar todas as mesas',
         value: 'order_table.listAll',
         icon: 'fa-solid fa-square-poll-horizontal',
         color: '#23A6F0',
@@ -264,29 +296,29 @@ export const claims: claimType[] = [
   {
     icon: 'fa-solid fa-flag',
     type: 'delivery_fee',
-    title: 'Taca de entrega',
+    title: 'Taxa de entrega',
     selected: false,
     claims: [
       {
         icon: 'fa-solid fa-square-plus',
-        title: 'Criar cargo',
+        title: 'Criar taxa de entrega',
         value: 'delivery_fee.create',
         color: '#5AA454',
       },
       {
-        title: 'Excluir cargo',
+        title: 'Excluir taxa de entrega',
         value: 'delivery_fee.delete',
         icon: 'fa-solid fa-square-minus',
         color: '#f93e3e',
       },
       {
         icon: 'fa-solid fa-square-pen',
-        title: 'Editar cargo',
+        title: 'Editar taxa de entrega',
         value: 'delivery_fee.update',
         color: '#f5bd00',
       },
       {
-        title: 'Listar todos os cargos',
+        title: 'Listar todas as taxas de entrega',
         value: 'delivery_fee.listAll',
         icon: 'fa-solid fa-square-poll-horizontal',
         color: '#23A6F0',
@@ -301,33 +333,47 @@ export const claims: claimType[] = [
     claims: [
       {
         icon: 'fa-solid fa-square-plus',
-        title: 'Criar cargo',
+        title: 'Criar horário de abertura',
         value: 'week_operation_day.create',
         color: '#5AA454',
       },
       {
-        title: 'Excluir cargo',
+        title: 'Excluir horário de abertura',
         value: 'week_operation_day.delete',
         icon: 'fa-solid fa-square-minus',
         color: '#f93e3e',
       },
       {
         icon: 'fa-solid fa-square-pen',
-        title: 'Editar cargo',
+        title: 'Editar horário de abertura',
         value: 'week_operation_day.update',
         color: '#f5bd00',
       },
       {
         icon: 'fa-solid fa-square-pen',
-        title: 'Editar cargo',
-        value: 'week_operation_day.update',
+        title: 'Mudar o status do horário de abertura',
+        value: 'week_operation_day.changeStatus',
         color: '#f5bd00',
       },
       {
-        title: 'Listar todos os cargos',
+        title: 'Listar todos os horário de abertura',
         value: 'week_operation_day.listAll',
         icon: 'fa-solid fa-square-poll-horizontal',
         color: '#23A6F0',
+      },
+    ],
+  },
+  {
+    icon: 'fa-solid fa-flag',
+    type: 'whatsapp',
+    title: 'WhatsApp',
+    selected: false,
+    claims: [
+      {
+        icon: 'fa-solid fa-square-plus',
+        title: 'Escaner qr code whatsapp',
+        value: 'whatsapp.readQrCode',
+        color: '#5AA454',
       },
     ],
   },
@@ -339,9 +385,27 @@ export const claims: claimType[] = [
     claims: [
       {
         icon: 'fa-solid fa-square-plus',
-        title: 'Criar cargo',
+        title: 'Mudar o status do pedido',
         value: 'order.changeStatus',
         color: '#5AA454',
+      },
+      {
+        title: 'Cancelar pedido',
+        value: 'order.cancel',
+        icon: 'fa-solid fa-square-minus',
+        color: '#f93e3e',
+      },
+      {
+        icon: 'fa-solid fa-square-pen',
+        title: 'Imprimir o pedido',
+        value: 'order.print',
+        color: '#f5bd00',
+      },
+      {
+        title: 'Listar todos os pedido',
+        value: 'order.listAll',
+        icon: 'fa-solid fa-square-poll-horizontal',
+        color: '#23A6F0',
       },
     ],
   },
@@ -353,19 +417,19 @@ export const claims: claimType[] = [
     claims: [
       {
         icon: 'fa-solid fa-square-plus',
-        title: 'Criar cargo',
+        title: 'Abrir o caixa',
         value: 'cach_box.open',
         color: '#5AA454',
       },
       {
-        title: 'Excluir cargo',
+        title: 'Fechar o caixa',
         value: 'cach_box.close',
         icon: 'fa-solid fa-square-minus',
         color: '#f93e3e',
       },
       {
         icon: 'fa-solid fa-square-pen',
-        title: 'Editar cargo',
+        title: 'Ver o as informações do caixa',
         value: 'cach_box.view',
         color: '#f5bd00',
       },
@@ -379,12 +443,12 @@ export const claims: claimType[] = [
     claims: [
       {
         icon: 'fa-solid fa-square-plus',
-        title: 'Criar cargo',
+        title: 'Mudar o status do metódo de pagamento',
         value: 'payment_mathod.changeStatus',
         color: '#5AA454',
       },
       {
-        title: 'Listar todos os cargos',
+        title: 'Listar todos os metódos de pagamento',
         value: 'payment_mathod.listAll',
         icon: 'fa-solid fa-square-poll-horizontal',
         color: '#23A6F0',

@@ -87,7 +87,7 @@ export function UpdateSelect({
         name,
         max_selected_options,
         has_default_price,
-        price,
+        price: has_default_price ? price : null,
       })
       .eq('id', isUpadatingSelect?.id!)
       .select('*');

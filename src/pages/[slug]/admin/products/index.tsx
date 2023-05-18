@@ -17,7 +17,7 @@ import {
 import { iRestaurant } from '@/src/types/iRestaurant';
 import { iSelects } from '@/src/types/iSelect';
 
-import { GetStaticPaths, GetStaticProps } from 'next';
+import { GetServerSideProps, GetStaticPaths } from 'next';
 
 interface iProdcutsProps {
   restaurant: iRestaurant['data'];
@@ -64,7 +64,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
   };
 };
 
-export const getStaticProps: GetStaticProps<
+export const getStaticProps: GetServerSideProps<
   iProdcutsProps,
   { slug: string }
 > = async ({ params }) => {

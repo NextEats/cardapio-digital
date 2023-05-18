@@ -94,7 +94,7 @@ export const CreateSelect = () => {
         name,
         max_selected_options,
         has_default_price,
-        price,
+        price: has_default_price ? price : null,
         restaurant_id: restaurant.id,
       })
       .select('*');
@@ -213,6 +213,7 @@ export const CreateSelect = () => {
                 id="airplane-mode"
                 onCheckedChange={(checked: boolean) => {
                   setValue('has_default_price', checked);
+                  if (checked) setValue('option_has_price', false);
                   checked ? handleFocus('price') : setValue('price', null);
                 }}
               >
@@ -222,7 +223,8 @@ export const CreateSelect = () => {
                 className="text-base font-normal leading-[20px]"
                 htmlFor=""
               >
-                Cobar valor padrão
+                Cobrar valor padrão
+                {}
               </label>
             </div>
             {has_default_value ? (
@@ -310,27 +312,32 @@ export const CreateSelect = () => {
                   </p>
                 ) : null}
 
-                <div className="flex item-center gap-3">
-                  <Switch.Root
-                    className="w-[38px] h-5 bg-red-orange rounded-full relative   data-[state=checked]:bg-blue-400 outline-none cursor-default"
-                    id="airplane-mode"
-                    onCheckedChange={(checked: boolean) => {
-                      setValue('option_has_price', checked);
-                      checked
-                        ? handleFocus('option_price')
-                        : setValue('option_price', null);
-                    }}
-                  >
-                    <Switch.Thumb className="block w-[16px] h-[16px] bg-white rounded-full transition-transform duration-100 translate-x-0.5 will-change-transform data-[state=checked]:translate-x-[19px]" />
-                  </Switch.Root>
-                  <label
-                    className="text-base font-normal leading-[20px]"
-                    htmlFor=""
-                  >
-                    {' '}
-                    Cobar{' '}
-                  </label>
-                </div>
+                {!has_default_value ? (
+                  <>
+                    <div className="flex item-center gap-3">
+                      <Switch.Root
+                        className="w-[38px] h-5 bg-red-orange rounded-full relative   data-[state=checked]:bg-blue-400 outline-none cursor-default"
+                        id="airplane-mode"
+                        onCheckedChange={(checked: boolean) => {
+                          setValue('option_has_price', checked);
+                          checked
+                            ? handleFocus('option_price')
+                            : setValue('option_price', null);
+                        }}
+                        disabled={has_default_value}
+                      >
+                        <Switch.Thumb className="block w-[16px] h-[16px] bg-white rounded-full transition-transform duration-100 translate-x-0.5 will-change-transform data-[state=checked]:translate-x-[19px]" />
+                      </Switch.Root>
+                      <label
+                        className="text-base font-normal leading-[20px]"
+                        htmlFor=""
+                      >
+                        {' '}
+                        Cobrar{' '}
+                      </label>
+                    </div>
+                  </>
+                ) : null}
 
                 {has_price ? (
                   <div>

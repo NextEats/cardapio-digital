@@ -12,9 +12,9 @@ export default function Contact() {
   };
 
   return (
-    <div className="border-t-brand-dark-orange bg-orange-500 flex w-screen">
-      <div className="max-w-[1500px] max-w-screen mx-auto p-8 grid grid-cols-1 sm:grid-cols-1">
-        <div className="grid grid-cols-1 md:grid-cols-2 bg-white rounded-md shadow-sm lg:mx-60">
+    <>
+      <div className="max-w-screen mx-auto p-8 grid grid-cols-1 sm:grid-cols-1 relative mb-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 bg-white rounded-md shadow-2xl shadow-slate-700 lg:mx-60 z-20 border-b-[]">
           <div className="p-6 mr-2 bg-white sm:rounded-lg">
             <h1 className="text-3xl font-semibold mb-4">Entre em Contato</h1>
             <p className="text-normal text-lg font-medium text-gray-600 dark:text-gray-400 mt-2">
@@ -133,7 +133,8 @@ export default function Contact() {
             </button>
           </form>
         </div>
+        <div className="bg-[#df4d14] h-64 w-screen bottom-0 absolute z-10 border-t-[15px] border-b-[15px] border-[#fc5a1a]"></div>
       </div>
-    </div>
+    </>
   );
 }

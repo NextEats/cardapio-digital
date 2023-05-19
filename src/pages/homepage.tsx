@@ -7,6 +7,7 @@ import Features from '../components/InstitutionalWebsite/Features';
 import Footer from '../components/InstitutionalWebsite/Footer';
 import Hero from '../components/InstitutionalWebsite/Hero';
 import Testimonials from '../components/InstitutionalWebsite/Testimonials';
+import ComoFunciona from '../components/InstitutionalWebsite/comoFunciona';
 
 const Homepage = () => {
   useEffect(() => {
@@ -18,6 +19,7 @@ const Homepage = () => {
       <Hero />
       <Advantages />
       <Features />
+      <ComoFunciona />
       <Slider />
       <Testimonials />
       <Contact />

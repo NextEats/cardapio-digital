@@ -10,9 +10,9 @@ const StarRating = ({ rating }: iStarRating) => {
   const starIcons = [];
   for (let i = 0; i < 5; i++) {
     if (i < Math.floor(roundedRating)) {
-      starIcons.push(<FaStar key={i} />);
+      starIcons.push(<FaStar key={i} className="text-[#ff5c1b]" />);
     } else if (i === Math.floor(roundedRating) && roundedRating % 1 !== 0) {
-      starIcons.push(<FaStarHalf key={i} />);
+      starIcons.push(<FaStarHalf key={i} className="text-[#ff5c1b]" />);
     } else {
       starIcons.push(<></>);
     }

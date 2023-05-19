@@ -109,7 +109,13 @@ const Slider: React.FC = () => {
   });
 
   return (
-    <div className="max-w-[1500px] 2xl:mx-auto mx-8 pt-32">
+    <div className="max-w-[1500px] 2xl:mx-auto px-8 pt-32">
+      <h2 className="text-6xl font-bold">Clientes</h2>
+      <div className="w-32 h-2 bg-[#ff5c1b] rounded-md my-4"></div>
+      <p className="text-black font-semibold text-[20px] px-8">
+        Descubra o Sucesso de diversos clientes satisfeitos que confiam na
+        NextEats para agilizar e otimizar seus pedidos diariamente.
+      </p>
       <div
         ref={sliderRef}
         className="flex flex-row max-w-full mx-auto keen-slider overflow-x-auto"

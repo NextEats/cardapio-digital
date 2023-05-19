@@ -69,32 +69,33 @@
 // };
 
 // export default Advantages;
-import { FaCheck, FaCog, FaMotorcycle } from 'react-icons/fa';
-import { MdFastfood } from 'react-icons/md';
+import { AiOutlineCheckCircle, AiOutlineUserSwitch } from 'react-icons/ai';
+import { FaMotorcycle } from 'react-icons/fa';
+import { IoRestaurantOutline } from 'react-icons/io5';
 import CardAdvantages from './CardAdvantages';
 
 const Advantages = () => {
   return (
     <>
-      <div className="bg-[#ff5c1b] h-60 w-screen grid-cols-4 absolute z-10 bottom-[-110px]"></div>
+      <div className="bg-[#ff5c1b] h-60 w-screen grid-cols-4 absolute z-10 bottom-[-275px]"></div>
       <div
         id="advantages"
-        className="w-screenflex justify-center items-center bg-[#c03d09] relative"
+        className="w-screenflex justify-center items-center bg-[#c03d09] relative pt-[160px]"
       >
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 max-w-[1500px] mx-auto pb-10 ">
           <CardAdvantages
-            Icon={FaCog}
+            Icon={AiOutlineCheckCircle}
             title="Total Controle"
             text="Você tem o poder de personalizar seu cardápio
                             digital para deixá-lo como quiser."
           />
           <CardAdvantages
-            Icon={FaCheck}
+            Icon={AiOutlineUserSwitch}
             title="MESAS E GARÇONS"
             text="Controle automaticamente seus garçons e mesas do seu estabelecimento sem mais dor de cabeça!"
           />
           <CardAdvantages
-            Icon={MdFastfood}
+            Icon={IoRestaurantOutline}
             title="CARDÁPIO DIGITAL"
             text="Receba pedidos de diversos canais diferentes, dê o próximo passo na sua empresa otimizando seu trabalho!"
           />

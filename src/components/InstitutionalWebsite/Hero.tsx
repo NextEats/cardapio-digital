@@ -17,17 +17,17 @@ const Hero = () => {
   return (
     <>
       <div className="h-9 w-full bg-[#fc6e26]"></div>
-      <div className="min-h-screen w-screen" style={backgroundImageStyles}>
+      <div className="lg:min-h-screen w-screen" style={backgroundImageStyles}>
         <div
           id="start"
-          className="max-w-[1500px] max-w-screen mx-auto md:px-32 lg:px-12 pt-12"
+          className="lg:max-w-screen mx-auto md:px-32 lg:px-12 pt-12"
         >
           <div className="hidden lg:flex flex-row justify-between items-center">
             <Image
               src={nextEatsOrangeLogo}
               alt="nextEatsOrangeLogo"
               width={200}
-              className="hidden xl:block"
+              className="hidden md:hidden xl:block"
             />
             <div>
               <ul className="text-gray-800 flex flex-row gap-x-7 child:cursor-pointer child-hover:opacity-80 child:transition child:delay-75 child:text-lg">
@@ -74,16 +74,16 @@ const Hero = () => {
               </ul>
             </div>
             <div className="child:rounded-xl child:font-semibold flex flex-row gap-x-4">
-              <button className="bg-white shadow-lg shadow-black rounded-sm py-[15px] px-[35px] ">
-                JÁ SOU CLIENTE
+              <button className="bg-white text-3xl font-extrabold rounded-sm py-[6px] px-[15px] shadow-md shadow-slate-400">
+                LOGIN
               </button>
-              <button className="bg-orange-500 text-white shadow-md py-[15px] px-[35px]">
+              <button className="bg-orange-500 text-white text-3xl font-extrabold rounded-sm py-[6px] px-[15px] shadow-md shadow-slate-400">
                 QUERO ASSINAR
               </button>
             </div>
           </div>
 
-          <div className="flex flex-col lg:flex-row h-[80vh] items-center lg:justify-between">
+          <div className="flex flex-col lg:flex-row lg:h-[80vh] items-center lg:justify-between">
             <div className="w-full max-w-[80vw] lg:max-w-[50%] flex items-center flex-col ">
               <div className="w-full">
                 <span className="text-brand-dark-orange leading-tight text-3xl sm:text-[2rem] lg:text-[3.5rem] block">
@@ -134,18 +134,18 @@ const Hero = () => {
                 </button>
               </div>
             </div>
-            <div className="w-full mt-16 md:mt-12 lg:mt-0 max-w-[80%] md:max-w-[70%] lg:max-w-[50%] flex items-center justify-center">
+            <div className="w-full mt-16 md:mt-12 lg:mt-0 items-center justify-center hidden lg:flex overflow-hidden">
               <Image
                 src={heroImage.src}
-                width={800}
+                width={1300}
                 height={800}
                 alt="heroImage"
-                className="z-10"
+                className="z-10 md:w-[800px] lg:w-[1000px] lg:mt-[200px]"
               />
             </div>
           </div>
         </div>
-        <div className="bg-white h-14 absolute bottom-0 w-screen bg-[#db490e] lg:block"></div>
+        <div className="bg-[#db490e] h-36 absolute bottom-0 w-screen lg:block"></div>
       </div>
     </>
   );

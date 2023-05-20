@@ -1103,6 +1103,7 @@ export interface Database {
           name: string | null
           restaurant_id: number
           user_id: string
+          username: string | null
         }
         Insert: {
           created_at?: string | null
@@ -1111,6 +1112,7 @@ export interface Database {
           name?: string | null
           restaurant_id: number
           user_id: string
+          username?: string | null
         }
         Update: {
           created_at?: string | null
@@ -1119,6 +1121,7 @@ export interface Database {
           name?: string | null
           restaurant_id?: number
           user_id?: string
+          username?: string | null
         }
       }
       weekday_operating_time: {

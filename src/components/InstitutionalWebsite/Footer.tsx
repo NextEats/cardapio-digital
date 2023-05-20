@@ -18,8 +18,9 @@ const Footer = () => {
         </p>
       </div>
       <div className="col-span-3 md:col-span-3 lg:col-span-1 my-5 md:my-0 lg:block flex justify-center">
-        <button className="bg-[#ff5c1b] shadow-lg rounded-md shadow-black py-[15px] px-[35px] text-white text-3xl flex items-center">
-          <BsWhatsapp className="inline-block mr-4" /> Clique para o Whatsapp
+        <button className="bg-[#ff5c1b] shadow-lg rounded-md shadow-black py-[15px] px-[15] md:px-[35px] text-white text-3xl flex items-center px-3">
+          <BsWhatsapp className="inline-block mr-4 text-4xl mx-2" /> Clique para
+          o Whatsapp
         </button>
       </div>
       <div className="col-span-3 md:col-span-3 lg:col-span-1 my-5 md:my-0">
@@ -27,7 +28,7 @@ const Footer = () => {
           <h2 className="text-4xl font-bold">NEXTEATS</h2>
           <div className="w-[250px] h-1 bg-[#ff5c1b] rounded-md my-4"></div>
         </div>
-        <ul className="list-none mt-2 child:my-2 child:flex child:items-center child:justify-center">
+        <ul className="list-none mt-2 child:my-2 child:flex child:items-start child:justify-center">
           <li>
             <h2 className="text-3xl font-bold mr-4">QUEM SOMOS</h2>{' '}
             <MdDoubleArrow className="text-4xl" />

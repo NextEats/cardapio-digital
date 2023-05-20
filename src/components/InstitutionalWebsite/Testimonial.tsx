@@ -11,7 +11,7 @@ const Testimonial = (props: iTestimonial) => {
   const { imageUrl, name, text, stars } = props;
 
   return (
-    <div className="flex flex-row p-9 rounded-xl shadow-2xl shadow-slate-700">
+    <div className="flex flex-row p-9 rounded-xl shadow-md shadow-slate-400">
       {/* <Image
         className="w-24 h-24"
         src={imageUrl}

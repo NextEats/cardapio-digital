@@ -22,7 +22,7 @@ const Hero = () => {
           id="start"
           className="lg:max-w-screen mx-auto md:px-32 lg:px-12 pt-12"
         >
-          <div className="hidden lg:flex flex-row justify-between items-center">
+          <div className="max-w-screen-[1246px] hidden lg:flex flex-row justify-between items-center">
             <Image
               src={nextEatsOrangeLogo}
               alt="nextEatsOrangeLogo"

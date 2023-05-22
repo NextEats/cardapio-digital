@@ -6,9 +6,11 @@ import Sidebar from './Sidebar';
 import { iRestaurantWithFKData } from '@/src/types/iRestaurant';
 import Head from 'next/head';
 import AdminContextProvider from './AdminContextProvider';
+import { useUser } from '@supabase/auth-helpers-react';
 
 export default function AdminWrapper({ children }: { children: JSX.Element }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const user = useUser();
 
   const [restaurant, setRestaurant] = useState<
     iRestaurantWithFKData | undefined
@@ -25,7 +27,7 @@ export default function AdminWrapper({ children }: { children: JSX.Element }) {
             <title>Admin</title>
           )}
         </Head>
-        <div className="fixed bg-white-200">
+        <div className={`fixed bg-white-200 ${!user ? 'hidden' : ''}`}>
           <Navbar toogleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} />
           <Sidebar isSidebarOpen={isSidebarOpen} />
           <div

@@ -20,17 +20,25 @@ export default function AdminContextProvider({
 }: iAdminContextProvider) {
   const router = useRouter();
   const { slug } = router.query;
-  const { user, userDetails } = useUserAndDetails();
+  const { user, userDetails, isLoading } = useUserAndDetails();
 
   useEffect(() => {
     if (!restaurant) {
       return;
     }
 
-    // if (!user || userDetails?.restaurant_id !== restaurant.id) {
-    //     router.replace(`/login`);
-    // }
-  }, [user, restaurant, router, userDetails]);
+    if (!isLoading) {
+      if (!user) {
+        router.replace(`/login`);
+        return;
+      }
+
+      if (userDetails?.restaurant_id !== restaurant.id) {
+        router.replace(`/${userDetails?.restaurants.slug}/admin`);
+        return;
+      }
+    }
+  }, [user, restaurant, router, userDetails, isLoading]);
 
   useMemo(() => {
     async function fetchRestaurantData() {

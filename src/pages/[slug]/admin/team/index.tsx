@@ -1,12 +1,11 @@
 import AdminWrapper from '@/src/components/admin/AdminWrapper';
+import { Team } from '@/src/components/pages/Team';
 
-export default function team() {
+export default function TeamPage() {
   return (
     <>
       <AdminWrapper>
-        <div>
-          <h1>Hello Team</h1>
-        </div>
+        <Team />
       </AdminWrapper>
     </>
   );

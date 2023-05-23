@@ -4,7 +4,7 @@ import { BsWhatsapp } from 'react-icons/bs';
 import { MdDoubleArrow } from 'react-icons/md';
 const Footer = () => {
   return (
-    <div className="min-h-[400px] text-white font-semibold bg-black  w-screen text-center grid grid-cols-3 gap-3 px-32 pt-16 pb-10">
+    <div className="min-h-[400px] text-white font-semibold bg-black  w-screen text-center grid grid-cols-3 gap-3 px-10 md:px-32 pt-16 pb-10">
       <div className="col-span-3 md:col-span-3 lg:col-span-1 flex items-center flex-col">
         <Image
           src={nextEatsOrangeLogo}
@@ -17,9 +17,9 @@ const Footer = () => {
           e receber seus pedidos via WhatsApp.
         </p>
       </div>
-      <div className="col-span-3 md:col-span-3 lg:col-span-1 my-5 md:my-0 lg:block flex justify-center">
-        <button className="bg-[#ff5c1b] shadow-lg rounded-md shadow-black py-[15px] px-[15px] md:px-[35px] text-white text-3xl flex items-center">
-          <BsWhatsapp className="inline-block mr-4 text-4xl mx-2" /> Clique para
+      <div className="col-span-3 md:col-span-3 lg:col-span-1 my-5 md:my-0 flex justify-center">
+        <button className="bg-[#ff5c1b] shadow-lg rounded-md shadow-black py-[15px] px-[15px] md:px-[20px] text-white text-lg md:text-xl flex items-center h-fit">
+          <BsWhatsapp className="inline-block mr-4 text-3xl mx-2" /> Clique para
           o Whatsapp
         </button>
       </div>
@@ -30,34 +30,27 @@ const Footer = () => {
         </div>
         <ul className="list-none mt-2 child:my-2 child:flex child:items-start child:justify-center">
           <li>
-            <h2 className="text-3xl font-bold mr-4">QUEM SOMOS</h2>{' '}
+            <h2 className="text-xl font-bold mr-4">QUEM SOMOS</h2>{' '}
             <MdDoubleArrow className="text-4xl" />
           </li>
           <li>
-            <h2 className="text-3xl font-bold mr-4">PARCERIA</h2>{' '}
+            <h2 className="text-xl font-bold mr-4">PARCERIA</h2>{' '}
             <MdDoubleArrow className="text-4xl" />
           </li>
           <li>
-            <h2 className="text-3xl font-bold mr-4">CONTATO</h2>{' '}
+            <h2 className="text-xl font-bold mr-4">CONTATO</h2>{' '}
             <MdDoubleArrow className="text-4xl" />
           </li>
           <li>
-            <h2 className="text-3xl font-bold mr-4">CADASTRE-SE</h2>{' '}
+            <h2 className="text-xl font-bold mr-4">CADASTRE-SE</h2>{' '}
             <MdDoubleArrow className="text-4xl" />
           </li>
         </ul>
       </div>
-      <div className="col-span-3 flex flex-col md:flex-row lg:flex-row justify-between mt-10 items-center my-5 md:my-0">
-        <h4>© NextEats - 2023 - Todos os direitos Reservados</h4>
+      <div className="col-span-3 flex flex-col md:flex-row lg:flex-row justify-evenly mt-10 items-center my-5 md:my-0">
         <h4>Politica de Privacidade</h4>
         <h4>Termos de uso e condições</h4>
-        <Image
-          src={nextEatsOrangeLogo}
-          alt="nextEatsOrangeLogo"
-          // width={70}
-          height={50}
-          className=""
-        />
+        <h4>© NextEats - 2023 - Todos os direitos Reservados</h4>
       </div>
     </div>
   );

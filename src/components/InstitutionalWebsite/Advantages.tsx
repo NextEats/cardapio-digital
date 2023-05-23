@@ -77,7 +77,7 @@ import CardAdvantages from './CardAdvantages';
 const Advantages = () => {
   return (
     <>
-      <div className="bg-[#ff5c1b] h-60 w-screen grid-cols-4 absolute z-10 bottom-[-275px]"></div>
+      <div className="bg-[#ff5c1b] h-60 w-screen grid-cols-4 absolute z-10 bottom-[-275px] hidden lg:block"></div>
       <div
         id="advantages"
         className="w-screenflex justify-center items-center bg-[#c03d09] relative pt-[160px]"

@@ -18,7 +18,7 @@ const Footer = () => {
         </p>
       </div>
       <div className="col-span-3 md:col-span-3 lg:col-span-1 my-5 md:my-0 lg:block flex justify-center">
-        <button className="bg-[#ff5c1b] shadow-lg rounded-md shadow-black py-[15px] px-[15] md:px-[35px] text-white text-3xl flex items-center px-3">
+        <button className="bg-[#ff5c1b] shadow-lg rounded-md shadow-black py-[15px] px-[15px] md:px-[35px] text-white text-3xl flex items-center">
           <BsWhatsapp className="inline-block mr-4 text-4xl mx-2" /> Clique para
           o Whatsapp
         </button>

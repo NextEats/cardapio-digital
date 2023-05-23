@@ -46,10 +46,6 @@ const Slider: React.FC = () => {
 
     //sadasd
     {
-      src: 'https://cceilpiizkukiqfodhec.supabase.co/storage/v1/object/public/restaurant-pictures/gago.png',
-      url: 'https://www.nexteats.com.br/gago-burguer',
-    },
-    {
       src: 'https://cceilpiizkukiqfodhec.supabase.co/storage/v1/object/public/restaurant-pictures/Design%20sem%20nome.jpg',
       url: 'https://www.nexteats.com.br/majuca',
     },

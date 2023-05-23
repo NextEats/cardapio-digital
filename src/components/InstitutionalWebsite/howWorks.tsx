@@ -4,7 +4,7 @@ import { MdMenuBook } from 'react-icons/md';
 export default function ComoFunciona() {
   return (
     <>
-      <div className="bg-black flex w-screen mt-11 flex min-h-[150px] flex-row">
+      <div className="bg-black w-screen mt-11 flex min-h-[150px] flex-row">
         <div className="flex ml-[5%] lg:ml-[30%] items-center">
           <MdMenuBook className="text-[#ff5c1b] text-[50px] md:text-[100px]" />
           <div className="ml-5 flex flex-col">
@@ -18,7 +18,7 @@ export default function ComoFunciona() {
           <BsArrowRight className="text-white text-[50px] md:text-[100px] mr-[15%] md:mr-[30%]" />
         </div>
       </div>
-      <div className="bg-[#ff5c1b] flex w-screen flex justify-center min-h-[20px]"></div>
+      <div className="bg-[#ff5c1b] w-screen flex justify-center min-h-[20px]"></div>
     </>
   );
 }

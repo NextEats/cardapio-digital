@@ -1,8 +1,11 @@
 import Image from 'next/image';
 import AnchorLink from 'react-anchor-link-smooth-scroll';
 
-import nextEatsOrangeLogo from '@/src/assets/nexteats_logo_orange.png';
-import heroImage from '@/src/assets/noteCelu.png';
+import heroImage from '@/src/assets/pc.png';
+import nextEatsOrangeLogo from '@/src/assets/tituloAA.png';
+import { useState } from 'react';
+import { BiMenuAltRight } from 'react-icons/bi';
+import Menu from './Menu';
 
 const Hero = () => {
   const backgroundImageStyles = {
@@ -13,14 +16,29 @@ const Hero = () => {
     backgroundSize: 'cover',
     zIndex: '-1',
   };
-
+  const [isOpenMenu, setIsOpenMenu] = useState<boolean>(false);
   return (
     <>
-      <div className="h-9 w-full bg-[#fc6e26]"></div>
+      <div className="h-9 w-full bg-[#fc6e26] justify-end hidden lg:flex"></div>
+      <div className="block lg:hidden mb-10">
+        <div className="flex justify-center">
+          <Image
+            src={nextEatsOrangeLogo}
+            alt="nextEatsOrangeLogo"
+            width={200}
+            className=""
+          />
+          <button onClick={() => setIsOpenMenu(true)}>
+            {' '}
+            <BiMenuAltRight className="text-4xl absolute top-0 right-0 mt-7 mr-5 sm:mr-10" />
+          </button>
+        </div>
+      </div>
+      <Menu isOpen={isOpenMenu} setIsOpen={setIsOpenMenu} />
       <div className="lg:min-h-screen w-screen" style={backgroundImageStyles}>
         <div
           id="start"
-          className="lg:max-w-screen mx-auto md:px-32 lg:px-12 pt-12"
+          className="lg:max-w-screen mx-auto md:px-20 lg:px-12 pt-12"
         >
           <div className="max-w-screen-[1246px] hidden lg:flex flex-row justify-between items-center">
             <Image
@@ -42,7 +60,7 @@ const Hero = () => {
                 <li>
                   <AnchorLink
                     href="#advantages"
-                    className="w-full h-full font-bold text-2xl uppercase"
+                    className="w-full h-full font-bold text-2xl uppercas hover:text-orange-500"
                   >
                     Vantagens
                   </AnchorLink>
@@ -50,7 +68,7 @@ const Hero = () => {
                 <li>
                   <AnchorLink
                     href="#Planos"
-                    className="w-full h-full font-bold text-2xl uppercase"
+                    className="w-full h-full font-bold text-2xl uppercase hover:text-orange-500"
                   >
                     Planos
                   </AnchorLink>
@@ -58,7 +76,7 @@ const Hero = () => {
                 <li>
                   <AnchorLink
                     href="#Funcionalidades"
-                    className="w-full h-full font-bold text-2xl uppercase"
+                    className="w-full h-full font-bold text-2xl uppercase hover:text-orange-500"
                   >
                     Funcionalidades
                   </AnchorLink>
@@ -66,40 +84,40 @@ const Hero = () => {
                 <li>
                   <AnchorLink
                     href="#Depoimentos"
-                    className="w-full h-full font-bold text-2xl uppercase"
+                    className="w-full h-full font-bold text-2xl uppercase hover:text-orange-500"
                   >
                     Depoimentos
                   </AnchorLink>
                 </li>
               </ul>
             </div>
-            <div className="child:rounded-xl child:font-semibold flex flex-row gap-x-4">
-              <button className="bg-white text-3xl font-extrabold rounded-sm py-[6px] px-[15px] shadow-md shadow-slate-400">
+            <div className="child:rounded-xl flex flex-row gap-x-4">
+              <button className="hidden 2xl:block bg-white text-3xl md:min-h-[50px] md:min-w-[250px] font-black rounded-sm py-[6px] px-[15px] shadow-md shadow-slate-400">
                 LOGIN
               </button>
-              <button className="bg-orange-500 text-white text-3xl font-extrabold rounded-sm py-[6px] px-[15px] shadow-md shadow-slate-400">
+              <button className="hidden 2xl:block bg-orange-500 text-white text-2xl xl:min-h-[50px] xl:min-w-[250px]  rounded-sm py-[6px] px-[15px] shadow-md shadow-slate-400 font-[700]">
                 QUERO ASSINAR
               </button>
             </div>
           </div>
-
           <div className="flex flex-col lg:flex-row lg:h-[80vh] items-center lg:justify-between">
-            <div className="w-full max-w-[80vw] lg:max-w-[50%] flex items-center flex-col ">
-              <div className="w-full">
+            <div className="w-full max-w-[95vw] lg:max-w-[80vw] flex justify-center items-center flex-col">
+              <div className="w-full xs:w-fit">
                 <span className="text-brand-dark-orange leading-tight text-3xl sm:text-[2rem] lg:text-[3.5rem] block">
-                  Automatize as&nbsp;
-                  <span className="font-semibold italic underline">
-                    entregas
-                  </span>
-                  &nbsp; e o&nbsp;
-                  <span className="font-semibold italic underline">
+                  Automatize as <u> entregas </u> e <br />
+                  <span className="text-[35px] sm:text-[55px] md:text-[85px]">
+                    o
+                  </span>{' '}
+                  <u className="font-normal text-[35px] sm:text-[55px] md:text-[85px]">
                     gerenciamento
-                  </span>
+                  </u>
                   <br />
-                  do seu restaurante.
+                  <span className="text-[25px] sm:text-[45px] md:text-[75px]">
+                    do seu restaurante.
+                  </span>
                 </span>
 
-                <span className="w-full text-left text-2xl sm:text-normal text-[#838383] mt-8 block">
+                <span className="w-full text-left text-xl md:text-3xl sm:text-normal text-[#838383] mb-5 block">
                   Livre das taxas dos marketplaces e 100% digital.
                 </span>
                 <div className="mt-4">
@@ -129,23 +147,32 @@ const Hero = () => {
                   </button>
                 </div>
 
-                <button className="bg-white shadow border text-[#FC6E25] min-h-[50px] min-w-[251px] text-[17px] font-bold my-6">
+                <button className="bg-white rounded-xl shadow-md shadow-slate-400 text-[#db490e] min-h-[50px] md:min-h-[70px] min-w-[270px] md:min-w-full text-[20px] md:text-[25px] font-bold my-6 mx-6">
                   Começar gratuitamente
                 </button>
               </div>
             </div>
-            <div className="w-full mt-16 md:mt-12 lg:mt-0 items-center justify-center hidden lg:flex overflow-hidden">
+            <div className="w-full lg:mt-0 items-center justify-center hidden xl:flex min-h-[800px] z-20 relative">
               <Image
                 src={heroImage.src}
                 width={1300}
                 height={800}
                 alt="heroImage"
-                className="z-10 md:w-[800px] lg:w-[1000px] lg:mt-[200px]"
+                className="md:w-[800px] lg:w-[1200px] lg:mt-[50px] "
+              />
+            </div>
+            <div className="m-10 block lg:hidden">
+              <Image
+                src={heroImage.src}
+                width={800}
+                height={800}
+                alt="heroImage"
+                className=""
               />
             </div>
           </div>
         </div>
-        <div className="bg-[#db490e] h-36 absolute bottom-0 w-screen lg:block"></div>
+        <div className="bg-[#db490e] h-24 absolute bottom-0 w-screen hidden 2xl:block z-10"></div>
       </div>
     </>
   );

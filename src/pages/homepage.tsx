@@ -7,7 +7,7 @@ import Features from '../components/InstitutionalWebsite/Features';
 import Footer from '../components/InstitutionalWebsite/Footer';
 import Hero from '../components/InstitutionalWebsite/Hero';
 import Testimonials from '../components/InstitutionalWebsite/Testimonials';
-import ComoFunciona from '../components/InstitutionalWebsite/comoFunciona';
+import ComoFunciona from '../components/InstitutionalWebsite/howWorks';
 
 const Homepage = () => {
   useEffect(() => {

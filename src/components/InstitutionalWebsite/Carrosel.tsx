@@ -104,7 +104,7 @@ export function Slider() {
   });
 
   return (
-    <div className="max-w-[1246px] mx-auto px-8 py-16">
+    <div id="Clientes" className="max-w-[1246px] mx-auto px-8 py-16 pt-[120px]">
       <h2 className="text-3xl md:text-4xl font-semibold">Clientes</h2>
       <div className="w-16 md:w-32 h-2 bg-[#ff5c1b] rounded-md my-4"></div>
       <p className="text-black font-medium  text-base md:text-xl mb-8">

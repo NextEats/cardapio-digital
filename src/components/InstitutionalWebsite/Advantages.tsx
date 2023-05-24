@@ -77,12 +77,12 @@ import CardAdvantages from './CardAdvantages';
 const Advantages = () => {
   return (
     <>
-      <div className="bg-[#ff5c1b] h-60 w-screen grid-cols-4 absolute z-10 bottom-[-275px] hidden lg:block"></div>
+      {/* <div className="bg-[#ff5c1b] h-[15%] w-screen grid-cols-4 absolute z-10 bottom-0 hidden lg:block"></div> */}
       <div
         id="advantages"
-        className="w-screenflex justify-center items-center bg-[#c03d09] relative pt-[160px]"
+        className=" w-screenflex justify-center items-center relative bg-[#c03d09]"
       >
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 max-w-[1500px] mx-auto pb-10 ">
+        <div className="bg-[#c03d09] max-w-[1246px] grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 mx-auto py-10 ">
           <CardAdvantages
             Icon={AiOutlineCheckCircle}
             title="Total Controle"

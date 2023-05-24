@@ -21,10 +21,13 @@ export function Features() {
   });
 
   return (
-    <div className="max-w-[1246px] mx-auto px-4 md:px-6 flex flex-col gap-8 justify-center py-16 relative">
+    <div
+      id="Planos"
+      className="max-w-[1246px] mx-auto px-4 md:px-6 flex flex-col gap-8 justify-center py-16 relative pt-[120px]"
+    >
       <div className="flex flex-col">
         <h2 className="text-3xl md:text-4xl font-semibold">
-          Conheça nossos planos
+          Conheça nossos Planos
         </h2>
         <div className="w-32 h-2 bg-brand-light-orange rounded-md my-4"></div>
       </div>
@@ -50,13 +53,13 @@ export function Features() {
         </div>
         <div
           ref={sliderRef}
-          className="flex flex-1 w-full keen-slider min-w-[26rem]"
+          className="flex flex-1 w-full keen-slider sm:min-w-[26rem]"
         >
           {subscriptionPlansData.map((subscriptionPlan, index) => {
             return (
               <div
                 key={index}
-                className="w-full flex justify-center py-2 keen-slider__slide"
+                className="sm:w-full flex justify-center py-2 keen-slider__slide"
               >
                 <SubscriptionPlanCard
                   benefits={subscriptionPlan.benefits}

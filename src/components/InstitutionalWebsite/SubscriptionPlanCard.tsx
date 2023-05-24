@@ -27,11 +27,16 @@ export function SubscriptionPlanCard(props: iSubscriptionPlanCard) {
         <ul className="w-full flex flex-col gap-1">
           {benefits.map((benefit, index) => {
             return (
-              <li className="flex gap-2 text-gray-700 font-medium" key={index}>
-                <div className="h-8 w-8 flex items-center justify-center bg-gradient-to-r from-red-orange to-yellow-400 rounded-full">
+              <li
+                className="flex justify-start items-center gap-2 text-gray-700 font-medium"
+                key={index}
+              >
+                <div className="h-8 w-8 min-h-8 min-w-8 flex items-center justify-center bg-gradient-to-r from-red-orange to-yellow-400 rounded-full">
                   <FaCheck className="text-lg text-white" />
                 </div>
-                <p className="">{benefit}</p>
+                <div className="flex justify-start max-w-[240px]">
+                  <p className="">{benefit}</p>
+                </div>
               </li>
             );
           })}

@@ -1,15 +1,37 @@
 import { sendEmailApi } from '@/src/server/api';
+import { zodResolver } from '@hookform/resolvers/zod';
 import Link from 'next/link';
+import { useForm } from 'react-hook-form';
+import { toast } from 'react-toastify';
+import * as zod from 'zod';
+
+const newContactValidationSchema = zod.object({
+  name: zod.string(),
+  email: zod.string().email({ message: 'Email invavido' }),
+  message: zod.string().min(1, { message: 'Digite ' }),
+});
+
+type newContactType = zod.infer<typeof newContactValidationSchema>;
+const defaultNewContact: newContactType = {
+  email: '',
+  message: '',
+  name: '',
+};
 
 export default function Contact() {
-  const handleSendEmail = async () => {
+  const { register, watch, getValues, handleSubmit } = useForm<newContactType>({
+    resolver: zodResolver(newContactValidationSchema),
+    defaultValues: defaultNewContact,
+  });
+
+  const handleSendEmail = async (data: newContactType) => {
     const email = await sendEmailApi.post('api/send-landing-page-email', {
-      email: 'email@gmail.com',
-      name: 'contact',
-      message: 'sadasdasd',
+      email: data.email,
+      name: data.name,
+      message: data.message,
       whatsAppNumber: '(99) 99999-9999',
     });
-    console.log(email);
+    toast.success('Mensagem enviada com sucesso. Aguarde o contato');
   };
 
   return (
@@ -26,10 +48,6 @@ export default function Contact() {
             </p>
 
             <div className="flex items-center mt-8 text-gray-600 dark:text-gray-400">
-              {/* <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" viewBox="0 0 24 24" className="w-8 h-8 text-gray-500">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-              </svg> */}
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="currentColor"
@@ -43,7 +61,7 @@ export default function Contact() {
                 target="_blank"
                 className="ml-4 text-md tracking-wide font-semibold w-40"
               >
-                @nexteats.com.br
+                11 98587-2255
               </Link>
             </div>
 
@@ -64,7 +82,7 @@ export default function Contact() {
                 target="_blank"
                 className="ml-4 text-md tracking-wide font-semibold w-40"
               >
-                11 98587-2255
+                @nexteats.com.br
               </Link>
             </div>
 
@@ -88,14 +106,17 @@ export default function Contact() {
             </div>
           </div>
 
-          <form className="p-6 flex flex-col justify-center">
+          <form
+            onSubmit={handleSubmit(handleSendEmail)}
+            className="p-6 flex flex-col justify-center"
+          >
             <div className="flex flex-col">
               <label htmlFor="name" className="hidden">
                 Nome
               </label>
               <input
-                type="name"
-                name="name"
+                {...register('name')}
+                type="text"
                 id="name"
                 placeholder="Nome"
                 className="w-100 mt-2 py-3 px-3 rounded-lg bg-white shadow-md border-gray-400  text-gray-800 font-semibold focus:border-indigo-500 focus:outline-none"
@@ -107,8 +128,8 @@ export default function Contact() {
                 Email
               </label>
               <input
+                {...register('email')}
                 type="email"
-                name="email"
                 id="email"
                 placeholder="Email"
                 className="w-100 mt-2 py-3 px-3 rounded-lg bg-white shadow-md border-gray-400  text-gray-800 font-semibold focus:border-indigo-500 focus:outline-none"
@@ -128,8 +149,8 @@ export default function Contact() {
               /> */}
               <textarea
                 placeholder="Mensagem"
+                {...register('message')}
                 className="w-100 mt-2 py-3 px-3 shadow-md rounded-lg bg-white  border-gray-400  text-gray-800 font-semibold focus:border-indigo-500 focus:outline-none"
-                name="text"
                 id="text"
                 cols={4}
                 rows={5}
@@ -137,8 +158,7 @@ export default function Contact() {
             </div>
 
             <button
-              type="button"
-              onClick={() => handleSendEmail()}
+              type="submit"
               className="w-full bg-orange-500 hover:bg-blue-dark text-white font-bold py-3 px-6 rounded-md mt-3 hover:bg-indigo-500 transition ease-in-out duration-300"
             >
               ENVIAR

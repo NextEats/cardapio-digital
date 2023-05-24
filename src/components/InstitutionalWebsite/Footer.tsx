@@ -35,29 +35,29 @@ const Footer = () => {
             <h2 className="text-4xl font-bold">NEXTEATS</h2>
             <div className="w-[250px] h-1 bg-[#ff5c1b] rounded-md my-4"></div>
           </div>
-          <ul className="list-none mt-2 child:my-2 child:flex child:items-start child:justify-center">
+          <ul className="list-none mt-2 text-base font-bold  child:my-2 child:flex child:items-start child:justify-center">
             <li>
               <Link className="flex items-center gap-2" href="#advantages">
-                <h2 className="text-xl font-bold mr-4">VANTAGENS</h2>{' '}
-                <MdDoubleArrow className="text-4xl" />
+                <h2 className=" mr-4">VANTAGENS</h2>{' '}
+                <MdDoubleArrow className="text-2xl" />
               </Link>
             </li>
             <li>
               <Link className="flex items-center gap-2" href="#Planos">
-                <h2 className="text-xl font-bold mr-4">PLANOS</h2>{' '}
-                <MdDoubleArrow className="text-4xl" />
+                <h2 className=" mr-4">PLANOS</h2>{' '}
+                <MdDoubleArrow className="text-2xl" />
               </Link>
             </li>
             <li>
               <Link className="flex items-center gap-2" href="#Clientes">
-                <h2 className="text-xl font-bold mr-4">CLIENTES</h2>{' '}
-                <MdDoubleArrow className="text-4xl" />
+                <h2 className=" mr-4">CLIENTES</h2>{' '}
+                <MdDoubleArrow className="text-2xl" />
               </Link>
             </li>
             <li>
               <Link className="flex items-center gap-2" href="#Depoimentos">
-                <h2 className="text-xl font-bold mr-4">DEPOIMENTOS</h2>{' '}
-                <MdDoubleArrow className="text-4xl" />
+                <h2 className=" mr-4">DEPOIMENTOS</h2>{' '}
+                <MdDoubleArrow className="text-2xl" />
               </Link>
             </li>
           </ul>

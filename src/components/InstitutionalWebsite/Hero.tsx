@@ -29,7 +29,6 @@ const Hero = () => {
             className=""
           />
           <button onClick={() => setIsOpenMenu(true)}>
-            {' '}
             <BiMenuAltRight className="text-4xl absolute top-0 right-0 mt-7 mr-5 sm:mr-10" />
           </button>
         </div>
@@ -147,7 +146,7 @@ const Hero = () => {
                   </button>
                 </div>
 
-                <button className="bg-white rounded-xl shadow-md shadow-slate-400 text-[#db490e] min-h-[50px] md:min-h-[70px] min-w-[270px] md:min-w-full text-[20px] md:text-[25px] font-bold my-6 mx-6">
+                <button className="h-12 px-28 bg-white text-xl font-semibold rounded shadow-md text-brand-light-orange my-6 hover:scale-110 transition-all duration-200">
                   Começar gratuitamente
                 </button>
               </div>

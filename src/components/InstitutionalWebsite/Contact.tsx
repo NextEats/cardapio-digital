@@ -14,7 +14,7 @@ export default function Contact() {
   return (
     <>
       <div className="mx-auto p-8 grid grid-cols-1 sm:grid-cols-1 relative mb-10">
-        <div className="max-w-[1246px] grid grid-cols-1 md:grid-cols-2 bg-white rounded-md shadow-2xl shadow-slate-700 lg:mx-60 z-20 ">
+        <div className="max-w-[1246px] grid grid-cols-1 md:grid-cols-2 bg-white rounded-md shadow-md lg:mx-60 z-20 ">
           <div className="p-6 mr-2 bg-white sm:rounded-lg">
             <h1 className="text-3xl font-semibold mb-4">Entre em Contato</h1>
             <p className="text-normal text-lg font-medium text-gray-600 dark:text-gray-400 mt-2">

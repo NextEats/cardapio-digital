@@ -1,6 +1,5 @@
 import { useKeenSlider } from 'keen-slider/react';
 import Image from 'next/image';
-import React from 'react';
 
 import 'keen-slider/keen-slider.min.css';
 import Link from 'next/link';
@@ -13,7 +12,7 @@ import Link from 'next/link';
 //   slidesToShow: number;
 // }
 
-const Slider: React.FC = () => {
+export function Slider() {
   const slides = [
     {
       src: 'https://cceilpiizkukiqfodhec.supabase.co/storage/v1/object/public/restaurant-pictures/gago.png',
@@ -105,10 +104,10 @@ const Slider: React.FC = () => {
   });
 
   return (
-    <div className="max-w-[1500px] 2xl:mx-auto px-8 pt-32">
-      <h2 className="text-4xl md:text-6xl font-bold">Clientes</h2>
-      <div className="w-32 h-2 bg-[#ff5c1b] rounded-md my-4"></div>
-      <p className="text-black font-semibold  text-[15px] md:text-[20px] md:px-8">
+    <div className="max-w-[1246px] mx-auto px-8 py-16">
+      <h2 className="text-3xl md:text-4xl font-semibold">Clientes</h2>
+      <div className="w-16 md:w-32 h-2 bg-[#ff5c1b] rounded-md my-4"></div>
+      <p className="text-black font-medium  text-base md:text-xl mb-8">
         Descubra o Sucesso de diversos clientes satisfeitos que confiam na
         NextEats para agilizar e otimizar seus pedidos diariamente.
       </p>
@@ -132,6 +131,4 @@ const Slider: React.FC = () => {
       </div>
     </div>
   );
-};
-
-export default Slider;
+}

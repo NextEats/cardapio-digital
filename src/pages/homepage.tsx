@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 
 import Advantages from '../components/InstitutionalWebsite/Advantages';
-import Slider from '../components/InstitutionalWebsite/Carrosel';
+import { Slider } from '../components/InstitutionalWebsite/Carrosel';
 import Contact from '../components/InstitutionalWebsite/Contact';
 import { Features } from '../components/InstitutionalWebsite/Features';
 import Footer from '../components/InstitutionalWebsite/Footer';

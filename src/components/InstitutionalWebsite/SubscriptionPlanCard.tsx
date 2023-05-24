@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { FaCheck } from 'react-icons/fa';
 
 interface iSubscriptionPlanCard {
@@ -36,9 +37,14 @@ export function SubscriptionPlanCard(props: iSubscriptionPlanCard) {
           })}
         </ul>
       </div>
-      <button className="h-10 w-full flex items-center justify-center text-lg text-brand-light-orange font-medium bg-white rounded-sm border border-brand-light-orange hover:text-white hover:bg-brand-light-orange transition-all duration-300 ">
+      <Link
+        href={'https://wa.me/5511985872255'}
+        prefetch={false}
+        target="_blank"
+        className="h-10 w-full flex items-center justify-center text-lg text-brand-light-orange font-medium bg-white rounded-sm border border-brand-light-orange hover:text-white hover:bg-brand-light-orange transition-all duration-200 "
+      >
         Teste por 7 dias grátis
-      </button>
+      </Link>
     </div>
   );
 }

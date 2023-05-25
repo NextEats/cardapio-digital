@@ -44,12 +44,12 @@ const Hero = () => {
               width={160}
               className=""
             />
-            <div>
+            <div className="flex items-center gap-4">
               <ul className="text-gray-800 flex flex-row gap-4 child:cursor-pointer child-hover:opacity-80 child:transition child:delay-75 child:text-lg">
                 <li>
                   <Link
                     href="#advantages"
-                    className="w-full h-full font-medium text-xl uppercas hover:text-orange-500 uppercase"
+                    className="w-full h-full font-medium text-base uppercas hover:text-orange-500 uppercase"
                   >
                     Vantagens
                   </Link>
@@ -57,7 +57,7 @@ const Hero = () => {
                 <li>
                   <Link
                     href="#Planos"
-                    className="w-full h-full font-medium text-xl uppercase hover:text-orange-500"
+                    className="w-full h-full font-medium text-base uppercase hover:text-orange-500"
                   >
                     Planos
                   </Link>
@@ -65,7 +65,7 @@ const Hero = () => {
                 <li>
                   <Link
                     href="#Clientes"
-                    className="w-full h-full font-medium text-xl uppercase hover:text-orange-500"
+                    className="w-full h-full font-medium text-base uppercase hover:text-orange-500"
                   >
                     Clientes
                   </Link>
@@ -73,20 +73,19 @@ const Hero = () => {
                 <li>
                   <Link
                     href="#Depoimentos"
-                    className="w-full h-full font-medium text-xl uppercase hover:text-orange-500"
+                    className="w-full h-full font-medium text-base uppercase hover:text-orange-500"
                   >
                     Depoimentos
                   </Link>
                 </li>
               </ul>
-            </div>
-            <div className=" flex flex-row gap-x-4">
-              <button className="2xl:block bg-white text-xl h-9 md:min-w-[150px] font-medium rounded-sm shadow-sm flex items-center justify-center">
+              {/* <div className=" flex flex-row gap-x-4"> */}
+              <button className="2xl:block bg-white text-base h-9 md:min-w-[150px] font-medium rounded-sm shadow-sm flex items-center justify-center">
                 <Link href={'login'} prefetch={false} target="_blank">
                   LOGIN
                 </Link>
               </button>
-              <button className="2xl:block bg-orange-500 h-9 text-white text-xl xl:min-w-[200px] rounded-sm shadow-sm font-medium flex items-center justify-center">
+              <button className="2xl:block bg-orange-500 h-9 text-white text-base min-w-[180px] rounded-sm shadow-sm font-medium flex items-center justify-center">
                 <Link
                   href={'https://wa.me/5511985872255'}
                   prefetch={false}
@@ -97,6 +96,7 @@ const Hero = () => {
               </button>
             </div>
           </div>
+          {/* </div> */}
           <div className="flex flex-col lg:flex-row pt-32 pb-10 lg:py-20">
             <div className="w-full flex flex-col">
               <div className="w-full xs:w-fit">

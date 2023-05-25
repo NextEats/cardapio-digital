@@ -1,24 +1,20 @@
+import { IconType } from 'react-icons';
+
 interface iCardAdvantages {
-  src: string;
+  Icon: IconType;
   title: string;
   text: string;
 }
 
 const CardAdvantages = (props: iCardAdvantages) => {
-  const { src, title, text } = props;
+  const { Icon, title, text } = props;
   return (
-    <div className="section flex justify-center items-center mt-5">
-      <div className="w-auto lg:w-2/3 px-8">
-        <h2 className="text-center md:text-left text-3xl font-bold mb-4 uppercase">
-          {title}
-        </h2>
-        <p className="text-center md:text-left text-lg text-gray-700 leading-relaxed">
-          {text}
-        </p>
+    <div className="h-[390px] border bg-gray-100 hover:bg-gray-200 m-5 flex flex-col pt-8 p-8 sm:p-4 items-center transition rounded-lg z-20">
+      <div className="rounded-full w-[120px] h-[120px] bg-brand-dark-orange flex justify-center items-center">
+        <Icon className="text-[60px] text-white" />
       </div>
-      <div className="w-1/2 lg:w-1/4 hidden md:block">
-        <img src={src} alt="Imagem 2" className="w-full" />
-      </div>
+      <h4 className="mt-5 text-xl font-semibold uppercase">{title}</h4>
+      <p className="mt-3 font-semibold">{text}</p>
     </div>
   );
 };

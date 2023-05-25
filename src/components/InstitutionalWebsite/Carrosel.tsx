@@ -1,6 +1,5 @@
 import { useKeenSlider } from 'keen-slider/react';
 import Image from 'next/image';
-import React from 'react';
 
 import 'keen-slider/keen-slider.min.css';
 import Link from 'next/link';
@@ -13,7 +12,7 @@ import Link from 'next/link';
 //   slidesToShow: number;
 // }
 
-const Slider: React.FC = () => {
+export function Slider() {
   const slides = [
     {
       src: 'https://cceilpiizkukiqfodhec.supabase.co/storage/v1/object/public/restaurant-pictures/gago.png',
@@ -45,10 +44,6 @@ const Slider: React.FC = () => {
     },
 
     //sadasd
-    {
-      src: 'https://cceilpiizkukiqfodhec.supabase.co/storage/v1/object/public/restaurant-pictures/gago.png',
-      url: 'https://www.nexteats.com.br/gago-burguer',
-    },
     {
       src: 'https://cceilpiizkukiqfodhec.supabase.co/storage/v1/object/public/restaurant-pictures/Design%20sem%20nome.jpg',
       url: 'https://www.nexteats.com.br/majuca',
@@ -109,7 +104,13 @@ const Slider: React.FC = () => {
   });
 
   return (
-    <div className="max-w-[1500px] 2xl:mx-auto mx-8 pt-32">
+    <div id="Clientes" className="max-w-[1246px] mx-auto px-8 py-16 pt-[120px]">
+      <h2 className="text-3xl md:text-4xl font-semibold">Clientes</h2>
+      <div className="w-16 md:w-32 h-2 bg-[#ff5c1b] rounded-md my-4"></div>
+      <p className="text-black font-medium  text-base md:text-xl mb-8">
+        Descubra o Sucesso de diversos clientes satisfeitos que confiam na
+        NextEats para agilizar e otimizar seus pedidos diariamente.
+      </p>
       <div
         ref={sliderRef}
         className="flex flex-row max-w-full mx-auto keen-slider overflow-x-auto"
@@ -130,6 +131,4 @@ const Slider: React.FC = () => {
       </div>
     </div>
   );
-};
-
-export default Slider;
+}

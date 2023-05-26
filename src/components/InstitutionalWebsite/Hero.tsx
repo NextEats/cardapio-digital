@@ -2,6 +2,7 @@ import Image from 'next/image';
 
 import nextEatsOrangeLogo from '@/src/assets/logoNovoPng.png';
 import heroImage from '@/src/assets/pc.png';
+import * as fbq from '@/src/shared/lib/fpixel';
 import Link from 'next/link';
 import { useState } from 'react';
 import { BiMenuAltRight } from 'react-icons/bi';
@@ -17,6 +18,11 @@ const Hero = () => {
     zIndex: '-1',
   };
   const [isOpenMenu, setIsOpenMenu] = useState<boolean>(false);
+
+  const handleGetStarted = () => {
+    fbq.personalizedPixelEvent('GetStarted', { current: 'BRL', value: 10 });
+  };
+
   return (
     <>
       <div className="h-9 w-full bg-[#fc6e26] justify-end hidden lg:flex"></div>
@@ -116,6 +122,7 @@ const Hero = () => {
                     <Link
                       href={'https://wa.me/5511985872255'}
                       prefetch={false}
+                      onClick={() => handleGetStarted()}
                       target="_blank"
                     >
                       <svg

@@ -5,6 +5,9 @@ export const pageview = () => {
 };
 
 // https://developers.facebook.com/docs/facebook-pixel/advanced/
-export const event = (name, options = {}) => {
+export const pixelEvent = (name, options = {}) => {
   window.fbq('track', name, options);
+};
+export const personalizedPixelEvent = (name, options = {}) => {
+  window.fbq('trackCustom', name, options);
 };

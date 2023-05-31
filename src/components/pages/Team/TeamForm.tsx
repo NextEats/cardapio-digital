@@ -4,7 +4,7 @@ export function TeamForm() {
   return (
     <>
       <div>
-        <div className="flex flex-1 items-center justify-between">
+        <div className="flex flex-1 items-center justify-between mb-6">
           <div className="flex items-center">
             <input
               type="text"

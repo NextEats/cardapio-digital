@@ -48,9 +48,9 @@ export default function Sidebar({ isSidebarOpen }: iSidebar) {
                 path={`/${restaurantName}/admin/relatorios`}
               />
               <SidebarListItem
-                name="Configurações"
+                name="Time"
                 icon={<FaCog className="mr-4 h-7 w-7" />}
-                path={`/${restaurantName}/admin/configuracoes`}
+                path={`/${restaurantName}/admin/team`}
               />
             </>
           )}
@@ -61,6 +61,11 @@ export default function Sidebar({ isSidebarOpen }: iSidebar) {
               path={`/${restaurantName}/admin/table-control`}
             />
           ) : null}
+          <SidebarListItem
+            name="Configurações"
+            icon={<FaCog className="mr-4 h-7 w-7" />}
+            path={`/${restaurantName}/admin/configuracoes`}
+          />
         </ul>
         <ul className="mt-auto mb-20 flex flex-col">
           <SidebarListItem
